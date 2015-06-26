@@ -90,5 +90,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-from saturdaybasketball.private import *
+from saturdayball.private import *
 
