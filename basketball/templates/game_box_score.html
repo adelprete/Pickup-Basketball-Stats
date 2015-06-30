@@ -1,0 +1,52 @@
+{% include 'base.html' %}
+{% block body %}
+	{% load basketball_tags %}
+	<div class="container">
+		<center>
+		<div class="row">
+				
+			{% comment %}
+			<div class="col-sm-3">
+				<img src="/media/{{ team1_statlines.0.player.image_src }}" class="hidden-xs img-responsive col-sm-7 col-sm-offset-3 img-circle">
+			</div>
+			{% endcomment %}
+			<div class="col-sm-7 col-sm-offset-1">	
+				<table style="width:100%;">
+					<tr style="border:1px solid;">
+						<td style="padding:10px;font-size:20px;">Good Guys</td>
+						<td style="font-size:20px;">{{ game.team1_score }}</td>
+					</tr>
+					<tr style="border:1px solid;">
+						<td style="padding:10px;font-size:20px;">Bad Guys</td>
+						<td style="font-size:20px;">{{ game.team2_score }}</td>
+					</tr>
+				</table>
+			</div>
+			{% comment %}
+			<div class="col-sm-3">
+				<img src="/media/{{ team2_statlines.0.player.image_src }}" class="hidden-xs img-responsive col-sm-7 col-sm-offset-2 img-circle">
+			</div>
+			{% endcomment %}
+		</div>
+		</center>
+		<br>
+		<div class="row">
+		<div class="col-md-9">
+			<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
+				<iframe class="embed-responsive-item" src="{{ game.youtube_url }}"></iframe>
+			</div>
+			<div style="width:100%;">
+				<br>
+				Good Guys
+				{% box_score team1_statlines "#d9edf7" %}	
+				<br><br>
+				Bad Guys
+				{% box_score team2_statlines "#f2dede" %}
+			</div>
+		</div>
+		<div class="col-md-2 col-md-offset-1" style="border:1px solid;">
+			Play By Plays
+		</div>
+	</div>
+	</div>
+{% endblock %}
