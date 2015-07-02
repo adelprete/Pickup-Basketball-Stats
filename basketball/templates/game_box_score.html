@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'games_home.html' %}
 {% block body %}
 	{% load basketball_tags %}
 	<div class="container">
@@ -47,7 +47,7 @@
 
 		<div id="play_title"><h4>Play By Plays</h4></div>
 		<div class="col-md-3">
-			{% if user %}
+			{% if request.user.is_superuser %}
 			<div><a id="toggle_form" style="cursor: pointer;">+Toggle Play By Play Form+</a>	</div>
 			<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
 				<div class="form-group">{{ form.time.label_tag }}{{ form.time }}</div>
@@ -61,21 +61,30 @@
 				<div id="play_message" style="display:none;"></div>
 			</form>
 			{% endif %}
-			{% for play in playbyplays %}
-				
-			<a href="{% url 'delete_play' play.id %}" style="block:inline;color:red;">[x]</a>{{ play.time }} - {{ play.get_primary_play_display }} {{ play.primary_player }} 
-				{% if play.secondary_play %}
-					/ {{ play.get_secondary_play_display }} {{ play.secondary_player }}
-				{% endif %}
-				{% if play.assist %}
-					/ {{ play.get_assist_display }} {{ play.assist_player }}
-				{% endif %}
-				<br><br>
-			{% endfor %}
+			{% if playbyplays %}
+				{% for play in playbyplays %}
+					
+				<a href="{% url 'delete_play' play.id %}" style="block:inline;color:red;">[x]</a>{{ play.time|time:"i:s" }} - {{ play.get_primary_play_display }} {{ play.primary_player }} 
+					{% if play.secondary_play %}
+						/ {{ play.get_secondary_play_display }} {{ play.secondary_player }}
+					{% endif %}
+					{% if play.assist %}
+						/ {{ play.get_assist_display }} {{ play.assist_player }}
+					{% endif %}
+					<br><br>
+				{% endfor %}
+			{% else %}
+				No plays to display
+			{% endif %}
 		</div>
 	</div>
 	</div>
 	<script type="text/javascript">
+		$("#toggle_form").click(function(){
+			$('#pbp_form').toggle();
+			$('#play_message').toggle();
+		});
+
 		var frm = $('#pbp_form');
 		frm.submit(function () {
 

@@ -6,7 +6,7 @@ class PlayByPlayForm(forms.ModelForm):
 
     def __init__(self,game,*args,**kwargs):
         super(PlayByPlayForm,self).__init__(*args,**kwargs)
-        self.fields['time'].widget = forms.widgets.TextInput(attrs={'class':'form-control'})
+        self.fields['time'].widget = forms.widgets.TimeInput(attrs={'class':'form-control'})
         self.fields['primary_play'].widget.attrs = {'class':'form-control'}
         self.fields['primary_player'].widget.attrs = {'class':'form-control'}
         self.fields['secondary_play'].widget.attrs = {'class':'form-control'}

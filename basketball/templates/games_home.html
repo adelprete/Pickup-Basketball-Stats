@@ -1,13 +1,10 @@
 {% extends 'base.html' %}
-{% block top_menu %}
-{{ block.super }}
-	<script type="text/javascript">
-		$('#home_link').removeClass('active');
-		$('#games_link').addClass('active');
-	</script>
-{% endblock %}
 {% block body %}
 	{% for game in games %}
 		<a href="{{ game.get_absolute_url }}">{{game}}</a><br>
 	{% endfor %}
 {% endblock %}
+{% block active_tab %}
+	<script>$('#games_link').addClass('active')</script>
+{% endblock %}
+

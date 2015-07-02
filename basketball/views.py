@@ -67,7 +67,18 @@ def initialize_statlines(game):
         for play in plays:
             setattr(line,play[0],0)
         line.points = 0
+        line.total_rebounds = 0
         line.save()
+
+from django.db.models import Sum
+def calculate_game_score(game):
+    team1_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team1.all())
+    team2_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team2.all())
+
+    game.team1_score = team1_statlines.aggregate(Sum('points'))['points__sum']
+    game.team2_score = team2_statlines.aggregate(Sum('points'))['points__sum']
+
+    game.save()
 
 
 def calculate_statlines(game):
@@ -105,6 +116,8 @@ def calculate_statlines(game):
             orig_val = getattr(assist_line,play.assist)
             setattr(assist_line,play.assist,orig_val+1)
             assist_line.save()
+
+    calculate_game_score(game)
 
 def ajax_add_play(request,pk):
     game = bmodels.Game.objects.get(pk=pk)
