@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block top_menu %}
+{{ block.super }}
+	<script type="text/javascript">
+		$('#home_link').removeClass('active');
+		$('#players_link').addClass('active');
+	</script>
+
+{% endblock %}
+{% block body %}
+	{% for player in players %}
+		{{player}}<br>
+	{% endfor %}
+{% endblock %}
