@@ -17,8 +17,8 @@ def box_score(request,id):
         game = bmodels.Game.objects.get(id=id)
     
     pbp_form = bforms.PlayByPlayForm(game)
-    team1_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team1.all()).order_by('points')
-    team2_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team2.all()).order_by('points')
+    team1_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team1.all()).order_by('-points')
+    team2_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team2.all()).order_by('-points')
   
     playbyplays = game.playbyplay_set.all().order_by('time')
     context = {
@@ -29,6 +29,36 @@ def box_score(request,id):
         'playbyplays':playbyplays,
     }
     return render(request,"game_box_score.html",context)
+
+def players_home(request):
+
+    players = bmodels.Player.objects.all()
+
+    context = {
+        'players':players,
+    }
+    return render(request,'players_home.html',context)
+
+def player(request,id):
+
+    player = bmodels.Player.objects.get(id=id)
+
+    statlines = player.statline_set.all().order_by('game__date')
+
+    context = {
+        'player':player,
+        'statlines':statlines,
+    }
+    return render(request,'player.html',context)
+
+def games_home(request):
+
+    games = bmodels.Game.objects.all().order_by('-date')
+
+    context = {
+        'games':games,
+    }
+    return render(request,'games_home.html',context)
 
 def initialize_statlines(game):
     statlines = game.statline_set.all()
@@ -84,8 +114,8 @@ def ajax_add_play(request,pk):
         play_record.game = game
         play_record.save()
         calculate_statlines(game)
-        return HttpResponse("<br><font style='color:green'>" + play_record.get_primary_play_display() + " Play added.<br>You can if you want<br>Refresh page to see changes.</font><br><br>")
-    return HttpResponse("<font style='color:red;'>Failed to Add play</font>")
+        return HttpResponse("<br><font style='color:green'>" + play_record.get_primary_play_display() + " Play added.<br>You can add more plays if you'd like.<br>Refresh page to see changes.</font><br><br>")
+    return HttpResponse("<br><font style='color:red;'>Failed to Add play</font><br><br>")
 
 def delete_play(request,pk):
     

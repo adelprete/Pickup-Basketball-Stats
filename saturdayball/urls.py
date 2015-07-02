@@ -20,8 +20,11 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
 	url(r'^$',	bviews.root,		name='root'),
-	url(r'^(?P<id>\d+)/box_score/$',        bviews.box_score,            name='box_score'),
+	url(r'^games-home/(?P<id>\d+)/box-score/$',        bviews.box_score,            name='box_score'),
         url(r'^ajax-add-play/(?P<pk>[0-9]+)/$',        bviews.ajax_add_play,       name='ajax_add_play'),
         url(r'^delete-play/(?P<pk>[0-9]+)/$',        bviews.delete_play,       name='delete_play'),
+        url(r'^players-home/$',                 bviews.players_home,       name='players_home'),
+        url(r'^player/(?P<pk>[0-9]+)/$',                 bviews.player,       name='player_page'),
+        url(r'^games-home/$',                 bviews.games_home,       name='games_home'),
         url(r'^admin/', include(admin.site.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
