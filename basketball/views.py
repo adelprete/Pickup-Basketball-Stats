@@ -99,6 +99,7 @@ def calculate_statlines(game):
         if play.primary_play == 'threepm':
             primary_line.threepa += 1
             primary_line.fga += 1
+            primary_line.fgm += 1
             primary_line.points += 2
         primary_line.save()
 
