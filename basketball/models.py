@@ -5,9 +5,9 @@ from django.core.urlresolvers import reverse
 PRIMARY_PLAY = [
         ('fgm','FGM'),
         ('fga','FGA'),
-        ('3pm','3PM'),
-        ('3pa','3PA'),
-        ('stl','STL'),
+        ('threepm','3PM'),
+        ('threepa','3PA'),
+        ('stls','STL'),
         ('blk','BLK'),
         ('to','TO'),
 ]
@@ -16,6 +16,11 @@ SECONDARY_PLAY = [
         ('dreb','DREB'),
         ('oreb','OREB'),
         ('ba','BA'),
+]
+
+ASSIST_PLAY = [
+        ('pot_ast','POT'),
+        ('asts','AST')
 ]
 
 class Player(models.Model):
@@ -79,9 +84,9 @@ class PlayByPlay(models.Model):
     primary_play = models.CharField(max_length=30,choices=PRIMARY_PLAY)
     primary_player = models.ForeignKey('basketball.Player',related_name='primary_plays')
     secondary_play = models.CharField(max_length=30,choices=SECONDARY_PLAY,blank=True)
-    secondary_player= models.ForeignKey('basketball.Player',related_name='secondary_plays')
-    assist = models.CharField(max_length=30,choices={('pot','POT'),('ast','AST')})
-    assist_player = models.ForeignKey('basketball.Player',related_name='+')
+    secondary_player= models.ForeignKey('basketball.Player',related_name='secondary_plays',blank=True,null=True)
+    assist = models.CharField(max_length=30,choices=ASSIST_PLAY,blank=True)
+    assist_player = models.ForeignKey('basketball.Player',related_name='+',blank=True,null=True)
 
     def __str__(self):
     	return "%s - %s - %s" % (self.primary_play,self.primary_player.first_name,self.game.title)

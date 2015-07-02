@@ -44,9 +44,59 @@
 				{% box_score team2_statlines "#f2dede" %}
 			</div>
 		</div>
-		<div class="col-md-2 col-md-offset-1" style="border:1px solid;">
-			Play By Plays
+
+		<div id="play_title"><h4>Play By Plays</h4></div>
+		<div class="col-md-3">
+			{% if user %}
+			<div><a id="toggle_form" style="cursor: pointer;">+Toggle Play By Play Form+</a>	</div>
+			<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
+				<div class="form-group">{{ form.time.label_tag }}{{ form.time }}</div>
+				<div class="form-group">{{ form.primary_play.label_tag }}{{ form.primary_play}}</div>
+				<div class="form-group">{{ form.primary_player.label_tag }}{{ form.primary_player }}</div>
+				<div class="form-group">{{ form.secondary_play.label_tag }}{{ form.secondary_play }}</div>
+				<div class="form-group">{{ form.secondary_player.label_tag }}{{ form.secondary_player }}</div>
+				<div class="form-group">{{ form.assist.label_tag }}{{ form.assist }}</div>
+				<div class="form-group">{{ form.assist_player.label_tag }}{{ form.assist_player }}</div>
+				<button type="submit" name="submit" class="btn btn-primary btn-block">Save</button>
+				<div id="play_message" style="display:none;"></div>
+			</form>
+			{% endif %}
+			{% for play in playbyplays %}
+				
+			<a href="{% url 'delete_play' play.id %}" style="block:inline;color:red;">[x]</a>{{ play.time }} - {{ play.get_primary_play_display }} {{ play.primary_player }} 
+				{% if play.secondary_play %}
+					/ {{ play.get_secondary_play_display }} {{ play.secondary_player }}
+				{% endif %}
+				{% if play.assist %}
+					/ {{ play.get_assist_display }} {{ play.assist_player }}
+				{% endif %}
+				<br><br>
+			{% endfor %}
 		</div>
 	</div>
 	</div>
+	<script type="text/javascript">
+		$("#toggle_form").click(function(){
+			$('#pbp_form').toggle();
+			$('#play_message').toggle();
+		});
+		var frm = $('#pbp_form');
+		frm.submit(function () {
+
+			$.ajax({
+				type: frm.attr('method'),
+				url: "{% url 'ajax_add_play' pk=game.pk %}",
+				data: frm.serialize(),
+				success: function (data) {
+					$('.form-control').val("");
+					$("#play_message").html(data);
+				},
+				error: function(data) {
+					$("#play_message").html("Something went wrong!");
+				}
+			});
+			return false;
+		});
+</script>
+	</script>
 {% endblock %}
