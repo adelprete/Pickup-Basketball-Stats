@@ -7,21 +7,25 @@ PRIMARY_PLAY = [
         ('fga','FGA'),
         ('threepm','3PM'),
         ('threepa','3PA'),
-        ('stls','STL'),
         ('blk','BLK'),
         ('to','TO'),
+        ('pf','FOUL'),
 ]
 
 SECONDARY_PLAY = [
         ('dreb','DREB'),
         ('oreb','OREB'),
+        ('stls','STL'),
         ('ba','BA'),
+        ('fd','FD'),
 ]
 
 ASSIST_PLAY = [
-        ('pot_ast','POT'),
-        ('asts','AST')
+        ('pot_ast','Pot'),
+        ('asts','Ast')
 ]
+
+ALL_PLAY_TYPES = PRIMARY_PLAY + SECONDARY_PLAY + ASSIST_PLAY
 
 class Player(models.Model):
     first_name = models.CharField(max_length=30)
@@ -36,17 +40,19 @@ class Player(models.Model):
     def get_full_name(self):
         return '%s %s' % (self.first_name,self.last_name)
 
+def model_team1():
+    return [Player.objects.get(first_name='Team1').pk]
+
+def model_team2():
+    return [Player.objects.get(first_name='Team2').pk]
+
 class Game(models.Model):
     date = models.DateField(blank=True,null=True)
     title = models.CharField(max_length=30,blank=True)
-    team1 = models.ManyToManyField('basketball.Player',related_name='team1_set')
-    team2 = models.ManyToManyField('basketball.Player',related_name='team2_set')
+    team1 = models.ManyToManyField('basketball.Player',default=model_team1(),related_name='team1_set')
+    team2 = models.ManyToManyField('basketball.Player',default=model_team2(),related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0)
     team2_score = models.PositiveIntegerField(default=0)
-    team1_off_rebounds = models.PositiveIntegerField(default=0)
-    team1_def_rebounds = models.PositiveIntegerField(default=0)
-    team2_off_rebounds = models.PositiveIntegerField(default=0)
-    team2_def_rebounds = models.PositiveIntegerField(default=0)
     youtube_url = models.URLField(max_length=2000,blank=True)
 
     def __str__(self):

@@ -21,3 +21,6 @@ class PlayByPlayForm(forms.ModelForm):
     class Meta:
         model = bmodels.PlayByPlay
         exclude = ['game']
+
+class PlayByPlayFileForm(forms.Form):
+    pbpFile = forms.FileField(label="Play By Play File", help_text="Only upload .csv files")

@@ -30,24 +30,33 @@
 		</div>
 		</center>
 		<br>
-		<div class="row">
-		<div class="col-md-9">
-			<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
-				<iframe class="embed-responsive-item" src="{{ game.youtube_url }}"></iframe>
+			<div class="row">
+			<div class="col-md-9">
+				{% if game.youtube_url %}
+				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
+					<iframe class="embed-responsive-item" src="{{ game.youtube_url }}"></iframe>
+				</div>
+				{% endif %}
+				<div style="width:100%;">
+					<br>
+					Good Guys
+					{% box_score team1_statlines "#d9edf7" %}	
+					<br><br>
+					Bad Guys
+					{% box_score team2_statlines "#f2dede" %}
+				</div>
 			</div>
-			<div style="width:100%;">
-				<br>
-				Good Guys
-				{% box_score team1_statlines "#d9edf7" %}	
-				<br><br>
-				Bad Guys
-				{% box_score team2_statlines "#f2dede" %}
-			</div>
-		</div>
-
 		<div id="play_title"><h4>Play By Plays</h4></div>
 		<div class="col-md-3">
 			{% if request.user.is_superuser %}
+			<div><a id="toggle_fileform" style="cursor: pointer;">+Toggle Upload Form+</a>	</div>
+			<form id='pbp_file_form' method="post" action="." enctype="multipart/form-data" style="display:none;">{% csrf_token %}
+				{{ file_form.pbpFile.label_tag }}
+				{{ file_form.pbpFile }}
+				{{ file_form.pbpFile.help_text }}<br>
+				All previous plays will be removed
+				<button type="submit" name="submit" class="btn btn-primary btn-block">Upload</button>
+			</form>
 			<div><a id="toggle_form" style="cursor: pointer;">+Toggle Play By Play Form+</a>	</div>
 			<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
 				<div class="form-group">{{ form.time.label_tag }}{{ form.time }}</div>
@@ -80,11 +89,13 @@
 	</div>
 	</div>
 	<script type="text/javascript">
+		$("#toggle_fileform").click(function(){
+			$('#pbp_file_form').toggle();
+		});
 		$("#toggle_form").click(function(){
 			$('#pbp_form').toggle();
 			$('#play_message').toggle();
 		});
-
 		var frm = $('#pbp_form');
 		frm.submit(function () {
 

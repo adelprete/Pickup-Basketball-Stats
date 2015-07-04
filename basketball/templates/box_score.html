@@ -36,5 +36,22 @@
 			<td>{{ line.points }}</td>
 		</tr>
 	{% endfor %}
+	<tr>
+		<td>Team Totals</td>
+		<td>{{ team_totals.fgm__sum }}-{{ team_totals.fga__sum }}</td>
+		<td>{{ team_totals.threepm__sum }}-{{ team_totals.threepa__sum }}</td>
+		<td>{{ team_totals.oreb__sum }}</td>
+		<td>{{ team_totals.dreb__sum }}</td>
+		<td>{{ team_totals.total_rebounds__sum }}</td>
+		<td>{{ team_totals.asts__sum }}</td>
+		<td>{{ team_totals.pot_ast__sum }}</td>
+		<td>{{ team_totals.to__sum }}</td>
+		<td>{{ team_totals.stls__sum }}</td>
+		<td>{{ team_totals.blk__sum }}</td>
+		<td>{{ team_totals.ba__sum }}</td>
+		<td>{{ team_totals.fd__sum }}</td>
+		<td>{{ team_totals.pf__sum }}</td>
+		<td>{{ team_totals.points__sum }}</td>
+	</tr>
 </table>
 </div>
