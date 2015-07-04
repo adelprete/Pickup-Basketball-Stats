@@ -25,7 +25,7 @@
   <body>
 	{% block top_menu %}
     <div class="jumbotron">
-		<h1></h1>
+		<h1>Saturday Ball</h1>
     </div>
 
 <nav class="navbar navbar-inverse navbar-default">
@@ -58,6 +58,17 @@
 	{% block body %}
 		{% for game in latest_games %}
 		<a href='{{ game.get_absolute_url }}'>{{ game }}</a><br>
+		<table>
+			<tr>
+				<td style="padding-left:10px;padding-right:10px;">Good Guys:</td>
+				<td>{{ game.team1_score }}</td>
+			</tr>
+			<tr>
+				<td style="padding-left:10px;padding-right:10px;">Bad Guys:</td>
+				<td>{{ game.team2_score }}</td>			
+			</tr>
+		</table>
+		<br>
 		{% endfor %}	
 	{% endblock %}
 	</div>
