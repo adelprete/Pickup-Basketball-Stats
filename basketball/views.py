@@ -33,8 +33,6 @@ def box_score(request,id):
         'game':game,
         'team1_statlines':team1_statlines,
         'team2_statlines':team2_statlines,
-        'team1_totals':team1_totals,
-        'team2_totals':team2_totals,
         'form':pbp_form,
         'file_form':bforms.PlayByPlayFileForm(),
         'playbyplays':playbyplays,
