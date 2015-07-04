@@ -1,10 +1,16 @@
 from django.contrib import admin
 from basketball import models as bmodels
+from django.forms import SelectMultiple
+from django.db import models
+
+
 
 class PlayerAdmin(admin.ModelAdmin):
 	pass
 
 class GameAdmin(admin.ModelAdmin):
+
+    formfield_overrides = { models.ManyToManyField: {'widget': SelectMultiple(attrs={'size':'15'})}, }
     def save_model(self, request, obj, form, change):
         obj.save()
         
