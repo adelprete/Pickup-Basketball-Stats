@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 {% block body %}
-	{% for game in games %}
-		<a href="{{ game.get_absolute_url }}">{{game}}</a><br>
+	<h3>Games</h3>
+	{% for group in group_list %}
+		{{ group }}
+		{% for key,value in group %}
+			{{ key }}
+			{% for game in value %}
+				{{ game }}
+			{% endfor %}
+		{% endfor %}
 	{% endfor %}
 {% endblock %}
 {% block active_tab %}

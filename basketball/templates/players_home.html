@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 
 {% block body %}
-	{% for player in players %}
-		{{player}}<br>
-	{% endfor %}
+	<h3>Players</h3>
+	<table>
+		{% for player in players %}
+			{% if forloop.counter0|divisibleby:2 %}
+				<tr>
+					<td style="padding:10px;"><a href="{{ player.get_absolute_url }}">{{player}}</a></td>
+			{% else %}
+				<td style="padding-left:40px;"><a href="{{ player.get_absolute_url }}">{{player}}</a></td>
+				</tr>
+			{% endif %}
+		{% endfor %}
+	</table>
 {% endblock %}
 {% block active_tab %}
 	<script>$('#players_link').addClass('active')</script>

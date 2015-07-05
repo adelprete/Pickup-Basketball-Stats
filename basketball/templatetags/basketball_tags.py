@@ -12,3 +12,7 @@ def box_score(statlines,bgcolor="white"):
 		team_totals.update(x)
 	team_totals.update(statlines.aggregate(Sum('points'),Sum('total_rebounds')))
 	return {'statlines': statlines,'team_totals':team_totals,'bgcolor':bgcolor}
+
+@register.inclusion_tag('player_box_score.html')
+def player_box_score(statlines,bgcolor="white"):
+	return {'statlines': statlines,'bgcolor':bgcolor}

@@ -39,6 +39,9 @@ class Player(models.Model):
 
     def get_full_name(self):
         return '%s %s' % (self.first_name,self.last_name)
+    
+    def get_absolute_url(self):
+        return reverse("player_page",kwargs={'id':self.id})
 
 def model_team1():
     return [Player.objects.get(first_name='Team1').pk]

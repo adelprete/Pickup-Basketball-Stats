@@ -4,14 +4,20 @@ from basketball.models import ALL_PLAY_TYPES
 from basketball import forms as bforms
 from django.http import HttpResponse
 import datetime
-from django.db.models import Sum
+from django.db.models import Sum, Avg
+import itertools
+import operator
 
 # Create your views here.
 def root(request):
     latest_games = bmodels.Game.objects.all()
+    
+    keyfunc = operator.attrgetter('date')
 
+    latest_games = sorted(latest_games, key = keyfunc)
+    group_list = [{ k.strftime('%m-%d-%Y') : list(g)} for k, g in itertools.groupby(latest_games, keyfunc)]
     context = {
-        'latest_games':latest_games,
+        'group_list':group_list,
             }
     return render(request,"base.html",context)
 
@@ -55,9 +61,12 @@ def player(request,id):
 
     statlines = player.statline_set.all().order_by('game__date')
 
+    pergame_averages = player_pergame_averages(player.id)
+    
     context = {
         'player':player,
         'statlines':statlines,
+        'averages':pergame_averages,
     }
     return render(request,'player.html',context)
 
@@ -116,12 +125,24 @@ def create_plays(pk,f):
         
         bmodels.PlayByPlay.objects.create(game=game,**play_dict)
 
+import decimal
+def player_pergame_averages(id):
+
+    player = bmodels.Player.objects.get(id=id)
+
+    player_averages = {}
+    for play in ALL_PLAY_TYPES:
+        x = player.statline_set.all().aggregate(Avg(play[0]))
+        player_averages.update(x)
+    player_averages.update(player.statline_set.all().aggregate(Avg('points'),Avg('total_rebounds')))
+
+    return player_averages
+
 def initialize_statlines(pk):
     game = bmodels.Game.objects.get(pk=pk)
     statlines = game.statline_set.all()
-    plays = bmodels.PRIMARY_PLAY + bmodels.SECONDARY_PLAY + bmodels.ASSIST_PLAY
     for line in statlines:
-        for play in plays:
+        for play in ALL_PLAY_TYPES:
             setattr(line,play[0],0)
         line.points = 0
         line.total_rebounds = 0
@@ -200,21 +221,3 @@ def delete_play(request,pk):
     calculate_statlines(game.pk)
     
     return redirect(game.get_absolute_url())
-
-"""
-def translatePlayCSV(request):
-    if request.POST:
-        form = bforms.PlayByPlayFileForm(request.POST, request.FILES)
-        f = request.FILES['pbpFile']
-        import csv
-        #Allows for seperation by comma or semicolon, depending on encoding
-        dialect = csv.Sniffer().sniff(f.read(1024), delimiters=";,")
-        f.seek(0)
-        reader = csv.reader(f, dialect)
-        i = 0
-        for row in reader:
-            pass
-
-    else:
-        pass
-"""
