@@ -1,14 +1,16 @@
+import datetime
+import itertools
+import operator
+from collections import OrderedDict
+from datetime import time
+
 from django.shortcuts import render, redirect
 from basketball import models as bmodels
 from basketball.models import ALL_PLAY_TYPES
 from basketball import forms as bforms
 from django.http import HttpResponse
-import datetime
 from django.db.models import Sum, Avg
-import itertools
-import operator
 
-# Create your views here.
 def root(request):
     latest_games = bmodels.Game.objects.all()
     
@@ -16,8 +18,18 @@ def root(request):
 
     latest_games = sorted(latest_games, key = keyfunc)
     group_list = [{ k.strftime('%m-%d-%Y') : list(g)} for k, g in itertools.groupby(latest_games, keyfunc)]
+
+    keys_list = []
+    group_dict = {}
+    for d in group_list:
+        group_dict.update(d)
+        keys_list += d.keys()
+    keys_list.sort(reverse=True)
+    sorted_dict = OrderedDict()
+    for key in keys_list:
+        sorted_dict[key] = group_dict[key]
     context = {
-        'group_list':group_list,
+        'group_list':sorted_dict,
             }
     return render(request,"base.html",context)
 
