@@ -73,8 +73,10 @@
 			{% endif %}
 			{% if playbyplays %}
 				{% for play in playbyplays %}
-					
-				<a href="{% url 'delete_play' play.id %}" style="block:inline;color:red;">[x]</a>{{ play.time|time:"i:s" }} - {{ play.get_primary_play_display }} {{ play.primary_player }} 
+					{% if request.user.is_superuser %}	
+						<a href="{% url 'delete_play' play.id %}" style="block:inline;color:red;">[x]</a>
+					{% endif %}
+					{{ play.time|time:"i:s" }} - {{ play.get_primary_play_display }} {{ play.primary_player }} 
 					{% if play.secondary_play %}
 						/ {{ play.get_secondary_play_display }} {{ play.secondary_player }}
 					{% endif %}
