@@ -58,23 +58,30 @@
 	<div class="container" style="margin-bottom:100px;">
 	{% block body %}
 		{% for key,value in group_list.items %}
-			<h3>{{ key }}</h3>
+			<div class="row">
+				<div class="col-sm-12">
+					<h3>{{ key }}</h3>
+				</div>
+			</div>
+			<div class-"row">
 			{% for game in value %}
-				<table>
-					<tr>
-						<td style="padding-left:10px;"><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
-					</tr>
-					<tr>
-						<td style="padding-left:10px;padding-right:10px;">Good Guys:</td>
-						<td>{{ game.team1_score }}</td>
-					</tr>
-					<tr>
-						<td style="padding-left:10px;padding-right:10px;">Bad Guys:</td>
-						<td>{{ game.team2_score }}</td>			
-					</tr>
-				</table>
-				<br>
+				<div class="col-sm-2">
+					<table>
+						<tr>
+							<td style="padding-left:10px;"><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+						</tr>
+						<tr>
+							<td style="padding-left:10px;padding-right:10px;">Good Guys:</td>
+							<td>{{ game.team1_score }}</td>
+						</tr>
+						<tr>
+							<td style="padding-left:10px;padding-right:10px;">Bad Guys:</td>
+							<td>{{ game.team2_score }}</td>			
+						</tr>
+					</table>
+				</div>
 			{% endfor %}
+		</div>
 		{% endfor %}
 	{% endblock %}
 	</div>	
