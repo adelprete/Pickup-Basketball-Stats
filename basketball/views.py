@@ -9,7 +9,7 @@ from basketball import models as bmodels
 from basketball.models import ALL_PLAY_TYPES
 from basketball import forms as bforms
 from django.http import HttpResponse
-from django.db.models import Sum, Avg
+from django.db.models import F, Q, Sum, Avg
 
 def root(request):
     latest_games = bmodels.Game.objects.all()
@@ -38,8 +38,8 @@ def box_score(request,id):
         game = bmodels.Game.objects.get(id=id)
     
     pbp_form = bforms.PlayByPlayForm(game)
-    team1_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team1.all()).exclude(player__first_name='Team1').order_by('-points')
-    team2_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team2.all()).exclude(player__first_name='Team2').order_by('-points')
+    team1_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team1.all()).order_by('-points')
+    team2_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team2.all()).order_by('-points')
     if request.POST:
         create_plays(game.pk,request.FILES['pbpFile'])
         initialize_statlines(game.pk)
@@ -144,8 +144,9 @@ def player_pergame_averages(id):
 
     player_averages = {}
     for play in ALL_PLAY_TYPES:
-        x = player.statline_set.all().aggregate(Avg(play[0]))
-        player_averages.update(x)
+        if play[0] not in ['sub_out','sub_in']:
+            x = player.statline_set.all().aggregate(Avg(play[0]))
+            player_averages.update(x)
     player_averages.update(player.statline_set.all().aggregate(Avg('points'),Avg('total_rebounds')))
 
     return player_averages
@@ -155,9 +156,13 @@ def initialize_statlines(pk):
     statlines = game.statline_set.all()
     for line in statlines:
         for play in ALL_PLAY_TYPES:
-            setattr(line,play[0],0)
+            if play[0] not in ['sub_out','sub_in']:
+                setattr(line,play[0],0)
         line.points = 0
         line.total_rebounds = 0
+        line.def_pos = 0
+        line.off_pos = 0
+        line.total_pos = 0
         line.save()
 
 def calculate_game_score(pk):
@@ -174,45 +179,87 @@ def calculate_game_score(pk):
 def calculate_statlines(pk):
     game = bmodels.Game.objects.get(pk=pk)
     initialize_statlines(game.pk)
-    playbyplays = game.playbyplay_set.all()
+    playbyplays = game.playbyplay_set.all().order_by('time')
     statlines = game.statline_set.all()
+    bench = players_on_bench(game.pk)
     for play in playbyplays:
         
-        #primary play
-        primary_line = bmodels.StatLine.objects.get(game=game,player=play.primary_player)
-        orig_val = getattr(primary_line,play.primary_play)
-        setattr(primary_line,play.primary_play,orig_val+1)
-        if play.primary_play == 'fgm':
-            primary_line.fga += 1
-            primary_line.points += 1
-        if play.primary_play == 'threepa':
-            primary_line.fga += 1
-        if play.primary_play == 'threepm':
-            primary_line.threepa += 1
-            primary_line.fga += 1
-            primary_line.fgm += 1
-            primary_line.points += 2
-        primary_line.save()
+        if play.primary_play not in ['sub_out','sub_in']:
+            #import pdb;pdb.set_trace()
+            primary_line = bmodels.StatLine.objects.get(game=game,player=play.primary_player)
+            orig_val = getattr(primary_line,play.primary_play)
+            setattr(primary_line,play.primary_play,orig_val+1)
+            if play.primary_play == 'fgm':
+                primary_line.fga += 1
+                primary_line.points += 1
+            if play.primary_play == 'threepa':
+                primary_line.fga += 1
+            if play.primary_play == 'threepm':
+                primary_line.threepa += 1
+                primary_line.fga += 1
+                primary_line.fgm += 1
+                primary_line.points += 2
 
-        #secondary play
-        if play.secondary_play:
-            secondary_line = bmodels.StatLine.objects.get(game=game,player=play.secondary_player)
-            orig_val = getattr(secondary_line,play.secondary_play)
-            setattr(secondary_line,play.secondary_play,orig_val+1)
-            
-            if play.secondary_play == 'dreb' or play.secondary_play == 'oreb':
-                secondary_line.total_rebounds += 1
-            
-            secondary_line.save()
-        
-        #assist play
-        if play.assist:
-            assist_line = bmodels.StatLine.objects.get(game=game,player=play.assist_player)
-            orig_val = getattr(assist_line,play.assist)
-            setattr(assist_line,play.assist,orig_val+1)
-            assist_line.save()
+            primary_line.save()
+            if play.primary_play in ['threepm','fgm','to']:
+                if primary_line.player in game.team1.all():
+                    statlines.filter(player__in=game.team1.all()).exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
+                    statlines.filter(player__in=game.team2.all()).exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
+                else:
+                    statlines.filter(player__in=game.team1.all()).exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
+                    statlines.filter(player__in=game.team2.all()).exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
+                    #import pdb;pdb.set_trace()
 
+            #secondary play
+            if play.secondary_play:
+                secondary_line = bmodels.StatLine.objects.get(game=game,player=play.secondary_player)
+                orig_val = getattr(secondary_line,play.secondary_play)
+                setattr(secondary_line,play.secondary_play,orig_val+1)
+                
+                if play.secondary_play == 'dreb' or play.secondary_play == 'oreb':
+                    secondary_line.total_rebounds += 1
+                
+                secondary_line.save()
+                if play.secondary_play == 'dreb':
+                    if primary_line.player in game.team1.all():
+                        statlines.filter(player__in=game.team1.all()).exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
+                        statlines.filter(player__in=game.team2.all()).exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
+                    else:
+                        #import pdb;pdb.set_trace()
+                        statlines.filter(player__in=game.team1.all()).exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
+                        statlines.filter(player__in=game.team2.all()).exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
+
+            
+            #assist play
+            if play.assist:
+                assist_line = bmodels.StatLine.objects.get(game=game,player=play.assist_player)
+                orig_val = getattr(assist_line,play.assist)
+                setattr(assist_line,play.assist,orig_val+1)
+                assist_line.save()
+        else:
+            bench.append(play.primary_player.pk)
+            bench.remove(play.secondary_player.pk)
+    statlines.update(total_pos=F('off_pos')+F('def_pos'))
     calculate_game_score(game.pk)
+
+def players_on_bench(pk):
+    game = bmodels.Game.objects.get(pk=pk)
+    playbyplays = game.playbyplay_set.filter(primary_play="sub_out").order_by("time")
+    playes_out = []
+    team1_oncourt = game.team1.all().values_list('pk',flat=True)
+    team2_oncourt = game.team2.all().values_list('pk',flat=True)
+    
+    been_in = []
+    bench = []
+    for play in playbyplays:
+        
+        if play.primary_player.pk not in been_in:
+            been_in.append(play.primary_player.pk)
+
+        if play.secondary_player.pk not in been_in:
+            bench.append(play.secondary_player.pk)
+    
+    return bench
 
 def ajax_add_play(request,pk):
     game = bmodels.Game.objects.get(pk=pk)
@@ -233,3 +280,11 @@ def delete_play(request,pk):
     calculate_statlines(game.pk)
     
     return redirect(game.get_absolute_url())
+
+def leaderboard_home(request):
+    
+
+    context = {
+
+    }
+    return render(request,'leaderboard.html',context)

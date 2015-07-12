@@ -1,0 +1,12 @@
+{% load basketball_tags %}
+<div class="row">
+	{% top_players_table dreb 'DREB' '#dff0d8' %}
+	{% top_players_table oreb 'OREB' '#d9edf7' %}
+	{% top_players_table total_rebounds 'TOTAL REB' '#f2dede' %}
+	{% top_players_table asts 'ASSISTS' %}
+</div>
+<div class="row">
+	{% top_players_table fgm_percent 'FG%' '#f5f5f5'  %}
+	{% top_players_table three_percent '3PT%' %}
+	{% top_players_table dreb_percent 'Def.Reb %' %}
+</div>

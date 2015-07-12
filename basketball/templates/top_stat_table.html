@@ -1,0 +1,14 @@
+<div class="col-sm-3">
+	<table class="table table-hovered table-bordered top_5_table">
+		<tr style="background:{{bgcolor}}">
+			<td>Name</td>
+			<td>{{ title }}</td>
+		</tr>
+		{% for player in player_list %}
+			<tr>
+				<td>{{ player.0 }}</td>
+				<td>{{ player.1|floatformat }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>

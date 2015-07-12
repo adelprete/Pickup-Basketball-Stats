@@ -10,6 +10,7 @@ PRIMARY_PLAY = [
         ('blk','BLK'),
         ('to','TO'),
         ('pf','FOUL'),
+        ('sub_out','OUT'),
 ]
 
 SECONDARY_PLAY = [
@@ -18,11 +19,20 @@ SECONDARY_PLAY = [
         ('stls','STL'),
         ('ba','BA'),
         ('fd','FD'),
+        ('sub_in','IN'),
 ]
 
 ASSIST_PLAY = [
         ('pot_ast','Pot'),
         ('asts','Ast')
+]
+
+GAME_TYPES = [
+    ('5v5','5v5'),
+    ('4v4','4v4'),
+    ('3v3','3v3'),
+    ('2v2','2v2'),
+    ('1v1','1v1'),
 ]
 
 ALL_PLAY_TYPES = PRIMARY_PLAY + SECONDARY_PLAY + ASSIST_PLAY
@@ -57,6 +67,7 @@ class Game(models.Model):
     team1_score = models.PositiveIntegerField(default=0)
     team2_score = models.PositiveIntegerField(default=0)
     youtube_url = models.URLField(max_length=2000,blank=True)
+    game_type = models.CharField(max_length=30,choices=GAME_TYPES,null=True)
 
     def __str__(self):
         return "%s: %s" % (self.date.isoformat(),self.title)
@@ -82,6 +93,9 @@ class StatLine(models.Model):
     to = models.PositiveIntegerField(default=0)
     fd = models.PositiveIntegerField(default=0)
     pf = models.PositiveIntegerField(default=0)
+    def_pos = models.PositiveIntegerField(default=0)
+    off_pos = models.PositiveIntegerField(default=0)
+    total_pos = models.PositiveIntegerField(default=0)
     points = models.PositiveIntegerField(default=0)
 
     def __str__(self):

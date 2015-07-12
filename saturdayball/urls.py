@@ -26,5 +26,6 @@ urlpatterns = [
         url(r'^players-home/$',                 bviews.players_home,       name='players_home'),
         url(r'^player/(?P<id>[0-9]+)/$',                 bviews.player,       name='player_page'),
         url(r'^games-home/$',                 bviews.games_home,       name='games_home'),
+        url(r'^leaderboard-home/$',                 bviews.leaderboard_home,       name='leaderboard_home'),
         url(r'^admin/', include(admin.site.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
