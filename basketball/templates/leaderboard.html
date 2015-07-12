@@ -5,11 +5,15 @@
 	<ul class="nav nav-tabs" role="tablist">
 		<li role="presentation" class="active"><a href="#5on5" aria-controls="home" role="tab" data-toggle="tab">5on5</a></li>
 		<li role="presentation"><a href="#4on4" aria-controls="profile" role="tab" data-toggle="tab">4on4</a></li>
+		<li role="presentation"><a href="#totals" aria-controls="profile" role="tab" data-toggle="tab">Totals</a></li>
 	</ul>
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="5on5">
-			{% five_on_five_pos %}
+			{% lb_five_on_five_pos %}
 		</div>
 		<div role="tabpanel" class="tab-pane" id="4on4">...</div>
+		<div role="tabpanel" class="tab-pane" id="totals">
+			{% lb_totals %}
+		</div>
 	</div>
 {% endblock %}

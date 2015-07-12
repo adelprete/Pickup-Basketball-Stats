@@ -33,10 +33,10 @@ def top_stat_players(game_type,stat):
         player_list.append((player.first_name,percentage))
     return sorted(player_list,key=lambda x: x[1],reverse=True)
 
-@register.inclusion_tag('5on5_possessions.html')
-def five_on_five_pos():
+@register.inclusion_tag('lb_5on5_possessions.html')
+def lb_five_on_five_pos():
     
-    players = bmodels.Player.objects.all().exclude(first_name__in=["Team1","Team2"])
+    players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
 
     dreb = top_stat_players('5v5','dreb')
     oreb = top_stat_players('5v5','oreb')  
@@ -90,6 +90,25 @@ def five_on_five_pos():
             "fgm_percent":fgm_percent[:5],
             "three_percent":three_percent[:5],
             "dreb_percent":dreb_percent[:5],
+    }
+    return context
+
+@register.inclusion_tag('lb_totals.html')
+def lb_totals():
+    
+    players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
+    player_dict = {}
+    for player in players:
+        player_total = player.statline_set.all().aggregate(\
+                Sum('fga'),Sum('fgm'),Sum('threepm'),Sum('threepa'),\
+                Sum('dreb'),Sum('oreb'),Sum('total_rebounds'),Sum('asts'),\
+                Sum('pot_ast'),Sum('blk'),Sum('ba'),Sum('stls'),\
+                Sum('to'),Sum('fd'),Sum('pf'),Sum('def_pos'),\
+                Sum('off_pos'),Sum('points'))
+        player_dict[player.get_full_name()] = player_total
+
+    context = {
+            'player_dict':player_dict,
     }
     return context
 
