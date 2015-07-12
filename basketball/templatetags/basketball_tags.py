@@ -6,23 +6,26 @@ register = template.Library()
 
 @register.inclusion_tag('box_score.html')
 def box_score(statlines,bgcolor="white"):
-	team_totals = {}
-	for play in bmodels.ALL_PLAY_TYPES:
+        team_totals = {}
+        for play in bmodels.ALL_PLAY_TYPES:
             if play[0] not in ['sub_out','sub_in']:
-                x = statlines.aggregate(Sum(play[0]))
+                x = statlines.exclude(player__first_name__contains='Team').aggregate(Sum(play[0]))
                 team_totals.update(x)
-	team_totals.update(statlines.aggregate(Sum('points'),Sum('total_rebounds')))
-	return {'statlines': statlines,'team_totals':team_totals,'bgcolor':bgcolor}
+        team_totals.update(statlines.aggregate(Sum('points'),Sum('total_rebounds')))
+        return {'statlines': statlines.exclude(player__first_name__contains='Team'),
+                'team': statlines.get(player__first_name__contains='Team'),
+                'team_totals':team_totals,
+                'bgcolor':bgcolor}
 
 @register.inclusion_tag('player_box_score.html')
 def player_box_score(statlines,bgcolor="white"):
 	return {'statlines': statlines,'bgcolor':bgcolor}
 
-def top_stat_players(stat):
+def top_stat_players(game_type,stat):
     players = bmodels.Player.objects.all()
     player_list = []
     for player in players:
-        result = player.statline_set.all().aggregate(Sum(stat),Sum('off_pos'))
+        result = player.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat),Sum('off_pos'))
         if result['off_pos__sum'] is not 0:
             percentage = (result[stat + '__sum']/result['off_pos__sum']) * 100
         else:
@@ -35,19 +38,19 @@ def five_on_five_pos():
     
     players = bmodels.Player.objects.all().exclude(first_name__in=["Team1","Team2"])
 
-    dreb = top_stat_players('dreb')
-    oreb = top_stat_players('oreb')  
-    total_rebounds = top_stat_players('total_rebounds')
-    asts = top_stat_players('asts')
-    pot_ast = top_stat_players('pot_ast')
-    stls = top_stat_players('stls')
-    to = top_stat_players('to')
-    points = top_stat_players('points')
+    dreb = top_stat_players('5v5','dreb')
+    oreb = top_stat_players('5v5','oreb')  
+    total_rebounds = top_stat_players('5v5','total_rebounds')
+    asts = top_stat_players('5v5','asts')
+    pot_ast = top_stat_players('5v5','pot_ast')
+    stls = top_stat_players('5v5','stls')
+    to = top_stat_players('5v5','to')
+    points = top_stat_players('5v5','points')
 
     #these need special attention
     fgm_percent = []
     for player in players:
-        result = player.statline_set.all().aggregate(Sum('fgm'),Sum('fga'),Sum('off_pos'))
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('fgm'),Sum('fga'),Sum('off_pos'))
         if result['fga__sum'] is not 0 and result['off_pos__sum'] is not 0:
             percentage = ( (result['fgm__sum']/result['fga__sum']) / result['off_pos__sum'] ) * 100
         else:
@@ -57,7 +60,7 @@ def five_on_five_pos():
    
     three_percent = []
     for player in players:
-        result = player.statline_set.all().aggregate(Sum('threepm'),Sum('threepa'),Sum('off_pos'))
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('threepm'),Sum('threepa'),Sum('off_pos'))
         if result['threepa__sum'] is not 0 and result['off_pos__sum'] is not 0:
             percentage = ( (result['threepm__sum']/result['threepa__sum']) / result['off_pos__sum'] ) * 100
         else:
@@ -67,7 +70,7 @@ def five_on_five_pos():
 
     dreb_percent = []
     for player in players:
-        result = player.statline_set.all().aggregate(Sum('dreb'),Sum('total_rebounds'),Sum('def_pos'))
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('dreb'),Sum('total_rebounds'),Sum('def_pos'))
         if result['total_rebounds__sum'] is not 0 and result['def_pos__sum'] is not 0:
             percentage = ( (result['dreb__sum']/result['total_rebounds__sum']) / result['def_pos__sum'] ) * 100
         else:

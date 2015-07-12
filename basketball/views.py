@@ -60,7 +60,7 @@ def box_score(request,id):
 
 def players_home(request):
 
-    players = bmodels.Player.objects.exclude(first_name__in=['Team1','Team2'])
+    players = bmodels.Player.objects.exclude(first_name__in=['Team1','Team2']).order_by('first_name')
     
     context = {
         'players':players,
