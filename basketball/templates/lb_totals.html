@@ -3,46 +3,46 @@
 	<table class="table">
 		<tr class="active">
 			<td></td>
-			<td>FGA</td>
 			<td>FGM</td>
-			<td>3PA</td>
+			<td>FGA</td>
 			<td>3PM</td>
+			<td>3PA</td>
 			<td>Off</td>
 			<td>Def</td>
 			<td>Tot. Reb</td>
 			<td>Ast</td>
 			<td>P.Ast</td>
-			<td>TO</td>
-			<td>Stl</td>
 			<td>Blk</td>
-			<td>BA</td>
+			<td>BA</td>		
+			<td>Stl</td>
+			<td>TO</td>
 			<td>FD</td>
 			<td>PF</td>
+			<td>Pts</td>
 			<td>Off Pos</td>
 			<td>Def Pos</td>
-			<td>Pts</td>
 		</tr>
 		{% for player_name,value in player_dict.items %}
 			<tr>
 				<td>{{ player_name }}</td>
-				<td>{{ value.fga__sum }}</td>
 				<td>{{ value.fgm__sum }}</td>
-				<td>{{ value.threepa__sum }}</td>
+				<td>{{ value.fga__sum }}</td>
 				<td>{{ value.threepm__sum }}</td>
+				<td>{{ value.threepa__sum }}</td>
 				<td>{{ value.oreb__sum }}</td>
 				<td>{{ value.dreb__sum }}</td>
 				<td>{{ value.total_rebounds__sum }}</td>
 				<td>{{ value.asts__sum }}</td>
-				<td>{{ value.pot_ast__sum }}</td>
-				<td>{{ value.to__sum }}</td>
-				<td>{{ value.stls__sum }}</td>
+				<td>{{ value.pot_ast__sum }}</td>	
 				<td>{{ value.blk__sum }}</td>
 				<td>{{ value.ba__sum }}</td>
+				<td>{{ value.stls__sum }}</td>
+				<td>{{ value.to__sum }}</td>
 				<td>{{ value.fd__sum }}</td>
 				<td>{{ value.pf__sum }}</td>
+				<td>{{ value.points__sum }}</td>
 				<td>{{ value.off_pos__sum }}</td>
 				<td>{{ value.def_pos__sum }}</td>
-				<td>{{ value.points__sum }}</td>
 			</tr>
 		{% endfor %}
 	</table>

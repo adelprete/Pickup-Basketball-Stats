@@ -1,7 +1,7 @@
 from django import template
 from basketball import models as bmodels
 from django.db.models import Sum
-
+from collections import OrderedDict
 register = template.Library()
 
 @register.inclusion_tag('box_score.html')
@@ -96,8 +96,8 @@ def lb_five_on_five_pos():
 @register.inclusion_tag('lb_totals.html')
 def lb_totals():
     
-    players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
-    player_dict = {}
+    players = bmodels.Player.objects.all().exclude(first_name__contains="Team").order_by('first_name')
+    player_dict = OrderedDict()
     for player in players:
         player_total = player.statline_set.all().aggregate(\
                 Sum('fga'),Sum('fgm'),Sum('threepm'),Sum('threepa'),\

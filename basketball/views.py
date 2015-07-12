@@ -27,7 +27,7 @@ def root(request):
     keys_list.sort(reverse=True)
     sorted_dict = OrderedDict()
     for key in keys_list:
-        sorted_dict[key] = group_dict[key]
+        sorted_dict[key] = sorted(group_dict[key],key=lambda game: game.title)
     context = {
         'group_list':sorted_dict,
             }
@@ -71,7 +71,7 @@ def player(request,id):
 
     player = bmodels.Player.objects.get(id=id)
 
-    statlines = player.statline_set.all().order_by('game__date')
+    statlines = player.statline_set.all().order_by('-game__date')
 
     pergame_averages = player_pergame_averages(player.id)
     
