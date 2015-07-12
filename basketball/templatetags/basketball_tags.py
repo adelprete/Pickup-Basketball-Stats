@@ -94,12 +94,12 @@ def lb_five_on_five_pos():
     return context
 
 @register.inclusion_tag('lb_totals.html')
-def lb_totals():
+def lb_5on5_totals():
     
     players = bmodels.Player.objects.all().exclude(first_name__contains="Team").order_by('first_name')
     player_dict = OrderedDict()
     for player in players:
-        player_total = player.statline_set.all().aggregate(\
+        player_total = player.statline_set.filter(game__game_type='5v5').aggregate(\
                 Sum('fga'),Sum('fgm'),Sum('threepm'),Sum('threepa'),\
                 Sum('dreb'),Sum('oreb'),Sum('total_rebounds'),Sum('asts'),\
                 Sum('pot_ast'),Sum('blk'),Sum('ba'),Sum('stls'),\
