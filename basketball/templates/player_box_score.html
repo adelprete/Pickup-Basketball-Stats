@@ -17,6 +17,8 @@
 		<td>FD</td>
 		<td>PF</td>
 		<td>Pts</td>
+		<td>Off Pos</td>
+		<td>Def Pos</td>
 	</tr>
 	{% for line in statlines %}
 		<tr>
@@ -36,6 +38,8 @@
 			<td>{{ line.fd }}</td>
 			<td>{{ line.pf }}</td>
 			<td>{{ line.points }}</td>
+			<td>{{ line.off_pos }}</td>
+			<td>{{ line.def_pos }}</td>
 		</tr>
 	{% endfor %}
 </table>
