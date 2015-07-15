@@ -71,7 +71,7 @@ def player(request,id):
 
     player = bmodels.Player.objects.get(id=id)
 
-    statlines = player.statline_set.all().order_by('-game__date')
+    statlines = player.statline_set.all().order_by('-game__date','game__title')
 
     pergame_averages = player_pergame_averages(player.id)
     
@@ -94,7 +94,6 @@ def games_home(request):
 def create_plays(pk,f):
     game = bmodels.Game.objects.get(pk=pk)
     game.playbyplay_set.all().delete()
-    #pbp_file_form = bforms.PlayByPlayFileForm(request.POST,request.FILES)
     for bline in f.readlines():
         play_dict = {}
         line = bline.decode().split(',')
@@ -108,7 +107,7 @@ def create_plays(pk,f):
 
         #primary play
         for play_type in bmodels.PRIMARY_PLAY:
-            if play_type[1] == line[1]:
+            if play_type[1].lower() == line[1].lower():
                 play_dict['primary_play'] = play_type[0]
                 break
 
@@ -118,7 +117,7 @@ def create_plays(pk,f):
         #secondary play
         if len(line[3].strip()) > 0:
             for play_type in bmodels.SECONDARY_PLAY:
-                if play_type[1] == line[3]:
+                if play_type[1].lower() == line[3].lower():
                     play_dict['secondary_play'] = play_type[0]
                     break
 
@@ -128,7 +127,7 @@ def create_plays(pk,f):
         #assist play
         if len(line[5].strip()) > 0:
             for play_type in bmodels.ASSIST_PLAY:
-                if play_type[1] == line[5]:
+                if play_type[1].lower() == line[5].lower():
                     play_dict['assist'] = play_type[0]
                     break
 

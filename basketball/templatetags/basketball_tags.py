@@ -1,6 +1,6 @@
 from django import template
 from basketball import models as bmodels
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from collections import OrderedDict
 register = template.Library()
 
@@ -21,8 +21,8 @@ def box_score(statlines,bgcolor="white"):
 def player_box_score(statlines,bgcolor="white"):
 	return {'statlines': statlines,'bgcolor':bgcolor}
 
-def top_stat_players(game_type,stat):
-    players = bmodels.Player.objects.all()
+def top_stat_players(game_type,stat,excluded_pks):
+    players = bmodels.Player.objects.all().exclude(Q(first_name__contains="Team")|Q(pk__in=excluded_pks))
     player_list = []
     for player in players:
         result = player.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat),Sum('off_pos'))
@@ -38,14 +38,23 @@ def lb_five_on_five_pos():
     
     players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
 
-    dreb = top_stat_players('5v5','dreb')
-    oreb = top_stat_players('5v5','oreb')  
-    total_rebounds = top_stat_players('5v5','total_rebounds')
-    asts = top_stat_players('5v5','asts')
-    pot_ast = top_stat_players('5v5','pot_ast')
-    stls = top_stat_players('5v5','stls')
-    to = top_stat_players('5v5','to')
-    points = top_stat_players('5v5','points')
+    #exclude players that dont meet the minimum 100 possessions requirement
+    excluded_pks = []
+    for player in players:
+        pos_count = player.statline_set.all().aggregate(Sum('off_pos'))
+        if pos_count['off_pos__sum'] < 100:
+            excluded_pks.append(player.pk)
+
+    players = players.exclude(pk__in=excluded_pks)
+
+    dreb = top_stat_players('5v5','dreb',excluded_pks)
+    oreb = top_stat_players('5v5','oreb',excluded_pks)  
+    total_rebounds = top_stat_players('5v5','total_rebounds',excluded_pks)
+    asts = top_stat_players('5v5','asts',excluded_pks)
+    pot_ast = top_stat_players('5v5','pot_ast',excluded_pks)
+    stls = top_stat_players('5v5','stls',excluded_pks)
+    to = top_stat_players('5v5','to',excluded_pks)
+    points = top_stat_players('5v5','points',excluded_pks)
 
     #these need special attention
     fgm_percent = []
