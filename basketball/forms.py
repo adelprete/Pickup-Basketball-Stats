@@ -13,10 +13,9 @@ class PlayByPlayForm(forms.ModelForm):
         self.fields['secondary_player'].widget.attrs = {'class':'form-control'}
         self.fields['assist'].widget.attrs = {'class':'form-control'}
         self.fields['assist_player'].widget.attrs = {'class':'form-control'}
-        
-        self.fields['primary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)) 
-        self.fields['secondary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)) 
-        self.fields['assist_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)) 
+        self.fields['primary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct() 
+        self.fields['secondary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
+        self.fields['assist_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
 
     class Meta:
         model = bmodels.PlayByPlay
