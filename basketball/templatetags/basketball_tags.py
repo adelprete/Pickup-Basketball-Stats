@@ -1,37 +1,33 @@
 from django import template
 from basketball import models as bmodels
+from basketball import helpers
 from django.db.models import Sum, Q
 from collections import OrderedDict
 register = template.Library()
 
 @register.inclusion_tag('box_score.html')
 def box_score(statlines,bgcolor="white"):
-        team_totals = {}
-        for play in bmodels.ALL_PLAY_TYPES:
-            if play[0] not in ['sub_out','sub_in']:
-                x = statlines.exclude(player__first_name__contains='Team').aggregate(Sum(play[0]))
-                team_totals.update(x)
-        team_totals.update(statlines.aggregate(Sum('points'),Sum('total_rebounds')))
-        return {'statlines': statlines.exclude(player__first_name__contains='Team'),
-                'team': statlines.get(player__first_name__contains='Team'),
-                'team_totals':team_totals,
-                'bgcolor':bgcolor}
+    """
+    Passes a team's statlines to a template that will display them in a box score format
+    """
+    team_totals = {}
+    for play in bmodels.ALL_PLAY_TYPES:
+        if play[0] not in ['sub_out','sub_in']:
+            x = statlines.exclude(player__first_name__contains='Team').aggregate(Sum(play[0]))
+            team_totals.update(x)
+    team_totals.update(statlines.aggregate(Sum('points'),Sum('total_rebounds')))
+    return {'statlines': statlines.exclude(player__first_name__contains='Team'),
+            'team': statlines.get(player__first_name__contains='Team'),
+            'team_totals':team_totals,
+            'bgcolor':bgcolor}
 
 @register.inclusion_tag('player_box_score.html')
 def player_box_score(statlines,bgcolor="white"):
-	return {'statlines': statlines,'bgcolor':bgcolor}
+    """
+    Passes a single player's statlines to a template that will display them in a table like format.
+    """
+    return {'statlines': statlines,'bgcolor':bgcolor}
 
-def top_stat_players(game_type,stat,excluded_pks):
-    players = bmodels.Player.objects.all().exclude(Q(first_name__contains="Team")|Q(pk__in=excluded_pks))
-    player_list = []
-    for player in players:
-        result = player.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat),Sum('off_pos'))
-        if result['off_pos__sum'] is not 0:
-            percentage = (result[stat + '__sum']/result['off_pos__sum']) * 100
-        else:
-            percentage = 0.0
-        player_list.append((player.first_name,percentage))
-    return sorted(player_list,key=lambda x: x[1],reverse=True)
 
 @register.inclusion_tag('lb_5on5_possessions.html')
 def lb_five_on_five_pos():
@@ -47,21 +43,21 @@ def lb_five_on_five_pos():
 
     players = players.exclude(pk__in=excluded_pks)
 
-    dreb = top_stat_players('5v5','dreb',excluded_pks)
-    oreb = top_stat_players('5v5','oreb',excluded_pks)  
-    total_rebounds = top_stat_players('5v5','total_rebounds',excluded_pks)
-    asts = top_stat_players('5v5','asts',excluded_pks)
-    pot_ast = top_stat_players('5v5','pot_ast',excluded_pks)
-    stls = top_stat_players('5v5','stls',excluded_pks)
-    to = top_stat_players('5v5','to',excluded_pks)
-    points = top_stat_players('5v5','points',excluded_pks)
+    dreb = helpers.per100_top_stat_players('5v5','dreb',excluded_pks)
+    oreb = helpers.per100_top_stat_players('5v5','oreb',excluded_pks)  
+    total_rebounds = helpers.per100_top_stat_players('5v5','total_rebounds',excluded_pks)
+    asts = helpers.per100_top_stat_players('5v5','asts',excluded_pks)
+    pot_ast = helpers.per100_top_stat_players('5v5','pot_ast',excluded_pks)
+    stls = helpers.per100_top_stat_players('5v5','stls',excluded_pks)
+    to = helpers.per100_top_stat_players('5v5','to',excluded_pks)
+    points = helpers.per100_top_stat_players('5v5','points',excluded_pks)
 
     #these need special attention
     fgm_percent = []
     for player in players:
-        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('fgm'),Sum('fga'),Sum('off_pos'))
-        if result['fga__sum'] is not 0 and result['off_pos__sum'] is not 0:
-            percentage = ( (result['fgm__sum']/result['fga__sum']) / result['off_pos__sum'] ) * 100
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('fgm'),Sum('fga'))
+        if result['fga__sum'] is not 0:
+            percentage = result['fgm__sum']/result['fga__sum'] * 100
         else:
             percentage = 0.0
         fgm_percent.append((player.first_name,percentage))
@@ -70,8 +66,8 @@ def lb_five_on_five_pos():
     three_percent = []
     for player in players:
         result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('threepm'),Sum('threepa'),Sum('off_pos'))
-        if result['threepa__sum'] is not 0 and result['off_pos__sum'] is not 0:
-            percentage = ( (result['threepm__sum']/result['threepa__sum']) / result['off_pos__sum'] ) * 100
+        if result['threepa__sum'] is not 0:
+            percentage = result['threepm__sum']/result['threepa__sum'] * 100
         else:
             percentage = 0.0
         three_percent.append((player.first_name,percentage))
@@ -79,9 +75,9 @@ def lb_five_on_five_pos():
 
     dreb_percent = []
     for player in players:
-        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('dreb'),Sum('total_rebounds'),Sum('def_pos'))
-        if result['total_rebounds__sum'] is not 0 and result['def_pos__sum'] is not 0:
-            percentage = ( (result['dreb__sum']/result['total_rebounds__sum']) / result['def_pos__sum'] ) * 100
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('dreb'),Sum('total_rebounds'))
+        if result['total_rebounds__sum'] is not 0:
+            percentage = result['dreb__sum']/result['total_rebounds__sum'] * 100
         else:
             percentage = 0.0
         dreb_percent.append((player.first_name,percentage))
