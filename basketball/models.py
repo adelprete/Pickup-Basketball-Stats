@@ -82,7 +82,7 @@ class Game(models.Model):
     team2 = models.ManyToManyField('basketball.Player',default=model_team2(),related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0)
     team2_score = models.PositiveIntegerField(default=0)
-    youtube_url = models.URLField(max_length=2000,blank=True)
+    youtube_id = models.CharField("Youtube Video ID",max_length=2000,blank=True)
     game_type = models.CharField(max_length=30,choices=GAME_TYPES,null=True)
 
     def __str__(self):

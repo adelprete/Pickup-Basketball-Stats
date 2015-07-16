@@ -41,7 +41,7 @@
 		<br>
 			<div class="row">
 			<div class="col-md-9">
-				{% if game.youtube_url %}
+				{% if game.youtube_id %}
 				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
 					<div id=player></div>
 				</div>
@@ -108,11 +108,11 @@
 		var player;
 		function onYouTubeIframeAPIReady() {
 			player = new YT.Player('player', {
-			videoId: 'CI0mVhs5yC4',
+			videoId: '{{ game.youtube_id }}',
 		});
 		}
 		function seekPlayerToPlay(time) {
-			player.cueVideoById({videoId:"CI0mVhs5yC4",
+			player.cueVideoById({videoId:"{{ game.youtube_id}}",
 					startSeconds:time,
 					suggestedQuality:"hd1080"})
 			jumpToAnchor()
