@@ -1,9 +1,15 @@
+import datetime
 from django import template
 from basketball import models as bmodels
 from basketball import helpers
 from django.db.models import Sum, Q
 from collections import OrderedDict
 register = template.Library()
+
+
+@register.filter
+def seconds(time):
+    return datetime.timedelta(hours=time.hour,minutes=time.minute,seconds=time.second).total_seconds()
 
 @register.inclusion_tag('box_score.html')
 def box_score(statlines,bgcolor="white"):

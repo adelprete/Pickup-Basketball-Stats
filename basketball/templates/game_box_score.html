@@ -43,7 +43,7 @@
 			<div class="col-md-9">
 				{% if game.youtube_url %}
 				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
-					<iframe class="embed-responsive-item" src="{{ game.youtube_url }}"></iframe>
+					<div id=player></div>
 				</div>
 				{% endif %}
 				<div style="width:100%;">
@@ -84,7 +84,7 @@
 					{% if request.user.is_superuser %}	
 						<a href="{% url 'delete_play' play.id %}" style="block:inline;color:red;">[x]</a>
 					{% endif %}
-					{{ play.time|time:"i:s" }} - {{ play.get_primary_play_display }} {{ play.primary_player }} 
+					<a onclick="seekPlayerToPlay({{play.time|seconds }})" style="cursor:pointer;">{{ play.time|time:"i:s" }}</a> - {{ play.get_primary_play_display }} {{ play.primary_player }} 
 					{% if play.secondary_play %}
 						/ {{ play.get_secondary_play_display }} {{ play.secondary_player }}
 					{% endif %}
@@ -99,7 +99,30 @@
 		</div>
 	</div>
 	</div>
+	<script>
+	    var tag = document.createElement('script');
+		tag.src = "https://www.youtube.com/iframe_api";
+		var firstScriptTag = document.getElementsByTagName('script')[0];
+		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		
+		var player;
+		function onYouTubeIframeAPIReady() {
+			player = new YT.Player('player', {
+			videoId: 'CI0mVhs5yC4',
+		});
+		}
+		function seekPlayerToPlay(time) {
+			player.cueVideoById({videoId:"CI0mVhs5yC4",
+					startSeconds:time,
+					suggestedQuality:"hd1080"})
+			jumpToAnchor()
+			player.playVideo();
+		}
+    </script>
 	<script type="text/javascript">
+		function jumpToAnchor() {
+			window.location = String(window.location).replace(/\#.*$/, "") + "#player";
+		}
 		$("#toggle_fileform").click(function(){
 			$('#pbp_file_form').toggle();
 		});
