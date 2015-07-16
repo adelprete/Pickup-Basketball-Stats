@@ -2,3 +2,4 @@ private.py
 *.pyc
 media/player_images/**
 basketball/__pycache__/**
+saturdayball/__pycache__/**
