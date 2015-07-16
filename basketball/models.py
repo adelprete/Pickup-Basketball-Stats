@@ -115,6 +115,8 @@ class Game(models.Model):
             line.total_rebounds = 0
             line.def_pos = 0
             line.off_pos = 0
+            line.def_reb_opp = 0
+            line.off_reb_opp = 0
             line.total_pos = 0
             line.save()
     
@@ -141,8 +143,10 @@ class Game(models.Model):
         """
         self.reset_statlines()
         playbyplays = self.playbyplay_set.all().order_by('time')
-        statlines = self.statline_set.all()
         bench = self.get_bench()
+        statlines = self.statline_set.all()
+        team1_statlines = statlines.filter(player__in=self.team1.all())
+        team2_statlines = statlines.filter(player__in=self.team2.all())
         for play in playbyplays:
             if play.primary_play not in ['sub_out','sub_in']:
                 primary_line = StatLine.objects.get(game=self,player=play.primary_player)
@@ -151,23 +155,28 @@ class Game(models.Model):
                 if play.primary_play == 'fgm':
                     primary_line.fga += 1
                     primary_line.points += 1
-                if play.primary_play == 'threepa':
+                elif play.primary_play == 'threepa':
                     primary_line.fga += 1
-                if play.primary_play == 'threepm':
+                elif play.primary_play == 'threepm':
                     primary_line.threepa += 1
                     primary_line.fga += 1
                     primary_line.fgm += 1
                     primary_line.points += 2
-
                 primary_line.save()
                 if play.primary_play in ['threepm','fgm','to']:
                     if primary_line.player in self.team1.all():
-                        statlines.filter(player__in=self.team1.all()).exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
-                        statlines.filter(player__in=self.team2.all()).exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
+                        team1_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
+                        team2_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
                     else:
-                        statlines.filter(player__in=self.team1.all()).exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
-                        statlines.filter(player__in=self.team2.all()).exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
-
+                        team1_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
+                        team2_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
+                if play.primary_play in ['fga','threepa']:
+                    if primary_line.player in self.team1.all():
+                        team1_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp')+1)
+                        team2_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp')+1)
+                    else:
+                        team1_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp')+1)
+                        team2_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp')+1)
                 #secondary play
                 if play.secondary_play:
                     secondary_line = StatLine.objects.get(game=self,player=play.secondary_player)
@@ -180,11 +189,11 @@ class Game(models.Model):
                     secondary_line.save()
                     if play.secondary_play == 'dreb':
                         if primary_line.player in self.team1.all():
-                            statlines.filter(player__in=self.team1.all()).exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
-                            statlines.filter(player__in=self.team2.all()).exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
+                            team1_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
+                            team2_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
                         else:
-                            statlines.filter(player__in=self.team1.all()).exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
-                            statlines.filter(player__in=self.team2.all()).exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
+                            team1_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos')+1)
+                            team2_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos')+1)
                 
                 #assist play
                 if play.assist:
@@ -220,6 +229,8 @@ class StatLine(models.Model):
     off_pos = models.PositiveIntegerField(default=0)
     total_pos = models.PositiveIntegerField(default=0)
     points = models.PositiveIntegerField(default=0)
+    dreb_opp = models.PositiveIntegerField(default=0)
+    oreb_opp = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return '%s - %s - %s' % (self.player.first_name,self.game.title,self.game.date.isoformat())

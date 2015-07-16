@@ -1,18 +1,30 @@
 {% load basketball_tags %}
+<div class='row'>
+	<div class="col-sm-12">
+		<h3>Per 100 Possessions</h3>
+	</div>
+</div>
 <div class="row">
 	{% top_players_table dreb 'DREB' '#dff0d8' %}
-	{% top_players_table oreb 'OREB' '#d9edf7' %}
-	{% top_players_table total_rebounds 'TOTAL REB' '#f2dede' %}
-	{% top_players_table asts 'ASSISTS' %}
+	{% top_players_table oreb 'OREB' '#dff0d8' %}
+	{% top_players_table total_rebounds 'TOTAL REB' '#dff0d8' %}
+	{% top_players_table asts 'ASSISTS' '#d9edf7' %}
 </div>
 <div class="row">
-	{% top_players_table pot_ast 'POT.ASSISTS' %}
-	{% top_players_table stls 'STEALS' %}
-	{% top_players_table to 'TURNOVERS' %}
-	{% top_players_table points	'POINTS' %}
+	{% top_players_table pot_ast 'POT.ASSISTS' '#d9edf7' %}
+	{% top_players_table stls 'STEALS' '#f2dede'%}
+	{% top_players_table to 'TURNOVERS' '#fcf8e3' %}
+	{% top_players_table points	'POINTS' '#dff0d8'%}
 </div>
 <div class="row">
-	{% top_players_table fgm_percent 'FG%' '#f5f5f5'  %}
-	{% top_players_table three_percent '3PT%' %}
-	{% top_players_table dreb_percent 'DEF.REB %' %}
+	{% top_players_table dreb_percent 'DEF.REB %' '#f2dede' %}
+	{% top_players_table oreb_percent 'OFF.REB %' '#f2dede' %}
+	{% top_players_table treb_percent 'TOT.REB %' '#f2dede' %}
+	{% top_players_table orating_percent 'OFF.RATING %' '#d9edf7' %}
+</div>
+<div class="row">
+	{% top_players_table fgm_percent 'FG%' '#dff0d8'  %}
+	{% top_players_table three_percent '3PT%' '#dff0d8' %}
+	{% top_players_table ts_percent 'TS%' '#dff0d8' %}
+	{% top_players_table drating_percent 'DEF.RATING %' '#d9edf7' %}
 </div>

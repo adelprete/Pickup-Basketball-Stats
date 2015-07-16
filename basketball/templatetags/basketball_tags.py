@@ -75,13 +75,63 @@ def lb_five_on_five_pos():
 
     dreb_percent = []
     for player in players:
-        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('dreb'),Sum('total_rebounds'))
-        if result['total_rebounds__sum'] is not 0:
-            percentage = result['dreb__sum']/result['total_rebounds__sum'] * 100
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('dreb'),Sum('dreb_opp'))
+        if result['dreb_opp__sum'] is not 0:
+            percentage = result['dreb__sum']/result['dreb_opp__sum'] * 100
         else:
             percentage = 0.0
         dreb_percent.append((player.first_name,percentage))
     dreb_percent = sorted(dreb_percent,key=lambda x: x[1],reverse=True)
+    
+    oreb_percent = []
+    for player in players:
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('oreb'),Sum('oreb_opp'))
+        if result['oreb_opp__sum'] is not 0:
+            percentage = result['oreb__sum']/result['oreb_opp__sum'] * 100
+        else:
+            percentage = 0.0
+        oreb_percent.append((player.first_name,percentage))
+    oreb_percent = sorted(oreb_percent,key=lambda x: x[1],reverse=True)
+
+    treb_percent = []
+    for player in players:
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('total_rebounds'),Sum('dreb_opp'),Sum('oreb_opp'))
+        percentage = result['total_rebounds__sum']/(result['oreb_opp__sum']+result['dreb_opp__sum']) * 100
+        treb_percent.append((player.first_name,percentage))
+    treb_percent = sorted(treb_percent,key=lambda x: x[1],reverse=True)
+
+    ts_percent = []
+    for player in players:
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('points'),Sum('fga'))
+        percentage = result['points__sum']/result['fga__sum'] * 100
+        ts_percent.append((player.first_name,percentage))
+    ts_percent = sorted(ts_percent,key=lambda x: x[1],reverse=True)
+
+    orating_percent = []
+    for player in players:
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('off_pos'))
+        team1_result = bmodels.Game.objects.filter(team1=player).aggregate(Sum('team1_score'))
+        team2_result = bmodels.Game.objects.filter(team2=player).aggregate(Sum('team2_score'))
+        if team1_result['team1_score__sum'] == None:
+            team1_result['team1_score__sum'] = 0
+        if team2_result['team2_score__sum'] == None:
+            team2_result['team2_score__sum'] = 0
+        percentage = (team1_result['team1_score__sum']+team2_result['team2_score__sum'])/result['off_pos__sum'] * 100
+        orating_percent.append((player.first_name,percentage))
+    orating_percent = sorted(orating_percent,key=lambda x: x[1],reverse=True)
+
+    drating_percent = []
+    for player in players:
+        result = player.statline_set.filter(game__game_type='5v5').aggregate(Sum('def_pos'))
+        team1_result = bmodels.Game.objects.filter(team2=player).aggregate(Sum('team1_score'))
+        team2_result = bmodels.Game.objects.filter(team1=player).aggregate(Sum('team2_score'))
+        if team1_result['team1_score__sum'] == None:
+            team1_result['team1_score__sum'] = 0
+        if team2_result['team2_score__sum'] == None:
+            team2_result['team2_score__sum'] = 0
+        percentage = (team1_result['team1_score__sum']+team2_result['team2_score__sum'])/result['def_pos__sum'] * 100
+        drating_percent.append((player.first_name,percentage))
+    drating_percent = sorted(drating_percent,key=lambda x: x[1],reverse=True)
 
     context = {
             "dreb":dreb[:5],
@@ -95,6 +145,11 @@ def lb_five_on_five_pos():
             "fgm_percent":fgm_percent[:5],
             "three_percent":three_percent[:5],
             "dreb_percent":dreb_percent[:5],
+            "oreb_percent":oreb_percent[:5],
+            "treb_percent":treb_percent[:5],
+            "ts_percent":ts_percent[:5],
+            "orating_percent":orating_percent[:5],
+            "drating_percent":drating_percent[:5],
     }
     return context
 
