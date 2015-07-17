@@ -1,28 +1,31 @@
 {% load basketball_tags %}
 <h3>5 on 5 Total Stats</h3>
 <div class="table-responsive" style="margin-top:25px;">
-	<table class="table">
+	<table id="totals_table" class="table table-hover">
+		<thead style="font-size:12px;">
 		<tr class="active">
-			<td></td>
-			<td>FGM</td>
-			<td>FGA</td>
-			<td>3PM</td>
-			<td>3PA</td>
-			<td>Off</td>
-			<td>Def</td>
-			<td>Tot. Reb</td>
-			<td>Ast</td>
-			<td>P.Ast</td>
-			<td>Blk</td>
-			<td>BA</td>		
-			<td>Stl</td>
-			<td>TO</td>
-			<td>FD</td>
-			<td>PF</td>
-			<td>Pts</td>
-			<td>Off Pos</td>
-			<td>Def Pos</td>
+			<th></th>
+			<th>FGM</th>
+			<th>FGA</th>
+			<th>3PM</th>
+			<th>3PA</th>
+			<th>Off</th>
+			<th>Def</th>
+			<th>Tot. Reb</th>
+			<th>Ast</th>
+			<th>P.Ast</th>
+			<th>Blk</th>
+			<th>BA</th>		
+			<th>Stl</th>
+			<th>TO</th>
+			<th>FD</th>
+			<th>PF</th>
+			<th>Pts</th>
+			<th>Off Pos</th>
+			<th>Def Pos</th>
 		</tr>
+	</thead>
+	<tbody>
 		{% for player_name,value in player_dict.items %}
 			<tr>
 				<td>{{ player_name }}</td>
@@ -46,5 +49,12 @@
 				<td>{{ value.def_pos__sum }}</td>
 			</tr>
 		{% endfor %}
+		</tbody>
 	</table>
 </div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/floatthead/1.2.13/jquery.floatThead.js"></script>
+<script type="text/javascript">
+	var $table = $('table#totals_table');
+	$table.floatThead();
+</script>
+

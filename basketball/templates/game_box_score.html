@@ -79,6 +79,8 @@
 				<div id="play_message" style="display:none;"></div>
 			</form>
 			{% endif %}
+		</div>
+		<div class="col-sm-3" style="overflow-y: scroll; height:800px; margin-top:10px;" >
 			{% if playbyplays %}
 				{% for play in playbyplays %}
 					{% if request.user.is_superuser %}	
