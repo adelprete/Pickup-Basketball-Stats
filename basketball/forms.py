@@ -38,6 +38,7 @@ class NicerFilterSet(django_filters.FilterSet):
 class PlayByPlayFilter(NicerFilterSet):
     primary_player = django_filters.ModelMultipleChoiceFilter()
     secondary_player = django_filters.ModelMultipleChoiceFilter()
+    assist_player = django_filters.ModelMultipleChoiceFilter()
 
     def __init__(self,*args,**kwargs):
         game = kwargs.pop('game',None)
@@ -49,6 +50,7 @@ class PlayByPlayFilter(NicerFilterSet):
         self.filters['secondary_player'].extra['queryset'] = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
         self.filters['secondary_player'].field.widget.attrs = {'class':'form-control'}
         self.filters['assist'].field.widget.attrs = {'class':'form-control'}
+        self.filters['assist_player'].extra['queryset'] = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
         self.filters['assist_player'].field.widget.attrs = {'class':'form-control'}
     
     class Meta:
