@@ -22,6 +22,7 @@ urlpatterns = [
 	url(r'^$',	bviews.root,		name='root'),
 	url(r'^games-home/(?P<id>\d+)/box-score/$',        bviews.box_score,            name='box_score'),
         url(r'^ajax-add-play/(?P<pk>[0-9]+)/$',        bviews.ajax_add_play,       name='ajax_add_play'),
+        url(r'ajax-filter-plays/(?P<pk>[0-9]+)/$',      bviews.ajax_filter_plays,   name="ajax_filter_plays"),
         url(r'^delete-play/(?P<pk>[0-9]+)/$',        bviews.delete_play,       name='delete_play'),
         url(r'^players-home/$',                 bviews.players_home,       name='players_home'),
         url(r'^player/(?P<id>[0-9]+)/$',                 bviews.player,       name='player_page'),

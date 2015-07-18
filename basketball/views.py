@@ -4,7 +4,7 @@ import operator
 from collections import OrderedDict
 from datetime import time
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from basketball import models as bmodels
 from basketball.models import ALL_PLAY_TYPES
 from basketball import forms as bforms
@@ -47,6 +47,7 @@ def box_score(request,id):
         game = bmodels.Game.objects.get(id=id)
     
     pbp_form = bforms.PlayByPlayForm(game)
+    pbp_filter = bforms.PlayByPlayFilter(request.GET,queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'),game=game)
     team1_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team1.all()).order_by('-points')
     team2_statlines = bmodels.StatLine.objects.filter(game=game,player__in=game.team2.all()).order_by('-points')
     if request.POST:
@@ -55,15 +56,13 @@ def box_score(request,id):
         game.calculate_statlines()
         game.calculate_game_score()
     
-    playbyplays = game.playbyplay_set.all().order_by('time')
-    
     context = {
         'game':game,
         'team1_statlines':team1_statlines,
         'team2_statlines':team2_statlines,
         'form':pbp_form,
         'file_form':bforms.PlayByPlayFileForm(),
-        'playbyplays':playbyplays,
+        'pbp_filter':pbp_filter,
     }
     return render(request,"game_box_score.html",context)
 
@@ -116,6 +115,14 @@ def ajax_add_play(request,pk):
         game.calculate_statlines()
         return HttpResponse("<br><font style='color:green'>" + play_record.get_primary_play_display() + " Play added.<br>You can add more plays if you'd like.<br>Refresh page to see changes.</font><br><br>")
     return HttpResponse("<br><font style='color:red;'>Failed to Add play</font><br><br>")
+
+def ajax_filter_plays(request,pk):
+    """Called when an some wants to filter the play by plays of a game
+    """
+    game = bmodels.Game.objects.get(pk=pk)
+    pbp_filter = bforms.PlayByPlayFilter(request.GET,queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'),game=game)
+    
+    return render_to_response('playbyplay_list.html',{'pbp_filter':pbp_filter})
 
 def delete_play(request,pk):
     """

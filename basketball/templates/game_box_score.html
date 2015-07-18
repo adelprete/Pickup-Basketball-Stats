@@ -58,16 +58,18 @@
 		<div id="play_title"><h4>Play By Plays</h4></div>
 		<div class="col-md-3">
 			{% if request.user.is_superuser %}
-			<div><a id="toggle_fileform" style="cursor: pointer;">+Toggle Upload Form+</a>	</div>
+			<div><a id="toggle_fileform" style="cursor: pointer;">+Toggle Upload Form+</a></div>
 			<form id='pbp_file_form' method="post" action="." enctype="multipart/form-data" style="display:none;">{% csrf_token %}
+				<h3 style="margin-top:5px;">Upload Form</h3>
 				{{ file_form.pbpFile.label_tag }}
 				{{ file_form.pbpFile }}
 				{{ file_form.pbpFile.help_text }}<br>
 				All previous plays will be removed
 				<button type="submit" name="submit" class="btn btn-primary btn-block">Upload</button>
 			</form>
-			<div><a id="toggle_form" style="cursor: pointer;">+Toggle Play By Play Form+</a>	</div>
+			<div><a id="toggle_form" style="cursor: pointer;">+Toggle Play By Play Form+</a></div>
 			<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
+				<h3 style="margin-top:5px;">Add Play</h3>
 				<div class="form-group">{{ form.time.label_tag }}{{ form.time }}</div>
 				<div class="form-group">{{ form.primary_play.label_tag }}{{ form.primary_play}}</div>
 				<div class="form-group">{{ form.primary_player.label_tag }}{{ form.primary_player }}</div>
@@ -79,25 +81,20 @@
 				<div id="play_message" style="display:none;"></div>
 			</form>
 			{% endif %}
+			<div><a id="toggle_filterform" style="cursor: pointer;">+Toggle Play Filter Form+</a></div>
+			<form id="filter_form" method=get action"" style="display:none;">
+				<h3 style="margin-top:5px;">Filter Play by Play</h3>
+				<div class="form-group">{{ pbp_filter.form.primary_play.label_tag }}{{ pbp_filter.form.primary_play }}</div>
+				<div class="form-group">{{ pbp_filter.form.primary_player.label_tag }}{{ pbp_filter.form.primary_player }}</div>
+				<div class="form-group">{{ pbp_filter.form.secondary_play.label_tag }}{{ pbp_filter.form.secondary_play }}</div>
+				<div class="form-group">{{ pbp_filter.form.secondary_player.label_tag }}{{ pbp_filter.form.secondary_player }}</div>
+				<div class="form-group">{{ pbp_filter.form.assist.label_tag }}{{ pbp_filter.form.assist }}</div>
+				<div class="form-group">{{ pbp_filter.form.assist_player.label_tag }}{{ pbp_filter.form.assist_player }}</div>
+				<input type="Submit" class="btn btn-primary btn-block">
+			</form>
 		</div>
-		<div class="col-sm-3" style="overflow-y: scroll; height:800px; margin-top:10px;" >
-			{% if playbyplays %}
-				{% for play in playbyplays %}
-					{% if request.user.is_superuser %}	
-						<a href="{% url 'delete_play' play.id %}" style="block:inline;color:red;">[x]</a>
-					{% endif %}
-					<a onclick="seekPlayerToPlay({{play.time|seconds }})" style="cursor:pointer;">{{ play.time|time:"i:s" }}</a> - {{ play.get_primary_play_display }} {{ play.primary_player }} 
-					{% if play.secondary_play %}
-						/ {{ play.get_secondary_play_display }} {{ play.secondary_player }}
-					{% endif %}
-					{% if play.assist %}
-						/ {{ play.get_assist_display }} {{ play.assist_player }}
-					{% endif %}
-					<br><br>
-				{% endfor %}
-			{% else %}
-				No plays to display
-			{% endif %}
+		<div id="playbyplay_list" class="col-sm-3" style="overflow-y: scroll; height:450px; margin-top:10px;" >
+			{% include 'playbyplay_list.html' %}
 		</div>
 	</div>
 	</div>
@@ -132,9 +129,11 @@
 			$('#pbp_form').toggle();
 			$('#play_message').toggle();
 		});
+		$("#toggle_filterform").click(function(){
+			$('#filter_form').toggle();
+		});
 		var frm = $('#pbp_form');
 		frm.submit(function () {
-
 			$.ajax({
 				type: frm.attr('method'),
 				url: "{% url 'ajax_add_play' pk=game.pk %}",
@@ -146,6 +145,18 @@
 				error: function(data) {
 					$("#play_message").html("Something went wrong!");
 				}
+			});
+			return false;
+		});
+		var frm = $('#filter_form');
+		frm.submit(function () {
+			$.ajax({
+				type: frm.attr('method'),
+				url: "{% url 'ajax_filter_plays' pk=game.pk %}",
+				data: frm.serialize(),
+				success: function (data) {
+					$("#playbyplay_list").html(data);
+				},
 			});
 			return false;
 		});
