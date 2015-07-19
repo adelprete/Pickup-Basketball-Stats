@@ -57,6 +57,7 @@ def lb_five_on_five_pos():
     stls = helpers.per100_top_stat_players('5v5','stls',excluded_pks)
     to = helpers.per100_top_stat_players('5v5','to',excluded_pks)
     points = helpers.per100_top_stat_players('5v5','points',excluded_pks)
+    blk = helpers.per100_top_stat_players('5v5','blk',excluded_pks)
 
     #these need special attention
     fgm_percent = []
@@ -137,7 +138,7 @@ def lb_five_on_five_pos():
             team2_result['team2_score__sum'] = 0
         percentage = (team1_result['team1_score__sum']+team2_result['team2_score__sum'])/result['def_pos__sum'] * 100
         drating_percent.append((player.first_name,percentage))
-    drating_percent = sorted(drating_percent,key=lambda x: x[1],reverse=True)
+    drating_percent = sorted(drating_percent,key=lambda x: x[1])
 
     context = {
             "dreb":dreb[:5],
@@ -156,6 +157,7 @@ def lb_five_on_five_pos():
             "ts_percent":ts_percent[:5],
             "orating_percent":orating_percent[:5],
             "drating_percent":drating_percent[:5],
+            "blk":blk[:5],
     }
     return context
 
