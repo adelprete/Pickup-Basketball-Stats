@@ -19,6 +19,13 @@ class PlayByPlayForm(forms.ModelForm):
         self.fields['secondary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
         self.fields['assist_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
 
+    """
+    def clean_time(self):
+        import pdb;pdb.set_trace()
+        if len(self.cleaned_data['time'].strftime('%H:%M:%S').split(':')) != 3:
+            raise forms.ValidationError('Time Must be HH:MM:SS')
+        return self.cleaned_data['time']
+    """
     class Meta:
         model = bmodels.PlayByPlay
         exclude = ['game']

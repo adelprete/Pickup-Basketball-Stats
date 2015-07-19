@@ -132,12 +132,12 @@
 		$("#toggle_filterform").click(function(){
 			$('#filter_form').toggle();
 		});
-		var frm = $('#pbp_form');
-		frm.submit(function () {
+		var pbp_form = $('#pbp_form');
+		pbp_form.submit(function () {
 			$.ajax({
-				type: frm.attr('method'),
+				type: "post",
 				url: "{% url 'ajax_add_play' pk=game.pk %}",
-				data: frm.serialize(),
+				data: pbp_form.serialize(),
 				success: function (data) {
 					$('.form-control').val("");
 					$("#play_message").html(data);
