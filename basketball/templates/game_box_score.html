@@ -39,7 +39,7 @@
 		</div>
 		</center>
 		<br>
-			<div class="row">
+		<div class="row">
 			<div class="col-md-9">
 				{% if game.youtube_id %}
 				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
@@ -55,48 +55,50 @@
 					{% box_score team2_statlines "#f2dede" %}
 				</div>
 			</div>
-		<div id="play_title"><h4>Play By Plays</h4></div>
-		<div class="col-md-3">
-			{% if request.user.is_superuser %}
-			<div><a id="toggle_fileform" style="cursor: pointer;">+Toggle Upload Form+</a></div>
-			<form id='pbp_file_form' method="post" action="." enctype="multipart/form-data" style="display:none;">{% csrf_token %}
-				<h3 style="margin-top:5px;">Upload Form</h3>
-				{{ file_form.pbpFile.label_tag }}
-				{{ file_form.pbpFile }}
-				{{ file_form.pbpFile.help_text }}<br>
-				All previous plays will be removed
-				<button type="submit" name="submit" class="btn btn-primary btn-block">Upload</button>
-			</form>
-			<div><a id="toggle_form" style="cursor: pointer;">+Toggle Play By Play Form+</a></div>
-			<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
-				<h3 style="margin-top:5px;">Add Play</h3>
-				<div class="form-group">{{ form.time.label_tag }}{{ form.time }}</div>
-				<div class="form-group">{{ form.primary_play.label_tag }}{{ form.primary_play}}</div>
-				<div class="form-group">{{ form.primary_player.label_tag }}{{ form.primary_player }}</div>
-				<div class="form-group">{{ form.secondary_play.label_tag }}{{ form.secondary_play }}</div>
-				<div class="form-group">{{ form.secondary_player.label_tag }}{{ form.secondary_player }}</div>
-				<div class="form-group">{{ form.assist.label_tag }}{{ form.assist }}</div>
-				<div class="form-group">{{ form.assist_player.label_tag }}{{ form.assist_player }}</div>
-				<button type="submit" name="submit" class="btn btn-primary btn-block">Save</button>
-				<div id="play_message" style="display:none;"></div>
-			</form>
-			{% endif %}
-			<div><a id="toggle_filterform" style="cursor: pointer;">+Toggle Play Filter Form+</a></div>
-			<form id="filter_form" method=get action"" style="display:none;">
-				<h3 style="margin-top:5px;">Filter Play by Play</h3>
-				<div class="form-group">{{ pbp_filter.form.primary_play.label_tag }}{{ pbp_filter.form.primary_play }}</div>
-				<div class="form-group">{{ pbp_filter.form.primary_player.label_tag }}{{ pbp_filter.form.primary_player }}</div>
-				<div class="form-group">{{ pbp_filter.form.secondary_play.label_tag }}{{ pbp_filter.form.secondary_play }}</div>
-				<div class="form-group">{{ pbp_filter.form.secondary_player.label_tag }}{{ pbp_filter.form.secondary_player }}</div>
-				<div class="form-group">{{ pbp_filter.form.assist.label_tag }}{{ pbp_filter.form.assist }}</div>
-				<div class="form-group">{{ pbp_filter.form.assist_player.label_tag }}{{ pbp_filter.form.assist_player }}</div>
-				<input type="Submit" class="btn btn-primary btn-block">
-			</form>
+			<div class="col-md-3" style="padding:0px;">
+				<div class="col-md-12">
+					<div id="play_title"><h4>Play By Plays</h4></div>
+					{% if request.user.is_superuser %}
+					<div><a id="toggle_fileform" style="cursor: pointer;">+Toggle Upload Form+</a></div>
+					<form id='pbp_file_form' method="post" action="." enctype="multipart/form-data" style="display:none;">{% csrf_token %}
+						<h3 style="margin-top:5px;">Upload Form</h3>
+						{{ file_form.pbpFile.label_tag }}
+						{{ file_form.pbpFile }}
+						{{ file_form.pbpFile.help_text }}<br>
+						All previous plays will be removed
+						<button type="submit" name="submit" class="btn btn-primary btn-block">Upload</button>
+					</form>
+					<div><a id="toggle_form" style="cursor: pointer;">+Toggle Play By Play Form+</a></div>
+					<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
+						<h3 style="margin-top:5px;">Add Play</h3>
+						<div class="form-group">{{ form.time.label_tag }}{{ form.time }}</div>
+						<div class="form-group">{{ form.primary_play.label_tag }}{{ form.primary_play}}</div>
+						<div class="form-group">{{ form.primary_player.label_tag }}{{ form.primary_player }}</div>
+						<div class="form-group">{{ form.secondary_play.label_tag }}{{ form.secondary_play }}</div>
+						<div class="form-group">{{ form.secondary_player.label_tag }}{{ form.secondary_player }}</div>
+						<div class="form-group">{{ form.assist.label_tag }}{{ form.assist }}</div>
+						<div class="form-group">{{ form.assist_player.label_tag }}{{ form.assist_player }}</div>
+						<button type="submit" name="submit" class="btn btn-primary btn-block">Save</button>
+						<div id="play_message" style="display:none;"></div>
+					</form>
+					{% endif %}
+					<div><a id="toggle_filterform" style="cursor: pointer;">+Toggle Play Filter Form+</a></div>
+					<form id="filter_form" method=get action"" style="display:none;">
+						<h3 style="margin-top:5px;">Filter Play by Play</h3>
+						<div class="form-group">{{ pbp_filter.form.primary_play.label_tag }}{{ pbp_filter.form.primary_play }}</div>
+						<div class="form-group">{{ pbp_filter.form.primary_player.label_tag }}{{ pbp_filter.form.primary_player }}</div>
+						<div class="form-group">{{ pbp_filter.form.secondary_play.label_tag }}{{ pbp_filter.form.secondary_play }}</div>
+						<div class="form-group">{{ pbp_filter.form.secondary_player.label_tag }}{{ pbp_filter.form.secondary_player }}</div>
+						<div class="form-group">{{ pbp_filter.form.assist.label_tag }}{{ pbp_filter.form.assist }}</div>
+						<div class="form-group">{{ pbp_filter.form.assist_player.label_tag }}{{ pbp_filter.form.assist_player }}</div>
+						<input type="Submit" class="btn btn-primary btn-block">
+					</form>
+				</div>
+				<div id="playbyplay_list" class="col-sm-12" style="overflow-y: scroll; height:450px; margin-top:10px;" >
+					{% include 'playbyplay_list.html' %}
+				</div>
+			</div>
 		</div>
-		<div id="playbyplay_list" class="col-sm-3" style="overflow-y: scroll; height:450px; margin-top:10px;" >
-			{% include 'playbyplay_list.html' %}
-		</div>
-	</div>
 	</div>
 	<script>
 	    var tag = document.createElement('script');

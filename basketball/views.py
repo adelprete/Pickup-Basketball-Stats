@@ -114,6 +114,13 @@ def ajax_add_play(request,pk):
         play_record.save()
         game.calculate_statlines()
         return HttpResponse("<br><font style='color:green'>" + play_record.get_primary_play_display() + " Play added.<br>You can add more plays if you'd like.<br>Refresh page to see changes.</font><br><br>")
+    elif play_form.errors:
+        html_response = "<br><font style='color:red;'>"
+
+        for field,error in play_form.errors.items():
+            html_response += "%s: %s" % (field,error)
+        html_response += "</font><br>"
+        return HttpResponse(html_response)
     return HttpResponse("<br><font style='color:red;'>Failed to Add play</font><br><br>")
 
 def ajax_filter_plays(request,pk):
