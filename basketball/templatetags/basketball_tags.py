@@ -19,7 +19,7 @@ def box_score(statlines,bgcolor="white"):
     team_totals = {}
     for play in bmodels.ALL_PLAY_TYPES:
         if play[0] not in ['sub_out','sub_in']:
-            x = statlines.exclude(player__first_name__contains='Team').aggregate(Sum(play[0]))
+            x = statlines.all().aggregate(Sum(play[0]))
             team_totals.update(x)
     team_totals.update(statlines.aggregate(Sum('points'),Sum('total_rebounds')))
     return {'statlines': statlines.exclude(player__first_name__contains='Team'),
