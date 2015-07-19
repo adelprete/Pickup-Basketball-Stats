@@ -172,7 +172,7 @@ def lb_5on5_totals():
                 Sum('dreb'),Sum('oreb'),Sum('total_rebounds'),Sum('asts'),\
                 Sum('pot_ast'),Sum('blk'),Sum('ba'),Sum('stls'),\
                 Sum('to'),Sum('fd'),Sum('pf'),Sum('def_pos'),\
-                Sum('off_pos'),Sum('points'))
+                Sum('off_pos'),Sum('points'),Sum('dreb_opp'),Sum('oreb_opp'))
         player_dict[player.get_full_name()] = player_total
 
     context = {

@@ -115,8 +115,8 @@ class Game(models.Model):
             line.total_rebounds = 0
             line.def_pos = 0
             line.off_pos = 0
-            line.def_reb_opp = 0
-            line.off_reb_opp = 0
+            line.dreb_opp = 0
+            line.oreb_opp = 0
             line.total_pos = 0
             line.save()
     
