@@ -60,6 +60,8 @@ def per100_top_stat_players(game_type,stat,excluded_pks):
     player_list = []
     for player in players:
         result = player.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat),Sum('off_pos'))
+        if game_type=='4v4':
+            import pdb;pdb.set_trace()
         if result['off_pos__sum'] is not 0:
             percentage = (result[stat + '__sum']/result['off_pos__sum']) * 100
         else:

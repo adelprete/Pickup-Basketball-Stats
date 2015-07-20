@@ -89,6 +89,8 @@ def player(request,id):
         'player':player,
         'statlines':statlines,
         'averages':player.get_averages(),
+        'averages_5v5':player.get_averages('5v5'),
+        'averages_4v4':player.get_averages('4v4')
     }
     return render(request,'player.html',context)
 

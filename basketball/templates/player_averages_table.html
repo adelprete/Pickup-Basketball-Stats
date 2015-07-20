@@ -1,0 +1,40 @@
+<div class="table-responsive">
+	<table class="table" style="font-size:11px;">
+		<tr style="background:#d9edf7">
+			<td>FGM</td>
+			<td>FGA</td>
+			<td>3PM</td>
+			<td>3PA</td>
+			<td>Off</td>
+			<td>Def</td>
+			<td>Reb</td>
+			<td>Ast</td>
+			<td>P.Ast</td>
+			<td>TO</td>
+			<td>Stl</td>
+			<td>Blk</td>
+			<td>BA</td>
+			<td>FD</td>
+			<td>PF</td>
+			<td>Pts</td>
+		</tr>
+		<tr>
+			<td>{{ averages.fgm__avg|floatformat }}</td>
+			<td>{{ averages.fga__avg|floatformat }}</td>
+			<td>{{ averages.threepm__avg|floatformat }}</td>
+			<td>{{ averages.threepa__avg|floatformat }}</td>
+			<td>{{ averages.oreb__avg|floatformat }}</td>
+			<td>{{ averages.dreb__avg|floatformat }}</td>
+			<td>{{ averages.total_rebounds__avg|floatformat }}</td>
+			<td>{{ averages.asts__avg|floatformat }}</td>
+			<td>{{ averages.pot_ast__avg|floatformat }}</td>
+			<td>{{ averages.to__avg|floatformat }}</td>
+			<td>{{ averages.stls__avg|floatformat }}</td>
+			<td>{{ averages.blk__avg|floatformat }}</td>
+			<td>{{ averages.ba__avg|floatformat }}</td>
+			<td>{{ averages.fd__avg|floatformat }}</td>
+			<td>{{ averages.pf__avg|floatformat }}</td>
+			<td>{{ averages.points__avg|floatformat }}</td>
+		</tr>
+	</table>	
+</div>

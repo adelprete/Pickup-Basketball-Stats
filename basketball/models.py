@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import F, Sum, Avg, signals
+from django.db.models import F, Sum, Q, Avg, signals
 from django.core.urlresolvers import reverse
 
 PRIMARY_PLAY = [
@@ -53,16 +53,20 @@ class Player(models.Model):
     def get_absolute_url(self):
         return reverse("player_page",kwargs={'id':self.id})
 
-    def get_averages(self):
+    def get_averages(self,game_type=None):
         """
         Returns a dictionary of the player's averages
         """
+        qs = self.statline_set.all()
+        if game_type:
+            qs = self.statline_set.filter(game__game_type=game_type)
+
         player_averages = {}
         for play in ALL_PLAY_TYPES:
             if play[0] not in ['sub_out','sub_in']:
-                x = self.statline_set.all().aggregate(Avg(play[0]))
+                x = qs.aggregate(Avg(play[0]))
                 player_averages.update(x)
-        player_averages.update(self.statline_set.all().aggregate(Avg('points'),Avg('total_rebounds')))
+        player_averages.update(qs.aggregate(Avg('points'),Avg('total_rebounds')))
         return player_averages
 
     class Meta():

@@ -9,9 +9,11 @@
 	</ul>
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="5on5">
-			{% lb_five_on_five_pos %}
+			{% lb_five_on_five_pos '5v5' %}
 		</div>
-		<div role="tabpanel" class="tab-pane" id="4on4">...</div>
+		<div role="tabpanel" class="tab-pane" id="4on4">
+			{% lb_five_on_five_pos '4v4' %}
+		</div>
 		<div role="tabpanel" class="tab-pane" id="totals">
 			{% lb_5on5_totals %}
 		</div>
