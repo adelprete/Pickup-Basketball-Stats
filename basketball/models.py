@@ -53,6 +53,14 @@ class Player(models.Model):
     def get_absolute_url(self):
         return reverse("player_page",kwargs={'id':self.id})
 
+    @property
+    def total_games(self):
+        return Game.objects.filter(Q(team1=self)|Q(team2=self)).distinct().count()
+    
+    @property
+    def total_wins(self):
+        return self.winning_players_set.all().count()
+
     def get_averages(self,game_type=None):
         """
         Returns a dictionary of the player's averages
@@ -86,6 +94,7 @@ class Game(models.Model):
     team2 = models.ManyToManyField('basketball.Player',default=model_team2(),related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0)
     team2_score = models.PositiveIntegerField(default=0)
+    winning_players = models.ManyToManyField('basketball.Player',related_name='winning_players_set',blank=True,null=True)
     youtube_id = models.CharField("Youtube Video ID",max_length=2000,blank=True)
     game_type = models.CharField(max_length=30,choices=GAME_TYPES,null=True)
 
@@ -94,7 +103,7 @@ class Game(models.Model):
 
     def get_absolute_url(self):
         return reverse("box_score",kwargs={'id':self.id})
-    
+
     def calculate_game_score(self):
         """Calculates a game's score by finding the sum of points for each team's statlines
         """
@@ -102,7 +111,12 @@ class Game(models.Model):
         team2_statlines = StatLine.objects.filter(game=self,player__in=self.team2.all())
 
         self.team1_score = team1_statlines.aggregate(Sum('points'))['points__sum']
-        self.team2_score = team2_statlines.aggregate(Sum('points'))['points__sum']
+        self.team2_score = team2_statlines.aggregate(Sum('points'))['points__sum']      
+
+        if self.team1_score > self.team2_score:
+            self.winning_players = self.team1.all()
+        elif self.team1_score < self.team2_score:
+            self.winning_players =  self.team2.all()
 
         self.save()
     
