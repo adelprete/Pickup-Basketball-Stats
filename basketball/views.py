@@ -177,6 +177,8 @@ class PlayByPlayFormView(FormView):
 
     def form_valid(self, form):
         self.object = form.save()
+        game = self.get_game(self.kwargs['game_id'])
+        game.calculate_statlines()
         messages.success(self.request,"Play saved")
         return super(PlayByPlayFormView, self).form_valid(form)
 
