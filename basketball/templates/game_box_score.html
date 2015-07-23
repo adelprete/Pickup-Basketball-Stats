@@ -7,6 +7,9 @@
 	});
 </script>
 {% endblock %}
+{% block title %}
+	<title>{{ game.date }} - {{ game.title }}</title>
+{% endblock %}
 {% block body %}
 	{% load basketball_tags %}
 	<div class="container">

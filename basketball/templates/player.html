@@ -1,5 +1,8 @@
 {% extends 'players_home.html' %}
 {% load basketball_tags %}
+{% block title %}
+<title>{{ player.get_full_name }}</title>
+{% endblock %}
 {% block body %}
 <div class="container">
 	<div class="row">
