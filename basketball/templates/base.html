@@ -56,6 +56,13 @@
 	{% endblock %}
 
 	<div class="container" style="margin-bottom:100px;">
+		{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
 	{% block body %}
 		{% for key,value in group_list.items %}
 			<div class="row">

@@ -4,6 +4,7 @@ import operator
 from collections import OrderedDict
 from datetime import time
 
+from django.contrib import messages
 from django.shortcuts import render, redirect, render_to_response
 from basketball import models as bmodels
 from basketball.models import ALL_PLAY_TYPES
@@ -137,10 +138,12 @@ def delete_play(request,pk):
     """
     Called when a play is deleted from a game's page.
     """
+    
     play = bmodels.PlayByPlay.objects.get(pk=pk)
     play.delete()
     play.game.calculate_statlines()
-    
+    messages.success(request,"Play deleted")
+
     return redirect(play.game.get_absolute_url())
 
 def leaderboard_home(request):
