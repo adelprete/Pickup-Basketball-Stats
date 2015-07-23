@@ -19,19 +19,3 @@ ul.messages li {
 	list-style-type: none;
 	padding: 15px;
 }
-
-ul.messages li.success {
-	background-color: #dff0d8;
-}
-
-ul.messages li.error {
-	background-color: #f2dede;
-}
-
-ul.messages li.warning {
-	background-color: #fcf8e3;
-}
-
-ul.messages li.info {
-	background-color: #d9edf7;
-}

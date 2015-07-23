@@ -69,6 +69,14 @@ TEMPLATES = [
     },
 ]
 
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.SUCCESS: 'bg-success',
+    messages.ERROR: 'bg-danger',
+    messages.WARNING: 'bg-warning',
+    messages.INFO: 'bg-info',
+}
+
 WSGI_APPLICATION = 'saturdayball.wsgi.application'
 
 # Internationalization
