@@ -26,6 +26,7 @@ urlpatterns = [
         url(r'^delete-play/(?P<pk>[0-9]+)/$',        bviews.delete_play,       name='delete_play'),
         url(r'^players-home/$',                 bviews.players_home,       name='players_home'),
         url(r'^player/(?P<id>[0-9]+)/$',                 bviews.player,       name='player_page'),
+        url(r'^games-home/(?P<game_id>\d+)/play/(?P<play_id>[0-9]+)/$',  bviews.PlayByPlayFormView.as_view(), name='playbyplay_detail'),
         url(r'^games-home/$',                 bviews.games_home,       name='games_home'),
         url(r'^leaderboard-home/$',                 bviews.leaderboard_home,       name='leaderboard_home'),
         url(r'^admin/', include(admin.site.urls)),

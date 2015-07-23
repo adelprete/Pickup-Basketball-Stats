@@ -4,6 +4,7 @@ import operator
 from collections import OrderedDict
 from datetime import time
 
+from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.shortcuts import render, redirect, render_to_response
 from basketball import models as bmodels
@@ -152,3 +153,35 @@ def leaderboard_home(request):
     This page uses tabs that load different templatetags that display different information
     """
     return render(request,'leaderboard.html',{})
+
+class PlayByPlayFormView(FormView):
+    template_name = "playbyplay_form.html"
+    model = bmodels.PlayByPlay
+    form_class = bforms.PlayByPlayForm
+
+    def post(self,request,*args,**kwargs):
+        if 'delete' in request.POST:
+            bmodels.PlayByPlay.objects.get(id=self.kwargs['play_id']).delete()
+            messages.success(request,'Play deleted')
+            game = self.get_game(self.kwargs['game_id'])
+            return redirect(game.get_absolute_url())
+        return super(PlayByPlayFormView,self).post(request,*args,**kwargs)
+    
+    def get_form_kwargs(self):
+        kwargs = super(PlayByPlayFormView,self).get_form_kwargs()
+        play = self.get_play(self.kwargs['play_id'])
+        game=self.get_game(self.kwargs['game_id'])
+        self.success_url = game.get_absolute_url()
+        kwargs.update({'game': game,'instance':play})
+        return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.success(self.request,"Play saved")
+        return super(PlayByPlayFormView, self).form_valid(form)
+
+    def get_game(self,id):
+        return bmodels.Game.objects.get(id=id)
+    
+    def get_play(self,id):
+        return bmodels.PlayByPlay.objects.get(id=id)

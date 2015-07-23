@@ -1,4 +1,5 @@
 {% extends 'games_home.html' %}
+{% load bootstrap3 %}
 {% block head %}
 {{ block.super }}
 <script type="text/javascript" >
@@ -74,13 +75,7 @@
 					<div><a id="toggle_form" style="cursor: pointer;">+Toggle Play By Play Form+</a></div>
 					<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
 						<h3 style="margin-top:5px;">Add Play</h3>
-						<div class="form-group">{{ form.time.label_tag }}{{ form.time }}</div>
-						<div class="form-group">{{ form.primary_play.label_tag }}{{ form.primary_play}}</div>
-						<div class="form-group">{{ form.primary_player.label_tag }}{{ form.primary_player }}</div>
-						<div class="form-group">{{ form.secondary_play.label_tag }}{{ form.secondary_play }}</div>
-						<div class="form-group">{{ form.secondary_player.label_tag }}{{ form.secondary_player }}</div>
-						<div class="form-group">{{ form.assist.label_tag }}{{ form.assist }}</div>
-						<div class="form-group">{{ form.assist_player.label_tag }}{{ form.assist_player }}</div>
+						{% bootstrap_form form %}
 						<button type="submit" name="submit" class="btn btn-primary btn-block">Save</button>
 						<div id="play_message" style="display:none;"></div>
 					</form>

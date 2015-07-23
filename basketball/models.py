@@ -94,7 +94,7 @@ class Game(models.Model):
     team2 = models.ManyToManyField('basketball.Player',default=model_team2(),related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0)
     team2_score = models.PositiveIntegerField(default=0)
-    winning_players = models.ManyToManyField('basketball.Player',related_name='winning_players_set',blank=True,null=True)
+    winning_players = models.ManyToManyField('basketball.Player',related_name='winning_players_set',blank=True)
     youtube_id = models.CharField("Youtube Video ID",max_length=2000,blank=True)
     game_type = models.CharField(max_length=30,choices=GAME_TYPES,null=True)
 
@@ -224,6 +224,10 @@ class Game(models.Model):
                 bench.remove(play.secondary_player.pk)
         statlines.update(total_pos=F('off_pos')+F('def_pos'))
         self.calculate_game_score()
+
+    class Meta():
+        ordering = ['-date','title']
+
 
 class StatLine(models.Model):
     game = models.ForeignKey('basketball.Game')
