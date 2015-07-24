@@ -1,10 +1,14 @@
 {% load basketball_tags %}
+{% load bootstrap3 %}
 {% if pbp_filter %}
 	{% for play in pbp_filter %}
 		{% if request.user.is_superuser %}	
 		<a href="{% url 'playbyplay_detail' game.id play.id %}" style="block:inline;color:red;">[x]</a>
 		{% endif %}
-		<a onclick="seekPlayerToPlay({{play.time|seconds }})" style="cursor:pointer;">{{ play.time|time:"i:s" }}</a> - {{ play.get_primary_play_display }} {{ play.primary_player }} 
+		<a onclick="seekPlayerToPlay({{play.time|seconds }})" style="cursor:pointer;">{{ play.time|time:"i:s" }}</a> 
+		{% if play.top_play_rank|top_play_check %}{% bootstrap_icon "star" %}{% endif %}
+		{% if play.top_play_rank|not_top_play_check %}{% bootstrap_icon "cloud" %}{% endif %}
+		- {{ play.get_primary_play_display }} {{ play.primary_player }} 
 		{% if play.secondary_play %}
 			/ {{ play.get_secondary_play_display }} {{ play.secondary_player }}
 		{% endif %}

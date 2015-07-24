@@ -11,6 +11,7 @@ class PlayByPlayForm(forms.ModelForm):
         self.fields['primary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct() 
         self.fields['secondary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
         self.fields['assist_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
+        self.fields['top_play_players'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
 
     """
     def clean_time(self):
@@ -52,7 +53,6 @@ class PlayByPlayFilter(NicerFilterSet):
         self.filters['assist'].field.widget.attrs = {'class':'form-control'}
         self.filters['assist_player'].extra['queryset'] = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
         self.filters['assist_player'].field.widget.attrs = {'class':'form-control'}
-    
     class Meta:
         model = bmodels.PlayByPlay
         fields = ['primary_play', 'primary_player','secondary_play','secondary_player','assist','assist_player']

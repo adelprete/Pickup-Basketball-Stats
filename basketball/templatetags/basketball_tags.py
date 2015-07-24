@@ -11,6 +11,21 @@ register = template.Library()
 def seconds(time):
     return datetime.timedelta(hours=time.hour,minutes=time.minute,seconds=time.second).total_seconds()
 
+@register.filter
+def top_play_check(rank):
+    if rank and rank[0] == 't':
+        return True
+    else:
+        return False
+
+@register.filter
+def not_top_play_check(rank):
+    if rank and rank[0] == 'n':
+        return True
+    else:
+        return False
+
+
 @register.inclusion_tag('box_score.html')
 def box_score(statlines,bgcolor="white"):
     """

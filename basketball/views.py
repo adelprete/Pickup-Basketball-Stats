@@ -34,6 +34,7 @@ def root(request):
     sorted_dict = OrderedDict()
     for key in keys_list:
         sorted_dict[key] = sorted(group_dict[key],key=lambda game: game.title)
+
     context = {
         'group_list':sorted_dict,
             }
