@@ -9,8 +9,10 @@ def create_plays(pk,f):
     """
     game = bmodels.Game.objects.get(pk=pk)
     game.playbyplay_set.all().delete()
+    top_play_players = []
     for bline in f.readlines():
         play_dict = {}
+        top_play_players = []
         line = bline.decode().split(',')
 
         #parse time
@@ -48,9 +50,23 @@ def create_plays(pk,f):
 
             #assist player
             play_dict['assist_player'] = bmodels.Player.objects.get(first_name=line[6].strip())
-        
-        bmodels.PlayByPlay.objects.create(game=game,**play_dict)
 
+        #Top play rank
+        if len(line[7].strip())>0:
+            for choice in bmodels.RANKS:
+                if choice[1].lower() == line[7].lower():
+                    play_dict['top_play_rank'] = choice[0]
+
+            #players involved(added after mode is saved cause of M2M)
+            top_players_list = [player.strip() for player in line[8].strip().split('.')]
+            top_play_players = bmodels.Player.objects.filter(first_name__in=top_players_list)
+
+            #description
+            play_dict['description'] = line[9].strip()
+
+        play = bmodels.PlayByPlay.objects.create(game=game,**play_dict)
+        play.top_play_players = top_play_players
+        play.save()
 
 def per100_top_stat_players(game_type,stat,excluded_pks):
     """
