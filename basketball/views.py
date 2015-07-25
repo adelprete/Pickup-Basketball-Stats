@@ -2,13 +2,13 @@ import datetime
 import itertools
 import operator
 from collections import OrderedDict
-from datetime import time
+from datetime import time, timedelta
 
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.shortcuts import render, redirect, render_to_response
 from basketball import models as bmodels
-from basketball.models import ALL_PLAY_TYPES
+from basketball.models import ALL_PLAY_TYPES, TOP_PLAY_RANKS, NOT_TOP_PLAY_RANKS
 from basketball import forms as bforms
 from basketball import helpers
 from django.http import HttpResponse
@@ -18,26 +18,21 @@ def root(request):
     """Our Homepage
     -Currently prints out a list of games grouped by the dates that they were played on
     """
-    latest_games = bmodels.Game.objects.all()
+    #latest_game will help us find the latest set of games.
+    latest_game = bmodels.Game.objects.all().latest('date')
+    game_set = bmodels.Game.objects.filter(date=latest_game.date).order_by('title')
+
+    top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set,top_play_rank__startswith='t').order_by('top_play_rank')
+    not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set,top_play_rank__startswith='nt').order_by('top_play_rank')
     
-    keyfunc = operator.attrgetter('date')
+    standings = sorted(bmodels.Player.objects.all().exclude(first_name__contains="Team"),key=lambda player: player.total_wins,reverse=True)
 
-    latest_games = sorted(latest_games, key = keyfunc)
-    group_list = [{ k.strftime('%m-%d-%Y') : list(g)} for k, g in itertools.groupby(latest_games, keyfunc)]
-
-    keys_list = []
-    group_dict = {}
-    for d in group_list:
-        group_dict.update(d)
-        keys_list += d.keys()
-    keys_list.sort(reverse=True)
-    sorted_dict = OrderedDict()
-    for key in keys_list:
-        sorted_dict[key] = sorted(group_dict[key],key=lambda game: game.title)
-
-    context = {
-        'group_list':sorted_dict,
-            }
+    context ={
+        'games':game_set,
+        'top_plays':top_plays,
+        'not_top_plays':not_top_plays,
+        'standings':standings,
+    }
     return render(request,"base.html",context)
 
 def box_score(request,id):
@@ -100,11 +95,26 @@ def player(request,id):
 def games_home(request):
     """Currently only passes a list of all the games to the template
     """
-    games = bmodels.Game.objects.all().order_by('-date')
+    latest_games = bmodels.Game.objects.all()
+    
+    keyfunc = operator.attrgetter('date')
+
+    latest_games = sorted(latest_games, key = keyfunc)
+    group_list = [{ k.strftime('%m-%d-%Y') : list(g)} for k, g in itertools.groupby(latest_games, keyfunc)]
+
+    keys_list = []
+    group_dict = {}
+    for d in group_list:
+        group_dict.update(d)
+        keys_list += d.keys()
+    keys_list.sort(reverse=True)
+    sorted_dict = OrderedDict()
+    for key in keys_list:
+        sorted_dict[key] = sorted(group_dict[key],key=lambda game: game.title)
 
     context = {
-        'games':games,
-    }
+        'group_list':sorted_dict,
+            }
     return render(request,'games_home.html',context)
 
 def ajax_add_play(request,pk):

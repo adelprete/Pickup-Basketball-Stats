@@ -4,8 +4,31 @@
 {% endblock %}
 {% block body %}
 	<h3>Games</h3>
-	{% for game in games %}
-	<div style="padding:5px;"><a href="{{ game.get_absolute_url }}">{{ game }}</a></div>
+	{% for key,value in group_list.items %}
+		<div class="row">
+			<div class="col-sm-12">
+				<h3>{{ key }}</h3>
+			</div>
+		</div>
+		<div class-"row">
+		{% for game in value %}
+			<div class="col-md-2" style="margin-bottom:10px;">
+				<table>
+					<tr>
+						<td style="padding-left:10px;"><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+					</tr>
+					<tr>
+						<td style="padding-left:10px;padding-right:10px;">Good Guys:</td>
+						<td>{{ game.team1_score }}</td>
+					</tr>
+					<tr>
+						<td style="padding-left:10px;padding-right:10px;">Bad Guys:</td>
+						<td>{{ game.team2_score }}</td>			
+					</tr>
+				</table>
+			</div>
+		{% endfor %}
+	</div>
 	{% endfor %}
 {% endblock %}
 {% block active_tab %}

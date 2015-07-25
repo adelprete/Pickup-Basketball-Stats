@@ -9,6 +9,8 @@
 		<title>Home</title>
 	{% endblock %}
 	{% block head %}
+	{% load bootstrap3 %}
+	{% load basketball_tags %}
 	{% load staticfiles %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -56,8 +58,7 @@
 </nav>
 	</div>
 	{% endblock %}
-
-	<div class="container" style="margin-bottom:100px;">
+	<div class="container" style="margin-bottom:100px;background:white;">
 		{% if messages %}
 		<ul class="messages">
 			{% for message in messages %}
@@ -66,36 +67,118 @@
 		</ul>
 		{% endif %}
 	{% block body %}
-		{% for key,value in group_list.items %}
-			<div class="row">
-				<div class="col-sm-12">
-					<h3>{{ key }}</h3>
-				</div>
-			</div>
-			<div class-"row">
-			{% for game in value %}
-				<div class="col-md-2" style="margin-bottom:10px;">
-					<table>
+		<div class="row">
+			{% for game in games %}
+				<div class="col-md-2" style="margin-bottom:10px;border:1px solid;">
+					<table style="padding:5px;">
 						<tr>
-							<td style="padding-left:10px;"><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+							<td><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
 						</tr>
 						<tr>
-							<td style="padding-left:10px;padding-right:10px;">Good Guys:</td>
+							<td style="padding-right:10px;">Good Guys:</td>
 							<td>{{ game.team1_score }}</td>
 						</tr>
 						<tr>
-							<td style="padding-left:10px;padding-right:10px;">Bad Guys:</td>
+							<td style="padding-right:10px;">Bad Guys:</td>
 							<td>{{ game.team2_score }}</td>			
 						</tr>
 					</table>
-				</div>
+				</div>	
 			{% endfor %}
 		</div>
-		{% endfor %}
+		<div class="row">
+			<div class="col-md-9">
+				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
+					<div id=player></div>
+				</div>
+				<div class="col-sm-6" style="border-right:1px solid;margin-top:10px;">
+					<div style="border-bottom:1px solid;text-align:center;">Top Plays</div>
+					{% for play in top_plays %}
+						<div>
+							{{ forloop.counter }} 
+							- <a onclick='seekPlayerToPlay({{ play.time|seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
+								{% bootstrap_icon "play" %}</a> - 
+							{{ play.game.title }}: {{ play.description }}
+						</div>
+					{% endfor %}
+				</div>
+				<div class="col-sm-6" style="margin-top:10px;">
+					<div style="border-bottom:1px solid;text-align:center;">Not So Top Plays</div>
+					{% for play in not_top_plays %}
+						<div>
+							{{ forloop.counter }} 
+							- <a onclick='seekPlayerToPlay({{ play.time|seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
+								{% bootstrap_icon "play" %}</a> - 
+							{{ play.game.title }}: {{ play.description }}
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+			<div class="col-md-3">
+				<h3>Standings</h3>
+				<table class="table">
+					<thead>
+					<th>
+						<td>W</td>
+						<td>L</td>
+					</th>
+				</thead>
+					{% for player in standings %}
+						<tr>
+							<td>{{ player }}</td>
+							<td>{{ player.total_wins }}</td>
+							<td>{{ player.total_losses }}</td>
+						</tr>
+					{% endfor %}
+				</table>
+			</div>
+		</div>
 	{% endblock %}
 	</div>	
 	{% block active_tab %}
 		<script>$('#home_link').addClass('active')</script>
 	{% endblock %}
+	<script>
+	    var tag = document.createElement('script');
+		tag.src = "https://www.youtube.com/iframe_api";
+		var firstScriptTag = document.getElementsByTagName('script')[0];
+		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		
+		var player;
+		function onYouTubeIframeAPIReady() {
+			player = new YT.Player('player', {
+			videoId: '{{ top_plays.0.game.youtube_id }}',
+			events: {
+				'onReady': onPlayerReady,
+				'onStateChange': onPlayerStateChange
+				}
+			});
+		}
+		function onPlayerReady(event) {
+			event.target.seekTo({{ top_plays.0.time|seconds }});
+			player.stopVideo()
+		}
+		function seekPlayerToPlay(time,youtube_id) {
+			player.cueVideoById({videoId:youtube_id,
+					startSeconds:time,
+					suggestedQuality:"hd1080"})
+			jumpToAnchor();
+			setTimeout(stopVideo, 10000);
+			player.playVideo();
+		}
+		var done = false;
+		function onPlayerStateChange(event) {
+		if (event.data == YT.PlayerState.PLAYING && !done) {
+			setTimeout(stopVideo, 10000);
+			done = true;
+			}
+		}
+		function stopVideo() {
+	        player.stopVideo();
+		}
+		function jumpToAnchor() {
+			window.location = String(window.location).replace(/\#.*$/, "") + "#player";
+		}
+    </script>
   </body>
 </html>
