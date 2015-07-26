@@ -88,6 +88,13 @@ class Player(models.Model):
     def total_wins(self):
         return self.winning_players_set.all().count()
 
+    @property
+    def total_losses(self):
+        losses = self.total_games - self.total_wins
+        if losses < 0:
+            losses = 0
+        return losses
+
     def get_averages(self,game_type=None):
         """
         Returns a dictionary of the player's averages
