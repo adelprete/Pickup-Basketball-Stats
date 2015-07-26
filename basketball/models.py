@@ -11,6 +11,7 @@ PRIMARY_PLAY = [
         ('to','TO'),
         ('pf','FOUL'),
         ('sub_out','OUT'),
+        ('misc','Misc')
 ]
 
 SECONDARY_PLAY = [
@@ -105,7 +106,7 @@ class Player(models.Model):
 
         player_averages = {}
         for play in ALL_PLAY_TYPES:
-            if play[0] not in ['sub_out','sub_in']:
+            if play[0] not in ['sub_out','sub_in','misc']:
                 x = qs.aggregate(Avg(play[0]))
                 player_averages.update(x)
         player_averages.update(qs.aggregate(Avg('points'),Avg('total_rebounds')))
@@ -161,7 +162,7 @@ class Game(models.Model):
         statlines = self.statline_set.all()
         for line in statlines:
             for play in ALL_PLAY_TYPES:
-                if play[0] not in ['sub_out','sub_in']:
+                if play[0] not in ['sub_out','sub_in','misc']:
                     setattr(line,play[0],0)
             line.points = 0
             line.total_rebounds = 0
@@ -200,7 +201,7 @@ class Game(models.Model):
         team1_statlines = statlines.filter(player__in=self.team1.all())
         team2_statlines = statlines.filter(player__in=self.team2.all())
         for play in playbyplays:
-            if play.primary_play not in ['sub_out','sub_in']:
+            if play.primary_play not in ['sub_out','sub_in','misc']:
                 primary_line = StatLine.objects.get(game=self,player=play.primary_player)
                 orig_val = getattr(primary_line,play.primary_play)
                 setattr(primary_line,play.primary_play,orig_val+1)
@@ -253,9 +254,10 @@ class Game(models.Model):
                     orig_val = getattr(assist_line,play.assist)
                     setattr(assist_line,play.assist,orig_val+1)
                     assist_line.save()
-            else:
+            elif play.primary_play in ['sub_out','sub_in']:
                 bench.append(play.primary_player.pk)
                 bench.remove(play.secondary_player.pk)
+ 
         statlines.update(total_pos=F('off_pos')+F('def_pos'))
         self.calculate_game_score()
 

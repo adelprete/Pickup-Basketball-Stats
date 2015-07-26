@@ -152,7 +152,6 @@
 		}
 		function onPlayerReady(event) {
 			event.target.seekTo({{ top_plays.0.time|seconds }});
-			player.stopVideo()
 		}
 		function seekPlayerToPlay(time,youtube_id) {
 			player.cueVideoById({videoId:youtube_id,

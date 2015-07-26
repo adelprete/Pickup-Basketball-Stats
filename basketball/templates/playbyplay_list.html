@@ -15,6 +15,9 @@
 		{% if play.assist %}
 			/ {{ play.get_assist_display }} {{ play.assist_player }}
 		{% endif %}
+		{% if play.description %}
+			/ {{ play.description }}
+		{% endif %}
 		<br><br>
 	{% endfor %}
 {% else %}
