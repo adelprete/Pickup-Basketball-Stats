@@ -39,28 +39,28 @@ GAME_TYPES = [
 ALL_PLAY_TYPES = PRIMARY_PLAY + SECONDARY_PLAY + ASSIST_PLAY
 
 TOP_PLAY_RANKS = [
-    ('t1','T1'),
-    ('t2','T2'),
-    ('t3','T3'),
-    ('t4','T4'),
-    ('t5','T5'),
-    ('t6','T6'),
-    ('t7','T7'),
-    ('t8','T8'),
-    ('t9','T9'),
+    ('t01','T1'),
+    ('t02','T2'),
+    ('t03','T3'),
+    ('t04','T4'),
+    ('t05','T5'),
+    ('t06','T6'),
+    ('t07','T7'),
+    ('t08','T8'),
+    ('t09','T9'),
     ('t10','T10'),
 ]
 
 NOT_TOP_PLAY_RANKS = [
-    ('nt1','NT1'),
-    ('nt2','NT2'),
-    ('nt3','NT3'),
-    ('nt4','NT4'),
-    ('nt5','NT5'),
-    ('nt6','NT6'),
-    ('nt7','NT7'),
-    ('nt8','NT8'),
-    ('nt9','NT9'),
+    ('nt01','NT1'),
+    ('nt02','NT2'),
+    ('nt03','NT3'),
+    ('nt04','NT4'),
+    ('nt05','NT5'),
+    ('nt06','NT6'),
+    ('nt07','NT7'),
+    ('nt08','NT8'),
+    ('nt09','NT9'),
     ('nt10','NT10'),
 ]
 RANKS = TOP_PLAY_RANKS + NOT_TOP_PLAY_RANKS
