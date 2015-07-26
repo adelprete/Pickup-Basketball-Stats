@@ -108,7 +108,7 @@
 		function onYouTubeIframeAPIReady() {
 			player = new YT.Player('player', {
 			videoId: '{{ game.youtube_id }}',
-		});
+			});
 		}
 		function seekPlayerToPlay(time) {
 			player.cueVideoById({videoId:"{{ game.youtube_id}}",
