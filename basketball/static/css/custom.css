@@ -8,37 +8,27 @@
   border-color: grey;
 }
 
+.game-nibblet {
+	margin: 0px auto;
+	padding: 5px;
+}
+
+.game-nibblet tr td.game-title {
+	text-align: center;
+}
+
+.game-nibblet tr td.team-name {
+	padding-right: 10px;
+}
+
+.game-nibblet tr td.team-score {
+	text-align: right;
+}
 
 .navbar{
 	border-radius: 0px;
-	/*background-color: #0D47A1;*/
 }
-/*
-.navbar-default {
-	background-image: none;
-	border-color: #0D47A1;
-	border-top:none;
-	border-bottom:none;
-}
-*/
-/* link */
-/*
-.navbar-default .navbar-nav > li > a {
-	color: #BBDEFB;
-}
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus {
-    color: white;
-}
-.navbar-default .navbar-nav > .active > a, 
-.navbar-default .navbar-nav > .active > a:hover, 
-.navbar-default .navbar-nav > .active > a:focus {
-	color: black;
-	background-image: none;
-	background-color: #BBDEFB;
-	border-color: #BBDEFB;
-}
-*/
+
 .jumbotron{
 	/*background-color:#2196F3;*/
 	margin-bottom:20px;
@@ -115,6 +105,5 @@ ul.messages li {
 	width:80px;
 	float:right;
 }
-
 
 

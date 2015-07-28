@@ -71,18 +71,18 @@
 		</div>
 		<div class="row">
 			{% for game in games %}
-				<div class="col-xs-4 col-md-2 panel panel-default">
-					<table style="margin:0px auto;padding:5px;">
+				<div class="col-xs-6 col-sm-4 col-md-2 panel panel-default" style="padding:0px;">
+					<table class="game-nibblet">
 						<tr>
-							<td style="text-align:center;" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+							<td class="game-title" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
 						</tr>
 						<tr>
-							<td style="padding-right:10px;">Good Guys:</td>
-							<td style="text-align:right;">{{ game.team1_score }}</td>
+							<td class="team-name">Good Guys:</td>
+							<td class="team-score">{{ game.team1_score }}</td>
 						</tr>
 						<tr>
-							<td style="padding-right:10px;">Bad Guys:</td>
-							<td style="text-align:right;">{{ game.team2_score }}</td>			
+							<td class="team-name">Bad Guys:</td>
+							<td class="team-score">{{ game.team2_score }}</td>			
 						</tr>
 					</table>
 				</div>	
@@ -116,7 +116,7 @@
 					{% endfor %}
 				</div>
 			</div>
-			<div class="col-md-3 panel panel-default">
+			<div class="col-md-3">
 				<h3 class="accent">Standings</h3>
 				<table class="table">
 					<thead>

@@ -14,18 +14,18 @@
 		</div>
 		<div class="row">
 		{% for game in value %}
-			<div class="col-xs-4 col-sm-2 panel panel-default" style="margin-bottom:10px;">
-				<table>
+			<div class="col-xs-6 col-sm-4 col-md-2 panel panel-default" style="padding:0px;">
+				<table class="game-nibblet">
 					<tr>
-						<td style="padding-left:10px;"><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+						<td class="game-title" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
 					</tr>
 					<tr>
-						<td style="padding-left:10px;padding-right:10px;">Good Guys:</td>
-						<td>{{ game.team1_score }}</td>
+						<td class="team-name">Good Guys:</td>
+						<td class="team-score">{{ game.team1_score }}</td>
 					</tr>
 					<tr>
-						<td style="padding-left:10px;padding-right:10px;">Bad Guys:</td>
-						<td>{{ game.team2_score }}</td>			
+						<td class="team-name">Bad Guys:</td>
+						<td class="team-score">{{ game.team2_score }}</td>			
 					</tr>
 				</table>
 			</div>
