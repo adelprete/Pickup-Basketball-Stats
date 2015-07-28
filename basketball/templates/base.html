@@ -66,20 +66,23 @@
 		</ul>
 		{% endif %}
 	{% block body %}
+		<div class="page-header">
+			<h3 class="accent">Last Week Recap ({{games.0.date }})</h3>
+		</div>
 		<div class="row">
 			{% for game in games %}
-				<div class="col-md-2" style="margin-bottom:10px;border:1px solid;border-radius:4px;margin-right:15px">
-					<table style="padding:5px;">
+				<div class="col-xs-3 col-md-2" style="border:1px solid;border-radius:4px;margin: 0px 8px 8px;padding-left:3px;">
+					<table style="margin:0px auto;padding:5px;">
 						<tr>
-							<td><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+							<td style="text-align:center;" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
 						</tr>
 						<tr>
 							<td style="padding-right:10px;">Good Guys:</td>
-							<td>{{ game.team1_score }}</td>
+							<td style="text-align:right;">{{ game.team1_score }}</td>
 						</tr>
 						<tr>
 							<td style="padding-right:10px;">Bad Guys:</td>
-							<td>{{ game.team2_score }}</td>			
+							<td style="text-align:right;">{{ game.team2_score }}</td>			
 						</tr>
 					</table>
 				</div>	
@@ -91,7 +94,7 @@
 					<div id=player></div>
 				</div>
 				<div class="col-sm-6" style="margin-top:10px;">
-					<div style="border-bottom:1px solid;text-align:center;">Top Plays</div>
+					<div style="font-size:24px;border-bottom:1px solid;text-align:center;">Top Plays</div>
 					{% for play in top_plays %}
 						<div>
 							{{ forloop.counter }} 
@@ -102,7 +105,7 @@
 					{% endfor %}
 				</div>
 				<div class="col-sm-6" style="margin-top:10px;">
-					<div style="border-bottom:1px solid;text-align:center;">Not So Top Plays</div>
+					<div style="font-size:24px;border-bottom:1px solid;text-align:center;">Not So Top Plays</div>
 					{% for play in not_top_plays %}
 						<div>
 							{{ forloop.counter }} 
