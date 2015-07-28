@@ -4,6 +4,11 @@
 	}
 }
 
+.panel-default {
+  border-color: grey;
+}
+
+
 .navbar{
 	border-radius: 0px;
 	/*background-color: #0D47A1;*/
@@ -73,7 +78,7 @@ ul.messages li {
 .score-board {
 	padding:0px;
 	font-size:25px;
-	border:1px solid;
+	border:1px solid grey;
 	border-radius:4px;
 }
 

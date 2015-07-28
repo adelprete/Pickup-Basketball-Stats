@@ -9,12 +9,12 @@
 	{% for key,value in group_list.items %}
 		<div class="row">
 			<div class="col-sm-12">
-				<h3>{{ key }}</h3>
+				<h4>{{ key }}</h4>
 			</div>
 		</div>
-		<div class-"row">
+		<div class="row">
 		{% for game in value %}
-			<div class="col-md-2" style="margin-bottom:10px;">
+			<div class="col-xs-4 col-sm-2 panel panel-default" style="margin-bottom:10px;">
 				<table>
 					<tr>
 						<td style="padding-left:10px;"><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
@@ -30,7 +30,7 @@
 				</table>
 			</div>
 		{% endfor %}
-	</div>
+		</div>
 	{% endfor %}
 {% endblock %}
 {% block active_tab %}
