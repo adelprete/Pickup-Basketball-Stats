@@ -98,7 +98,7 @@
 					{% for play in top_plays %}
 						<div>
 							{{ forloop.counter }} 
-							- <a onclick='seekPlayerToPlay({{ play.time|seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
+							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time|seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
 								{% bootstrap_icon "play" %}</a> - 
 							{{ play.game.title }}: {{ play.description }}
 						</div>
@@ -109,14 +109,14 @@
 					{% for play in not_top_plays %}
 						<div>
 							{{ forloop.counter }} 
-							- <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
+							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
 								{% bootstrap_icon "play" %}</a> - 
 							{{ play.game.title }}: {{ play.description }}
 						</div>
 					{% endfor %}
 				</div>
 			</div>
-			<div class="col-md-3">
+			<div class="col-sm-12 col-md-3">
 				<h3 class="accent">Standings</h3>
 				<table class="table">
 					<thead>
