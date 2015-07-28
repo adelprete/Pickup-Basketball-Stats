@@ -6,8 +6,8 @@
 {% block body %}
 <div class="container">
 	<div class="row">
-		<div class="col-sm-12">
-			<h2>{{ player.get_full_name }}</h2>
+		<div class="page-header">
+			<h2 class="accent">{{ player.get_full_name }}</h2>
 		</div>
 	</div>
 
@@ -32,10 +32,10 @@
 			</ul>
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane active" id="5on5">
-					{% player_box_score statlines "#d9edf7" "5v5" %}
+					{% player_box_score statlines "#90CAF9" "5v5" %}
 				</div>
 				<div role="tabpanel" class="tab-pane" id="4on4">
-					{% player_box_score statlines "#d9edf7" "4v4" %}
+					{% player_box_score statlines "#90CAF9" "4v4" %}
 				</div>
 			</div>
 		</div>

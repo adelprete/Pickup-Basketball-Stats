@@ -6,7 +6,7 @@
 
   <head>
 	{% block title %}
-		<title>Home</title>
+		<title>Saturday Ball</title>
 	{% endblock %}
 	{% block head %}
 	{% load bootstrap3 %}
@@ -20,7 +20,8 @@
 	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}" type="text/css">
 	<link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
 	<script type="text/javascript" src="{% static 'js/jquery-1.11.3.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>	
+	<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>	
 	{% endblock %}
   </head>
 
@@ -30,7 +31,7 @@
 		<h1>Saturday Ball</h1>
     </div>
 
-<nav class="navbar navbar-inverse navbar-default">
+<nav class="navbar navbar-default navbar-inverse">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
 
@@ -58,7 +59,7 @@
 </nav>
 	</div>
 	{% endblock %}
-	<div class="container" style="margin-bottom:100px;background:white;">
+	<div class="container" style="margin-bottom:100px;">
 		{% if messages %}
 		<ul class="messages">
 			{% for message in messages %}
@@ -69,7 +70,7 @@
 	{% block body %}
 		<div class="row">
 			{% for game in games %}
-				<div class="col-md-2" style="margin-bottom:10px;border:1px solid;">
+				<div class="col-md-2" style="margin-bottom:10px;border:1px solid;border-radius:4px;margin-right:15px">
 					<table style="padding:5px;">
 						<tr>
 							<td><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
@@ -115,7 +116,7 @@
 				</div>
 			</div>
 			<div class="col-md-3">
-				<h3>Standings</h3>
+				<h3 class="accent">Standings</h3>
 				<table class="table">
 					<thead>
 					<th>

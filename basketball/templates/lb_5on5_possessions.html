@@ -1,33 +1,33 @@
 {% load basketball_tags %}
 <div class='row'>
 	<div class="col-sm-12">
-		<h3>Per 100 Possessions</h3>
+		<h3 class="accent">Per 100 Possessions</h3>
 	</div>
 </div>
 <div class="row">
-	{% top_players_table dreb 'DREB' '#dff0d8' %}
-	{% top_players_table oreb 'OREB' '#dff0d8' %}
-	{% top_players_table total_rebounds 'TOTAL REB' '#dff0d8' %}
-	{% top_players_table asts 'ASSISTS' '#d9edf7' %}
+	{% top_players_table dreb 'DREB' '#80CBC4' %}
+	{% top_players_table oreb 'OREB' '#80CBC4' %}
+	{% top_players_table total_rebounds 'TOTAL REB' '#80CBC4' %}
+	{% top_players_table asts 'ASSISTS' '#90CAF9' %}
 </div>
 <div class="row">
-	{% top_players_table pot_ast 'POT.ASSISTS' '#d9edf7' %}
-	{% top_players_table stls 'STEALS' '#f2dede'%}
-	{% top_players_table to 'TURNOVERS' '#fcf8e3' %}
-	{% top_players_table points	'POINTS' '#dff0d8'%}
+	{% top_players_table pot_ast 'POT.ASSISTS' '#90CAF9' %}
+	{% top_players_table stls 'STEALS' '#EF9A9A'%}
+	{% top_players_table to 'TURNOVERS' '#A5D6A7' %}
+	{% top_players_table points	'POINTS' '#CE93D8'%}
 </div>
 <div class="row">
-	{% top_players_table dreb_percent 'DEF.REB %' '#f2dede' %}
-	{% top_players_table oreb_percent 'OFF.REB %' '#f2dede' %}
-	{% top_players_table treb_percent 'TOT.REB %' '#f2dede' %}
-	{% top_players_table orating_percent 'OFF.RATING %' '#d9edf7' %}
+	{% top_players_table dreb_percent 'DEF.REB %' '#EF9A9A' %}
+	{% top_players_table oreb_percent 'OFF.REB %' '#EF9A9A' %}
+	{% top_players_table treb_percent 'TOT.REB %' '#EF9A9A' %}
+	{% top_players_table orating_percent 'OFF.RATING %' '#90CAF9' %}
 </div>
 <div class="row">
-	{% top_players_table fgm_percent 'FG%' '#dff0d8'  %}
-	{% top_players_table three_percent '3PT%' '#dff0d8' %}
-	{% top_players_table ts_percent 'TS%' '#dff0d8' %}
-	{% top_players_table drating_percent 'DEF.RATING %' '#d9edf7' %}
+	{% top_players_table fgm_percent 'FG%' '#A5D6A7'  %}
+	{% top_players_table three_percent '3PT%' '#A5D6A7' %}
+	{% top_players_table ts_percent 'TS%' '#A5D6A7' %}
+	{% top_players_table drating_percent 'DEF.RATING %' '#90CAF9' %}
 </div>
 <div class="row">
-	{% top_players_table blk 'BLKS' '#f2cf8e3' %}
+	{% top_players_table blk 'BLKS' '#FFCC80' %}
 </div>

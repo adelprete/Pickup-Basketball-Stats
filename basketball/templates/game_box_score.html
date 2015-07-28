@@ -14,36 +14,43 @@
 {% block body %}
 	{% load basketball_tags %}
 	<div class="container">
-		<center>
 		<div class="row">
-				
+			<div class="col-md-9" style="font-size:25px;">
+				<div class="col-md-12" style="text-align:center;">{{ game.date }} - {{ game.title }}</div>
+			</div>
+			<div class="col-md-7 col-md-offset-1" style="padding:0px;font-size:25px;border:1px solid;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;">
+				<div class="col-md-11" style="background-color:white;text-align:left;border-top-left-radius:4px;">Good Guys</div>
+				<div class="col-md-1" style="background-color:#BBDEFB;text-align:center;border-top-right-radius:4px">{{ game.team1_score }}</div>
+				<div class="col-md-11" style="background-color:white;text-align:left;border-bottom-left-radius:4px">Bad Guys</div>
+				<div class="col-md-1" style="background-color:#FFCDD2;text-align:center;border-bottom-right-radius:4px;">{{ game.team2_score }}</div>
+			</div>
 			{% comment %}
 			<div class="col-sm-3">
 				<img src="/media/{{ team1_statlines.0.player.image_src }}" class="hidden-xs img-responsive col-sm-7 col-sm-offset-3 img-circle">
 			</div>
 			{% endcomment %}
-			<div class="col-sm-7 col-sm-offset-1">	
-				{{ game.date }} - {{ game.title }}
-				<table style="width:100%;">
-					<tr style="border:1px solid;">
+						{% comment %}
+				<table style="width:100%;border:1px solid;">
+					<tr>
 						<td style="padding:10px;font-size:20px;">Good Guys</td>
 						<td style="font-size:20px;">{{ game.team1_score }}</td>
 					</tr>
-					<tr style="border:1px solid;">
+					<tr>
 						<td style="padding:10px;font-size:20px;">Bad Guys</td>
 						<td style="font-size:20px;">{{ game.team2_score }}</td>
 					</tr>
 				</table>
 			</div>
+			{% endcomment %}
 			{% comment %}
 			<div class="col-sm-3">
 				<img src="/media/{{ team2_statlines.0.player.image_src }}" class="hidden-xs img-responsive col-sm-7 col-sm-offset-2 img-circle">
 			</div>
 			{% endcomment %}
 		</div>
-		</center>
 		<br>
 		<div class="row">
+
 			<div class="col-md-9">
 				{% if game.youtube_id %}
 				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
@@ -53,15 +60,15 @@
 				<div style="width:100%;">
 					<br>
 					Good Guys
-					{% box_score team1_statlines "#d9edf7" %}	
+					{% box_score team1_statlines "#BBDEFB" %}	
 					<br><br>
 					Bad Guys
-					{% box_score team2_statlines "#f2dede" %}
+					{% box_score team2_statlines "#FFCDD2" %}
 				</div>
 			</div>
 			<div class="col-md-3" style="padding:0px;">
 				<div class="col-md-12">
-					<div id="play_title"><h4>Play By Plays</h4></div>
+					<div id="play_title"><h4 class="accent">Play By Plays</h4></div>
 					{% if request.user.is_superuser %}
 					<div><a id="toggle_fileform" style="cursor: pointer;">+Toggle Upload Form+</a></div>
 					<form id='pbp_file_form' method="post" action="." enctype="multipart/form-data" style="display:none;">{% csrf_token %}
