@@ -27,11 +27,8 @@
 
   <body>
 	{% block top_menu %}
-    <div class="jumbotron">
-		<h1>Saturday Ball</h1>
-    </div>
-
-<nav class="navbar navbar-default navbar-inverse">
+    
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
 
@@ -42,7 +39,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		  </button>
-		  <div class="navbar-brand" style="color:white;">Menu</div>
+		  <div class="navbar-brand" style="color:white;">Saturday Ball</div>
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -57,9 +54,10 @@
 			</ul>
     </div>
 </nav>
+
 	</div>
 	{% endblock %}
-	<div class="container" style="margin-bottom:100px;">
+	<div class="container" style="margin-bottom:100px;margin-top:80px;">
 		{% if messages %}
 		<ul class="messages">
 			{% for message in messages %}
@@ -160,14 +158,14 @@
 					suggestedQuality:"hd1080"})
 			jumpToAnchor();
 			clearTimeout(timeout);
-			timeout = setTimeout(stopVideo, 10000);
+			timeout = setTimeout(stopVideo, 12000);
 			player.playVideo();
 		}
 		var done = false;
 		function onPlayerStateChange(event) {
 		if (event.data == YT.PlayerState.PLAYING && !done) {
 			clearTimeout(timeout);
-			timeout = setTimeout(stopVideo, 10000);
+			timeout = setTimeout(stopVideo, 12000);
 			done = true;
 			}
 		}

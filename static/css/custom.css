@@ -36,7 +36,8 @@
 */
 .jumbotron{
 	/*background-color:#2196F3;*/
-	margin-bottom:0px;
+	margin-bottom:20px;
+	margin-top:40px;
 	color: black;
 	padding-bottom:15px;
 	padding-top:15px;
@@ -54,6 +55,9 @@ ul.messages li {
 	padding: 15px;
 }
 
+.page-header {
+	margin-top:0px;
+}
 .accent {
 	padding-left:10px;
 	border-left:4px solid #F44336;	
@@ -65,4 +69,47 @@ ul.messages li {
   background-color: #2196F3;
   border-color: #2196F3;
 }
+
+.score-board {
+	padding:0px;
+	font-size:25px;
+	border:1px solid;
+	border-radius:4px;
+}
+
+.sb-top-team {
+	padding-left:10px;
+	background-color:white;
+	text-align:left;
+	border-top-left-radius:4px;
+	display:inline;
+}
+
+.sb-top-team-score {
+	background-color:#BBDEFB;
+	text-align:center;
+	border-top-right-radius:4px;
+	display:inline;
+	width:80px;
+	float:right;
+}
+
+.sb-bottom-team{
+	padding-left:10px;
+	background-color:white;
+	text-align:left;
+	border-bottom-left-radius:4px;
+	display:inline;
+}
+
+.sb-bottom-team-score {
+	background-color:#FFCDD2;
+	text-align:center;
+	border-bottom-right-radius:4px;
+	display:inline;
+	width:80px;
+	float:right;
+}
+
+
 
