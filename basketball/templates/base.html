@@ -93,8 +93,8 @@
 				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
 					<div id=player></div>
 				</div>
-				<div class="col-sm-6" style="margin-top:10px;">
-					<div style="font-size:24px;border-bottom:1px solid;text-align:center;">Top Plays</div>
+				<div class="col-sm-6" style="margin-top:10px;margin-left:0px;">
+					<h3 class="accent">Top Plays</h3>
 					{% for play in top_plays %}
 						<div>
 							{{ forloop.counter }} 
@@ -105,7 +105,7 @@
 					{% endfor %}
 				</div>
 				<div class="col-sm-6" style="margin-top:10px;">
-					<div style="font-size:24px;border-bottom:1px solid;text-align:center;">Not So Top Plays</div>
+					<h3 class="accent">Not Top Plays</h3>
 					{% for play in not_top_plays %}
 						<div>
 							{{ forloop.counter }} 
@@ -117,6 +117,7 @@
 				</div>
 			</div>
 			<div class="col-sm-12 col-md-3">
+				<div class="col-sm-12">
 				<h3 class="accent">Standings</h3>
 				<table class="table">
 					<thead>
@@ -133,6 +134,7 @@
 						</tr>
 					{% endfor %}
 				</table>
+			</div>
 			</div>
 		</div>
 		<script>
