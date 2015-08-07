@@ -198,3 +198,19 @@ class PlayByPlayFormView(FormView):
     
     def get_play(self,id):
         return bmodels.PlayByPlay.objects.get(id=id)
+
+def recap(request,game_id): 
+    game = bmodels.Game.objects.get(id=game_id)
+
+    game_set = bmodels.Game.objects.filter(date=game.date).order_by('title')
+
+    top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set,top_play_rank__startswith='t').order_by('top_play_rank')
+    not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set,top_play_rank__startswith='nt').order_by('top_play_rank')
+
+    context ={
+        'games':game_set,
+        'top_plays':top_plays,
+        'not_top_plays':not_top_plays,
+    }
+
+    return render(request,'recap.html',context)

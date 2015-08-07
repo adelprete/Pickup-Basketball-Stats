@@ -9,7 +9,10 @@
 	{% for key,value in group_list.items %}
 		<div class="row">
 			<div class="col-sm-12">
-				<h3>{{ key }}</h3>
+				<h3 style="display:inline;">{{ key }}</h3>
+				<form method="get" action="{% url 'recap' value.0.pk %}" style="display:inline;">
+					<button type="submit" class="btn btn-primary btn-xs" style="margin-bottom:10px;margin-left:5px;">Recap</button>
+				</form>
 			</div>
 		</div>
 		<div class="row">
