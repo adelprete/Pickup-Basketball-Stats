@@ -1,0 +1,109 @@
+{% extends 'games_home.html' %}
+{% load bootstrap3 %}
+{% load basketball_tags %}
+{% block body %}
+	<div class="page-header">
+		<h3 class="accent"><div style="display:inline;">Week Recap:</div> <div style="display:inline;">{{games.0.date }}</div></h3>
+		</div>
+		<div class="row">
+			{% for game in games %}
+				<div class="col-xs-6 col-sm-4 col-md-2 panel panel-default" style="padding:0px;">
+					<table class="game-nibblet">
+						<tr>
+							<td class="game-title" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+						</tr>
+						<tr>
+							<td class="team-name">Good Guys:</td>
+							<td class="team-score">{{ game.team1_score }}</td>
+						</tr>
+						<tr>
+							<td class="team-name">Bad Guys:</td>
+							<td class="team-score">{{ game.team2_score }}</td>			
+						</tr>
+					</table>
+				</div>	
+			{% endfor %}
+		</div>
+		<div class="row">
+			<div class="col-md-9">
+				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
+					<div id=player></div>
+				</div>
+				<div class="col-sm-6" style="margin-top:10px;margin-left:0px;">
+					<h3 class="accent">Top Plays</h3>
+					{% if top_plays %}
+						{% for play in top_plays %}
+							<div>
+								{{ forloop.counter }} 
+								{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time|seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
+									{% bootstrap_icon "play" %}</a> - 
+								{{ play.game.title }}: {{ play.description }}
+							</div>
+						{% endfor %}
+					{% else %}
+						No Top Plays
+					{% endif %}
+				</div>
+				<div class="col-sm-6" style="margin-top:10px;">
+					<h3 class="accent">Not Top Plays</h3>
+					{% if not_top_plays %}
+						{% for play in not_top_plays %}
+							<div>
+								{{ forloop.counter }} 
+								{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
+									{% bootstrap_icon "play" %}</a> - 
+								{{ play.game.title }}: {{ play.description }}
+							</div>
+						{% endfor %}
+					{% else %}
+						No Not Top Plays
+					{% endif %}
+				</div>
+			</div>
+			</div>
+		</div>
+		<script>
+	    var tag = document.createElement('script');
+		tag.src = "https://www.youtube.com/iframe_api";
+		var firstScriptTag = document.getElementsByTagName('script')[0];
+		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		
+		var player;
+		var timeout;
+		function onYouTubeIframeAPIReady() {
+			player = new YT.Player('player', {
+			videoId: '{{ top_plays.0.game.youtube_id }}',
+			events: {
+				'onReady': onPlayerReady,
+				'onStateChange': onPlayerStateChange
+				}
+			});
+		}
+		function onPlayerReady(event) {
+			event.target.seekTo({{ top_plays.0.time|seconds }});
+		}
+		function seekPlayerToPlay(time,youtube_id) {
+			player.cueVideoById({videoId:youtube_id,
+					startSeconds:time,
+					suggestedQuality:"hd1080"})
+			jumpToAnchor();
+			clearTimeout(timeout);
+			timeout = setTimeout(stopVideo, 12000);
+			player.playVideo();
+		}
+		var done = false;
+		function onPlayerStateChange(event) {
+		if (event.data == YT.PlayerState.PLAYING && !done) {
+			clearTimeout(timeout);
+			timeout = setTimeout(stopVideo, 12000);
+			done = true;
+			}
+		}
+		function stopVideo() {
+	        player.stopVideo();
+		}
+		function jumpToAnchor() {
+			window.location = String(window.location).replace(/\#.*$/, "") + "#player";
+		}
+    </script>
+{% endblock %}
