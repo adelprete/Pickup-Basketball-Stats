@@ -175,6 +175,7 @@ class PlayByPlayFormView(FormView):
             bmodels.PlayByPlay.objects.get(id=self.kwargs['play_id']).delete()
             messages.success(request,'Play deleted')
             game = self.get_game(self.kwargs['game_id'])
+            game.calculate_statlines()
             return redirect(game.get_absolute_url())
         return super(PlayByPlayFormView,self).post(request,*args,**kwargs)
     
