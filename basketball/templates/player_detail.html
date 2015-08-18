@@ -1,0 +1,101 @@
+{% extends 'players_home.html' %}
+{% load basketball_tags %}
+{% block title %}
+<title>{{ player.get_full_name }}</title>
+{% endblock %}
+{% block body %}
+{% load staticfiles %}
+<div class="container">
+	<div class="row">
+		<div class="page-header">
+			<h2 class="accent">{{ player.get_full_name }}</h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-7 col-sm-6 col-md-3">
+			{% if player.image_src %}
+				{{ media_url }}
+				<img src="/media/{{ player.image_src }}" class="img-responsive img-rounded">
+			{% else %}
+				<img src="{% static "signup_male.png" %}" class="img-responsive img-rounded">
+			{% endif %}
+		</div>
+		<div class="col-xs-5 col-sm-6 col-md-3">
+			<table style="min-height: 10em; vertical-align: middle;">
+				<tr>
+					<td style="font-weight:bold;">DOB: </td>
+					<td style="padding-left:5px;">TBD</td>
+				</tr>
+				<tr>
+					<td style="font-weight:bold;">Height: </td>
+					<td style="padding-left:5px;">TBD</td>
+				</tr>
+				<tr>
+					<td style="font-weight:bold;">Position: </td>
+					<td style="padding-left:5px;">TBD</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-6">
+			<div class="visible-xs-block">
+				<hr>
+			</div>
+			<h4 class="accent">Per 100 averages</h4>
+			{% player_five_on_five_pos '5v5' player.pk %}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="nav nav-tabs" role="tablist" style="margin:5px 0px;">
+				<li role="presentation" class="active"><a href="#highlights" aria-controls="home" role="tab" data-toggle="tab" style="font-weight:bold;">Highlights</a></li>
+				<li role="presentation"><a href="#averages" aria-controls="averages" role="tab" data-toggle="tab" style="font-weight:bold;">Averages</a></li>
+				<li role="presentation"><a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a></li>
+				<li role="presentation"><a href="#gamelog" aria-controls="gamelog" role="tab" data-toggle="tab" style="font-weight:bold;">Game Log</a></li>
+			</ul>
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active" id="highlights" style="padding-top:15px;">
+					{% player_highlights player.id %}
+				</div>
+				<div role="tabpanel" class="tab-pane" id="averages" style="padding-top:15px;">
+					<div class="row">
+						<div class="col-sm-12">
+							<h4 class="accent" style="margin-bottom:5px;">Avg Per Game</h4>
+							{% include "player_averages_table.html" with averages=averages %}
+							<h4 class="accent" style="margin-bottom:5px;">5on5 Avg Game</h4>
+							{% include "player_averages_table.html" with averages=averages_5v5 %}	
+							<h4 class="accent" style="margin-bottom:5px;">4on4 Avg Game</h4>
+							{% include "player_averages_table.html" with averages=averages_4v4 %}	
+						</div>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="totals" style="padding-top:15px;">
+					<div class="row">
+						<div class="col-sm-12">
+							<h4 class="accent" style="margin-bottom:-20px;">5 on 5 Totals</h4>
+							{% lb_5on5_totals player_pk=player.pk %}
+						</div>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane" id="gamelog" style="padding-top:15px;">
+					<div class="row">
+						<div class="col-sm-12">
+							<ul class="nav nav-pills">
+								<li role="presentation" class="active"><a href="#5on5" aria-controls="home" role="tab" data-toggle="tab">5on5</a></li>
+								<li role="presentation"><a href="#4on4" aria-controls="profile" role="tab" data-toggle="tab">4on4</a></li>
+							</ul>
+							<div class="tab-content">
+								<div role="tabpanel" class="tab-pane active" id="5on5">
+									{% player_box_score statlines "#d9edf7" "5v5" %}
+								</div>
+								<div role="tabpanel" class="tab-pane" id="4on4">
+									{% player_box_score statlines "#d9edf7" "4v4" %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

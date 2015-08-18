@@ -90,7 +90,7 @@ def player(request,id):
         'averages_5v5':player.get_averages('5v5'),
         'averages_4v4':player.get_averages('4v4')
     }
-    return render(request,'player.html',context)
+    return render(request,'player_detail.html',context)
 
 def games_home(request):
     """Currently only passes a list of all the games to the template

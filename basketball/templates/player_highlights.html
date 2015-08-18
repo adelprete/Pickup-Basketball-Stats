@@ -1,0 +1,89 @@
+{% load basketball_tags %}
+{% load bootstrap3 %}
+<div class="row">
+	<div class="col-md-9 col-md-offset-1">
+		<div class="embed-responsive embed-responsive-16by9" style="margin:8px auto;">
+			<div id=player></div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-9 col-md-offset-1">
+		<ul class="nav nav-pills">
+			<li role="presentation" class="active"><a href="#topplays" role="tab" data-toggle="pill">Top_Plays</a></li>
+			<li role="presentation"><a href="#nottopplays" role="tab" data-toggle="pill">Not top plays</a></li>
+		</ul>
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="topplays" style="margin-bottom:5px;">
+				<div class="row">
+					{% for play in top_plays %}
+						<div class="col-sm-6">
+						{{ forloop.counter }} 
+						{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
+						{% bootstrap_icon "play" %}</a> - 
+						{{ play.game.title }}: {{ play.description }}
+						</div>
+						{% if forloop.counter|divisibleby:2 and not forloop.last %}
+							</div><div class="row">
+						{% elif forloop.last %}
+							</div>
+						{% endif %}
+					{% endfor %}
+				</div>
+				<div role="tabpanel" class="tab-pane" id="nottopplays" style="margin-bottom:5px;">
+					{% for play in not_top_plays %}
+						<div class="col-md-6">
+							{{ forloop.counter }} 
+							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
+							{% bootstrap_icon "play" %}</a> - 
+							{{ play.game.title }}: {{ play.description }}
+						</div>
+					{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	var tag = document.createElement('script');
+	tag.src = "https://www.youtube.com/iframe_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+	
+	var player;
+	var timeout;
+	function onYouTubeIframeAPIReady() {
+		player = new YT.Player('player', {
+		videoId: '{{ top_plays.0.game.youtube_id }}',
+		events: {
+			'onReady': onPlayerReady,
+			'onStateChange': onPlayerStateChange
+			}
+		});
+	}
+	function onPlayerReady(event) {
+		event.target.seekTo({{ top_plays.0.time|seconds }});
+	}
+	function seekPlayerToPlay(time,youtube_id) {
+		player.cueVideoById({videoId:youtube_id,
+				startSeconds:time,
+				suggestedQuality:"hd1080"})
+		jumpToAnchor();
+		clearTimeout(timeout);
+		timeout = setTimeout(stopVideo, 12000);
+		player.playVideo();
+	}
+	var done = false;
+	function onPlayerStateChange(event) {
+	if (event.data == YT.PlayerState.PLAYING && !done) {
+		clearTimeout(timeout);
+		timeout = setTimeout(stopVideo, 12000);
+		done = true;
+		}
+	}
+	function stopVideo() {
+		player.stopVideo();
+	}
+	function jumpToAnchor() {
+		window.location = String(window.location).replace(/\#.*$/, "") + "#player";
+	}
+</script>

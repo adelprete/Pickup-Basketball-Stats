@@ -1,0 +1,81 @@
+<head>
+<style type="text/css">
+table.table-bold td:nth-child(odd){
+	padding-right:5px;
+	font-weight:bold;
+}
+table.table-bold td:nth-child(even){
+	padding-right:30px;
+}
+</style>
+</head>
+<div class="hidden-sm">
+<table class="table-bold">
+	<tr>
+		<td>Points: </td><td>{{ points.0.1|floatformat }}</td>
+		<td>Asts: </td><td>{{ asts.0.1|floatformat }}</td>
+		<td>Pot.Asts: </td><td>{{ pot_ast.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>Def.Reb: </td><td>{{ dreb.0.1|floatformat }}</td>
+		<td>Off.Reb: </td><td>{{ oreb.0.1|floatformat }}</td>
+		<td>Tot.reb: </td><td>{{ total_rebounds.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>Def.reb %: </td><td>{{ dreb_percent.0.1|floatformat }}</td>
+		<td>Off.reb %: </td><td>{{ oreb_percent.0.1|floatformat }}</td>
+		<td>Tot.reb %: </td><td>{{ treb_percent.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>TS %: </td><td>{{ ts_percent.0.1|floatformat }}</td>
+		<td>Off.Rating %: </td><td>{{ orating_percent.0.1|floatformat }}</td>
+		<td>Def.Rating %: </td><td>{{ drating_percent.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>Stls: </td><td>{{ stls.0.1|floatformat }}</td>
+		<td>TO: </td><td>{{ to.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>FGM %: </td><td>{{ fgm_percent.0.1|floatformat }}</td>
+		<td>3PM %: </td><td>{{ three_percent.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>Off.reb %: </td><td>{{ oreb_percent.0.1|floatformat }}</td>
+		<td>Off.reb %: </td><td>{{ oreb_percent.0.1|floatformat }}</td>
+	</tr>
+</table>
+</div>
+<div class="visible-sm-block">
+<table class="table-bold">
+	<tr>
+		<td>Points: </td><td>{{ points.0.1|floatformat }}</td>
+		<td>Asts: </td><td>{{ asts.0.1|floatformat }}</td>
+		<td>Pot.Asts: </td><td>{{ pot_ast.0.1|floatformat }}</td>
+		<td>Stls: </td><td>{{ stls.0.1|floatformat }}</td>
+		<td>TO: </td><td>{{ to.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>FGM %: </td><td>{{ fgm_percent.0.1|floatformat }}</td>
+		<td>3PM %: </td><td>{{ three_percent.0.1|floatformat }}</td>
+		<td>Off.reb %: </td><td>{{ oreb_percent.0.1|floatformat }}</td>
+		<td>Off.reb %: </td><td>{{ oreb_percent.0.1|floatformat }}</td>
+	</tr>
+
+	<tr>
+		<td>Def.Reb: </td><td>{{ dreb.0.1|floatformat }}</td>
+		<td>Off.Reb: </td><td>{{ oreb.0.1|floatformat }}</td>
+		<td>Tot.reb: </td><td>{{ total_rebounds.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>Def.reb %: </td><td>{{ dreb_percent.0.1|floatformat }}</td>
+		<td>Off.reb %: </td><td>{{ oreb_percent.0.1|floatformat }}</td>
+		<td>Tot.reb %: </td><td>{{ treb_percent.0.1|floatformat }}</td>
+	</tr>
+	<tr>
+		<td>TS %: </td><td>{{ ts_percent.0.1|floatformat }}</td>
+		<td>Off.Rating %: </td><td>{{ orating_percent.0.1|floatformat }}</td>
+		<td>Def.Rating %: </td><td>{{ drating_percent.0.1|floatformat }}</td>
+	</tr>
+</table>
+</div>
+<br><br>
