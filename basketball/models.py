@@ -71,7 +71,9 @@ class Player(models.Model):
     height = models.CharField(max_length=30,blank=True)
     weight = models.CharField(max_length=30,blank=True)
     image_src = models.ImageField(upload_to ='player_images/',blank=True,null=True)
-	
+    birth_date = models.DateField(blank=True,null=True)
+    position = models.CharField(max_length=30,blank=True)
+
     def __str__(self):
         return self.get_full_name()
 
