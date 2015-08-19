@@ -5,6 +5,7 @@
 {% endblock %}
 {% block body %}
 {% load staticfiles %}
+{% load thumbnail %}
 <div class="container">
 	<div class="row">
 		<div class="page-header">
@@ -14,10 +15,9 @@
 	<div class="row">
 		<div class="col-xs-7 col-sm-6 col-md-3">
 			{% if player.image_src %}
-				{{ media_url }}
-				<img src="/media/{{ player.image_src }}" class="img-responsive img-rounded">
+			<img src="{% thumbnail player.image_src 200x200 crop %}" class="img-responsive img-rounded" style="margin:0px auto;">
 			{% else %}
-				<img src="{% static "signup_male.png" %}" class="img-responsive img-rounded">
+				<img src="{% thumbnail object.image|default:'signup_male.png' 200x200 %}" class="img-responsive img-rounded" style="margin:0px auto;">
 			{% endif %}
 		</div>
 		<div class="col-xs-5 col-sm-6 col-md-3">

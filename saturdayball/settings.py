@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'basketball',
     'bootstrap3',
+    'easy_thumbnails',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -96,6 +97,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'avatar': {'size': (200, 200), 'crop': True},
+    },
+}
 
 from saturdayball.private import *
 
