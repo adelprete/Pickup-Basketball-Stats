@@ -1,22 +1,29 @@
+<script>
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip({
+		container : 'body'
+	});
+});
+</script>
 <div class="table-responsive">
 	<table class="table">
 		<tr style="background:#d9edf7">
-			<td>FGM</td>
-			<td>FGA</td>
-			<td>3PM</td>
-			<td>3PA</td>
-			<td>Off</td>
-			<td>Def</td>
-			<td>Reb</td>
-			<td>Ast</td>
-			<td>P.Ast</td>
-			<td>TO</td>
-			<td>Stl</td>
-			<td>Blk</td>
-			<td>BA</td>
-			<td>FD</td>
-			<td>PF</td>
-			<td>Pts</td>
+			<td data-toggle="tooltip" title="Field Goals Made (Any made basket)">FGM</td>
+			<td data-toggle="tooltip" title="Field Goals Attempted (Any basket attempted)">FGA</td>
+			<td data-toggle="tooltip" title="Three Pointers Made (Any shot made behind the 3point line)">3PM</td>
+			<td data-toggle="tooltip" title="Three Pointers Attempted (Any shot attempted behind the 3point line)">3PA</td>
+			<td data-toggle="tooltip" title="Offensive Rebounds (A rebound after a teammate/self misses)">Off</td>
+			<td data-toggle="tooltip" title="Defensive Rebounds (A rebound after an opponent misses)">Def</td>
+			<td data-toggle="tooltip" title="Total Rebounds (A rebound after any miss)">Reb</td>
+			<td data-toggle="tooltip" title="Assists (A pass that leads to a score)">Ast</td>
+			<td data-toggle="tooltip" title="Potential Assist (A pass that would’ve lead to a score if the receiver made the shot)">P.Ast</td>
+			<td data-toggle="tooltip" title="Turnover (Anytime you give the ball to the other team)">TO</td>
+			<td data-toggle="tooltip" title="Steals (Anytime you cause a turnover from the other team)">Stl</td>
+			<td data-toggle="tooltip" title="Blocks (Whenever you deflect a shot attempt)">Blk</td>
+			<td data-toggle="tooltip" title="Blocks Allowed (How many shot attempts have been deflected)">BA</td>
+			<td data-toggle="tooltip" title="Fouls Drawn (Whenever you are fouled)">FD</td>
+			<td data-toggle="tooltip" title="Personal Fouls (Amount of fouls that you have been called on)">PF</td>
+			<td data-toggle="tooltip" title="Points (Amount of points scored)">Pts</td>
 		</tr>
 		<tr>
 			<td>{{ averages.fgm__avg|floatformat }}</td>

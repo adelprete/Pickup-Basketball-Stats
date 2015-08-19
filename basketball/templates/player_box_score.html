@@ -3,22 +3,22 @@
 	<tr style="background:{{ bgcolor }}">
 		<td>Date</td>
 		<td>Game</td>
-		<td>FG</td>
-		<td>3pt</td>
-		<td>Off</td>
-		<td>Def</td>
-		<td>Reb</td>
-		<td>Ast</td>
-		<td>P.Ast</td>
-		<td>TO</td>
-		<td>Stl</td>
-		<td>Blk</td>
-		<td>BA</td>
-		<td>FD</td>
-		<td>PF</td>
-		<td>Pts</td>
-		<td>Off Pos</td>
-		<td>Def Pos</td>
+		<td data-toggle="tooltip" title="Field Goals Made - Field Goals Attempted">FG</td>
+		<td data-toggle="tooltip" title="3PT Field Goals Made - 3PT Field Goals Attempted">3pt</td>
+		<td data-toggle="tooltip" title="Offensive Rebounds (A rebound after a teammate/self misses)">Off</td>
+		<td data-toggle="tooltip" title="Defensive Rebounds (A rebound after an opponent misses)">Def</td>
+		<td data-toggle="tooltip" title="Total Rebounds (A rebound after any miss)">Reb</td>
+		<td data-toggle="tooltip" title="Assists (A pass that leads to a score)">Ast</td>
+		<td data-toggle="tooltip" title="Potential Assist (A pass that would’ve lead to a score if the receiver made the shot)">P.Ast</td>
+		<td data-toggle="tooltip" title="Turnover (Anytime you give the ball to the other team)">TO</td>
+		<td data-toggle="tooltip" title="Steals (Anytime you cause a turnover from the other team)">Stl</td>
+		<td data-toggle="tooltip" title="Blocks (Whenever you deflect a shot attempt)">Blk</td>
+		<td data-toggle="tooltip" title="Blocks Allowed (How many shot attempts have been deflected)">BA</td>
+		<td data-toggle="tooltip" title="Fouls Drawn (Whenever you are fouled)">FD</td>
+		<td data-toggle="tooltip" title="Personal Fouls (Amount of fouls that you have been called on)">PF</td>
+		<td data-toggle="tooltip" title="Points (Amount of points scored)">Pts</td>
+		<td data-toggle="tooltip" title="Offensive Possessions (Amount of offensive possessions player was a part of)">Off Pos</td>
+		<td data-toggle="tooltip" title="Defensive Possessions (Amount of defensive possessions player was a part of)">Def Pos</td>
 	</tr>
 	{% for line in statlines %}
 		<tr>

@@ -208,7 +208,36 @@ def lb_5on5_totals(player_pk=None):
 
 @register.inclusion_tag('top_stat_table.html')
 def top_players_table(player_list,title,bgcolor='white'):
-    return {'player_list':player_list,'title':title,'bgcolor':bgcolor}
+
+    tooltip_desc = ""
+    if title == "DREB":
+        tooltip_desc = "Defensive Rebounds"
+    elif title == "OREB":
+        tooltip_desc = "Offensive Rebounds"
+    elif title == "TOTAL REB":
+        tooltip_desc = "Total Rebounds"
+    elif title == "POT.ASSISTS":
+        tooltip_desc = "Potential Assists. A pass that would’ve lead to a score if the receiver made the shot."
+    elif title == "DEF.REB %":
+        tooltip_desc = "Percentage of defensive rebounds grabbed against total defensive rebounds available"
+    elif title == "OFF.REB %":
+        tooltip_desc = "Percentage of offensive rebounds grabbed against total offensive rebounds available"
+    elif title == "TOT.REB %":
+        tooltip_desc = "Percentage of all rebounds grabbed against total available"
+    elif title == "OFF.RATING %":
+        tooltip_desc = "Points scored per 100 possessions while you’re on the floor"
+    elif title == "DEF.RATING %":
+        tooltip_desc = "Points scored against your per 100 possessions while you’re on the floor"
+    elif title == "FG%":
+        tooltip_desc = "Field Goal Percentage.  Percentage of Field Goals made"
+    elif title == "3PT%":
+        tooltip_desc = "3 Point Percentage. Percentage of 3pointers made"
+    elif title == "TS%":
+        tooltip_desc = "True Shooting Percentage. Percentage of Field Goals made with the 3pointers weighed higher.  Formula is Points / FGA"
+    elif title == "BLKS":
+        tooltip_desc = "Blocks"
+
+    return {'player_list':player_list,'title':title,'tooltip_desc':tooltip_desc,'bgcolor':bgcolor}
 
 @register.inclusion_tag('player_highlights.html')
 def player_highlights(player_pk):
@@ -216,7 +245,7 @@ def player_highlights(player_pk):
 	not_top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='nt',top_play_players__pk=player_pk)
 	
 	context = {
-			'top_plays':top_plays,
-			'not_top_plays':not_top_plays
+	    'top_plays':top_plays,
+	    'not_top_plays':not_top_plays
 	}
 	return context
