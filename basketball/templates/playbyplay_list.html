@@ -2,7 +2,7 @@
 {% load bootstrap3 %}
 {% if pbp_filter %}
 	{% for play in pbp_filter %}
-		{% if request.user.is_superuser %}	
+		{% if not request.user.is_anonymous %}	
 		<a href="{% url 'playbyplay_detail' game.id play.id %}" style="block:inline;color:red;">[x]</a>
 		{% endif %}
 		<a onclick="seekPlayerToPlay('{{play.time|seconds }}')" style="cursor:pointer;">{{ play.time|time:"i:s" }}</a> 

@@ -125,8 +125,8 @@ def model_team2():
     return [Player.objects.get(first_name='Team2').pk]
 
 class Game(models.Model):
-    date = models.DateField(blank=True,null=True)
-    title = models.CharField(max_length=30,blank=True)
+    date = models.DateField(null=True)
+    title = models.CharField(max_length=30)
     team1 = models.ManyToManyField('basketball.Player',default=model_team1(),related_name='team1_set')
     team2 = models.ManyToManyField('basketball.Player',default=model_team2(),related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0)

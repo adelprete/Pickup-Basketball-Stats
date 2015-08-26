@@ -25,34 +25,12 @@
 				<div class="sb-bottom-team">Bad Guys</div>
 				<div class="sb-bottom-team-score">{{ game.team2_score }}</div>
 			</div>
-			{% comment %}
-			<div class="col-sm-3">
-				<img src="/media/{{ team1_statlines.0.player.image_src }}" class="hidden-xs img-responsive col-sm-7 col-sm-offset-3 img-circle">
-			</div>
-			{% endcomment %}
-						{% comment %}
-				<table style="width:100%;border:1px solid;">
-					<tr>
-						<td style="padding:10px;font-size:20px;">Good Guys</td>
-						<td style="font-size:20px;">{{ game.team1_score }}</td>
-					</tr>
-					<tr>
-						<td style="padding:10px;font-size:20px;">Bad Guys</td>
-						<td style="font-size:20px;">{{ game.team2_score }}</td>
-					</tr>
-				</table>
-			</div>
-			{% endcomment %}
-			{% comment %}
-			<div class="col-sm-3">
-				<img src="/media/{{ team2_statlines.0.player.image_src }}" class="hidden-xs img-responsive col-sm-7 col-sm-offset-2 img-circle">
-			</div>
-			{% endcomment %}
 		</div>
 		<br>
 		<div class="row">
 			<div class="col-md-9">
 				{% if game.youtube_id %}
+				<div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden;"></div>
 				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
 					<div id=player></div>
 				</div>
@@ -69,7 +47,7 @@
 			<div class="col-md-3" style="padding:0px;">
 				<div class="col-md-12">
 					<div id="play_title"><h4 class="accent">Play By Plays</h4></div>
-					{% if request.user.is_superuser %}
+					{% if not request.user.is_anonymous %}
 					<div><a id="toggle_fileform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Upload Form</a></div>
 					<form id='pbp_file_form' method="post" action="." enctype="multipart/form-data" style="display:none;">{% csrf_token %}
 						<h3 style="margin-top:5px;">Upload Form</h3>
@@ -127,7 +105,7 @@
     </script>
 	<script type="text/javascript">
 		function jumpToAnchor() {
-			window.location = String(window.location).replace(/\#.*$/, "") + "#player";
+			window.location = String(window.location).replace(/\#.*$/, "") + "#playeranchor";
 		}
 		$("#toggle_fileform").click(function(){
 			$('#pbp_file_form').toggle();

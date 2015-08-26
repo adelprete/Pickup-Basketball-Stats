@@ -50,7 +50,7 @@
 			<li id="leaderboard_link"><a href="{% url 'leaderboard_home' %}">Leaderboard</a></li>
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
-			  <li id="admin_link"><a href="{% url 'admin:index' %}">{% if request.user.is_superuser %}Admin{% else %}Log In{% endif %}</a></li>
+			  <li id="admin_link"><a href="{% url 'admin:index' %}">{% if not request.user.is_anonymous %}Admin{% else %}Log In{% endif %}</a></li>
 			</ul>
     </div>
 </nav>
