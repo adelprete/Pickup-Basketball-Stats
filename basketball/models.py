@@ -310,3 +310,15 @@ class PlayByPlay(models.Model):
 
     def __str__(self):
     	return "%s - %s - %s" % (self.primary_play,self.primary_player.first_name,self.game.title)
+
+class Season(models.Model):
+    title = models.CharField(max_length=30)
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def __str__(self):
+        return self.title
+
+    class Meta():
+        ordering = ["-start_date"]
+

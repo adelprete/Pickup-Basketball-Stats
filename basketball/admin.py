@@ -28,7 +28,11 @@ class StatLineAdmin(admin.ModelAdmin):
 class PlayByPlayAdmin(admin.ModelAdmin):
     pass
 
+class SeasonAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(bmodels.Player,PlayerAdmin)
 admin.site.register(bmodels.Game,GameAdmin)
 admin.site.register(bmodels.StatLine,StatLineAdmin)
 admin.site.register(bmodels.PlayByPlay,PlayByPlayAdmin)
+admin.site.register(bmodels.Season,SeasonAdmin)

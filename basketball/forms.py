@@ -56,3 +56,7 @@ class PlayByPlayFilter(NicerFilterSet):
     class Meta:
         model = bmodels.PlayByPlay
         fields = ['primary_play', 'primary_player','secondary_play','secondary_player','assist','assist_player']
+
+class SeasonForm(forms.Form):
+    season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(),empty_label="All",required=False)
+    possessions_min = forms.IntegerField(label="Minimum Possessions",min_value=1)

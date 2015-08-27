@@ -68,18 +68,25 @@ def create_plays(pk,f):
         play.top_play_players = top_play_players
         play.save()
 
-def per100_top_stat_players(game_type,stat,player_pk,excluded_pks):
+def per100_top_stat_players(game_type,stat,player_pk,excluded_pks,season_id=None):
     """
     A function that finds the top players for a given stat per 100 possessions.
     """
+    season=None
+    if season_id:
+        season = bmodels.Season.objects.get(id=season_id)
+
     if player_pk:
         players = bmodels.Player.objects.filter(pk=player_pk)
     else:
         players = bmodels.Player.objects.all().exclude(Q(first_name__contains="Team")|Q(pk__in=excluded_pks))
     player_list = []
     for player in players:
-        result = player.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat),Sum('off_pos'))
-        if result['off_pos__sum'] is not 0:
+        if season:
+            result = player.statline_set.filter(game__game_type=game_type,game__date__range=(season.start_date,season.end_date)).aggregate(Sum(stat),Sum('off_pos'))
+        else:
+            result = player.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat),Sum('off_pos'))
+        if result['off_pos__sum'] and result['off_pos__sum'] is not 0:
             percentage = (result[stat + '__sum']/result['off_pos__sum']) * 100
         else:
             percentage = 0.0

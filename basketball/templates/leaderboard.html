@@ -4,26 +4,52 @@
 {% endblock %}
 {% block body %}
 	{% load basketball_tags %}
+	{% load bootstrap3 %}
 	<div class="page-header">
-	<h3 class="accent">Leaderboard</h3>
-</div>
-	<ul class="nav nav-tabs" role="tablist">
+		<h3 class="accent">Leaderboard</h3>
+	</div>
+	<div>
+		<div class="row">
+			<div class="col-md-12">
+				<a id="toggle_filterform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Filter Options</a>
+			</div>
+		</div>
+		<form id="filter_form" method="GET" style="display:none;">
+			<div class="row">
+				<div class="col-md-2">
+					{% bootstrap_field form.season %}
+				</div>
+				<div class="col-md-2">
+					{% bootstrap_field form.possessions_min %}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1">
+					<button type="submit" name="submit" class="btn btn-primary btn-block">Filter</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<ul class="nav nav-tabs" role="tablist" style="margin-top:15px;">
 		<li role="presentation" class="active"><a href="#5on5" aria-controls="home" role="tab" data-toggle="tab">5on5</a></li>
-		<li role="presentation"><a href="#4on4" aria-controls="profile" role="tab" data-toggle="tab">4on4</a></li>
 		<li role="presentation"><a href="#totals" aria-controls="profile" role="tab" data-toggle="tab">5on5 Totals</a></li>
 	</ul>
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="5on5">
 			{% lb_five_on_five_pos '5v5' %}
 		</div>
-		<div role="tabpanel" class="tab-pane" id="4on4">
-			{% lb_five_on_five_pos '4v4' %}
-		</div>
 		<div role="tabpanel" class="tab-pane" id="totals">
-			<h3 class="accent">5 on 5 Total Stats</h3>
+			<h3 class="accent">5 on 5 Total Stats
+				<small style="padding-left:15px;">Totals from {% if season %}{{ season }}{% else %}all seasons{% endif %}</small>
+			</h3>
 			{% lb_5on5_totals %}
 		</div>
 	</div>
+	<script type="text/javascript">
+		$("#toggle_filterform").click(function(){
+			$('#filter_form').toggle();
+		});
+	</script>
 {% endblock %}
 {% block active_tab %}
 	<script>$('#leaderboard_link').addClass('active')</script>

@@ -163,7 +163,19 @@ def leaderboard_home(request):
     Generates the leaderboard page.
     This page uses tabs that load different templatetags that display different information
     """
-    return render(request,'leaderboard.html',{})
+    season_id = None
+    season = None
+    possessions_min = 100
+    form = bforms.SeasonForm(initial={'possessions_min':100})
+    if request.GET != {}:
+        form = bforms.SeasonForm(request.GET)
+        if form.is_valid():
+            season_id = form.data.get('season',None)
+            if season_id:
+                season = bmodels.Season.objects.get(id=season_id)
+            possessions_min = form.data.get('possessions_min',100)
+
+    return render(request,'leaderboard.html',{'form':form,'season_id':season_id,'possessions_min':possessions_min,'season':season})
 
 class PlayByPlayFormView(FormView):
     template_name = "playbyplay_form.html"
