@@ -46,6 +46,11 @@
 			</div>
 			<div class="col-md-3" style="padding:0px;">
 				<div class="col-md-12">
+					{% if not request.user.is_anonymous %}
+						<form action="{% url 'edit_game' game_id=game.id %}">
+							<button type="submit" class="btn btn-primary btn-sm">Edit Game Details</button>
+						</form>
+					{% endif %}
 					<div id="play_title"><h4 class="accent">Play By Plays</h4></div>
 					{% if not request.user.is_anonymous %}
 					<div><a id="toggle_fileform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Upload Form</a></div>

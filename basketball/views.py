@@ -6,7 +6,7 @@ from datetime import time, timedelta
 
 from django.views.generic.edit import FormView
 from django.contrib import messages
-from django.shortcuts import render, redirect, render_to_response
+from django.shortcuts import render, redirect, render_to_response, get_object_or_404
 from basketball import models as bmodels
 from basketball.models import ALL_PLAY_TYPES, TOP_PLAY_RANKS, NOT_TOP_PLAY_RANKS
 from basketball import forms as bforms
@@ -176,6 +176,37 @@ def leaderboard_home(request):
             possessions_min = form.data.get('possessions_min',100)
 
     return render(request,'leaderboard.html',{'form':form,'season_id':season_id,'possessions_min':possessions_min,'season':season})
+
+def game_basics(request,game_id=None,form_class=bforms.GameForm):
+    
+    model = None
+    if game_id:
+        model = get_object_or_404(bmodels.Game,id=game_id)
+
+    form = form_class(instance=model)
+    if request.POST:
+        form = form_class(request.POST,instance=model)
+        if "delete" in request.POST:
+            model.delete()
+            messages.success(request,'Game Deleted')
+            return redirect('/games-home/')
+        if form.is_valid():
+            game_record = form.save()
+            
+            for player in game_record.team1.iterator():
+                if not bmodels.StatLine.objects.filter(game=game_record,player=player):
+                    bmodels.StatLine.objects.create(game=game_record,player=player)
+
+            for player in game_record.team2.iterator():
+                if not bmodels.StatLine.objects.filter(game=game_record,player=player):
+                    bmodels.StatLine.objects.create(game=game_record,player=player)
+            if model:
+                messages.success(request,"Game Saved")
+            else:
+                messages.success(request,"Game Created")
+            return redirect(game_record.get_absolute_url())
+
+    return render(request,'game_form.html',{'form':form})
 
 class PlayByPlayFormView(FormView):
     template_name = "playbyplay_form.html"

@@ -1,0 +1,58 @@
+{% extends 'games_home.html' %}
+{% block body %}
+{% load bootstrap3 %}
+<style>
+	.large-field {
+		height:100px;
+	}
+</style>
+<div class="page-header"><h3 class="accent">{% if form.instance.id %}Edit Game{% else %}Create Game{% endif %}</h3></div>
+<form method=post>{% csrf_token %}
+		<div class="row">
+			<div class="col-sm-5 col-md-3">
+				{% bootstrap_field form.date %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5 col-md-3">
+				{% bootstrap_field form.title %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5 col-md-2">
+				{% bootstrap_field form.game_type %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5 col-md-3">
+				{% bootstrap_field form.team1 %}
+			</div>
+			<div class="col-sm-5 col-md-3">
+				{% bootstrap_field form.team2 %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3 col-md-2">
+				{% bootstrap_field form.team1_score %}
+			</div>
+			<div class="col-sm-3 col-md-2">
+				{% bootstrap_field form.team2_score %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5 col-md-3">
+				{% bootstrap_field form.youtube_id %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1">
+				<input class="btn btn-default btn-primary" type="submit" value="Submit">
+			</div>
+			<div class="col-md-1">
+				{% if form.instance.id %}
+					<input class="btn btn-default btn-danger" type="submit" name="delete" id="delete" value="Delete">
+				{% endif %}
+			</div>
+		</div>
+	</form>
+{% endblock %}

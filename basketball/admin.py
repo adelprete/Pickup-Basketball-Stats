@@ -10,7 +10,6 @@ class PlayerAdmin(admin.ModelAdmin):
 
 class GameAdmin(admin.ModelAdmin):
     exclude = ("winning_players",)
-    formfield_overrides = { models.ManyToManyField: {'widget': SelectMultiple(attrs={'size':'15'})}, }
     def save_model(self, request, obj, form, change):
         obj.save()
         

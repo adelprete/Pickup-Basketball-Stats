@@ -4,6 +4,17 @@ from django.db.models import Q
 import django_filters
 from django.db import models
 
+class GameForm(forms.ModelForm):
+    
+    def __init__(self,*args,**kwargs):
+       super(GameForm,self).__init__(*args,**kwargs)
+       self.fields['team1'].widget.attrs = {"size":15}
+       self.fields['team2'].widget.attrs = {"size":15}
+   
+    class Meta:
+        model = bmodels.Game
+        exclude = ['winning_players']
+
 class PlayByPlayForm(forms.ModelForm):
 
     def __init__(self,game,*args,**kwargs):
@@ -13,13 +24,6 @@ class PlayByPlayForm(forms.ModelForm):
         self.fields['assist_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
         self.fields['top_play_players'].queryset = bmodels.Player.objects.filter(Q(team1_set=game)|Q(team2_set=game)).distinct()
 
-    """
-    def clean_time(self):
-        import pdb;pdb.set_trace()
-        if len(self.cleaned_data['time'].strftime('%H:%M:%S').split(':')) != 3:
-            raise forms.ValidationError('Time Must be HH:MM:SS')
-        return self.cleaned_data['time']
-    """
     class Meta:
         model = bmodels.PlayByPlay
         exclude = ['game']

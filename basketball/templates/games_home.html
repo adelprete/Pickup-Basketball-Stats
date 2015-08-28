@@ -4,8 +4,17 @@
 {% endblock %}
 {% block body %}
 	<div class="page-header">
-	<h3 class="accent">Games</h3>
-</div>
+		<h3 class="accent">Games</h3>
+	</div>
+	{% if not request.user.is_anonymous %}
+		<div class="row">
+			<div class="col-md-1">	
+				<form action="{% url 'create_game' %}">
+					<input class="btn btn-primary btn-sm" type="submit" value="Create New Game">
+				</form>
+			</div>
+		</div><br>
+	{% endif %}
 	{% for key,value in group_list.items %}
 		<div class="row">
 			<div class="col-sm-12">
