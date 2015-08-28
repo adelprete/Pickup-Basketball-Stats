@@ -177,6 +177,30 @@ def leaderboard_home(request):
 
     return render(request,'leaderboard.html',{'form':form,'season_id':season_id,'possessions_min':possessions_min,'season':season})
 
+def player_basics(request,id=None,form_class=bforms.PlayerForm):
+    
+    model = None
+    if id:
+        model = get_object_or_404(bmodels.Player,id=id)
+
+    form = form_class(instance=model)
+    if request.POST:
+        form = form_class(request.POST,instance=model)
+        if "delete" in request.POST:
+            model.delete()
+            messages.success(request,'Player Deleted')
+            return redirect('/players-home/')
+        if form.is_valid():
+            p_record = form.save()
+            
+            if model:
+                messages.success(request,"Player Saved")
+            else:
+                messages.success(request,"Player Created")
+            return redirect(p_record.get_absolute_url())
+
+    return render(request,'player_form.html',{'form':form})
+
 def game_basics(request,game_id=None,form_class=bforms.GameForm):
     
     model = None

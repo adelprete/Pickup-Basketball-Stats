@@ -185,8 +185,10 @@ def lb_five_on_five_pos(context,game_type="5v5",player_pk=None):
             statlines = statlines.filter(game__date__range=(season.start_date,season.end_date))
         
         result = statlines.aggregate(Sum('points'),Sum('fga'))
-
-        percentage = result['points__sum']/result['fga__sum'] * 100
+        if result['fga__sum']:
+            percentage = result['points__sum']/result['fga__sum'] * 100
+        else:
+            percentage = 0.0
         ts_percent.append((player.first_name,percentage))
     ts_percent = sorted(ts_percent,key=lambda x: x[1],reverse=True)
 
@@ -212,7 +214,11 @@ def lb_five_on_five_pos(context,game_type="5v5",player_pk=None):
             team1_result['team1_score__sum'] = 0
         if team2_result['team2_score__sum'] == None:
             team2_result['team2_score__sum'] = 0
-        percentage = (team1_result['team1_score__sum']+team2_result['team2_score__sum'])/result['off_pos__sum'] * 100
+
+        if result['off_pos__sum']:
+            percentage = (team1_result['team1_score__sum']+team2_result['team2_score__sum'])/result['off_pos__sum'] * 100
+        else:
+            percentage = 0.0
         orating_percent.append((player.first_name,percentage))
     orating_percent = sorted(orating_percent,key=lambda x: x[1],reverse=True)
 
@@ -238,12 +244,15 @@ def lb_five_on_five_pos(context,game_type="5v5",player_pk=None):
             team1_result['team1_score__sum'] = 0
         if team2_result['team2_score__sum'] == None:
             team2_result['team2_score__sum'] = 0
-        percentage = (team1_result['team1_score__sum']+team2_result['team2_score__sum'])/result['def_pos__sum'] * 100
+
+        if result['def_pos__sum']:
+            percentage = (team1_result['team1_score__sum']+team2_result['team2_score__sum'])/result['def_pos__sum'] * 100
+        else:
+            percentage = 0.0
         drating_percent.append((player.first_name,percentage))
     drating_percent = sorted(drating_percent,key=lambda x: x[1])
     
     context = {
-        'name':'howdy',
         "dreb":dreb[:5],
         "oreb":oreb[:5],
         "total_rebounds":total_rebounds[:5],

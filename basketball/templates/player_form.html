@@ -1,0 +1,47 @@
+{% extends 'players_home.html' %}
+{% block body %}
+{% load bootstrap3 %}
+	<div class="page-header"><h3 class="accent">{% if form.instance.id %}Edit Player{% else %}Create Player{% endif %}</h3></div>
+	<form method=post>{% csrf_token %}
+		<div class="row">
+			<div class="col-sm-5 col-md-3">
+				{% bootstrap_field form.first_name %}
+			</div>
+			<div class="col-sm-5 col-md-3">
+				{% bootstrap_field form.last_name %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-6 col-sm-4 col-md-2">
+				{% bootstrap_field form.height %}
+			</div>
+			<div class="col-xs-6 col-sm-4 col-md-2">
+				{% bootstrap_field form.weight %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-7 col-sm-4 col-md-2">
+				{% bootstrap_field form.birth_date %}
+			</div>
+			<div class="col-xs-6 col-sm-4 col-md-2">
+				{% bootstrap_field form.position %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5 col-md-3">
+				{% bootstrap_field form.image_src %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1">
+				<input class="btn btn-default btn-primary" type="submit" value="{% if form.instance.id %}Update{% else %}Create{% endif %}">
+			</div>
+			<div class="col-md-1">
+				{% if form.instance.id and not form.instance.statline_set.count %}
+					<input class="btn btn-default btn-danger" type="submit" name="delete" id="delete" value="Delete">
+				{% endif %}
+			</div>
+		</div>
+	</form>
+
+{% endblock %}

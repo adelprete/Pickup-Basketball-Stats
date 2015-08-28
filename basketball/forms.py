@@ -4,8 +4,16 @@ from django.db.models import Q
 import django_filters
 from django.db import models
 
-class GameForm(forms.ModelForm):
+class PlayerForm(forms.ModelForm):
+    required_css_class = 'required'
     
+    class Meta:
+        model = bmodels.Player
+        exclude = [""]
+
+class GameForm(forms.ModelForm):
+    required_css_class = 'required'
+
     def __init__(self,*args,**kwargs):
        super(GameForm,self).__init__(*args,**kwargs)
        self.fields['team1'].widget.attrs = {"size":15}
@@ -16,6 +24,7 @@ class GameForm(forms.ModelForm):
         exclude = ['winning_players']
 
 class PlayByPlayForm(forms.ModelForm):
+    required_css_class = 'required'
 
     def __init__(self,game,*args,**kwargs):
         super(PlayByPlayForm,self).__init__(*args,**kwargs)

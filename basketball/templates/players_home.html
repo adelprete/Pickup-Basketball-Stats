@@ -8,6 +8,15 @@
 	<div class="page-header">
 	<h3 class="accent">Players</h3>
 	</div>
+	{% if not request.user.is_anonymous %}
+		<div class="row">
+			<div class="col-md-1">	
+				<form action="{% url 'create_player' %}">
+					<input class="btn btn-primary btn-sm" type="submit" value="Create New Player">
+				</form>
+			</div>
+		</div><br>
+	{% endif %}
 	<div class="row">
 		{% for player in players %}
 			<div class="col-xs-4 col-sm-2" style="margin-top:15px;text-align:center;">
