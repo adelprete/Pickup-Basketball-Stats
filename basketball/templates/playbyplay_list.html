@@ -3,7 +3,7 @@
 {% if pbp_filter %}
 	{% for play in pbp_filter %}
 		{% if not request.user.is_anonymous %}	
-		<a href="{% url 'playbyplay_detail' game.id play.id %}" style="block:inline;color:red;">[x]</a>
+		<a href="{% url 'playbyplay_detail' play.game.id play.id %}" style="block:inline;color:red;">[x]</a>
 		{% endif %}
 		<a onclick="seekPlayerToPlay('{{play.time|seconds }}')" style="cursor:pointer;">{{ play.time|time:"i:s" }}</a> 
 		{% if play.top_play_rank|top_play_check %}{% bootstrap_icon "star" %}{% endif %}
