@@ -57,7 +57,7 @@
 				<li role="presentation" class="active"><a href="#highlights" aria-controls="home" role="tab" data-toggle="tab" style="font-weight:bold;">Highlights</a></li>
 				{% endif %}
 				<li role="presentation" {% if not has_top_plays %}class="active"{% endif %}><a href="#averages" aria-controls="averages" role="tab" data-toggle="tab" style="font-weight:bold;">Averages</a></li>
-				<li role="presentation"><a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a></li>
+				<li role="presentation"><a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">5on5 Totals</a></li>
 				<li role="presentation"><a href="#gamelog" aria-controls="gamelog" role="tab" data-toggle="tab" style="font-weight:bold;">Game Log</a></li>
 			</ul>
 			<div class="tab-content">
@@ -69,21 +69,27 @@
 				<div role="tabpanel" class="tab-pane {% if not has_top_plays %}active{% endif %}" id="averages" style="padding-top:15px;">
 					<div class="row">
 						<div class="col-sm-12">
-							<h4 class="accent" style="margin-bottom:5px;">Avg Per Game</h4>
-							{% include "player_averages_table.html" with averages=averages %}
-							<h4 class="accent" style="margin-bottom:5px;">5on5 Avg Game</h4>
-							{% include "player_averages_table.html" with averages=averages_5v5 %}	
-							<h4 class="accent" style="margin-bottom:5px;">4on4 Avg Game</h4>
-							{% include "player_averages_table.html" with averages=averages_4v4 %}	
+							{% for key,value in averages_dict.items %}
+								<h4 class="accent" style="margin-bottom:5px;">{{ key}}</h4>
+								{% include "player_averages_table.html" with averages=value %}
+							{% endfor %}
 						</div>
 					</div>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="totals" style="padding-top:15px;">
 					<div class="row">
 						<div class="col-sm-12">
-							<h4 class="accent" style="margin-bottom:-20px;">5 on 5 Totals</h4>
-							{% lb_5on5_totals player_pk=player.pk %}
+							<h4 class="accent" style="margin-bottom:-20px;">All Time</h4>
+							{% lb_totals player_pk=player.pk %}
 						</div>
+					</div>
+					<div class="row">
+						{% for season in seasons %}
+							<div class="col-sm-12">
+								<h4 class="accent" style="margin-bottom:-20px;">{{ season }}</h4>
+								{% lb_totals player_pk=player.pk season_id=season.id %}
+							</div>
+						{% endfor %}
 					</div>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="gamelog" style="padding-top:15px;">

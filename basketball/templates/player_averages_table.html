@@ -8,6 +8,7 @@ $(function () {
 <div class="table-responsive">
 	<table class="table">
 		<tr style="background:#d9edf7">
+			<td data-toggle="tooltip" title="Games Played">GP</td>
 			<td data-toggle="tooltip" title="Field Goals Made (Any made basket)">FGM</td>
 			<td data-toggle="tooltip" title="Field Goals Attempted (Any basket attempted)">FGA</td>
 			<td data-toggle="tooltip" title="Three Pointers Made (Any shot made behind the 3point line)">3PM</td>
@@ -26,6 +27,7 @@ $(function () {
 			<td data-toggle="tooltip" title="Points (Amount of points scored)">Pts</td>
 		</tr>
 		<tr>
+			<td>{{ averages.gp }}</td>
 			<td>{{ averages.fgm__avg|floatformat }}</td>
 			<td>{{ averages.fga__avg|floatformat }}</td>
 			<td>{{ averages.threepm__avg|floatformat }}</td>

@@ -87,13 +87,23 @@ def player(request,id):
     if bmodels.PlayByPlay.objects.filter(top_play_players=player):
         has_top_plays = True
     
+    averages_dict = OrderedDict()
+    averages_dict["All Time"] = player.get_averages()
+    averages_dict["5v5"] = player.get_averages('5v5')
+    
+    seasons = bmodels.Season.objects.all()
+    for season in seasons:
+        for game_type in bmodels.GAME_TYPES:
+            if bmodels.StatLine.objects.filter(Q(player=player),
+                    Q(game__date__range=(season.start_date,season.end_date))&Q(game__game_type=game_type[0])):
+                averages_dict[season.title + " - " + game_type[0]] = player.get_averages(game_type[0],season.id)
+    
     context = {
         'player':player,
         'has_top_plays':has_top_plays,
         'statlines':statlines,
-        'averages':player.get_averages(),
-        'averages_5v5':player.get_averages('5v5'),
-        'averages_4v4':player.get_averages('4v4')
+        'averages_dict':averages_dict,
+        'seasons':seasons,
     }
     return render(request,'player_detail.html',context)
 

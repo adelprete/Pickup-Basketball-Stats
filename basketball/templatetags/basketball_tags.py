@@ -277,11 +277,11 @@ def lb_five_on_five_pos(context,game_type="5v5",player_pk=None):
     return context
 
 @register.inclusion_tag('lb_totals.html',takes_context=True)
-def lb_5on5_totals(context,player_pk=None):
+def lb_totals(context, game_type="5v5", player_pk=None, season_id=None):
 
     season = None
-    if context.get('season_id',None):
-        season = bmodels.Season.objects.get(id=context['season_id'])
+    if season_id:
+        season = bmodels.Season.objects.get(id=season_id)
 
     if player_pk:
         players = bmodels.Player.objects.filter(pk=player_pk)
@@ -291,7 +291,7 @@ def lb_5on5_totals(context,player_pk=None):
     player_dict = OrderedDict()
     for player in players:
         
-        statlines = player.statline_set.filter(game__game_type='5v5')
+        statlines = player.statline_set.filter(game__game_type=game_type)
         if season:
             statlines = statlines.filter(game__date__range=(season.start_date,season.end_date))
         

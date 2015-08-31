@@ -66,56 +66,61 @@ NOT_TOP_PLAY_RANKS = [
 RANKS = TOP_PLAY_RANKS + NOT_TOP_PLAY_RANKS
 
 class Player(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30,blank=True)
-    height = models.CharField(max_length=30,blank=True)
-    weight = models.CharField(max_length=30,blank=True)
-    image_src = models.ImageField(upload_to ='player_images/',blank=True,null=True)
-    birth_date = models.DateField(blank=True,null=True)
-    position = models.CharField(max_length=30,blank=True)
+	first_name = models.CharField(max_length=30)
+	last_name = models.CharField(max_length=30,blank=True)
+	height = models.CharField(max_length=30,blank=True)
+	weight = models.CharField(max_length=30,blank=True)
+	image_src = models.ImageField(upload_to ='player_images/',blank=True,null=True)
+	birth_date = models.DateField(blank=True,null=True)
+	position = models.CharField(max_length=30,blank=True)
 
-    def __str__(self):
-        return self.get_full_name()
+	def __str__(self):
+		return self.get_full_name()
 
-    def get_full_name(self):
-        return '%s %s' % (self.first_name,self.last_name)
-    
-    def get_absolute_url(self):
-        return reverse("player_page",kwargs={'id':self.id})
+	def get_full_name(self):
+		return '%s %s' % (self.first_name,self.last_name)
 
-    @property
-    def total_games(self):
-        return Game.objects.filter(Q(team1=self)|Q(team2=self)).distinct().count()
-    
-    @property
-    def total_wins(self):
-        return self.winning_players_set.all().count()
+	def get_absolute_url(self):
+		return reverse("player_page",kwargs={'id':self.id})
 
-    @property
-    def total_losses(self):
-        losses = self.total_games - self.total_wins
-        if losses < 0:
-            losses = 0
-        return losses
+	@property
+	def total_games(self):
+		return Game.objects.filter(Q(team1=self)|Q(team2=self)).distinct().count()
+ 
+	@property
+	def total_wins(self):
+		return self.winning_players_set.all().count()
 
-    def get_averages(self,game_type=None):
-        """
-        Returns a dictionary of the player's averages
-        """
-        qs = self.statline_set.all()
-        if game_type:
-            qs = self.statline_set.filter(game__game_type=game_type)
+	@property
+	def total_losses(self):
+		losses = self.total_games - self.total_wins
+		if losses < 0:
+			losses = 0
+		return losses
 
-        player_averages = {}
-        for play in ALL_PLAY_TYPES:
-            if play[0] not in ['sub_out','sub_in','misc']:
-                x = qs.aggregate(Avg(play[0]))
-                player_averages.update(x)
-        player_averages.update(qs.aggregate(Avg('points'),Avg('total_rebounds')))
-        return player_averages
+	def get_averages(self,game_type=None,season_id=None):
+            """Returns a dictionary of the player's averages"""
+            season = None
+            if season_id:
+                    season = Season.objects.get(id=season_id)
 
-    class Meta():
-        ordering = ['first_name']
+            qs = self.statline_set.all()
+            if game_type:
+                    qs = qs.filter(game__game_type=game_type)
+                    if season:
+                            qs = qs.filter(game__date__range=(season.start_date,season.end_date))
+
+            player_averages = {}
+            for play in ALL_PLAY_TYPES:
+                    if play[0] not in ['sub_out','sub_in','misc']:
+                            x = qs.aggregate(Avg(play[0]))
+                            player_averages.update(x)
+            player_averages.update(qs.aggregate(Avg('points'),Avg('total_rebounds')))
+            player_averages['gp'] = qs.count()
+            return player_averages
+
+	class Meta():
+		ordering = ['first_name']
 
 
 def model_team1():
@@ -320,5 +325,5 @@ class Season(models.Model):
         return self.title
 
     class Meta():
-        ordering = ["-start_date"]
+        ordering = ["-end_date"]
 
