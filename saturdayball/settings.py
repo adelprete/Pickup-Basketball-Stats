@@ -71,6 +71,8 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_REDIRECT_URL = '/'
+
 from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.SUCCESS: 'bg-success',

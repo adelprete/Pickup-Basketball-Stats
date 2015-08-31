@@ -42,7 +42,7 @@ def box_score(request,id):
     -With each new play by play sheet uploaded the stats are recalculated.
     """
     if id:
-        game = bmodels.Game.objects.get(id=id)
+        game = get_object_or_404(bmodels.Game,id=id)
     
     pbp_form = bforms.PlayByPlayForm(game)
     pbp_filter = bforms.PlayByPlayFilter(request.GET,queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'),game=game)
@@ -79,7 +79,7 @@ def player(request,id):
     -A dictionary of the player's averages are passed to the template
     -All statlines for the player are passed to the template
     """
-    player = bmodels.Player.objects.get(id=id)
+    player = get_object_or_404(bmodels.Player,id=id)
 
     statlines = player.statline_set.all().order_by('-game__date','game__title')
 
@@ -121,7 +121,7 @@ def ajax_add_play(request,pk):
     """Called when an individual play is submitted on a game's page.
     Allows for multiple games to be added without having to wait for a page refresh.
     """
-    game = bmodels.Game.objects.get(pk=pk)
+    game = get_object_or_404(bmodels.Game,pk=pk)
     play_form = bforms.PlayByPlayForm(game,request.POST)
     if play_form.is_valid():
         play_record = play_form.save(commit=False)
@@ -141,7 +141,7 @@ def ajax_add_play(request,pk):
 def ajax_filter_plays(request,pk):
     """Called when an some wants to filter the play by plays of a game
     """
-    game = bmodels.Game.objects.get(pk=pk)
+    game = get_object_or_404(bmodels.Game,pk=pk)
     pbp_filter = bforms.PlayByPlayFilter(request.GET,queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'),game=game)
     
     return render_to_response('playbyplay_list.html',{'pbp_filter':pbp_filter})
@@ -151,7 +151,7 @@ def delete_play(request,pk):
     Called when a play is deleted from a game's page.
     """
     
-    play = bmodels.PlayByPlay.objects.get(pk=pk)
+    play = get_object_or_404(bmodels.PlayByPlay,pk=pk)
     play.delete()
     play.game.calculate_statlines()
     messages.success(request,"Play deleted")
@@ -267,8 +267,8 @@ class PlayByPlayFormView(FormView):
     def get_play(self,id):
         return bmodels.PlayByPlay.objects.get(id=id)
 
-def recap(request,game_id): 
-    game = bmodels.Game.objects.get(id=game_id)
+def recap(request,game_id):
+    game = get_object_or_404(bmodels.Game,id=game_id)
 
     game_set = bmodels.Game.objects.filter(date=game.date).order_by('title')
 
@@ -282,3 +282,23 @@ def recap(request,game_id):
     }
 
     return render(request,'recap.html',context)
+
+from django.contrib.auth import authenticate, login, logout
+def login(request):
+    username = None
+    password = None
+    if request.POST:
+        username = request.POST.get('username',None)
+        password = request.POST.get('password',None)
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            messages.success("Successfully logged in")
+            return redirect("/")
+        else:
+            messages.error(request,"User account is a disabled")
+    else:
+        messages.error(request,"Invalid login")
+        
+    return render(request,"login.html",{"form":bforms.LoginForm})

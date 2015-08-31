@@ -4,6 +4,10 @@ from django.db.models import Q
 import django_filters
 from django.db import models
 
+class LoginForm(forms.Form):
+	username = forms.CharField(max_length=30,required=True)
+	password = forms.CharField(max_length=30, widget=forms.PasswordInput)
+
 class PlayerForm(forms.ModelForm):
     required_css_class = 'required'
     

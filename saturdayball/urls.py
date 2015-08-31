@@ -17,7 +17,7 @@ from basketball import views as bviews
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
+from django.contrib.auth import views as auth_views
 urlpatterns = [
 	url(r'^$',	bviews.root,		name='root'),
         url(r'^ajax-add-play/(?P<pk>[0-9]+)/$',        bviews.ajax_add_play,       name='ajax_add_play'),
@@ -36,7 +36,9 @@ urlpatterns = [
         url(r'^games-home/recap/(?P<game_id>\d+)/$',  bviews.recap, name='recap'),
         url(r'^games-home/$',                 bviews.games_home,       name='games_home'),
         
-        url(r'^leaderboard-home/$',                 bviews.leaderboard_home,       name='leaderboard_home'),
+        url(r'^leaderboard-home/$',     bviews.leaderboard_home,    name='leaderboard_home'),
         
         url(r'^admin/', include(admin.site.urls)),
+        url(r'^accounts/login/$', auth_views.login, {'template_name': 'login.html'},name="login"),
+        url(r'^logout/$', 'django.contrib.auth.views.logout',{'next_page': '/'},   name="logout"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
