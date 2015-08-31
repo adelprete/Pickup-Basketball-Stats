@@ -83,8 +83,13 @@ def player(request,id):
 
     statlines = player.statline_set.all().order_by('-game__date','game__title')
 
+    has_top_plays = False
+    if bmodels.PlayByPlay.objects.filter(top_play_players=player):
+        has_top_plays = True
+    
     context = {
         'player':player,
+        'has_top_plays':has_top_plays,
         'statlines':statlines,
         'averages':player.get_averages(),
         'averages_5v5':player.get_averages('5v5'),

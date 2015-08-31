@@ -52,16 +52,21 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="nav nav-tabs" role="tablist" style="margin:5px 0px;">
+				
+				{% if has_top_plays %}
 				<li role="presentation" class="active"><a href="#highlights" aria-controls="home" role="tab" data-toggle="tab" style="font-weight:bold;">Highlights</a></li>
-				<li role="presentation"><a href="#averages" aria-controls="averages" role="tab" data-toggle="tab" style="font-weight:bold;">Averages</a></li>
+				{% endif %}
+				<li role="presentation" {% if not has_top_plays %}class="active"{% endif %}><a href="#averages" aria-controls="averages" role="tab" data-toggle="tab" style="font-weight:bold;">Averages</a></li>
 				<li role="presentation"><a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a></li>
 				<li role="presentation"><a href="#gamelog" aria-controls="gamelog" role="tab" data-toggle="tab" style="font-weight:bold;">Game Log</a></li>
 			</ul>
 			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane active" id="highlights" style="padding-top:15px;">
-					{% player_highlights player.id %}
-				</div>
-				<div role="tabpanel" class="tab-pane" id="averages" style="padding-top:15px;">
+				{% if has_top_plays %}
+					<div role="tabpanel" class="tab-pane active" id="highlights" style="padding-top:15px;">
+						{% player_highlights player.id %}
+					</div>
+				{% endif %}
+				<div role="tabpanel" class="tab-pane {% if not has_top_plays %}active{% endif %}" id="averages" style="padding-top:15px;">
 					<div class="row">
 						<div class="col-sm-12">
 							<h4 class="accent" style="margin-bottom:5px;">Avg Per Game</h4>

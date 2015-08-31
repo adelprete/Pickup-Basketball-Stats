@@ -18,27 +18,33 @@
 				<div class="row">
 					{% for play in top_plays %}
 						<div class="col-sm-6">
-						{{ forloop.counter }} 
-						{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
-						{% bootstrap_icon "play" %}</a> - 
-						{{ play.game.title }}: {{ play.description }}
-						</div>
-						{% if forloop.counter|divisibleby:2 and not forloop.last %}
-							</div><div class="row">
-						{% elif forloop.last %}
-							</div>
-						{% endif %}
-					{% endfor %}
-				</div>
-				<div role="tabpanel" class="tab-pane" id="nottopplays" style="margin-bottom:5px;">
-					{% for play in not_top_plays %}
-						<div class="col-md-6">
 							{{ forloop.counter }} 
 							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
 							{% bootstrap_icon "play" %}</a> - 
 							{{ play.game.title }}: {{ play.description }}
 						</div>
+					{% empty %}
+						<div class="col-sm-6">
+							No Top Plays
+						</div>
 					{% endfor %}
+				</div>
+			</div>
+			<div role="tabpanel" class="tab-pane" id="nottopplays" style="margin-bottom:5px;">
+				<div class="row">
+					{% for play in not_top_plays %}
+						<div class="col-sm-6">
+							{{ forloop.counter }} 
+							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
+							{% bootstrap_icon "play" %}</a> - 
+							{{ play.game.title }}: {{ play.description }}
+						</div>
+					{% empty %}
+						<div class="col-sm-6">
+							No Not Top Plays
+						</div>
+					{% endfor %}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -61,7 +67,9 @@
 		});
 	}
 	function onPlayerReady(event) {
-		event.target.seekTo({{ top_plays.0.time|seconds }});
+		{% if top_plays.0 %}
+			event.target.seekTo({{ top_plays.0.time|seconds }});
+		{% endif %}
 	}
 	function seekPlayerToPlay(time,youtube_id) {
 		player.cueVideoById({videoId:youtube_id,
