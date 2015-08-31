@@ -25,8 +25,7 @@ SECRET_KEY = '$dfklzee&=n(+4gj!4x&wfsx@b_f2ui^uofj9(g_obrv(9zn!m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ADMINS = (('Anthony','adelprete87@gmail.com'))
 
 # Application definition
 
