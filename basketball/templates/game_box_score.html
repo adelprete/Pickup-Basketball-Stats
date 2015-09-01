@@ -16,7 +16,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-9" style="font-size:25px;">
-				<div class="col-md-12" style="text-align:center;">{{ game.date }} - {{ game.title }}</div>
+				<div class="col-md-12" style="text-align:center;"><a href="{% url 'recap' game.pk %}">{{ game.date }}</a> - {{ game.title }}</div>
 			</div>
 			<div class="col-md-7 col-md-offset-1 score-board">	
 				<div class="sb-top-team">Good Guys</div>
