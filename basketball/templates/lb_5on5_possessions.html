@@ -9,9 +9,8 @@ $(function () {
 {% load basketball_tags %}
 <div class='row'>
 	<div class="col-sm-12">
-		<h3 class="accent">Per 100 Possessions
-			<small style="margin-left:15px;">Stats for {% if season %}{{ season }}{% else %}all seasons{% endif %} with a minimum of {{ possessions_min }} total possessions</small>
-		</h3>
+		<h3 class="accent">Per 100 Possessions</h3>
+		<div style="color: #777;font-size:17px;width:100%;">Stats for {% if season %}{{ season }}{% else %}all seasons{% endif %} with a minimum of {{ possessions_min }} total possessions</div>
 	</div>
 </div>
 <div class="row">

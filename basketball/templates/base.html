@@ -67,7 +67,7 @@
 	{% endblock %}
 	<div class="container" style="margin-bottom:100px;margin-top:80px;">
 		{% if messages %}
-		<ul class="messages">
+		<ul class="messages col-md-12">
 			{% for message in messages %}
 				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
 			{% endfor %}
