@@ -4,6 +4,10 @@
 	}
 }
 
+.required label:after {
+	content:"*";
+}
+
 .panel-default {
   border-color: grey;
 }
