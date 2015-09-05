@@ -1,5 +1,6 @@
 from django.contrib import admin
 from basketball import models as bmodels
+from basketball import forms as bforms
 from django.forms import SelectMultiple
 from django.db import models
 
@@ -32,7 +33,7 @@ class PlayByPlayAdmin(admin.ModelAdmin):
 
 
 class SeasonAdmin(admin.ModelAdmin):
-    pass
+	form = bforms.SeasonForm
 
 admin.site.register(bmodels.Player, PlayerAdmin)
 admin.site.register(bmodels.Game, GameAdmin)

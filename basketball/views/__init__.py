@@ -54,9 +54,9 @@ def leaderboard_home(request):
     season_id = None
     season = None
     possessions_min = 100
-    form = bforms.SeasonForm(initial={'possessions_min': 100})
+    form = bforms.LeaderboardForm(initial={'possessions_min': 100})
     if request.GET != {}:
-        form = bforms.SeasonForm(request.GET)
+        form = bforms.LeaderboardForm(request.GET)
         if form.is_valid():
             season_id = form.data.get('season', None)
             if season_id:
