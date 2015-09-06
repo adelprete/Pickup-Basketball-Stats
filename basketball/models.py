@@ -85,19 +85,29 @@ class Player(models.Model):
     def get_absolute_url(self):
         return reverse("player_page", kwargs={'id': self.id})
 
-    @property
-    def total_games(self):
+    def total_games(self, season=None):
+        
+        if season:
+            return Game.objects.filter(
+                    Q(team1=self) | Q(team2=self), 
+                    date__range=(season.start_date, season.end_date)).distinct().count()
+
         return Game.objects.filter(Q(team1=self) | Q(team2=self)).distinct().count()
 
-    @property
-    def total_wins(self):
+    def total_wins(self, season=None):
+        
+        if season:
+            return self.winning_players_set.filter(date__range=(season.start_date, season.end_date)).count()
+        
         return self.winning_players_set.all().count()
 
-    @property
-    def total_losses(self):
-        losses = self.total_games - self.total_wins
+    def total_losses(self, season=None):
+        
+        losses = self.total_games(season=season) - self.total_wins(season=season)
+        
         if losses < 0:
             losses = 0
+        
         return losses
 
     def get_averages(self, game_type=None, season_id=None):

@@ -105,7 +105,6 @@ class LeaderboardForm(forms.Form):
         label="Minimum Possessions", min_value=1)
 
 
-from django.db.models import Q
 class SeasonForm(forms.ModelForm):
 	
 	def clean(self):

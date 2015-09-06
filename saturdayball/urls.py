@@ -23,7 +23,8 @@ from basketball.views import player
 
 urlpatterns = [
 	url(r'^$',	bviews.root,		name='root'),
-       
+        url(r'^ajax-standings/$',        bviews.ajax_standings,       name='ajax_standings'),
+
         url(r'^leaderboard/$',     bviews.leaderboard_home,    name='leaderboard_home'),
         
         url(r'^players/', include('basketball.urls.player')),

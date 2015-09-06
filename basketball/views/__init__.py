@@ -16,6 +16,7 @@ from basketball import forms as bforms
 from basketball import helpers
 from django.http import HttpResponse
 from django.db.models import F, Q, Sum, Avg
+import datetime
 
 
 def root(request):
@@ -33,14 +34,31 @@ def root(request):
     not_top_plays = bmodels.PlayByPlay.objects.filter(
         game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
 
-    standings = sorted(bmodels.Player.objects.all().exclude(
-        first_name__contains="Team"), key=lambda player: player.total_wins, reverse=True)
+    
+    players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
+
+    try:
+        season = bmodels.Season.objects.get(
+                start_date__lt=datetime.datetime.today(),
+                end_date__gt=datetime.datetime.today())
+    except:
+        season = bmodels.Season.objects.latest('start_date')
+
+    player_tuples = []
+    for player in players:
+        if player.total_games(season=season):
+            player_tuples.append(
+                    (player.first_name, player.total_wins(season=season), player.total_losses(season=season))
+                    )
+
+    player_standings = sorted(player_tuples, key=lambda player: player[1], reverse=True)
 
     context = {
         'games': game_set,
         'top_plays': top_plays,
         'not_top_plays': not_top_plays,
-        'standings': standings,
+        'standings': player_standings,
+        'seasons': bmodels.Season.objects.all()
     }
     return render(request, "base.html", context)
 
@@ -84,3 +102,23 @@ def login(request):
         messages.error(request, "Invalid login")
 
     return render(request, "login.html", {"form": bforms.LoginForm})
+
+
+def ajax_standings(request):
+    
+    season = None
+    if request.GET['season_id'] != 'All':
+        season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
+    
+    players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
+
+    player_tuples = []
+    for player in players:
+        if player.total_games(season=season):
+            player_tuples.append(
+                    (player.first_name, player.total_wins(season=season), player.total_losses(season=season))
+                    )
+
+    player_standings = sorted(player_tuples, key=lambda player: player[1], reverse=True)
+
+    return render_to_response('player_standings.html', {'standings': player_standings})

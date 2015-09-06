@@ -127,21 +127,20 @@
 			<div class="col-sm-12 col-md-3">
 				<div class="col-sm-12">
 				<h3 class="accent">Standings</h3>
-				<table class="table">
-					<thead>
-					<th>
-						<td>W</td>
-						<td>L</td>
-					</th>
-				</thead>
-					{% for player in standings %}
-						<tr>
-							<td>{{ player }}</td>
-							<td>{{ player.total_wins }}</td>
-							<td>{{ player.total_losses }}</td>
-						</tr>
-					{% endfor %}
-				</table>
+				<form>
+					<div class="form-group">
+						<label name>Seasons</label>
+						<select class="form-control season">
+							{% for season in seasons %}
+							<option value="{{ season.id }}">{{ season.title }}</option>
+							{% endfor %}
+							<option value="All">All</option>	
+						</select>
+					</div>
+				</form>	
+				<div id="player_standings">
+					{% include 'player_standings.html' %}
+				</div>	
 			</div>
 			</div>
 		</div>
@@ -189,6 +188,18 @@
 			window.location = String(window.location).replace(/\#.*$/, "") + "#player";
 		}
     </script>
+	<script type="text/javascript">
+		$(".season").change(function() {
+			$.ajax({
+				type: "get",
+				url: "{% url 'ajax_standings' %}",
+				data: {season_id: $(this).val()},
+				success: function (data){
+					$("#player_standings").html(data);
+				}
+				});
+		});
+	</script>
 	{% endblock %}
 	</div>	
 	{% block active_tab %}
