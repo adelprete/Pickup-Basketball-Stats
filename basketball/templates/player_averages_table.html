@@ -8,6 +8,7 @@ $(function () {
 <div class="table-responsive">
 	<table class="table">
 		<tr style="background:#d9edf7">
+			<td></td>
 			<td data-toggle="tooltip" title="Games Played">GP</td>
 			<td data-toggle="tooltip" title="Field Goals Made (Any made basket)">FGM</td>
 			<td data-toggle="tooltip" title="Field Goals Attempted (Any basket attempted)">FGA</td>
@@ -26,7 +27,34 @@ $(function () {
 			<td data-toggle="tooltip" title="Personal Fouls (Amount of fouls that you have been called on)">PF</td>
 			<td data-toggle="tooltip" title="Points (Amount of points scored)">Pts</td>
 		</tr>
-		<tr>
+		{% for key,value in player_averages_dict.items %}
+			<tr>
+				<td>{{ key }}</td>
+				<td>{{ value.gp }}</td>
+				<td>{{ value.fgm__avg|floatformat }}</td>
+				<td>{{ value.fga__avg|floatformat }}</td>
+				<td>{{ value.threepm__avg|floatformat }}</td>
+				<td>{{ value.threepa__avg|floatformat }}</td>
+				<td>{{ value.oreb__avg|floatformat }}</td>
+				<td>{{ value.dreb__avg|floatformat }}</td>
+				<td>{{ value.total_rebounds__avg|floatformat }}</td>
+				<td>{{ value.asts__avg|floatformat }}</td>
+				<td>{{ value.pot_ast__avg|floatformat }}</td>
+				<td>{{ value.to__avg|floatformat }}</td>
+				<td>{{ value.stls__avg|floatformat }}</td>
+				<td>{{ value.blk__avg|floatformat }}</td>
+				<td>{{ value.ba__avg|floatformat }}</td>
+				<td>{{ value.fd__avg|floatformat }}</td>
+				<td>{{ value.pf__avg|floatformat }}</td>
+				<td>{{ value.points__avg|floatformat }}</td>
+			</tr>
+		{% empty %}
+			<tr>
+				<td>No data recorded yet</td>
+			</tr>
+		{% endfor %}
+		<tr style="background:#d9edf7">	
+			<td>Overall Average</td>
 			<td>{{ averages.gp }}</td>
 			<td>{{ averages.fgm__avg|floatformat }}</td>
 			<td>{{ averages.fga__avg|floatformat }}</td>

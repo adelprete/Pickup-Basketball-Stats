@@ -69,10 +69,8 @@
 				<div role="tabpanel" class="tab-pane {% if not has_top_plays %}active{% endif %}" id="averages" style="padding-top:15px;">
 					<div class="row">
 						<div class="col-sm-12">
-							{% for key,value in averages_dict.items %}
-								<h4 class="accent" style="margin-bottom:5px;">{{ key }}</h4>
-								{% include "player_averages_table.html" with averages=value %}
-							{% endfor %}
+							<h4 class="accent">Averages</h4>
+							{% include "player_averages_table.html" %}
 						</div>
 					</div>
 				</div>
