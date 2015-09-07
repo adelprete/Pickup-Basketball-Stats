@@ -110,28 +110,51 @@ class Player(models.Model):
         
         return losses
 
-    def get_averages(self, game_type=None, season_id=None):
+    def get_averages(self, game_type=None, season=None):
         """Returns a dictionary of the player's averages"""
-        season = None
-        if season_id:
-            season = Season.objects.get(id=season_id)
+        return self.get_player_data(report_type='Avg', game_type=game_type, season=season)
 
+    def get_totals(self, game_type=None, season=None):
+        """Returns a dictionary of the player's totals"""
+        return self.get_player_data(report_type='Sum', game_type=game_type, season=season)
+
+    def get_player_data(self, report_type='Sum', game_type=None, season=None):
+        
         qs = self.statline_set.all()
         if game_type:
             qs = qs.filter(game__game_type=game_type)
             if season:
                 qs = qs.filter(game__date__range=(
                     season.start_date, season.end_date))
-
-        player_averages = {}
+        
+        player_data = {}
         for play in ALL_PLAY_TYPES:
             if play[0] not in ['sub_out', 'sub_in', 'misc']:
-                x = qs.aggregate(Avg(play[0]))
-                player_averages.update(x)
-        player_averages.update(qs.aggregate(
-            Avg('points'), Avg('total_rebounds')))
-        player_averages['gp'] = qs.count()
-        return player_averages
+                if report_type == 'Avg':
+                    x = qs.aggregate(Avg(play[0]))
+                else:
+                    x = qs.aggregate(Sum(play[0]))
+                player_data.update(x)
+
+        if report_type == 'Avg':
+            player_data.update(qs.aggregate(
+                Avg('points'),
+                Avg('total_rebounds'),
+                Avg('off_pos'),
+                Avg('def_pos'),
+                Avg('dreb_opp'),
+                Avg('oreb_opp')))
+        else:
+            player_data.update(qs.aggregate(
+                Sum('points'),
+                Sum('total_rebounds'),
+                Sum('off_pos'),
+                Sum('def_pos'),
+                Sum('dreb_opp'),
+                Sum('oreb_opp')))
+
+        player_data['gp'] = qs.count()
+        return player_data
 
     class Meta():
         ordering = ['first_name']

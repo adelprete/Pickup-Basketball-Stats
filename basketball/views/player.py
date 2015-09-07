@@ -32,23 +32,30 @@ def player_page(request, id):
     if bmodels.PlayByPlay.objects.filter(top_play_players=player):
         has_top_plays = True
 
+    season_totals_dict = OrderedDict()
+    totals = player.get_totals()
+    
     averages_dict = OrderedDict()
     averages_dict["All Time"] = player.get_averages()
     averages_dict["5v5"] = player.get_averages('5v5')
 
     seasons = bmodels.Season.objects.all()
     for season in seasons:
+
+        player_statlines = player.statline_set.filter(game__date__range=(season.start_date, season.end_date))
+        
         for game_type in bmodels.GAME_TYPES:
-            if bmodels.StatLine.objects.filter(Q(player=player),
-                                               Q(game__date__range=(season.start_date, season.end_date)) & Q(game__game_type=game_type[0])):
-                averages_dict[season.title + " - " + game_type[0]
-                              ] = player.get_averages(game_type[0], season.id)
+            if player_statlines.filter(game__game_type=game_type[0]):
+                season_totals_dict[season.title + " - " + game_type[0]] = player.get_totals(game_type[0], season)
+                averages_dict[season.title + " - " + game_type[0]] = player.get_averages(game_type[0], season)
 
     context = {
         'player': player,
         'has_top_plays': has_top_plays,
         'statlines': statlines,
         'averages_dict': averages_dict,
+        'totals': totals,
+        'player_totals_dict': season_totals_dict,
         'seasons': seasons,
     }
     return render(request, 'player_detail.html', context)

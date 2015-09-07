@@ -78,13 +78,10 @@ def create_plays(pk, f):
         play.save()
 
 
-def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season_id=None):
+def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=None):
     """
     A function that finds the top players for a given stat per 100 possessions.
     """
-    season = None
-    if season_id:
-        season = bmodels.Season.objects.get(id=season_id)
 
     if player_pk:
         players = bmodels.Player.objects.filter(pk=player_pk)

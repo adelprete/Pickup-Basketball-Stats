@@ -132,7 +132,12 @@
 						<label name>Seasons</label>
 						<select class="form-control season">
 							{% for season in seasons %}
-							<option value="{{ season.id }}">{{ season.title }}</option>
+							<option 
+								value="{{ season.id }}" 
+								{% if season = default_season %}selected="selected"{% endif %}
+								>
+								{{ season.title }}
+							</option>
 							{% endfor %}
 							<option value="All">All</option>	
 						</select>
@@ -190,6 +195,7 @@
     </script>
 	<script type="text/javascript">
 		$(".season").change(function() {
+			$("#player_standings").html('<img src="/media/loading-indicator.gif" style="display: block; margin:0px auto;">');
 			$.ajax({
 				type: "get",
 				url: "{% url 'ajax_standings' %}",

@@ -41,7 +41,7 @@
 		<div role="tabpanel" class="tab-pane" id="totals">
 			<h3 class="accent">5 on 5 Total Stats</h3>
 			<div style="color: #777;font-size:17px;width:100%;">Totals from {% if season %}{{ season }}{% else %}all seasons{% endif %}</div>
-			{% lb_totals %}
+			{% lb_totals season=season%}
 		</div>
 	</div>
 	<script type="text/javascript">

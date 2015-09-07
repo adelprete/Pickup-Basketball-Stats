@@ -62,291 +62,283 @@ def player_five_on_five_pos(context, game_type="5on5", player_pk=None):
 
 @register.inclusion_tag('lb_5on5_possessions.html', takes_context=True)
 def lb_five_on_five_pos(context, game_type="5v5", player_pk=None):
+	"""Returns many lists of tuples for each statistical category"""
 
-    season_id = None
-    if context.get('season_id', None):
-        season_id = context['season_id']
-    possessions_min = int(context.get('possessions_min', 100))
+	season = None
+	if context.get('season', None):
+		season = context['season']
+	possessions_min = int(context.get('possessions_min', 100))
 
-    season = None
-    if season_id:
-        season = bmodels.Season.objects.get(id=season_id)
+	excluded_pks = []
+	if player_pk:
+		players = bmodels.Player.objects.filter(pk=player_pk)
+	else:
+		players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
 
-    excluded_pks = []
-    if player_pk:
-        players = bmodels.Player.objects.filter(pk=player_pk)
-    else:
-        players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
+		# exclude players that dont meet the minimum 100 possessions
+		# requirement
+		for player in players:
+			if season:
+				pos_count = player.statline_set.filter(game__game_type=game_type, game__date__range=(
+					season.start_date, season.end_date)).aggregate(Sum('off_pos'))
+			else:
+				pos_count = player.statline_set.filter(
+					game__game_type=game_type).aggregate(Sum('off_pos'))
 
-        # exclude players that dont meet the minimum 100 possessions
-        # requirement
-        for player in players:
-            if season:
-                pos_count = player.statline_set.filter(game__game_type=game_type, game__date__range=(
-                    season.start_date, season.end_date)).aggregate(Sum('off_pos'))
-            else:
-                pos_count = player.statline_set.filter(
-                    game__game_type=game_type).aggregate(Sum('off_pos'))
+			if not pos_count['off_pos__sum'] or pos_count['off_pos__sum'] < possessions_min:
+				excluded_pks.append(player.pk)
 
-            if not pos_count['off_pos__sum'] or pos_count['off_pos__sum'] < possessions_min:
-                excluded_pks.append(player.pk)
+		players = players.exclude(pk__in=excluded_pks)
 
-        players = players.exclude(pk__in=excluded_pks)
+	dreb = helpers.per100_top_stat_players(
+		game_type, 'dreb', player_pk, excluded_pks, season=season)
+	oreb = helpers.per100_top_stat_players(
+		game_type, 'oreb', player_pk, excluded_pks, season=season)
+	total_rebounds = helpers.per100_top_stat_players(
+		game_type, 'total_rebounds', player_pk, excluded_pks, season=season)
+	asts = helpers.per100_top_stat_players(
+		game_type, 'asts', player_pk, excluded_pks, season=season)
+	pot_ast = helpers.per100_top_stat_players(
+		game_type, 'pot_ast', player_pk, excluded_pks, season=season)
+	stls = helpers.per100_top_stat_players(
+		game_type, 'stls', player_pk, excluded_pks, season=season)
+	to = helpers.per100_top_stat_players(
+		game_type, 'to', player_pk, excluded_pks, season=season)
+	points = helpers.per100_top_stat_players(
+		game_type, 'points', player_pk, excluded_pks, season=season)
+	blk = helpers.per100_top_stat_players(
+		game_type, 'blk', player_pk, excluded_pks, season=season)
 
-    dreb = helpers.per100_top_stat_players(
-        game_type, 'dreb', player_pk, excluded_pks, season_id=season_id)
-    oreb = helpers.per100_top_stat_players(
-        game_type, 'oreb', player_pk, excluded_pks, season_id=season_id)
-    total_rebounds = helpers.per100_top_stat_players(
-        game_type, 'total_rebounds', player_pk, excluded_pks, season_id=season_id)
-    asts = helpers.per100_top_stat_players(
-        game_type, 'asts', player_pk, excluded_pks, season_id=season_id)
-    pot_ast = helpers.per100_top_stat_players(
-        game_type, 'pot_ast', player_pk, excluded_pks, season_id=season_id)
-    stls = helpers.per100_top_stat_players(
-        game_type, 'stls', player_pk, excluded_pks, season_id=season_id)
-    to = helpers.per100_top_stat_players(
-        game_type, 'to', player_pk, excluded_pks, season_id=season_id)
-    points = helpers.per100_top_stat_players(
-        game_type, 'points', player_pk, excluded_pks, season_id=season_id)
-    blk = helpers.per100_top_stat_players(
-        game_type, 'blk', player_pk, excluded_pks, season_id=season_id)
+	# these need special attention
+	fgm_percent = []
+	for player in players:
 
-    # these need special attention
-    fgm_percent = []
-    for player in players:
+		statlines = player.statline_set.filter(game__game_type=game_type)
+		if season:
+			statlines = statlines.filter(game__date__range=(
+				season.start_date, season.end_date))
 
-        statlines = player.statline_set.filter(game__game_type=game_type)
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
+		result = statlines.aggregate(Sum('fgm'), Sum('fga'))
 
-        result = statlines.aggregate(Sum('fgm'), Sum('fga'))
+		if result['fga__sum'] and result['fga__sum'] is not 0:
+			percentage = result['fgm__sum'] / result['fga__sum'] * 100
+		else:
+			percentage = 0.0
 
-        if result['fga__sum'] and result['fga__sum'] is not 0:
-            percentage = result['fgm__sum'] / result['fga__sum'] * 100
-        else:
-            percentage = 0.0
+		fgm_percent.append((player.first_name, percentage))
+	fgm_percent = sorted(fgm_percent, key=lambda x: x[1], reverse=True)
 
-        fgm_percent.append((player.first_name, percentage))
-    fgm_percent = sorted(fgm_percent, key=lambda x: x[1], reverse=True)
+	three_percent = []
+	for player in players:
 
-    three_percent = []
-    for player in players:
+		statlines = player.statline_set.filter(game__game_type=game_type)
+		if season:
+			statlines = statlines.filter(game__date__range=(
+				season.start_date, season.end_date))
 
-        statlines = player.statline_set.filter(game__game_type=game_type)
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
+		result = statlines.aggregate(
+			Sum('threepm'), Sum('threepa'), Sum('off_pos'))
 
-        result = statlines.aggregate(
-            Sum('threepm'), Sum('threepa'), Sum('off_pos'))
+		if result['threepa__sum'] and result['threepa__sum'] is not 0:
+			percentage = result['threepm__sum'] / result['threepa__sum'] * 100
+		else:
+			percentage = 0.0
+		three_percent.append((player.first_name, percentage))
+	three_percent = sorted(three_percent, key=lambda x: x[1], reverse=True)
 
-        if result['threepa__sum'] and result['threepa__sum'] is not 0:
-            percentage = result['threepm__sum'] / result['threepa__sum'] * 100
-        else:
-            percentage = 0.0
-        three_percent.append((player.first_name, percentage))
-    three_percent = sorted(three_percent, key=lambda x: x[1], reverse=True)
+	dreb_percent = []
+	for player in players:
 
-    dreb_percent = []
-    for player in players:
+		statlines = player.statline_set.filter(game__game_type=game_type)
+		if season:
+			statlines = statlines.filter(game__date__range=(
+				season.start_date, season.end_date))
 
-        statlines = player.statline_set.filter(game__game_type=game_type)
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
+		result = statlines.aggregate(Sum('dreb'), Sum('dreb_opp'))
 
-        result = statlines.aggregate(Sum('dreb'), Sum('dreb_opp'))
+		if result['dreb_opp__sum'] and result['dreb_opp__sum'] is not 0:
+			percentage = result['dreb__sum'] / result['dreb_opp__sum'] * 100
+		else:
+			percentage = 0.0
+		dreb_percent.append((player.first_name, percentage))
+	dreb_percent = sorted(dreb_percent, key=lambda x: x[1], reverse=True)
 
-        if result['dreb_opp__sum'] and result['dreb_opp__sum'] is not 0:
-            percentage = result['dreb__sum'] / result['dreb_opp__sum'] * 100
-        else:
-            percentage = 0.0
-        dreb_percent.append((player.first_name, percentage))
-    dreb_percent = sorted(dreb_percent, key=lambda x: x[1], reverse=True)
+	oreb_percent = []
+	for player in players:
 
-    oreb_percent = []
-    for player in players:
+		statlines = player.statline_set.filter(game__game_type=game_type)
+		if season:
+			statlines = statlines.filter(game__date__range=(
+				season.start_date, season.end_date))
 
-        statlines = player.statline_set.filter(game__game_type=game_type)
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
+		result = statlines.aggregate(Sum('oreb'), Sum('oreb_opp'))
 
-        result = statlines.aggregate(Sum('oreb'), Sum('oreb_opp'))
+		if result['oreb_opp__sum'] and result['oreb_opp__sum'] is not 0:
+			percentage = result['oreb__sum'] / result['oreb_opp__sum'] * 100
+		else:
+			percentage = 0.0
+		oreb_percent.append((player.first_name, percentage))
+	oreb_percent = sorted(oreb_percent, key=lambda x: x[1], reverse=True)
 
-        if result['oreb_opp__sum'] and result['oreb_opp__sum'] is not 0:
-            percentage = result['oreb__sum'] / result['oreb_opp__sum'] * 100
-        else:
-            percentage = 0.0
-        oreb_percent.append((player.first_name, percentage))
-    oreb_percent = sorted(oreb_percent, key=lambda x: x[1], reverse=True)
+	treb_percent = []
+	for player in players:
 
-    treb_percent = []
-    for player in players:
+		statlines = player.statline_set.filter(game__game_type=game_type)
+		if season:
+			statlines = statlines.filter(game__date__range=(
+				season.start_date, season.end_date))
 
-        statlines = player.statline_set.filter(game__game_type=game_type)
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
+		result = statlines.aggregate(
+			Sum('total_rebounds'), Sum('dreb_opp'), Sum('oreb_opp'))
 
-        result = statlines.aggregate(
-            Sum('total_rebounds'), Sum('dreb_opp'), Sum('oreb_opp'))
+		if result['dreb_opp__sum']:
+			percentage = result['total_rebounds__sum'] / \
+				(result['oreb_opp__sum'] + result['dreb_opp__sum']) * 100
+		else:
+			percentage = 0.0
+		treb_percent.append((player.first_name, percentage))
+	treb_percent = sorted(treb_percent, key=lambda x: x[1], reverse=True)
 
-        if result['dreb_opp__sum']:
-            percentage = result['total_rebounds__sum'] / \
-                (result['oreb_opp__sum'] + result['dreb_opp__sum']) * 100
-        else:
-            percentage = 0.0
-        treb_percent.append((player.first_name, percentage))
-    treb_percent = sorted(treb_percent, key=lambda x: x[1], reverse=True)
+	ts_percent = []
+	for player in players:
 
-    ts_percent = []
-    for player in players:
+		statlines = player.statline_set.filter(game__game_type=game_type)
+		if season:
+			statlines = statlines.filter(game__date__range=(
+				season.start_date, season.end_date))
 
-        statlines = player.statline_set.filter(game__game_type=game_type)
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
+		result = statlines.aggregate(Sum('points'), Sum('fga'))
+		if result['fga__sum']:
+			percentage = result['points__sum'] / result['fga__sum'] * 100
+		else:
+			percentage = 0.0
+		ts_percent.append((player.first_name, percentage))
+	ts_percent = sorted(ts_percent, key=lambda x: x[1], reverse=True)
 
-        result = statlines.aggregate(Sum('points'), Sum('fga'))
-        if result['fga__sum']:
-            percentage = result['points__sum'] / result['fga__sum'] * 100
-        else:
-            percentage = 0.0
-        ts_percent.append((player.first_name, percentage))
-    ts_percent = sorted(ts_percent, key=lambda x: x[1], reverse=True)
+	orating_percent = []
+	for player in players:
 
-    orating_percent = []
-    for player in players:
+		statlines = player.statline_set.filter(game__game_type=game_type)
+		if season:
+			statlines = statlines.filter(game__date__range=(
+				season.start_date, season.end_date))
 
-        statlines = player.statline_set.filter(game__game_type=game_type)
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
+		result = statlines.aggregate(Sum('off_pos'))
 
-        result = statlines.aggregate(Sum('off_pos'))
+		team1_games = bmodels.Game.objects.filter(team1=player)
+		team2_games = bmodels.Game.objects.filter(team2=player)
+		if season:
+			team1_games = team1_games.filter(
+				date__range=(season.start_date, season.end_date))
+			team2_games = team2_games.filter(
+				date__range=(season.start_date, season.end_date))
 
-        team1_games = bmodels.Game.objects.filter(team1=player)
-        team2_games = bmodels.Game.objects.filter(team2=player)
-        if season:
-            team1_games = team1_games.filter(
-                date__range=(season.start_date, season.end_date))
-            team2_games = team2_games.filter(
-                date__range=(season.start_date, season.end_date))
+		team1_result = team1_games.aggregate(Sum("team1_score"))
+		team2_result = team2_games.aggregate(Sum("team2_score"))
 
-        team1_result = team1_games.aggregate(Sum("team1_score"))
-        team2_result = team2_games.aggregate(Sum("team2_score"))
+		if team1_result['team1_score__sum'] == None:
+			team1_result['team1_score__sum'] = 0
+		if team2_result['team2_score__sum'] == None:
+			team2_result['team2_score__sum'] = 0
 
-        if team1_result['team1_score__sum'] == None:
-            team1_result['team1_score__sum'] = 0
-        if team2_result['team2_score__sum'] == None:
-            team2_result['team2_score__sum'] = 0
+		if result['off_pos__sum']:
+			percentage = (team1_result[
+						  'team1_score__sum'] + team2_result['team2_score__sum']) / result['off_pos__sum'] * 100
+		else:
+			percentage = 0.0
+		orating_percent.append((player.first_name, percentage))
+	orating_percent = sorted(orating_percent, key=lambda x: x[1], reverse=True)
 
-        if result['off_pos__sum']:
-            percentage = (team1_result[
-                          'team1_score__sum'] + team2_result['team2_score__sum']) / result['off_pos__sum'] * 100
-        else:
-            percentage = 0.0
-        orating_percent.append((player.first_name, percentage))
-    orating_percent = sorted(orating_percent, key=lambda x: x[1], reverse=True)
+	drating_percent = []
+	for player in players:
+		statlines = player.statline_set.filter(game__game_type=game_type)
 
-    drating_percent = []
-    for player in players:
-        statlines = player.statline_set.filter(game__game_type=game_type)
+		if season:
+			statlines = statlines.filter(game__date__range=(
+				season.start_date, season.end_date))
 
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
+		result = statlines.aggregate(Sum('def_pos'))
 
-        result = statlines.aggregate(Sum('def_pos'))
+		team1_games = bmodels.Game.objects.filter(team2=player)
+		team2_games = bmodels.Game.objects.filter(team1=player)
+		if season:
+			team1_games = team1_games.filter(
+				date__range=(season.start_date, season.end_date))
+			team2_games = team2_games.filter(
+				date__range=(season.start_date, season.end_date))
 
-        team1_games = bmodels.Game.objects.filter(team2=player)
-        team2_games = bmodels.Game.objects.filter(team1=player)
-        if season:
-            team1_games = team1_games.filter(
-                date__range=(season.start_date, season.end_date))
-            team2_games = team2_games.filter(
-                date__range=(season.start_date, season.end_date))
+		team1_result = team1_games.aggregate(Sum("team1_score"))
+		team2_result = team2_games.aggregate(Sum("team2_score"))
 
-        team1_result = team1_games.aggregate(Sum("team1_score"))
-        team2_result = team2_games.aggregate(Sum("team2_score"))
+		if team1_result['team1_score__sum'] == None:
+			team1_result['team1_score__sum'] = 0
+		if team2_result['team2_score__sum'] == None:
+			team2_result['team2_score__sum'] = 0
 
-        if team1_result['team1_score__sum'] == None:
-            team1_result['team1_score__sum'] = 0
-        if team2_result['team2_score__sum'] == None:
-            team2_result['team2_score__sum'] = 0
+		if result['def_pos__sum']:
+			percentage = (team1_result[
+						  'team1_score__sum'] + team2_result['team2_score__sum']) / result['def_pos__sum'] * 100
+		else:
+			percentage = 0.0
+		drating_percent.append((player.first_name, percentage))
+	drating_percent = sorted(drating_percent, key=lambda x: x[1])
 
-        if result['def_pos__sum']:
-            percentage = (team1_result[
-                          'team1_score__sum'] + team2_result['team2_score__sum']) / result['def_pos__sum'] * 100
-        else:
-            percentage = 0.0
-        drating_percent.append((player.first_name, percentage))
-    drating_percent = sorted(drating_percent, key=lambda x: x[1])
-
-    context = {
-        "dreb": dreb[:5],
-        "oreb": oreb[:5],
-        "total_rebounds": total_rebounds[:5],
-        "asts": asts[:5],
-        "pot_ast": pot_ast[:5],
-        "stls": stls[:5],
-        "to": to[:5],
-        "points": points[:5],
-        "fgm_percent": fgm_percent[:5],
-        "three_percent": three_percent[:5],
-        "dreb_percent": dreb_percent[:5],
-        "oreb_percent": oreb_percent[:5],
-        "treb_percent": treb_percent[:5],
-        "ts_percent": ts_percent[:5],
-        "orating_percent": orating_percent[:5],
-        "drating_percent": drating_percent[:5],
-        "blk": blk[:5],
-        "form": context.get('form', None),
-        "possessions_min": possessions_min,
-        "season": season,
-    }
-    return context
+	context = {
+		"dreb": dreb[:5],
+		"oreb": oreb[:5],
+		"total_rebounds": total_rebounds[:5],
+		"asts": asts[:5],
+		"pot_ast": pot_ast[:5],
+		"stls": stls[:5],
+		"to": to[:5],
+		"points": points[:5],
+		"fgm_percent": fgm_percent[:5],
+		"three_percent": three_percent[:5],
+		"dreb_percent": dreb_percent[:5],
+		"oreb_percent": oreb_percent[:5],
+		"treb_percent": treb_percent[:5],
+		"ts_percent": ts_percent[:5],
+		"orating_percent": orating_percent[:5],
+		"drating_percent": drating_percent[:5],
+		"blk": blk[:5],
+		"form": context.get('form', None),
+		"possessions_min": possessions_min,
+		"season": season,
+	}
+	return context
 
 
-@register.inclusion_tag('lb_totals.html', takes_context=True)
-def lb_totals(context, game_type="5v5", player_pk=None, season_id=None):
+@register.inclusion_tag('totals_table.html', takes_context=True)
+def lb_totals(context, game_type="5v5", player_pk=None, season=None):
+	"""Returns a dictionary of totals for one or more players"""
 
-    season = None
-    if season_id:
-        season = bmodels.Season.objects.get(id=season_id)
+	if player_pk:
+		players = bmodels.Player.objects.filter(pk=player_pk)
+	else:
+		players = bmodels.Player.objects.all().exclude(
+			first_name__contains="Team").order_by('first_name')
 
-    if player_pk:
-        players = bmodels.Player.objects.filter(pk=player_pk)
-    else:
-        players = bmodels.Player.objects.all().exclude(
-            first_name__contains="Team").order_by('first_name')
+	player_totals_dict = OrderedDict()
+	totals = {}
+	for player in players:
 
-    player_dict = OrderedDict()
-    for player in players:
+		player_total = player.get_totals(game_type=game_type,season=season)
+	
+		if player_total['oreb_opp__sum']:
+			player_totals_dict[player.get_full_name()] = player_total
+			
+			for key, value in player_total.items():
+				if key in totals:
+					totals[key] += value
+				else:
+					totals[key] = value
 
-        statlines = player.statline_set.filter(game__game_type=game_type)
-        if season:
-            statlines = statlines.filter(game__date__range=(
-                season.start_date, season.end_date))
-
-        player_total = statlines.aggregate(
-            Sum('fga'), Sum('fgm'), Sum('threepm'), Sum('threepa'),
-            Sum('dreb'), Sum('oreb'), Sum('total_rebounds'), Sum('asts'),
-            Sum('pot_ast'), Sum('blk'), Sum('ba'), Sum('stls'),
-            Sum('to'), Sum('fd'), Sum('pf'), Sum('def_pos'),
-            Sum('off_pos'), Sum('points'), Sum('dreb_opp'), Sum('oreb_opp'))
-
-        if player_total['oreb_opp__sum']:
-            player_dict[player.get_full_name()] = player_total
-
-    context = {
-        'player_dict': player_dict,
-        "season": season,
-    }
-    return context
+	context = {
+		'player_totals_dict': player_totals_dict,
+		"season": season,
+		"totals": totals,
+	}
+	return context
 
 
 @register.inclusion_tag('top_stat_table.html')

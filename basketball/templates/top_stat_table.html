@@ -9,6 +9,10 @@
 				<td>{{ player.0 }}</td>
 				<td>{{ player.1|floatformat }}</td>
 			</tr>
+		{% empty %}
+			<tr>
+				<td colspan="2">No data yet</td>
+			</tr>
 		{% endfor %}
 	</table>
 </div>

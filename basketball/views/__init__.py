@@ -42,7 +42,7 @@ def root(request):
                 start_date__lt=datetime.datetime.today(),
                 end_date__gt=datetime.datetime.today())
     except:
-        season = bmodels.Season.objects.latest('start_date')
+        season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
 
     player_tuples = []
     for player in players:
@@ -58,6 +58,7 @@ def root(request):
         'top_plays': top_plays,
         'not_top_plays': not_top_plays,
         'standings': player_standings,
+        'default_season': season,
         'seasons': bmodels.Season.objects.all()
     }
     return render(request, "base.html", context)
@@ -72,16 +73,30 @@ def leaderboard_home(request):
     season_id = None
     season = None
     possessions_min = 100
-    form = bforms.LeaderboardForm(initial={'possessions_min': 100})
-    if request.GET != {}:
+    if request.GET:
         form = bforms.LeaderboardForm(request.GET)
         if form.is_valid():
             season_id = form.data.get('season', None)
             if season_id:
                 season = bmodels.Season.objects.get(id=season_id)
             possessions_min = form.data.get('possessions_min', 100)
-
-    return render(request, 'leaderboard.html', {'form': form, 'season_id': season_id, 'possessions_min': possessions_min, 'season': season})
+    else:
+        try:
+            season = bmodels.Season.objects.get(
+                    start_date__lt=datetime.datetime.today(),
+                    end_date__gt=datetime.datetime.today())
+        except:
+            season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
+        
+        form = bforms.LeaderboardForm(initial={'possessions_min': 100, 'season': season.id})
+    
+    context = {
+            'form': form,
+            'season_id': season_id,
+            'possessions_min': possessions_min,
+            'season': season
+        }
+    return render(request, 'leaderboard.html', context)
 
 
 def login(request):
