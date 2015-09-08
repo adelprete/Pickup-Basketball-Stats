@@ -1,0 +1,129 @@
+<script>
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip({
+		container : 'body'
+	});
+});
+</script>
+{% load bootstrap3 %}
+<div class="table-responsive">
+	<table class="table table-hover">
+		<tr style="background:#d9edf7">
+			<td></td>
+			<td data-toggle="tooltip" title="Games Played">
+				<a href="?5on5-sort=gp">GP</a>
+				{% if 5on5_sort_col == 'gp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Field Goals Made (Any made basket)">
+				<a href="?5on5-sort=fgm__sum">FGM</a>
+				{% if 5on5_sort_col == 'fgm__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Field Goals Attempted (Any basket attempted)">
+				<a href="?5on5-sort=fga__sum">FGA</a>
+				{% if 5on5_sort_col == 'fga__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Three Pointers Made (Any shot made behind the 3point line)">
+				<a href="?5on5-sort=threepm__sum">3PM</a>
+				{% if 5on5_sort_col == 'threepm__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Three Pointers Attempted (Any shot attempted behind the 3point line)">
+				<a href="?5on5-sort=threepa__sum">3PA</a>
+				{% if 5on5_sort_col == 'threepa__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Offensive Rebounds (A rebound after a teammate/self misses)">
+				<a href="?5on5-sort=oreb__sum">Off</a>
+				{% if 5on5_sort_col == 'oreb__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Defensive Rebounds (A rebound after an opponent misses)">
+				<a href="?5on5-sort=dreb__sum">Def</a>
+				{% if 5on5_sort_col == 'dreb__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Total Rebounds (A rebound after any miss)">
+				<a href="?5on5-sort=total_rebounds__sum">Reb</a>
+				{% if 5on5_sort_col == 'total_rebounds__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Assists (A pass that leads to a score)">
+				<a href="?5on5-sort=asts__sum">Ast</a>
+				{% if 5on5_sort_col == 'asts__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Potential Assist (A pass that would’ve lead to a score if the receiver made the shot)">
+				<a href="?5on5-sort=pot_ast__sum">P.Ast</a>
+				{% if 5on5_sort_col == 'pot_ast__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Turnover (Anytime you give the ball to the other team)">
+				<a href="?5on5-sort=to__sum">TO</a>
+				{% if 5on5_sort_col == 'to__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Steals (Anytime you cause a turnover from the other team)">
+				<a href="?5on5-sort=stls__sum">Stl</a>
+				{% if 5on5_sort_col == 'stls__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Blocks (Whenever you deflect a shot attempt)">
+				<a href="?5on5-sort=blk__sum">Blk</a>
+				{% if 5on5_sort_col == 'blk__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Blocks Allowed (How many shot attempts have been deflected)">
+				<a href="?5on5-sort=ba__sum">BA</a>
+				{% if 5on5_sort_col == 'ba__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Fouls Drawn (Whenever you are fouled)">
+				<a href="?5on5-sort=fd__sum">FD</a>
+				{% if 5on5_sort_col == 'fd__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Personal Fouls (Amount of fouls that you have been called on)">
+				<a href="?5on5-sort=pf__sum">PF</a>
+				{% if 5on5_sort_col == 'pf__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Points (Amount of points scored)">
+				<a href="?5on5-sort=points__sum">Pts</a>
+				{% if 5on5_sort_col == 'points__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+		</tr>
+		{% for value in player_totals_list %}
+			<tr>
+				<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
+				<td>{{ value.gp }}</td>
+				<td>{{ value.fgm__sum|floatformat }}</td>
+				<td>{{ value.fga__sum|floatformat }}</td>
+				<td>{{ value.threepm__sum|floatformat }}</td>
+				<td>{{ value.threepa__sum|floatformat }}</td>
+				<td>{{ value.oreb__sum|floatformat }}</td>
+				<td>{{ value.dreb__sum|floatformat }}</td>
+				<td>{{ value.total_rebounds__sum|floatformat }}</td>
+				<td>{{ value.asts__sum|floatformat }}</td>
+				<td>{{ value.pot_ast__sum|floatformat }}</td>
+				<td>{{ value.to__sum|floatformat }}</td>
+				<td>{{ value.stls__sum|floatformat }}</td>
+				<td>{{ value.blk__sum|floatformat }}</td>
+				<td>{{ value.ba__sum|floatformat }}</td>
+				<td>{{ value.fd__sum|floatformat }}</td>
+				<td>{{ value.pf__sum|floatformat }}</td>
+				<td>{{ value.points__sum|floatformat }}</td>
+			</tr>
+		{% empty %}
+			<tr>
+				<td>No data recorded yet</td>
+			</tr>
+		{% endfor %}
+			<tr style="background:#d9edf7">	
+				<td>Total</td>
+				<td>{{ totals.gp }}</td>
+				<td>{{ totals.fgm__sum|floatformat }}</td>
+				<td>{{ totals.fga__sum|floatformat }}</td>
+				<td>{{ totals.threepm__sum|floatformat }}</td>
+				<td>{{ totals.threepa__sum|floatformat }}</td>
+				<td>{{ totals.oreb__sum|floatformat }}</td>
+				<td>{{ totals.dreb__sum|floatformat }}</td>
+				<td>{{ totals.total_rebounds__sum|floatformat }}</td>
+				<td>{{ totals.asts__sum|floatformat }}</td>
+				<td>{{ totals.pot_ast__sum|floatformat }}</td>
+				<td>{{ totals.to__sum|floatformat }}</td>
+				<td>{{ totals.stls__sum|floatformat }}</td>
+				<td>{{ totals.blk__sum|floatformat }}</td>
+				<td>{{ totals.ba__sum|floatformat }}</td>
+				<td>{{ totals.fd__sum|floatformat }}</td>
+				<td>{{ totals.pf__sum|floatformat }}</td>
+				<td>{{ totals.points__sum|floatformat }}</td>
+			</tr>
+	</table>	
+</div>

@@ -308,37 +308,43 @@ def lb_five_on_five_pos(context, game_type="5v5", player_pk=None):
 	return context
 
 
-@register.inclusion_tag('totals_table.html', takes_context=True)
+@register.inclusion_tag('lb_totals_table.html', takes_context=True)
 def lb_totals(context, game_type="5v5", player_pk=None, season=None):
-	"""Returns a dictionary of totals for one or more players"""
+        """Returns a dictionary of totals for one or more players"""
 
-	if player_pk:
-		players = bmodels.Player.objects.filter(pk=player_pk)
-	else:
-		players = bmodels.Player.objects.all().exclude(
-			first_name__contains="Team").order_by('first_name')
+        if player_pk:
+                players = bmodels.Player.objects.filter(pk=player_pk)
+        else:
+                players = bmodels.Player.objects.all().exclude(
+                        first_name__contains="Team").order_by('first_name')
 
-	player_totals_dict = OrderedDict()
-	totals = {}
-	for player in players:
+        player_totals_list = []
+        totals = {}
+        for player in players:
 
-		player_total = player.get_totals(game_type=game_type,season=season)
-	
-		if player_total['oreb_opp__sum']:
-			player_totals_dict[player.get_full_name()] = player_total
-			
-			for key, value in player_total.items():
-				if key in totals:
-					totals[key] += value
-				else:
-					totals[key] = value
+                player_total = player.get_totals(game_type=game_type,season=season)
+                player_total['player_obj'] = player
 
-	context = {
-		'player_totals_dict': player_totals_dict,
-		"season": season,
-		"totals": totals,
-	}
-	return context
+                if player_total['oreb_opp__sum']:
+                        player_totals_list.append(player_total)
+                        for key, value in player_total.items():
+                                if key is not 'player_obj':
+                                        if key in totals:
+                                                totals[key] += value
+                                        else:
+                                                totals[key] = value
+        
+        sort_column = context['request'].GET.get('5on5-sort')
+        if sort_column:
+            player_totals_list.sort(key=lambda d: d[sort_column],reverse=True)
+        
+        context = {
+                'player_totals_list': player_totals_list,
+                "season": season,
+                "totals": totals,
+                "5on5_sort_col": sort_column,
+        }
+        return context
 
 
 @register.inclusion_tag('top_stat_table.html')

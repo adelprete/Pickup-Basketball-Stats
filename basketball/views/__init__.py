@@ -66,37 +66,43 @@ def root(request):
 
 
 def leaderboard_home(request):
-    """
-    Generates the leaderboard page.
-    This page uses tabs that load different templatetags that display different information
-    """
-    season_id = None
-    season = None
-    possessions_min = 100
-    if request.GET:
-        form = bforms.LeaderboardForm(request.GET)
-        if form.is_valid():
-            season_id = form.data.get('season', None)
-            if season_id:
-                season = bmodels.Season.objects.get(id=season_id)
-            possessions_min = form.data.get('possessions_min', 100)
-    else:
-        try:
-            season = bmodels.Season.objects.get(
-                    start_date__lt=datetime.datetime.today(),
-                    end_date__gt=datetime.datetime.today())
-        except:
-            season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
-        
-        form = bforms.LeaderboardForm(initial={'possessions_min': 100, 'season': season.id})
-    
-    context = {
-            'form': form,
-            'season_id': season_id,
-            'possessions_min': possessions_min,
-            'season': season
-        }
-    return render(request, 'leaderboard.html', context)
+	"""
+	Generates the leaderboard page.
+	This page uses tabs that load different templatetags that display different information
+	"""
+	season_id = None
+	season = None
+	possessions_min = 100
+	if 'submit' in request.GET:
+		form = bforms.LeaderboardForm(request.GET)
+		if form.is_valid():
+			season_id = form.data.get('season', None)
+			if season_id:
+				season = bmodels.Season.objects.get(id=season_id)
+			possessions_min = form.data.get('possessions_min', 100)
+	else:
+		try:
+			season = bmodels.Season.objects.get(
+					start_date__lt=datetime.datetime.today(),
+					end_date__gt=datetime.datetime.today())
+		except:
+			season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
+		
+		form = bforms.LeaderboardForm(initial={'possessions_min': 100, 'season': season.id})
+
+	#if we are sorting a table we want to bring the relevant tab up after page reload.
+	default_tab = None
+	if request.GET.get('5on5-sort'):
+		default_tab = "5on5-totals"
+
+	context = {
+			'form': form,
+			'season_id': season_id,
+			'possessions_min': possessions_min,
+			'season': season,
+			'default_tab': default_tab
+		}
+	return render(request, 'leaderboard.html', context)
 
 
 def login(request):
