@@ -32,30 +32,44 @@ def player_page(request, id):
     if bmodels.PlayByPlay.objects.filter(top_play_players=player):
         has_top_plays = True
 
-    season_totals_dict = OrderedDict()
-    totals = player.get_totals()
-    
-    player_averages_dict = OrderedDict()
-    averages = player.get_averages()
-
-    seasons = bmodels.Season.objects.all()
+    seasons = bmodels.Season.objects.all().order_by('-start_date')
+    game_type_totals = OrderedDict()
+    game_type_averages = OrderedDict()
     for season in seasons:
 
         player_statlines = player.statline_set.filter(game__date__range=(season.start_date, season.end_date))
         
         for game_type in bmodels.GAME_TYPES:
             if player_statlines.filter(game__game_type=game_type[0]):
-                season_totals_dict[season.title + " - " + game_type[0]] = player.get_totals(game_type[0], season)
-                player_averages_dict[season.title + " - " + game_type[0]] = player.get_averages(game_type[0], season)
+
+                player_totals = player.get_totals(game_type[0], season)
+                player_totals['season'] = season.title
+
+                player_averages = player.get_averages(game_type[0], season)
+                player_averages['season'] = season.title
+
+                if game_type_totals.get(game_type[1]):
+                    game_type_totals[game_type[1]].append(player_totals)
+                    game_type_averages[game_type[1]].append(player_averages)
+                else:
+                    game_type_totals[game_type[1]] = [player_totals]
+                    game_type_averages[game_type[1]] = [player_averages]
+
+    #calculate totals and averages for each game_type
+    totals = {}
+    averages = {}
+    for game_type in bmodels.GAME_TYPES:
+        totals[game_type[1]] = player.get_totals(game_type[0])
+        averages[game_type[1]] = player.get_averages(game_type[0])
 
     context = {
         'player': player,
         'has_top_plays': has_top_plays,
         'statlines': statlines,
-        'player_averages_dict': player_averages_dict,
         'averages': averages,
-        'player_totals_dict': season_totals_dict, 
+        'game_type_averages': game_type_averages,
         'totals': totals,
+        'game_type_totals': game_type_totals,
         'seasons': seasons,
     }
     return render(request, 'player_detail.html', context)

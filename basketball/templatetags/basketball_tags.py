@@ -7,6 +7,11 @@ from collections import OrderedDict
 register = template.Library()
 
 
+@register.filter(name='access')
+def access(value, arg):
+    return value[arg]
+
+
 @register.filter
 def seconds(time):
     if time != '':
@@ -27,7 +32,6 @@ def not_top_play_check(rank):
         return True
     else:
         return False
-
 
 @register.inclusion_tag('box_score.html')
 def box_score(statlines, bgcolor="white"):

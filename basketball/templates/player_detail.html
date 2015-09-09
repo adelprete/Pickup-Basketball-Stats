@@ -67,20 +67,30 @@
 					</div>
 				{% endif %}
 				<div role="tabpanel" class="tab-pane {% if not has_top_plays %}active{% endif %}" id="averages" style="padding-top:15px;">
+					{% for key, value in game_type_averages.items %}
 					<div class="row">
 						<div class="col-sm-12">
-							<h4 class="accent">Averages</h4>
-							{% include "player_averages_table.html" %}
+							<h4 class="accent">{{ key }} Averages</h4>
+							{% include "player_averages_table.html" with season_data_list=value overall=averages|access:key %}
 						</div>
 					</div>
+					{% empty %}
+						<h4 class="accent">Averages</h4>
+						No recorded data yet
+					{% endfor %}
 				</div>
 				<div role="tabpanel" class="tab-pane" id="totals" style="padding-top:15px;">
-					<div class="row">
-						<div class="col-sm-12">
-							<h4 class="accent">Totals</h4>
-							{% include "totals_table.html" %}
+					{% for key, value in game_type_totals.items %}
+						<div class="row">
+							<div class="col-sm-12">
+								<h4 class="accent">{{ key }} Totals</h4>
+								{% include "player_totals_table.html" with season_data_list=value overall=totals|access:key %}
+							</div>
 						</div>
-					</div>
+					{% empty %}
+						<h4 class="accent">Totals</h4>
+						No recorded data yet
+					{% endfor %}
 				</div>
 				<div role="tabpanel" class="tab-pane" id="gamelog" style="padding-top:15px;">
 					<div class="row">
