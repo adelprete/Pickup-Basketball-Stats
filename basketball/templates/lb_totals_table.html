@@ -78,27 +78,38 @@ $(function () {
 				<a href="?5on5-sort=points__sum">Pts</a>
 				{% if 5on5_sort_col == 'points__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
+			<td data-toggle="tooltip" title="Defensive Possessions">
+				<a href="?5on5-sort=def_pos__sum">Def.Pos</a>
+				{% if 5on5_sort_col == 'def_pos__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Offensive Possessions">
+				<a href="?5on5-sort=off_pos__sum">Off.Pos</a>
+				{% if 5on5_sort_col == 'off_pos__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+
 		</tr>
 		{% for value in player_totals_list %}
 			<tr>
 				<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
 				<td>{{ value.gp }}</td>
-				<td>{{ value.fgm__sum|floatformat }}</td>
-				<td>{{ value.fga__sum|floatformat }}</td>
-				<td>{{ value.threepm__sum|floatformat }}</td>
-				<td>{{ value.threepa__sum|floatformat }}</td>
-				<td>{{ value.oreb__sum|floatformat }}</td>
-				<td>{{ value.dreb__sum|floatformat }}</td>
-				<td>{{ value.total_rebounds__sum|floatformat }}</td>
-				<td>{{ value.asts__sum|floatformat }}</td>
-				<td>{{ value.pot_ast__sum|floatformat }}</td>
-				<td>{{ value.to__sum|floatformat }}</td>
-				<td>{{ value.stls__sum|floatformat }}</td>
-				<td>{{ value.blk__sum|floatformat }}</td>
-				<td>{{ value.ba__sum|floatformat }}</td>
-				<td>{{ value.fd__sum|floatformat }}</td>
-				<td>{{ value.pf__sum|floatformat }}</td>
-				<td>{{ value.points__sum|floatformat }}</td>
+				<td>{{ value.fgm__sum }}</td>
+				<td>{{ value.fga__sum }}</td>
+				<td>{{ value.threepm__sum }}</td>
+				<td>{{ value.threepa__sum }}</td>
+				<td>{{ value.oreb__sum }}</td>
+				<td>{{ value.dreb__sum }}</td>
+				<td>{{ value.total_rebounds__sum }}</td>
+				<td>{{ value.asts__sum }}</td>
+				<td>{{ value.pot_ast__sum }}</td>
+				<td>{{ value.to__sum }}</td>
+				<td>{{ value.stls__sum }}</td>
+				<td>{{ value.blk__sum }}</td>
+				<td>{{ value.ba__sum }}</td>
+				<td>{{ value.fd__sum }}</td>
+				<td>{{ value.pf__sum }}</td>
+				<td>{{ value.points__sum }}</td>
+				<td>{{ value.def_pos__sum }}</td>
+				<td>{{ value.off_pos__sum }}</td>
 			</tr>
 		{% empty %}
 			<tr>

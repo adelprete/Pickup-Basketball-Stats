@@ -20,10 +20,8 @@ def players_home(request):
 
 
 def player_page(request, id):
-    """This generates an individual player's page
-    -A dictionary of the player's averages are passed to the template
-    -All statlines for the player are passed to the template
-    """
+    """This generates an individual player's page"""
+
     player = get_object_or_404(bmodels.Player, id=id)
 
     statlines = player.statline_set.all().order_by('-game__date', 'game__title')
@@ -33,6 +31,9 @@ def player_page(request, id):
         has_top_plays = True
 
     seasons = bmodels.Season.objects.all().order_by('-start_date')
+
+    #Loop over each season a calculate both averages and totals
+    #Then store values in a dictionary by game types(5v5,4v4,etc)
     game_type_totals = OrderedDict()
     game_type_averages = OrderedDict()
     for season in seasons:
@@ -70,7 +71,6 @@ def player_page(request, id):
         'game_type_averages': game_type_averages,
         'totals': totals,
         'game_type_totals': game_type_totals,
-        'seasons': seasons,
     }
     return render(request, 'player_detail.html', context)
 
