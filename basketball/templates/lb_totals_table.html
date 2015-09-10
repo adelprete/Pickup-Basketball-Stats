@@ -11,80 +11,88 @@ $(function () {
 		<tr style="background:#d9edf7">
 			<td></td>
 			<td data-toggle="tooltip" title="Games Played">
-				<a href="?5on5-sort=gp">GP</a>
+				<a href="?5on5-sort=gp{{ get_string }}">GP</a>
 				{% if 5on5_sort_col == 'gp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Field Goals Made (Any made basket)">
-				<a href="?5on5-sort=fgm__sum">FGM</a>
+				<a href="?5on5-sort=fgm__sum{{ get_string }}">FGM</a>
 				{% if 5on5_sort_col == 'fgm__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Field Goals Attempted (Any basket attempted)">
-				<a href="?5on5-sort=fga__sum">FGA</a>
+				<a href="?5on5-sort=fga__sum{{ get_string }}">FGA</a>
 				{% if 5on5_sort_col == 'fga__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Three Pointers Made (Any shot made behind the 3point line)">
-				<a href="?5on5-sort=threepm__sum">3PM</a>
+				<a href="?5on5-sort=threepm__sum{{ get_string }}">3PM</a>
 				{% if 5on5_sort_col == 'threepm__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Three Pointers Attempted (Any shot attempted behind the 3point line)">
-				<a href="?5on5-sort=threepa__sum">3PA</a>
+				<a href="?5on5-sort=threepa__sum{{ get_string }}">3PA</a>
 				{% if 5on5_sort_col == 'threepa__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Offensive Rebounds (A rebound after a teammate/self misses)">
-				<a href="?5on5-sort=oreb__sum">Off</a>
+				<a href="?5on5-sort=oreb__sum{{ get_string }}">Off</a>
 				{% if 5on5_sort_col == 'oreb__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Defensive Rebounds (A rebound after an opponent misses)">
-				<a href="?5on5-sort=dreb__sum">Def</a>
+				<a href="?5on5-sort=dreb__sum{{ get_string }}">Def</a>
 				{% if 5on5_sort_col == 'dreb__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Total Rebounds (A rebound after any miss)">
-				<a href="?5on5-sort=total_rebounds__sum">Reb</a>
+				<a href="?5on5-sort=total_rebounds__sum{{ get_string }}">Reb</a>
 				{% if 5on5_sort_col == 'total_rebounds__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Assists (A pass that leads to a score)">
-				<a href="?5on5-sort=asts__sum">Ast</a>
+				<a href="?5on5-sort=asts__sum{{ get_string }}">Ast</a>
 				{% if 5on5_sort_col == 'asts__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Potential Assist (A pass that would’ve lead to a score if the receiver made the shot)">
-				<a href="?5on5-sort=pot_ast__sum">P.Ast</a>
+				<a href="?5on5-sort=pot_ast__sum{{ get_string }}">P.Ast</a>
 				{% if 5on5_sort_col == 'pot_ast__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Turnover (Anytime you give the ball to the other team)">
-				<a href="?5on5-sort=to__sum">TO</a>
+				<a href="?5on5-sort=to__sum{{ get_string }}">TO</a>
 				{% if 5on5_sort_col == 'to__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Steals (Anytime you cause a turnover from the other team)">
-				<a href="?5on5-sort=stls__sum">Stl</a>
+				<a href="?5on5-sort=stls__sum{{ get_string }}">Stl</a>
 				{% if 5on5_sort_col == 'stls__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Blocks (Whenever you deflect a shot attempt)">
-				<a href="?5on5-sort=blk__sum">Blk</a>
+				<a href="?5on5-sort=blk__sum{{ get_string }}">Blk</a>
 				{% if 5on5_sort_col == 'blk__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Blocks Allowed (How many shot attempts have been deflected)">
-				<a href="?5on5-sort=ba__sum">BA</a>
+				<a href="?5on5-sort=ba__sum{{ get_string }}">BA</a>
 				{% if 5on5_sort_col == 'ba__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Fouls Drawn (Whenever you are fouled)">
-				<a href="?5on5-sort=fd__sum">FD</a>
+				<a href="?5on5-sort=fd__sum{{ get_string }}">FD</a>
 				{% if 5on5_sort_col == 'fd__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Personal Fouls (Amount of fouls that you have been called on)">
-				<a href="?5on5-sort=pf__sum">PF</a>
+				<a href="?5on5-sort=pf__sum{{ get_string }}">PF</a>
 				{% if 5on5_sort_col == 'pf__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Points (Amount of points scored)">
-				<a href="?5on5-sort=points__sum">Pts</a>
+				<a href="?5on5-sort=points__sum{{ get_string }}">Pts</a>
 				{% if 5on5_sort_col == 'points__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Defensive Possessions">
-				<a href="?5on5-sort=def_pos__sum">Def.Pos</a>
+				<a href="?5on5-sort=def_pos__sum{{ get_string }}">Def.Pos</a>
 				{% if 5on5_sort_col == 'def_pos__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 			<td data-toggle="tooltip" title="Offensive Possessions">
-				<a href="?5on5-sort=off_pos__sum">Off.Pos</a>
+				<a href="?5on5-sort=off_pos__sum{{ get_string }}">Off.Pos</a>
 				{% if 5on5_sort_col == 'off_pos__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Defensive Rebound Opportunities">
+				<a href="?5on5-sort=off_pos__sum{{ get_string }}">Dreb.Opp</a>
+				{% if 5on5_sort_col == 'dreb_opp__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
+			<td data-toggle="tooltip" title="Offensive Rebound Opportunities">
+				<a href="?5on5-sort=off_pos__sum{{ get_string }}">Oreb.Opp</a>
+				{% if 5on5_sort_col == 'oreb_opp__sum' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
 
 		</tr>
@@ -110,6 +118,8 @@ $(function () {
 				<td>{{ value.points__sum }}</td>
 				<td>{{ value.def_pos__sum }}</td>
 				<td>{{ value.off_pos__sum }}</td>
+				<td>{{ value.dreb_opp__sum }}</td>
+				<td>{{ value.oreb_opp__sum }}</td>
 			</tr>
 		{% empty %}
 			<tr>

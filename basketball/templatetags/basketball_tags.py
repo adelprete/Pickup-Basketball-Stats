@@ -337,14 +337,17 @@ def lb_totals(context, game_type="5v5", player_pk=None, season=None):
                                                 totals[key] += value
                                         else:
                                                 totals[key] = value
-        
         sort_column = context['request'].GET.get('5on5-sort')
         if sort_column:
             player_totals_list.sort(key=lambda d: d[sort_column],reverse=True)
-        
+
+        get_string = "&season=" + str(season.id) + "&possessions_min=" + str(context['possessions_min']) + "&submit="
+
         context = {
                 'player_totals_list': player_totals_list,
                 "season": season,
+                "get_string": get_string,
+                "possessions_min": context['possessions_min'],
                 "totals": totals,
                 "5on5_sort_col": sort_column,
         }
