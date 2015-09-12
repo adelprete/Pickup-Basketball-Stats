@@ -110,6 +110,107 @@ class Player(models.Model):
         
         return losses
 
+    def get_per_100_possessions_data(self, stat, game_type, season=None):
+        """Returns per 100 possessions data"""
+        
+        percentage = 0.0
+        simple_statistics = [
+                'dreb',
+                'oreb',
+                'total_rebounds',
+                'asts',
+                'pot_ast',
+                'stls',
+                'to',
+                'points',
+                'blk'
+        ]
+
+        """statistics from the list are calculated the same way"""
+        if stat in simple_statistics:
+            if season:
+                result = self.statline_set.filter(game__game_type=game_type, game__date__range=(
+                    season.start_date, season.end_date)).aggregate(Sum(stat), Sum('off_pos'))
+            else:
+                result = self.statline_set.filter(
+                    game__game_type=game_type).aggregate(Sum(stat), Sum('off_pos'))
+            
+            if result['off_pos__sum'] and result['off_pos__sum'] is not 0:
+                percentage = (result[stat + '__sum'] /
+                              result['off_pos__sum']) * 100
+            return percentage
+
+        statlines = self.statline_set.filter(game__game_type=game_type)
+        if season:
+            statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
+
+        """The following statistics have unique calculations"""
+        if stat == "fgm_percent":
+            result = statlines.aggregate(Sum('fgm'), Sum('fga'))
+            if result['fga__sum'] and result['fga__sum'] is not 0:
+                percentage = result['fgm__sum'] / result['fga__sum'] * 100
+            
+        elif stat == 'threepm_percent':
+            result = statlines.aggregate(Sum('threepm'), Sum('threepa'), Sum('off_pos'))
+            if result['threepa__sum'] and result['threepa__sum'] is not 0:
+                percentage = result['threepm__sum'] / result['threepa__sum'] * 100
+
+        elif stat == 'dreb_percent':
+            result = statlines.aggregate(Sum('dreb'), Sum('dreb_opp'))
+            if result['dreb_opp__sum'] and result['dreb_opp__sum'] is not 0:
+                percentage = result['dreb__sum'] / result['dreb_opp__sum'] * 100
+
+        elif stat == 'oreb_percent':
+            result = statlines.aggregate(Sum('oreb'), Sum('oreb_opp'))
+            if result['oreb_opp__sum'] and result['oreb_opp__sum'] is not 0:
+                percentage = result['oreb__sum'] / result['oreb_opp__sum'] * 100
+
+        elif stat == 'treb_percent':
+            result = statlines.aggregate(Sum('total_rebounds'), Sum('dreb_opp'), Sum('oreb_opp'))
+            if result['dreb_opp__sum']:
+                percentage = result['total_rebounds__sum'] / \
+                            (result['oreb_opp__sum'] + result['dreb_opp__sum']) * 100
+
+        elif stat == 'ts_percent':
+            result = statlines.aggregate(Sum('points'), Sum('fga'))
+            if result['fga__sum']:
+                percentage = result['points__sum'] / result['fga__sum'] * 100
+
+        elif stat == 'off_rating' or stat == 'def_rating':
+            result = statlines.aggregate(Sum('off_pos'), Sum('def_pos'))
+            
+            if stat == 'off_rating':
+                team1_games = Game.objects.filter(team1=self)
+                team2_games = Game.objects.filter(team2=self)
+            else:
+                team1_games = Game.objects.filter(team2=self)
+                team2_games = Game.objects.filter(team1=self)
+
+            if season:
+                team1_games = team1_games.filter(
+                        date__range=(season.start_date, season.end_date))
+                team2_games = team2_games.filter(
+                        date__range=(season.start_date, season.end_date))
+
+            team1_result = team1_games.aggregate(Sum("team1_score"))
+            team2_result = team2_games.aggregate(Sum("team2_score"))
+
+            if team1_result['team1_score__sum'] == None:
+                team1_result['team1_score__sum'] = 0
+            if team2_result['team2_score__sum'] == None:
+                team2_result['team2_score__sum'] = 0
+
+            total_team_points = team1_result['team1_score__sum'] + team2_result['team2_score__sum']
+            if stat == 'off_rating' and result['off_pos__sum']:
+                percentage = total_team_points / result['off_pos__sum'] * 100
+            elif stat == 'def_rating' and result['def_pos__sum']:
+                percentage = total_team_points / result['def_pos__sum'] * 100
+
+        else:
+            raise ValueError('First argument must be either dreb, oreb, asts, pot_ast, stls, to, blk, points, total_rebounds, fgm_percent, 3pm_percent, dreb_percent, oreb_percent, treb_percent, ts_percent, off_rating, def_rating')
+            
+        return percentage
+
     def get_averages(self, game_type=None, season=None):
         """Returns a dictionary of the player's averages"""
         return self.get_player_data(report_type='Avg', game_type=game_type, season=season)
