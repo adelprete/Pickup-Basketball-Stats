@@ -140,7 +140,7 @@ def lb_possessions(context, season=None):
 
         if sort_column:
             possessions_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
-
+    
     # we use this variable in our template for template readability sake
     get_string = "&default_tab=possessions&possessions_min=" + str(context['possessions_min']) + "&submit=&season="
     if season:
@@ -202,7 +202,7 @@ def lb_totals(context, game_type="5v5", season=None):
         get_string = "&default_tab=totals&possessions_min=" + str(context['possessions_min']) + "&submit=&season="
         if season:
             get_string += str(season.id)
-        
+         
         context = {
             'totals_tables': totals_tables,
             'totals_footer': totals_footer,

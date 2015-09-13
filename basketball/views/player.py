@@ -23,7 +23,7 @@ def player_page(request, id):
     """This generates an individual player's page"""
 
     player = get_object_or_404(bmodels.Player, id=id)
-
+    all_statistics = [stat[0] for stat in bmodels.ALL_PLAY_TYPES] + ['total_rebounds', 'points', 'def_pos', 'off_pos', 'dreb_opp', 'oreb_opp']
     statlines = player.statline_set.all().order_by('-game__date', 'game__title')
 
     has_top_plays = False
@@ -42,12 +42,19 @@ def player_page(request, id):
         
         for game_type in bmodels.GAME_TYPES:
             if player_statlines.filter(game__game_type=game_type[0]):
+                player_totals, player_averages = {}, {}
+                games_played = player.statline_set.filter(game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date)).count()
 
-                player_totals = player.get_totals(game_type[0], season)
+                for stat in all_statistics:
+                    if stat not in ['misc', 'sub_out', 'sub_in']:
+                        player_totals[stat] = player.get_totals(stat, game_type=game_type[0], season=season)
+                        player_averages[stat] = player.get_averages(stat, game_type=game_type[0], season=season)
+                
                 player_totals['season'] = season.title
+                player_totals['gp'] = games_played
 
-                player_averages = player.get_averages(game_type[0], season)
                 player_averages['season'] = season.title
+                player_averages['gp'] = games_played
 
                 if game_type_totals.get(game_type[1]):
                     game_type_totals[game_type[1]].append(player_totals)
@@ -60,9 +67,18 @@ def player_page(request, id):
     totals = {}
     averages = {}
     for game_type in bmodels.GAME_TYPES:
-        totals[game_type[1]] = player.get_totals(game_type[0])
-        averages[game_type[1]] = player.get_averages(game_type[0])
+        overall_totals, overall_averages = {}, {}
+        if player.get_possessions_count(game_type=game_type[0]):
+            for stat in all_statistics:
+                if stat not in ['misc', 'sub_in', 'sub_out']:
+                    overall_totals[stat] = player.get_totals(stat, game_type=game_type[0])
+                    overall_averages[stat] = player.get_averages(stat, game_type=game_type[0])
+            overall_totals['gp'] = player.statline_set.filter(game__game_type=game_type[0]).count()
+            overall_averages['gp'] = player.statline_set.filter(game__game_type=game_type[0]).count()
 
+            totals[game_type[1]] = overall_totals
+            averages[game_type[1]] = overall_averages
+    
     context = {
         'player': player,
         'has_top_plays': has_top_plays,
