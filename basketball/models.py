@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import F, Sum, Q, Avg, signals
 from django.core.urlresolvers import reverse
+from django.core.exceptions import FieldError
 
 PRIMARY_PLAY = [
     ('fgm', 'FGM'),
@@ -223,16 +224,16 @@ class Player(models.Model):
             
         return percentage
 
-    def get_averages(self, game_type=None, season=None):
+    def get_averages(self, stat, game_type=None, season=None):
         """Returns a dictionary of the player's averages"""
-        return self.get_player_data(report_type='Avg', game_type=game_type, season=season)
+        return self.get_player_data(stat, report_type='Avg', game_type=game_type, season=season)
 
-    def get_totals(self, game_type=None, season=None):
+    def get_totals(self, stat, game_type=None, season=None):
         """Returns a dictionary of the player's totals"""
-        return self.get_player_data(report_type='Sum', game_type=game_type, season=season)
+        return self.get_player_data(stat, report_type='Sum', game_type=game_type, season=season)
 
-    def get_player_data(self, report_type='Sum', game_type=None, season=None):
-        
+    def get_player_data(self, stat, report_type='Sum', game_type=None, season=None):
+            
         qs = self.statline_set.all()
         if game_type:
             qs = qs.filter(game__game_type=game_type)
@@ -240,35 +241,14 @@ class Player(models.Model):
                 qs = qs.filter(game__date__range=(
                     season.start_date, season.end_date))
         
-        player_data = {}
-        for play in ALL_PLAY_TYPES:
-            if play[0] not in ['sub_out', 'sub_in', 'misc']:
-                if report_type == 'Avg':
-                    x = qs.aggregate(Avg(play[0]))
-                else:
-                    x = qs.aggregate(Sum(play[0]))
-                player_data.update(x)
-
-        if report_type == 'Avg':
-            player_data.update(qs.aggregate(
-                Avg('points'),
-                Avg('total_rebounds'),
-                Avg('off_pos'),
-                Avg('def_pos'),
-                Avg('dreb_opp'),
-                Avg('oreb_opp')))
-        else:
-            player_data.update(qs.aggregate(
-                Sum('points'),
-                Sum('total_rebounds'),
-                Sum('off_pos'),
-                Sum('def_pos'),
-                Sum('dreb_opp'),
-                Sum('oreb_opp')))
-
-        player_data['gp'] = qs.count()
-        return player_data
-
+        try:
+            if report_type=='Sum':
+                return qs.aggregate(Sum(stat))[stat+'__sum'] or 0
+            else:
+                return qs.aggregate(Avg(stat))[stat+'__avg'] or 0
+        except FieldError:
+            print('invalid stat provided: %s' % (stat))
+        
     class Meta():
         ordering = ['first_name']
 
@@ -284,18 +264,12 @@ def model_team2():
 class Game(models.Model):
     date = models.DateField(null=True)
     title = models.CharField(max_length=30)
-    team1 = models.ManyToManyField(
-        'basketball.Player', default=model_team1(), related_name='team1_set')
-    team2 = models.ManyToManyField(
-        'basketball.Player', default=model_team2(), related_name='team2_set')
-    team1_score = models.PositiveIntegerField(
-        default=0, help_text="Leave 0 if entering plays")
-    team2_score = models.PositiveIntegerField(
-        default=0, help_text="Leave 0 if entering plays")
-    winning_players = models.ManyToManyField(
-        'basketball.Player', related_name='winning_players_set', blank=True)
-    youtube_id = models.CharField(
-        "Youtube Video ID", max_length=2000, blank=True)
+    team1 = models.ManyToManyField('basketball.Player', default=model_team1(), related_name='team1_set')
+    team2 = models.ManyToManyField('basketball.Player', default=model_team2(), related_name='team2_set')
+    team1_score = models.PositiveIntegerField(default=0, help_text="Leave 0 if entering plays")
+    team2_score = models.PositiveIntegerField(default=0, help_text="Leave 0 if entering plays")
+    winning_players = models.ManyToManyField('basketball.Player', related_name='winning_players_set', blank=True)
+    youtube_id = models.CharField("Youtube Video ID", max_length=2000, blank=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, null=True)
 
     def __str__(self):

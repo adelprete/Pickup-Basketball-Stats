@@ -34,7 +34,7 @@
 			<a href="#overview" aria-controls="home" role="tab" data-toggle="tab">Overview</a>
 		</li>
 		<li role="presentation" {% if default_tab == "totals" %}class="active"{% endif %}>
-			<a href="#totals" aria-controls="profile" role="tab" data-toggle="tab">5on5 Totals</a>
+			<a href="#totals" aria-controls="profile" role="tab" data-toggle="tab">Totals</a>
 		</li>
 		<li role="presentation" {% if default_tab == "possessions" %}class="active"{% endif %}>
 			<a href="#possessions" aria-controls="profile" role="tab" data-toggle="tab">Per 100 Possessions</a>
@@ -45,8 +45,8 @@
 			{% lb_overview '5v5' %}
 		</div>
 		<div role="tabpanel" class="tab-pane {% if default_tab == "totals" %}active{% endif %}" id="totals">
-			<h3 class="accent">5 on 5 Total Stats</h3>
-			<div style="color: #777;font-size:17px;width:100%;">Totals from {% if season %}{{ season }}{% else %}all seasons{% endif %}</div>
+			<h3 class="accent">Totals</h3>
+			<div style="color: #777;font-size:17px;width:100%;">Data from {% if season %}{{ season }}{% else %}all seasons{% endif %}</div>
 			{% lb_totals season=season %}
 		</div>
 		<div role="tabpanel" class="tab-pane {% if default_tab == "possessions" %}active{% endif %}" id="possessions">
