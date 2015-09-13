@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'basketball',
     'bootstrap3',
     'easy_thumbnails',
+    'lazy_tags',
 )
 
 MIDDLEWARE_CLASSES = (

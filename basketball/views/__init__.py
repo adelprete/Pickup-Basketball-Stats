@@ -91,9 +91,7 @@ def leaderboard_home(request):
 		form = bforms.LeaderboardForm(initial={'possessions_min': 100, 'season': season.id})
 
 	#if we are sorting a table we want to bring the relevant tab up after page reload.
-	default_tab = None
-	if request.GET.get('5on5-sort'):
-		default_tab = "5on5-totals"
+	default_tab = request.GET.get('default_tab')
 
 	context = {
 			'form': form,

@@ -3,8 +3,7 @@
 	<title>Leaderboard</title>
 {% endblock %}
 {% block body %}
-	{% load basketball_tags %}
-	{% load bootstrap3 %}
+	{% load basketball_tags bootstrap3 %}
 	<div class="page-header">
 		<h3 class="accent">Leaderboard</h3>
 	</div>
@@ -32,20 +31,28 @@
 	</div>
 	<ul class="nav nav-tabs" role="tablist" style="margin-top:15px;">
 		<li role="presentation" {% if not default_tab %}class="active"{% endif %}>
-			<a href="#5on5" aria-controls="home" role="tab" data-toggle="tab">5on5</a>
+			<a href="#overview" aria-controls="home" role="tab" data-toggle="tab">Overview</a>
 		</li>
-		<li role="presentation" {% if default_tab == "5on5-totals" %}class="active"{% endif %}>
+		<li role="presentation" {% if default_tab == "totals" %}class="active"{% endif %}>
 			<a href="#totals" aria-controls="profile" role="tab" data-toggle="tab">5on5 Totals</a>
+		</li>
+		<li role="presentation" {% if default_tab == "possessions" %}class="active"{% endif %}>
+			<a href="#possessions" aria-controls="profile" role="tab" data-toggle="tab">Per 100 Possessions</a>
 		</li>
 	</ul>
 	<div class="tab-content">
-		<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="5on5">
-			{% lb_five_on_five_pos '5v5' %}
+		<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="overview">
+			{% lb_overview '5v5' %}
 		</div>
-		<div role="tabpanel" class="tab-pane {% if default_tab == "5on5-totals" %}active{% endif %}" id="totals">
+		<div role="tabpanel" class="tab-pane {% if default_tab == "totals" %}active{% endif %}" id="totals">
 			<h3 class="accent">5 on 5 Total Stats</h3>
 			<div style="color: #777;font-size:17px;width:100%;">Totals from {% if season %}{{ season }}{% else %}all seasons{% endif %}</div>
-			{% lb_totals season=season%}
+			{% lb_totals season=season %}
+		</div>
+		<div role="tabpanel" class="tab-pane {% if default_tab == "possessions" %}active{% endif %}" id="possessions">
+			<h3 class="accent">Per 100 Possessions</h3>
+			<div style="color: #777;font-size:17px;width:100%;">Data from {% if season %}{{ season }}{% else %}all seasons{% endif %}</div>
+			{% lb_possessions season=season %}
 		</div>
 	</div>
 	<script type="text/javascript">

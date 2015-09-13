@@ -103,12 +103,11 @@ def box_score(request, id):
         game = get_object_or_404(bmodels.Game, id=id)
 
     pbp_form = bforms.PlayByPlayForm(game)
-    pbp_filter = bforms.PlayByPlayFilter(
-        request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
-    team1_statlines = bmodels.StatLine.objects.filter(
-        game=game, player__in=game.team1.all()).order_by('-points')
-    team2_statlines = bmodels.StatLine.objects.filter(
-        game=game, player__in=game.team2.all()).order_by('-points')
+    pbp_filter = bforms.PlayByPlayFilter(request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
+    
+    team1_statlines = bmodels.StatLine.objects.filter(game=game, player__in=game.team1.all()).order_by('-points')
+    team2_statlines = bmodels.StatLine.objects.filter(game=game, player__in=game.team2.all()).order_by('-points')
+    
     if request.POST:
         helpers.create_plays(game.pk, request.FILES['pbpFile'])
         game.reset_statlines()

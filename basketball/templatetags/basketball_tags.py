@@ -6,6 +6,10 @@ from django.db.models import Sum, Q
 from collections import OrderedDict
 register = template.Library()
 
+statistics = ['dreb', 'oreb', 'asts', 'pot_ast', 'stls', 'to', 'blk', 
+    'points', 'total_rebounds', 'fgm_percent', 'threepm_percent', 
+    'dreb_percent', 'oreb_percent', 'treb_percent', 'ts_percent', 
+    'off_rating', 'def_rating']
 
 @register.filter(name='access')
 def access(value, arg):
@@ -61,11 +65,11 @@ def player_box_score(statlines, bgcolor="white", game_type='5v5'):
 
 @register.inclusion_tag('player_5on5_possessions.html', takes_context=True)
 def player_five_on_five_pos(context, game_type="5on5", player_pk=None):
-    return lb_five_on_five_pos(context, game_type=game_type, player_pk=player_pk)
+    return lb_overview(context, game_type=game_type, player_pk=player_pk)
 
 
-@register.inclusion_tag('lb_5on5_possessions.html', takes_context=True)
-def lb_five_on_five_pos(context, game_type="5v5", player_pk=None):
+@register.inclusion_tag('lb_overview.html', takes_context=True)
+def lb_overview(context, game_type="5v5", player_pk=None):
         """Returns many lists of tuples for each statistical category"""
 
         season = None
@@ -79,26 +83,12 @@ def lb_five_on_five_pos(context, game_type="5v5", player_pk=None):
         else:
                 players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
 
-                # exclude players that dont meet the minimum 100 possessions
-                # requirement
+                # exclude players that dont meet the minimum 100 possessions requirement
                 for player in players:
-                        if season:
-                                pos_count = player.statline_set.filter(game__game_type=game_type, game__date__range=(
-                                        season.start_date, season.end_date)).aggregate(Sum('off_pos'))
-                        else:
-                                pos_count = player.statline_set.filter(
-                                        game__game_type=game_type).aggregate(Sum('off_pos'))
-
-                        if not pos_count['off_pos__sum'] or pos_count['off_pos__sum'] < possessions_min:
+                        if player.get_possessions_count(game_type=game_type, season=season) < possessions_min:
                                 excluded_pks.append(player.pk)
 
                 players = players.exclude(pk__in=excluded_pks)
-        
-        
-        statistics = ['dreb', 'oreb', 'asts', 'pot_ast', 'stls', 'to', 'blk', 
-                'points', 'total_rebounds', 'fgm_percent', 'threepm_percent', 
-                'dreb_percent', 'oreb_percent', 'treb_percent', 'ts_percent', 
-                'off_rating', 'def_rating']
         
         top5_leaderboard = {}
         for stat in statistics:
@@ -119,11 +109,60 @@ def lb_five_on_five_pos(context, game_type="5v5", player_pk=None):
 
         return context
 
+@register.inclusion_tag('lb_possessions.html', takes_context=True)
+def lb_possessions(context, season=None):
+    """Returns every players per 100 stats for each game type""" 
+   
+    # Default active pill in the template.  Changes if sorting columns.
+    active_pill = "5on5"
+
+    players = bmodels.Player.objects.all().exclude(first_name__startswith="Team").order_by('first_name') 
+    possessions_tables = OrderedDict()
+    sort_column = context['request'].GET.get('pos-sort')
+    # For each game type we create a list of each players per 100 stats
+    for game_type in bmodels.GAME_TYPES:
+        
+        possessions_tables[game_type[1]] = []
+        
+        for player in players:
+            
+            if player.get_possessions_count(game_type=game_type[0], season=season) >= 100:
+                
+                player_data = {'player_obj': player}
+                
+                for stat in statistics:
+                    
+                    player_data[stat] = player.get_per_100_possessions_data(stat, game_type[0], season=season)
+                
+                # Lastly, count how many games the player played
+                statlines = player.statline_set.filter(game__game_type=game_type[0])
+                if season:
+                    statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
+                player_data['gp'] = statlines.count()
+
+                possessions_tables[game_type[1]].append(player_data)
+
+        if sort_column:
+            possessions_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
+
+    # we use this variable in our template for template readability sake
+    get_string = "&default_tab=possessions&possessions_min=" + str(context['possessions_min']) + "&submit=&season="
+    if season:
+        get_string += str(season.id)
+    
+    context = {
+        'possessions_tables': possessions_tables,
+        'get_string': get_string,
+        'pos_sort_col': sort_column,
+        'active_pill': context['request'].GET.get('active-pill') or '5on5'
+    }
+    
+    return context
 
 @register.inclusion_tag('lb_totals_table.html', takes_context=True)
 def lb_totals(context, game_type="5v5", player_pk=None, season=None):
         """Returns a dictionary of totals for one or more players"""
-
+        
         if player_pk:
                 players = bmodels.Player.objects.filter(pk=player_pk)
         else:
@@ -145,20 +184,21 @@ def lb_totals(context, game_type="5v5", player_pk=None, season=None):
                                                 totals[key] += value
                                         else:
                                                 totals[key] = value
+        
         sort_column = context['request'].GET.get('5on5-sort')
         if sort_column:
             player_totals_list.sort(key=lambda d: d[sort_column],reverse=True)
 
         # we use this variable in our template for template readability sake
-        get_string = "&possessions_min=" + str(context['possessions_min']) + "&submit=&season="
+        get_string = "&default_tab=totals&possessions_min=" + str(context.get('possessions_min',100)) + "&submit=&season="
         if season:
             get_string += str(season.id)
-
+        
         context = {
                 'player_totals_list': player_totals_list,
                 "season": season,
                 "get_string": get_string,
-                "possessions_min": context['possessions_min'],
+                "possessions_min": str(context.get('possessions_min', 100)),
                 "totals": totals,
                 "5on5_sort_col": sort_column,
         }
@@ -192,7 +232,7 @@ def top_players_table(player_list, title, bgcolor='white'):
     elif title == "3PT%":
         tooltip_desc = "3 Point Percentage. Percentage of 3pointers made"
     elif title == "TS%":
-        tooltip_desc = "True Shooting Percentage. Percentage of Field Goals made with the 3pointers weighed higher.  Formula is Points / FGA"
+        tooltip_desc = "True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA"
     elif title == "BLKS":
         tooltip_desc = "Blocks"
 

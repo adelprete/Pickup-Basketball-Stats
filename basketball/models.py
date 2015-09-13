@@ -29,11 +29,11 @@ ASSIST_PLAY = [
 ]
 
 GAME_TYPES = [
-    ('5v5', '5v5'),
-    ('4v4', '4v4'),
-    ('3v3', '3v3'),
-    ('2v2', '2v2'),
-    ('1v1', '1v1'),
+    ('5v5', '5on5'),
+    ('4v4', '4on4'),
+    ('3v3', '3on3'),
+    ('2v2', '2on2'),
+    ('1v1', '1on1'),
 ]
 
 ALL_PLAY_TYPES = PRIMARY_PLAY + SECONDARY_PLAY + ASSIST_PLAY
@@ -109,6 +109,18 @@ class Player(models.Model):
             losses = 0
         
         return losses
+		
+    def get_possessions_count(self, game_type=None, season=None):
+        
+        statlines = self.statline_set.all()
+        if game_type:
+            statlines = statlines.filter(game__game_type=game_type)
+        if season:
+            statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
+
+        pos_count = statlines.aggregate(Sum('off_pos'))
+		
+        return pos_count['off_pos__sum'] or 0
 
     def get_per_100_possessions_data(self, stat, game_type, season=None):
         """Returns per 100 possessions data"""
