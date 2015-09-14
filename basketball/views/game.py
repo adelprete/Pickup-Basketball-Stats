@@ -154,7 +154,7 @@ def ajax_filter_plays(request, pk):
     pbp_filter = bforms.PlayByPlayFilter(
         request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
 
-    return render_to_response('playbyplay_list.html', {'pbp_filter': pbp_filter})
+    return render(request, 'playbyplay_list.html', {'pbp_filter': pbp_filter})
 
 
 def delete_play(request, pk):
