@@ -16,7 +16,7 @@ def players_home(request):
     context = {
         'players': players,
     }
-    return render(request, 'players_home.html', context)
+    return render(request, 'players/home.html', context)
 
 
 def player_page(request, id):
@@ -88,7 +88,7 @@ def player_page(request, id):
         'totals': totals,
         'game_type_totals': game_type_totals,
     }
-    return render(request, 'player_detail.html', context)
+    return render(request, 'players/detail.html', context)
 
 
 def player_basics(request, id=None, form_class=bforms.PlayerForm):
@@ -113,5 +113,5 @@ def player_basics(request, id=None, form_class=bforms.PlayerForm):
                 messages.success(request, "Player Created")
             return redirect(p_record.get_absolute_url())
 
-    return render(request, 'player_form.html', {'form': form})
+    return render(request, 'players/form.html', {'form': form})
 

@@ -14,7 +14,7 @@
 				{% for key,value in possessions_tables.items %}
 					{% if value %}
 						<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="{{key}}">
-							{% include 'lb_possessions_table.html' with player_pos_list=value  type=key %}
+							{% include 'leaderboard/possessions_table.html' with player_pos_list=value  type=key %}
 						</div>
 					{% endif %}
 				{% endfor %}

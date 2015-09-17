@@ -15,7 +15,7 @@
 				{% for key,value in totals_tables.items %}
 					{% if value %}
 						<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="tot-{{key}}">
-							{% include 'lb_totals_table.html' with player_totals_list=value totals=totals_footer|access:key type=key %}
+							{% include 'leaderboard/totals_table.html' with player_totals_list=value totals=totals_footer|access:key type=key %}
 						</div>
 					{% endif %}
 				{% endfor %}

@@ -1,4 +1,4 @@
-{% extends 'players_home.html' %}
+{% extends 'players/home.html' %}
 {% load basketball_tags %}
 {% block title %}
 <title>{{ player.get_full_name }}</title>
@@ -41,12 +41,12 @@
 				</tr>
 			</table>
 		</div>
-		<div class="col-xs-12 col-sm-12 col-md-6">
+		<div class="col-xs-12 col-sm-12 col-md-6 padding:0px auto;">
 			<div class="visible-xs-block visible-sm-block">
 				<hr>
 			</div>
 			<h4 class="accent">Per 100 averages</h4>
-			{% player_five_on_five_pos '5v5' player.pk %}
+			{% player_five_on_five_pos player.pk %}
 		</div>
 	</div>
 	<div class="row">
@@ -73,7 +73,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<h4 class="accent">{{ key }} Averages</h4>
-							{% include "player_averages_table.html" with season_data_list=value overall=averages|access:key %}
+							{% include "players/averages_table.html" with season_data_list=value overall=averages|access:key %}
 						</div>
 					</div>
 					{% empty %}
@@ -87,7 +87,7 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<h4 class="accent">{{ key }} Totals</h4>
-								{% include "player_totals_table.html" with season_data_list=value overall=totals|access:key %}
+								{% include "players/totals_table.html" with season_data_list=value overall=totals|access:key %}
 							</div>
 						</div>
 					{% empty %}

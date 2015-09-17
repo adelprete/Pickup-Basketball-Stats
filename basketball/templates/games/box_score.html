@@ -1,4 +1,4 @@
-{% extends 'games_home.html' %}
+{% extends 'games/home.html' %}
 {% load bootstrap3 %}
 {% block head %}
 {{ block.super }}
@@ -83,7 +83,7 @@
 					</form>
 				</div>
 				<div id="playbyplay_list" class="col-sm-12" style="overflow-y: scroll; height:450px; margin-top:10px;" >
-					{% include 'playbyplay_list.html' %}
+					{% include 'games/playbyplay_list.html' %}
 				</div>
 			</div>
 		</div>

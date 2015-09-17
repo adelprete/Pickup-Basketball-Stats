@@ -1,0 +1,36 @@
+<style>
+	dl {
+		margin:20px;
+	}
+	dt {
+		font-size:20px;
+	}
+	dd {
+		font-size:25px;
+	}
+</style>
+
+<dl style="display:inline-block;">
+	<dt>Points</dt>
+	<dd>{{ points|floatformat }}</dd>
+</dl>
+<dl class="hidden-xs hidden-lg" style="display:inline-block;">
+	<dt>FGM %</dt>
+	<dd>{{ fgm_percent|floatformat }}</dd>
+</dl>
+<dl style="display:inline-block">
+	<dt>Assists</dt>
+	<dd>{{ assists|floatformat }}</dd>
+</dl>
+<dl style="display:inline-block">
+	<dt>Rebounds</dt>
+	<dd>{{ turnovers|floatformat }}</dd>
+</dl>
+<dl class="hidden-xs hidden-lg" style="display:inline-block;">
+	<dt>Steals</dt>
+	<dd>{{ steals|floatformat }}</dd>
+</dl>
+<dl class="hidden-xs" style="display:inline-block">
+	<dt>Turnovers</dt>
+	<dd>{{ turnovers|floatformat }}</dd>
+</dl>

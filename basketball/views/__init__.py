@@ -100,7 +100,7 @@ def leaderboard_home(request):
 			'season': season,
 			'default_tab': default_tab
 		}
-	return render(request, 'leaderboard.html', context)
+	return render(request, 'leaderboard/home.html', context)
 
 
 def login(request):
@@ -140,4 +140,4 @@ def ajax_standings(request):
 
     player_standings = sorted(player_tuples, key=lambda player: player[1], reverse=True)
 
-    return render_to_response('player_standings.html', {'standings': player_standings})
+    return render_to_response('players/standings.html', {'standings': player_standings})

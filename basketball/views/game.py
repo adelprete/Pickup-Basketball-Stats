@@ -37,7 +37,7 @@ def games_home(request):
     context = {
         'group_list': sorted_dict,
     }
-    return render(request, 'games_home.html', context)
+    return render(request, 'games/home.html', context)
 
 
 def recap(request, game_id):
@@ -56,7 +56,7 @@ def recap(request, game_id):
         'not_top_plays': not_top_plays,
     }
 
-    return render(request, 'recap.html', context)
+    return render(request, 'games/recap.html', context)
 
 
 def game_basics(request, game_id=None, form_class=bforms.GameForm):
@@ -90,7 +90,7 @@ def game_basics(request, game_id=None, form_class=bforms.GameForm):
                 messages.success(request, "Game Created")
             return redirect(game_record.get_absolute_url())
 
-    return render(request, 'game_form.html', {'form': form})
+    return render(request, 'games/form.html', {'form': form})
 
 
 def box_score(request, id):
@@ -122,7 +122,7 @@ def box_score(request, id):
         'file_form': bforms.PlayByPlayFileForm(),
         'pbp_filter': pbp_filter,
     }
-    return render(request, "game_box_score.html", context)
+    return render(request, "games/box_score.html", context)
 
 
 def ajax_add_play(request, pk):
@@ -154,7 +154,7 @@ def ajax_filter_plays(request, pk):
     pbp_filter = bforms.PlayByPlayFilter(
         request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
 
-    return render(request, 'playbyplay_list.html', {'pbp_filter': pbp_filter})
+    return render(request, 'games/playbyplay_list.html', {'pbp_filter': pbp_filter})
 
 
 def delete_play(request, pk):
@@ -171,7 +171,7 @@ def delete_play(request, pk):
 
 
 class PlayByPlayFormView(FormView):
-    template_name = "playbyplay_form.html"
+    template_name = "games/playbyplay_form.html"
     model = bmodels.PlayByPlay
     form_class = bforms.PlayByPlayForm
 

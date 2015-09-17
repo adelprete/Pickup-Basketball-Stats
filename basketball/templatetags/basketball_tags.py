@@ -37,7 +37,7 @@ def not_top_play_check(rank):
     else:
         return False
 
-@register.inclusion_tag('box_score.html')
+@register.inclusion_tag('games/box_scores_table.html')
 def box_score(statlines, bgcolor="white"):
     """
     Passes a team's statlines to a template that will display them in a box score format
@@ -55,7 +55,7 @@ def box_score(statlines, bgcolor="white"):
             'bgcolor': bgcolor}
 
 
-@register.inclusion_tag('player_box_score.html')
+@register.inclusion_tag('players/box_scores.html')
 def player_box_score(statlines, bgcolor="white", game_type='5v5'):
     """
     Passes a single player's statlines to a template that will display them in a table like format.
@@ -63,12 +63,24 @@ def player_box_score(statlines, bgcolor="white", game_type='5v5'):
     return {'statlines': statlines.filter(game__game_type=game_type), 'bgcolor': bgcolor}
 
 
-@register.inclusion_tag('player_5on5_possessions.html', takes_context=True)
-def player_five_on_five_pos(context, game_type="5on5", player_pk=None):
-    return lb_overview(context, game_type=game_type, player_pk=player_pk)
+@register.inclusion_tag('players/5on5_possessions.html', takes_context=True)
+def player_five_on_five_pos(context, player_pk=None):
+
+    player = bmodels.Player.objects.get(pk=player_pk)
+    
+    context = {
+        'points': player.get_per_100_possessions_data('points', '5v5'),
+        'rebounds': player.get_per_100_possessions_data('total_rebounds','5v5'),
+        'steals': player.get_per_100_possessions_data('stls','5v5'),
+        'assists': player.get_per_100_possessions_data('asts','5v5'),
+        'turnovers': player.get_per_100_possessions_data('to','5v5'),
+        'fgm_percent': player.get_per_100_possessions_data('fgm_percent','5v5'),
+    }
+
+    return context
 
 
-@register.inclusion_tag('lb_overview.html', takes_context=True)
+@register.inclusion_tag('leaderboard/overview.html', takes_context=True)
 def lb_overview(context, game_type="5v5", player_pk=None):
         """Returns many lists of tuples for each statistical category"""
 
@@ -109,7 +121,7 @@ def lb_overview(context, game_type="5v5", player_pk=None):
 
         return context
 
-@register.inclusion_tag('lb_possessions.html', takes_context=True)
+@register.inclusion_tag('leaderboard/possessions.html', takes_context=True)
 def lb_possessions(context, season=None):
     """Returns every players per 100 stats for each game type""" 
    
@@ -155,7 +167,7 @@ def lb_possessions(context, season=None):
     
     return context
 
-@register.inclusion_tag('lb_totals.html', takes_context=True)
+@register.inclusion_tag('leaderboard/totals.html', takes_context=True)
 def lb_totals(context, game_type="5v5", season=None):
         """Returns a dictionary of totals for one or more players"""
         
@@ -213,7 +225,7 @@ def lb_totals(context, game_type="5v5", season=None):
         
         return context
         
-@register.inclusion_tag('top_stat_table.html')
+@register.inclusion_tag('leaderboard/top_stat_table.html')
 def top_players_table(player_list, title, bgcolor='white'):
 
     tooltip_desc = ""
@@ -247,7 +259,7 @@ def top_players_table(player_list, title, bgcolor='white'):
     return {'player_list': player_list, 'title': title, 'tooltip_desc': tooltip_desc, 'bgcolor': bgcolor}
 
 
-@register.inclusion_tag('player_highlights.html')
+@register.inclusion_tag('players/highlights.html')
 def player_highlights(player_pk):
     top_plays = bmodels.PlayByPlay.objects.filter(
         top_play_rank__startswith='t', top_play_players__pk=player_pk)
