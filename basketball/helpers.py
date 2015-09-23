@@ -19,11 +19,9 @@ def create_plays(pk, f):
         # parse time
         time_split = line[0].split(':')
         if len(time_split) == 3:
-            play_dict['time'] = datetime.time(
-                int(time_split[0]), int(time_split[1]), int(time_split[2]))
+            play_dict['time'] = datetime.time(int(time_split[0]), int(time_split[1]), int(time_split[2]))
         else:
-            play_dict['time'] = datetime.time(
-                0, int(time_split[0]), int(time_split[1]))
+            play_dict['time'] = datetime.time(0, int(time_split[0]), int(time_split[1]))
 
         # primary play
         for play_type in bmodels.PRIMARY_PLAY:
@@ -32,8 +30,7 @@ def create_plays(pk, f):
                 break
 
         # primary player
-        play_dict['primary_player'] = bmodels.Player.objects.get(first_name=line[
-                                                                 2])
+        play_dict['primary_player'] = bmodels.Player.objects.get(first_name=line[2])
 
         # secondary play
         if len(line[3].strip()) > 0:
@@ -43,8 +40,7 @@ def create_plays(pk, f):
                     break
 
             # seconday player
-            play_dict['secondary_player'] = bmodels.Player.objects.get(first_name=line[
-                                                                       4])
+            play_dict['secondary_player'] = bmodels.Player.objects.get(first_name=line[4])
 
         # assist play
         if len(line[5].strip()) > 0:
@@ -54,8 +50,7 @@ def create_plays(pk, f):
                     break
 
             # assist player
-            play_dict['assist_player'] = bmodels.Player.objects.get(
-                first_name=line[6].strip())
+            play_dict['assist_player'] = bmodels.Player.objects.get(first_name=line[6].strip())
 
         # Top play rank
         if len(line) > 7:
@@ -67,8 +62,7 @@ def create_plays(pk, f):
                 # players involved(added after mode is saved cause of M2M)
                 top_players_list = [player.strip()
                                     for player in line[8].strip().split('.')]
-                top_play_players = bmodels.Player.objects.filter(
-                    first_name__in=top_players_list)
+                top_play_players = bmodels.Player.objects.filter(first_name__in=top_players_list)
 
                 # description
                 play_dict['description'] = line[9].strip()
@@ -86,20 +80,20 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
     if player_pk:
         players = bmodels.Player.objects.filter(pk=player_pk)
     else:
-        players = bmodels.Player.objects.all().exclude(
-            Q(first_name__contains="Team") | Q(pk__in=excluded_pks))
+        players = bmodels.Player.objects.all().exclude(Q(first_name__contains="Team") | Q(pk__in=excluded_pks))
+    
     player_list = []
     for player in players:
+        
         if season:
-            result = player.statline_set.filter(game__game_type=game_type, game__date__range=(
-                season.start_date, season.end_date)).aggregate(Sum(stat), Sum('off_pos'))
+            result = player.statline_set.filter(game__game_type=game_type, game__date__range=(season.start_date, season.end_date)).aggregate(Sum(stat), Sum('off_pos'))
         else:
-            result = player.statline_set.filter(
-                game__game_type=game_type).aggregate(Sum(stat), Sum('off_pos'))
+            result = player.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat), Sum('off_pos'))
         if result['off_pos__sum'] and result['off_pos__sum'] is not 0:
-            percentage = (result[stat + '__sum'] /
-                          result['off_pos__sum']) * 100
+            percentage = (result[stat + '__sum'] / result['off_pos__sum']) * 100
         else:
             percentage = 0.0
+        
         player_list.append((player.first_name, percentage))
+    
     return sorted(player_list, key=lambda x: x[1], reverse=True)

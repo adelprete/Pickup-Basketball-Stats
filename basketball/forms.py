@@ -36,14 +36,10 @@ class PlayByPlayForm(forms.ModelForm):
 
     def __init__(self, game, *args, **kwargs):
         super(PlayByPlayForm, self).__init__(*args, **kwargs)
-        self.fields['primary_player'].queryset = bmodels.Player.objects.filter(
-            Q(team1_set=game) | Q(team2_set=game)).distinct()
-        self.fields['secondary_player'].queryset = bmodels.Player.objects.filter(
-            Q(team1_set=game) | Q(team2_set=game)).distinct()
-        self.fields['assist_player'].queryset = bmodels.Player.objects.filter(
-            Q(team1_set=game) | Q(team2_set=game)).distinct()
-        self.fields['top_play_players'].queryset = bmodels.Player.objects.filter(
-            Q(team1_set=game) | Q(team2_set=game)).distinct()
+        self.fields['primary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game) | Q(team2_set=game)).distinct()
+        self.fields['secondary_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game) | Q(team2_set=game)).distinct()
+        self.fields['assist_player'].queryset = bmodels.Player.objects.filter(Q(team1_set=game) | Q(team2_set=game)).distinct()
+        self.fields['top_play_players'].queryset = bmodels.Player.objects.filter(Q(team1_set=game) | Q(team2_set=game)).distinct()
 
     class Meta:
         model = bmodels.PlayByPlay
@@ -62,8 +58,7 @@ class NicerFilterSet(django_filters.FilterSet):
         for name, field in self.filters.items():
             if isinstance(field, django_filters.ChoiceFilter):
                 # Add "Any" entry to choice fields.
-                field.extra['choices'] = tuple(
-                    [("", "Any"), ] + list(field.extra['choices']))
+                field.extra['choices'] = tuple([("", "Any"), ] + list(field.extra['choices']))
 
 
 class PlayByPlayFilter(NicerFilterSet):
@@ -74,35 +69,24 @@ class PlayByPlayFilter(NicerFilterSet):
     def __init__(self, *args, **kwargs):
         game = kwargs.pop('game', None)
         super(PlayByPlayFilter, self).__init__(*args, **kwargs)
-        self.filters['primary_play'].field.widget.attrs = {
-            'class': 'form-control'}
-        self.filters['primary_player'].extra['queryset'] = bmodels.Player.objects.filter(
-            Q(team1_set=game) | Q(team2_set=game)).distinct()
-        self.filters['primary_player'].field.widget.attrs = {
-            'class': 'form-control'}
-        self.filters['secondary_play'].field.widget.attrs = {
-            'class': 'form-control'}
-        self.filters['secondary_player'].extra['queryset'] = bmodels.Player.objects.filter(
-            Q(team1_set=game) | Q(team2_set=game)).distinct()
-        self.filters['secondary_player'].field.widget.attrs = {
-            'class': 'form-control'}
+        self.filters['primary_play'].field.widget.attrs = {'class': 'form-control'}
+        self.filters['primary_player'].extra['queryset'] = bmodels.Player.objects.filter(Q(team1_set=game) | Q(team2_set=game)).distinct()
+        self.filters['primary_player'].field.widget.attrs = {'class': 'form-control'}
+        self.filters['secondary_play'].field.widget.attrs = {'class': 'form-control'}
+        self.filters['secondary_player'].extra['queryset'] = bmodels.Player.objects.filter(Q(team1_set=game) | Q(team2_set=game)).distinct()
+        self.filters['secondary_player'].field.widget.attrs = {'class': 'form-control'}
         self.filters['assist'].field.widget.attrs = {'class': 'form-control'}
-        self.filters['assist_player'].extra['queryset'] = bmodels.Player.objects.filter(
-            Q(team1_set=game) | Q(team2_set=game)).distinct()
-        self.filters['assist_player'].field.widget.attrs = {
-            'class': 'form-control'}
+        self.filters['assist_player'].extra['queryset'] = bmodels.Player.objects.filter(Q(team1_set=game) | Q(team2_set=game)).distinct()
+        self.filters['assist_player'].field.widget.attrs = {'class': 'form-control'}
 
     class Meta:
         model = bmodels.PlayByPlay
-        fields = ['primary_play', 'primary_player', 'secondary_play',
-                  'secondary_player', 'assist', 'assist_player']
+        fields = ['primary_play', 'primary_player', 'secondary_play', 'secondary_player', 'assist', 'assist_player']
 
 
 class LeaderboardForm(forms.Form):
-    season = forms.ModelChoiceField(
-        queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
-    possessions_min = forms.IntegerField(
-        label="Minimum Possessions", min_value=1)
+    season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
+    possessions_min = forms.IntegerField(label="Minimum Possessions", min_value=1)
 
 
 class SeasonForm(forms.ModelForm):
@@ -119,9 +103,7 @@ class SeasonForm(forms.ModelForm):
 				Q(Q(start_date__lt=start_date)&Q(end_date__gt=start_date))
 				|Q(Q(start_date__lt=end_date)&Q(end_date__gt=end_date)))
 		if season:
-			raise forms.ValidationError(
-					"Dates can't cross over into other seasons. \
-					Crossed over with %s" % (season[0].title))
+			raise forms.ValidationError("Dates can't cross over into other seasons. Crossed over with %s" % (season[0].title))
 
 		return data
 

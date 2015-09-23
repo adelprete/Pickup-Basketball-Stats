@@ -47,8 +47,7 @@ def box_score(statlines, bgcolor="white"):
         if play[0] not in ['sub_out', 'sub_in', 'misc']:
             x = statlines.all().aggregate(Sum(play[0]))
             team_totals.update(x)
-    team_totals.update(statlines.aggregate(
-        Sum('points'), Sum('total_rebounds')))
+    team_totals.update(statlines.aggregate(Sum('points'), Sum('total_rebounds')))
     return {'statlines': statlines.exclude(player__first_name__contains='Team'),
             'team': statlines.get(player__first_name__contains='Team'),
             'team_totals': team_totals,
@@ -261,10 +260,8 @@ def top_players_table(player_list, title, bgcolor='white'):
 
 @register.inclusion_tag('players/highlights.html')
 def player_highlights(player_pk):
-    top_plays = bmodels.PlayByPlay.objects.filter(
-        top_play_rank__startswith='t', top_play_players__pk=player_pk)
-    not_top_plays = bmodels.PlayByPlay.objects.filter(
-        top_play_rank__startswith='nt', top_play_players__pk=player_pk)
+    top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='t', top_play_players__pk=player_pk)
+    not_top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='nt', top_play_players__pk=player_pk)
 
     context = {
         'top_plays': top_plays,

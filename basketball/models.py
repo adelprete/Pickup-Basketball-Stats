@@ -72,8 +72,7 @@ class Player(models.Model):
     last_name = models.CharField(max_length=30, blank=True)
     height = models.CharField(max_length=30, blank=True)
     weight = models.CharField(max_length=30, blank=True)
-    image_src = models.ImageField(
-        upload_to='player_images/', blank=True, null=True)
+    image_src = models.ImageField(upload_to='player_images/', blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     position = models.CharField(max_length=30, blank=True)
 
@@ -89,9 +88,7 @@ class Player(models.Model):
     def total_games(self, season=None):
         
         if season:
-            return Game.objects.filter(
-                    Q(team1=self) | Q(team2=self), 
-                    date__range=(season.start_date, season.end_date)).distinct().count()
+            return Game.objects.filter(Q(team1=self) | Q(team2=self), date__range=(season.start_date, season.end_date)).distinct().count()
 
         return Game.objects.filter(Q(team1=self) | Q(team2=self)).distinct().count()
 
@@ -139,14 +136,13 @@ class Player(models.Model):
                 'blk'
         ]
 
-        """statistics from the list are calculated the same way"""
+        """Statistics from the list are calculated the same way."""
+        #(stat total / offensive possessions totals) x 100
         if stat in simple_statistics:
             if season:
-                result = self.statline_set.filter(game__game_type=game_type, game__date__range=(
-                    season.start_date, season.end_date)).aggregate(Sum(stat), Sum('off_pos'))
+                result = self.statline_set.filter(game__game_type=game_type, game__date__range=(season.start_date, season.end_date)).aggregate(Sum(stat), Sum('off_pos'))
             else:
-                result = self.statline_set.filter(
-                    game__game_type=game_type).aggregate(Sum(stat), Sum('off_pos'))
+                result = self.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat), Sum('off_pos'))
             
             if result['off_pos__sum'] and result['off_pos__sum'] is not 0:
                 percentage = (result[stat + '__sum'] /
@@ -158,37 +154,46 @@ class Player(models.Model):
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
 
         """The following statistics have unique calculations"""
+
+        #Field Goals Made % = (field goal makes / field goal attempts) x 100
         if stat == "fgm_percent":
             result = statlines.aggregate(Sum('fgm'), Sum('fga'))
             if result['fga__sum'] and result['fga__sum'] is not 0:
                 percentage = result['fgm__sum'] / result['fga__sum'] * 100
-            
+        
+        #3 Pointers Made % = (3 pointers made / 3 pointers attempts) x 100
         elif stat == 'threepm_percent':
             result = statlines.aggregate(Sum('threepm'), Sum('threepa'), Sum('off_pos'))
             if result['threepa__sum'] and result['threepa__sum'] is not 0:
                 percentage = result['threepm__sum'] / result['threepa__sum'] * 100
 
+        #Defensive Rebound % = (Defensive Rebounds / Defensive Opportunities) x 100
         elif stat == 'dreb_percent':
             result = statlines.aggregate(Sum('dreb'), Sum('dreb_opp'))
             if result['dreb_opp__sum'] and result['dreb_opp__sum'] is not 0:
                 percentage = result['dreb__sum'] / result['dreb_opp__sum'] * 100
 
+        #Offensive Rebound % = (Offensive Rebounds / Offensive Opportunities) x 100
         elif stat == 'oreb_percent':
             result = statlines.aggregate(Sum('oreb'), Sum('oreb_opp'))
             if result['oreb_opp__sum'] and result['oreb_opp__sum'] is not 0:
                 percentage = result['oreb__sum'] / result['oreb_opp__sum'] * 100
 
+        #Total Rebound % = (Total Rebounds / (Offensive Opportunities + Defensive Opportunities)) x 100
         elif stat == 'treb_percent':
             result = statlines.aggregate(Sum('total_rebounds'), Sum('dreb_opp'), Sum('oreb_opp'))
             if result['dreb_opp__sum']:
                 percentage = result['total_rebounds__sum'] / \
                             (result['oreb_opp__sum'] + result['dreb_opp__sum']) * 100
 
+        #True Shooting % = (Points / Field Goals Attempted) x 100
         elif stat == 'ts_percent':
             result = statlines.aggregate(Sum('points'), Sum('fga'))
             if result['fga__sum']:
                 percentage = result['points__sum'] / result['fga__sum'] * 100
 
+        #Offensive Rating = (Total Team Points / Offensive Possessions) x 100
+        #Defensive Rating = (Total Team Points / Defensive Possessions) x 100
         elif stat == 'off_rating' or stat == 'def_rating':
             result = statlines.aggregate(Sum('off_pos'), Sum('def_pos'))
             
@@ -200,10 +205,8 @@ class Player(models.Model):
                 team2_games = Game.objects.filter(team1=self)
 
             if season:
-                team1_games = team1_games.filter(
-                        date__range=(season.start_date, season.end_date))
-                team2_games = team2_games.filter(
-                        date__range=(season.start_date, season.end_date))
+                team1_games = team1_games.filter(date__range=(season.start_date, season.end_date))
+                team2_games = team2_games.filter(date__range=(season.start_date, season.end_date))
 
             team1_result = team1_games.aggregate(Sum("team1_score"))
             team2_result = team2_games.aggregate(Sum("team2_score"))
@@ -279,17 +282,14 @@ class Game(models.Model):
         return reverse("box_score", kwargs={'id': self.id})
 
     def calculate_game_score(self):
-        """Calculates a game's score by finding the sum of points for each team's statlines
-        """
+        """Calculates a game's score by finding the sum of points for each team's statlines"""
         team1_statlines = StatLine.objects.filter(
             game=self, player__in=self.team1.all())
         team2_statlines = StatLine.objects.filter(
             game=self, player__in=self.team2.all())
 
-        self.team1_score = team1_statlines.aggregate(Sum('points'))[
-            'points__sum']
-        self.team2_score = team2_statlines.aggregate(Sum('points'))[
-            'points__sum']
+        self.team1_score = team1_statlines.aggregate(Sum('points'))['points__sum']
+        self.team2_score = team2_statlines.aggregate(Sum('points'))['points__sum']
 
         if self.team1_score > self.team2_score:
             self.winning_players = self.team1.all()
@@ -320,8 +320,7 @@ class Game(models.Model):
         """Returns a list of players that start on the bench for a game.
         It does so by analyzing the subsitution plays
         """
-        playbyplays = self.playbyplay_set.filter(
-            primary_play="sub_out").order_by("time")
+        playbyplays = self.playbyplay_set.filter(primary_play="sub_out").order_by("time")
         team1_oncourt = self.team1.all().values_list('pk', flat=True)
         team2_oncourt = self.team2.all().values_list('pk', flat=True)
 
@@ -346,8 +345,7 @@ class Game(models.Model):
         team2_statlines = statlines.filter(player__in=self.team2.all())
         for play in playbyplays:
             if play.primary_play not in ['sub_out', 'sub_in', 'misc']:
-                primary_line = StatLine.objects.get(
-                    game=self, player=play.primary_player)
+                primary_line = StatLine.objects.get(game=self, player=play.primary_player)
                 orig_val = getattr(primary_line, play.primary_play)
                 setattr(primary_line, play.primary_play, orig_val + 1)
                 if play.primary_play == 'fgm':
@@ -363,30 +361,21 @@ class Game(models.Model):
                 primary_line.save()
                 if play.primary_play in ['threepm', 'fgm', 'to']:
                     if primary_line.player in self.team1.all():
-                        team1_statlines.exclude(player__pk__in=bench).update(
-                            off_pos=F('off_pos') + 1)
-                        team2_statlines.exclude(player__pk__in=bench).update(
-                            def_pos=F('def_pos') + 1)
+                        team1_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
+                        team2_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
                     else:
-                        team1_statlines.exclude(player__pk__in=bench).update(
-                            def_pos=F('def_pos') + 1)
-                        team2_statlines.exclude(player__pk__in=bench).update(
-                            off_pos=F('off_pos') + 1)
+                        team1_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
+                        team2_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
                 if play.primary_play in ['fga', 'threepa']:
                     if primary_line.player in self.team1.all():
-                        team1_statlines.exclude(player__pk__in=bench).update(
-                            oreb_opp=F('oreb_opp') + 1)
-                        team2_statlines.exclude(player__pk__in=bench).update(
-                            dreb_opp=F('dreb_opp') + 1)
+                        team1_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp') + 1)
+                        team2_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp') + 1)
                     else:
-                        team1_statlines.exclude(player__pk__in=bench).update(
-                            dreb_opp=F('dreb_opp') + 1)
-                        team2_statlines.exclude(player__pk__in=bench).update(
-                            oreb_opp=F('oreb_opp') + 1)
+                        team1_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp') + 1)
+                        team2_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp') + 1)
                 # secondary play
                 if play.secondary_play:
-                    secondary_line = StatLine.objects.get(
-                        game=self, player=play.secondary_player)
+                    secondary_line = StatLine.objects.get(game=self, player=play.secondary_player)
                     orig_val = getattr(secondary_line, play.secondary_play)
                     setattr(secondary_line, play.secondary_play, orig_val + 1)
 
@@ -396,20 +385,15 @@ class Game(models.Model):
                     secondary_line.save()
                     if play.secondary_play == 'dreb':
                         if primary_line.player in self.team1.all():
-                            team1_statlines.exclude(player__pk__in=bench).update(
-                                off_pos=F('off_pos') + 1)
-                            team2_statlines.exclude(player__pk__in=bench).update(
-                                def_pos=F('def_pos') + 1)
+                            team1_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
+                            team2_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
                         else:
-                            team1_statlines.exclude(player__pk__in=bench).update(
-                                def_pos=F('def_pos') + 1)
-                            team2_statlines.exclude(player__pk__in=bench).update(
-                                off_pos=F('off_pos') + 1)
+                            team1_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
+                            team2_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
 
                 # assist play
                 if play.assist:
-                    assist_line = StatLine.objects.get(
-                        game=self, player=play.assist_player)
+                    assist_line = StatLine.objects.get(game=self, player=play.assist_player)
                     orig_val = getattr(assist_line, play.assist)
                     setattr(assist_line, play.assist, orig_val + 1)
                     assist_line.save()
@@ -457,17 +441,12 @@ class PlayByPlay(models.Model):
     game = models.ForeignKey('basketball.Game')
     time = models.TimeField()
     primary_play = models.CharField(max_length=30, choices=PRIMARY_PLAY)
-    primary_player = models.ForeignKey(
-        'basketball.Player', related_name='primary_plays')
-    secondary_play = models.CharField(
-        max_length=30, choices=SECONDARY_PLAY, blank=True)
-    secondary_player = models.ForeignKey(
-        'basketball.Player', related_name='secondary_plays', blank=True, null=True)
+    primary_player = models.ForeignKey('basketball.Player', related_name='primary_plays')
+    secondary_play = models.CharField(max_length=30, choices=SECONDARY_PLAY, blank=True)
+    secondary_player = models.ForeignKey('basketball.Player', related_name='secondary_plays', blank=True, null=True)
     assist = models.CharField(max_length=30, choices=ASSIST_PLAY, blank=True)
-    assist_player = models.ForeignKey(
-        'basketball.Player', related_name='+', blank=True, null=True)
-    top_play_rank = models.CharField(
-        help_text="Refers to weekly rank", max_length=30, choices=RANKS, blank=True)
+    assist_player = models.ForeignKey('basketball.Player', related_name='+', blank=True, null=True)
+    top_play_rank = models.CharField(help_text="Refers to weekly rank", max_length=30, choices=RANKS, blank=True)
     top_play_players = models.ManyToManyField('basketball.Player', blank=True)
     description = models.TextField(blank=True, null=True)
 

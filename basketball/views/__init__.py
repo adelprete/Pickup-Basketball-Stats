@@ -19,7 +19,7 @@ from django.db.models import F, Q, Sum, Avg
 import datetime
 
 
-def root(request):
+def root(request, template="base.html"):
     """
     Our Homepage
     Currently prints out a list of games grouped by the dates that they were played on
@@ -29,27 +29,21 @@ def root(request):
     game_set = bmodels.Game.objects.filter(
         date=latest_game.date).order_by('title')
 
-    top_plays = bmodels.PlayByPlay.objects.filter(
-        game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
-    not_top_plays = bmodels.PlayByPlay.objects.filter(
-        game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
+    top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
+    not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
 
     
     players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
 
     try:
-        season = bmodels.Season.objects.get(
-                start_date__lt=datetime.datetime.today(),
-                end_date__gt=datetime.datetime.today())
+        season = bmodels.Season.objects.get(start_date__lt=datetime.datetime.today(), end_date__gt=datetime.datetime.today())
     except:
         season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
 
     player_tuples = []
     for player in players:
         if player.total_games(season=season):
-            player_tuples.append(
-                    (player.first_name, player.total_wins(season=season), player.total_losses(season=season))
-                    )
+            player_tuples.append((player.first_name, player.total_wins(season=season), player.total_losses(season=season)))
 
     player_standings = sorted(player_tuples, key=lambda player: player[1], reverse=True)
 
@@ -61,11 +55,11 @@ def root(request):
         'default_season': season,
         'seasons': bmodels.Season.objects.all()
     }
-    return render(request, "base.html", context)
+    return render(request, template, context)
 
 
 
-def leaderboard_home(request):
+def leaderboard_home(request, template="leaderboard/home.html"):
 	"""
 	Generates the leaderboard page.
 	This page uses tabs that load different templatetags that display different information
@@ -82,9 +76,7 @@ def leaderboard_home(request):
 			possessions_min = form.data.get('possessions_min', 100)
 	else:
 		try:
-			season = bmodels.Season.objects.get(
-					start_date__lt=datetime.datetime.today(),
-					end_date__gt=datetime.datetime.today())
+			season = bmodels.Season.objects.get(start_date__lt=datetime.datetime.today(), end_date__gt=datetime.datetime.today())
 		except:
 			season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
 		
@@ -100,10 +92,10 @@ def leaderboard_home(request):
 			'season': season,
 			'default_tab': default_tab
 		}
-	return render(request, 'leaderboard/home.html', context)
+	return render(request, template, context)
 
 
-def login(request):
+def login(request, template="login.html"):
     username = None
     password = None
     if request.POST:
@@ -120,11 +112,11 @@ def login(request):
     else:
         messages.error(request, "Invalid login")
 
-    return render(request, "login.html", {"form": bforms.LoginForm})
+    return render(request, template, {"form": bforms.LoginForm})
 
 
 def ajax_standings(request):
-    
+    """Shows the standings for the chosen season on the home page"""
     season = None
     if request.GET['season_id'] != 'All':
         season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
@@ -134,9 +126,7 @@ def ajax_standings(request):
     player_tuples = []
     for player in players:
         if player.total_games(season=season):
-            player_tuples.append(
-                    (player.first_name, player.total_wins(season=season), player.total_losses(season=season))
-                    )
+            player_tuples.append((player.first_name, player.total_wins(season=season), player.total_losses(season=season)))
 
     player_standings = sorted(player_tuples, key=lambda player: player[1], reverse=True)
 

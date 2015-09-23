@@ -13,16 +13,14 @@ from basketball import forms as bforms
 from basketball import helpers
 
 
-def games_home(request):
-    """Currently only passes a list of all the games to the template
-    """
+def games_home(request, template='games/home.html'):
+    """Currently only passes a list of all the games to the template"""
     latest_games = bmodels.Game.objects.all()
 
     keyfunc = operator.attrgetter('date')
 
     latest_games = sorted(latest_games, key=keyfunc)
-    group_list = [{k.strftime('%m-%d-%Y'): list(g)}
-                  for k, g in itertools.groupby(latest_games, keyfunc)]
+    group_list = [{k.strftime('%m-%d-%Y'): list(g)} for k, g in itertools.groupby(latest_games, keyfunc)]
 
     keys_list = []
     group_dict = {}
@@ -37,18 +35,17 @@ def games_home(request):
     context = {
         'group_list': sorted_dict,
     }
-    return render(request, 'games/home.html', context)
+    return render(request, template, context)
 
 
-def recap(request, game_id):
+def recap(request, game_id, template='games/recap.html'):
+    """View for our recap pages for each set of games"""
     game = get_object_or_404(bmodels.Game, id=game_id)
 
     game_set = bmodels.Game.objects.filter(date=game.date).order_by('title')
 
-    top_plays = bmodels.PlayByPlay.objects.filter(
-        game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
-    not_top_plays = bmodels.PlayByPlay.objects.filter(
-        game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
+    top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
+    not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
 
     context = {
         'games': game_set,
@@ -56,11 +53,11 @@ def recap(request, game_id):
         'not_top_plays': not_top_plays,
     }
 
-    return render(request, 'games/recap.html', context)
+    return render(request, template, context)
 
 
-def game_basics(request, game_id=None, form_class=bforms.GameForm):
-
+def game_basics(request, game_id=None, form_class=bforms.GameForm, template='games/form.html'):
+    """Our game form where we can create or edit a games details"""
     model = None
     if game_id:
         model = get_object_or_404(bmodels.Game, id=game_id)
@@ -77,23 +74,21 @@ def game_basics(request, game_id=None, form_class=bforms.GameForm):
 
             for player in game_record.team1.iterator():
                 if not bmodels.StatLine.objects.filter(game=game_record, player=player):
-                    bmodels.StatLine.objects.create(
-                        game=game_record, player=player)
+                    bmodels.StatLine.objects.create(game=game_record, player=player)
 
             for player in game_record.team2.iterator():
                 if not bmodels.StatLine.objects.filter(game=game_record, player=player):
-                    bmodels.StatLine.objects.create(
-                        game=game_record, player=player)
+                    bmodels.StatLine.objects.create(game=game_record, player=player)
             if model:
                 messages.success(request, "Game Saved")
             else:
                 messages.success(request, "Game Created")
             return redirect(game_record.get_absolute_url())
 
-    return render(request, 'games/form.html', {'form': form})
+    return render(request, template, {'form': form})
 
 
-def box_score(request, id):
+def box_score(request, id, template="games/box_score.html"):
     """Generates the boxscore page of each game
     -A PlayByPlay form is on this page to add individual plays to the game
     -A PlayByPlay upload form is available for uploading a .csv file full of plays
@@ -122,12 +117,13 @@ def box_score(request, id):
         'file_form': bforms.PlayByPlayFileForm(),
         'pbp_filter': pbp_filter,
     }
-    return render(request, "games/box_score.html", context)
+    return render(request, template, context)
 
 
 def ajax_add_play(request, pk):
-    """Called when an individual play is submitted on a game's page.
-    Allows for multiple games to be added without having to wait for a page refresh.
+    """
+        Called when an individual play is submitted on a game's page.
+        Allows for multiple games to be added without having to wait for a page refresh.
     """
     game = get_object_or_404(bmodels.Game, pk=pk)
     play_form = bforms.PlayByPlayForm(game, request.POST)
@@ -148,19 +144,15 @@ def ajax_add_play(request, pk):
 
 
 def ajax_filter_plays(request, pk):
-    """Called when an some wants to filter the play by plays of a game
-    """
+    """Called when an some wants to filter the play by plays of a game"""
     game = get_object_or_404(bmodels.Game, pk=pk)
-    pbp_filter = bforms.PlayByPlayFilter(
-        request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
+    pbp_filter = bforms.PlayByPlayFilter(request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
 
     return render(request, 'games/playbyplay_list.html', {'pbp_filter': pbp_filter})
 
 
 def delete_play(request, pk):
-    """
-    Called when a play is deleted from a game's page.
-    """
+    """Called when a play is deleted from a game's page."""
 
     play = get_object_or_404(bmodels.PlayByPlay, pk=pk)
     play.delete()
@@ -171,6 +163,8 @@ def delete_play(request, pk):
 
 
 class PlayByPlayFormView(FormView):
+    """Our PlaybyPlayform for editing or deleting plays"""
+
     template_name = "games/playbyplay_form.html"
     model = bmodels.PlayByPlay
     form_class = bforms.PlayByPlayForm

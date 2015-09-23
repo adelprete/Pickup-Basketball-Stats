@@ -7,19 +7,19 @@ from basketball import models as bmodels
 from basketball import forms as bforms
 
 
-def players_home(request):
-    """Generates a list of all the players on the site
-    """
+def players_home(request, template="players/home.html"):
+    """Generates a list of all the players on the site"""
+
     players = bmodels.Player.objects.exclude(
         first_name__in=['Team1', 'Team2']).order_by('first_name')
 
     context = {
         'players': players,
     }
-    return render(request, 'players/home.html', context)
+    return render(request, template, context)
 
 
-def player_page(request, id):
+def player_page(request, id, template="players/detail.html"):
     """This generates an individual player's page"""
 
     player = get_object_or_404(bmodels.Player, id=id)
@@ -88,11 +88,11 @@ def player_page(request, id):
         'totals': totals,
         'game_type_totals': game_type_totals,
     }
-    return render(request, 'players/detail.html', context)
+    return render(request, template, context)
 
 
-def player_basics(request, id=None, form_class=bforms.PlayerForm):
-
+def player_basics(request, id=None, form_class=bforms.PlayerForm, template='players/form.html'):
+    """The View handles editing and deleting play profiles"""
     model = None
     if id:
         model = get_object_or_404(bmodels.Player, id=id)
@@ -113,5 +113,5 @@ def player_basics(request, id=None, form_class=bforms.PlayerForm):
                 messages.success(request, "Player Created")
             return redirect(p_record.get_absolute_url())
 
-    return render(request, 'players/form.html', {'form': form})
+    return render(request, template, {'form': form})
 
