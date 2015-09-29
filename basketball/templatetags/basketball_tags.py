@@ -123,7 +123,7 @@ def lb_overview(context, game_type="5v5", player_pk=None):
 @register.inclusion_tag('leaderboard/possessions.html', takes_context=True)
 def lb_possessions(context, season=None):
     """Returns every players per 100 stats for each game type""" 
-   
+    possessions_min = int(context.get('possessions_min', 100))
     players = bmodels.Player.objects.all().exclude(first_name__startswith="Team").order_by('first_name') 
     possessions_tables = OrderedDict()
     sort_column = context['request'].GET.get('pos_sort')
@@ -134,7 +134,7 @@ def lb_possessions(context, season=None):
         
         for player in players:
             
-            if player.get_possessions_count(game_type=game_type[0], season=season) >= 100:
+            if player.get_possessions_count(game_type=game_type[0], season=season) >= possessions_min:
                 
                 player_data = {'player_obj': player}
                 
