@@ -1,0 +1,158 @@
+[
+{
+    "pk": 5,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "",
+        "height": "",
+        "first_name": "Team1"
+    }
+},
+{
+    "pk": 6,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "",
+        "height": "",
+        "first_name": "Team2"
+    }
+},
+{
+    "pk": 7,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/huan.jpeg",
+        "height": "",
+        "first_name": "Huan"
+    }
+},
+{
+    "pk": 8,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/stevie.jpg",
+        "height": "",
+        "first_name": "Stevie"
+    }
+},
+{
+    "pk": 9,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "Delprete",
+        "birth_date": "1987-10-07",
+        "weight": "",
+        "position": "SG",
+        "image_src": "player_images/anthony.jpg",
+        "height": "5 '10",
+        "first_name": "Anthony"
+    }
+},
+{
+    "pk": 10,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/Nate.jpg",
+        "height": "",
+        "first_name": "Nate"
+    }
+},
+{
+    "pk": 11,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/Adrian.jpg",
+        "height": "",
+        "first_name": "Adrian"
+    }
+},
+{
+    "pk": 12,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/Johann.jpg",
+        "height": "",
+        "first_name": "Johann"
+    }
+},
+{
+    "pk": 13,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/giancarlo.jpg",
+        "height": "",
+        "first_name": "Giancarlo"
+    }
+},
+{
+    "pk": 14,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/fernando.jpg",
+        "height": "",
+        "first_name": "Fernando"
+    }
+},
+{
+    "pk": 15,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/Jungi.jpg",
+        "height": "",
+        "first_name": "Jungi"
+    }
+},
+{
+    "pk": 16,
+    "model": "basketball.player",
+    "fields": {
+        "last_name": "",
+        "birth_date": null,
+        "weight": "",
+        "position": "",
+        "image_src": "player_images/Kenny.jpg",
+        "height": "",
+        "first_name": "Kenny"
+    }
+}
+]

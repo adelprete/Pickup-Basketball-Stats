@@ -1,0 +1,38 @@
+[
+{
+    "pk": 2,
+    "fields": {
+        "team2_score": 9,
+        "team1": [
+            9,
+            7,
+            12,
+            15,
+            10,
+            5
+        ],
+        "date": "2015-06-13",
+        "youtube_id": "KJep0cVejzw",
+        "title": "Game 1",
+        "team1_score": 11,
+        "team2": [
+            11,
+            14,
+            13,
+            16,
+            8,
+            6
+        ],
+        "game_type": "5v5",
+        "winning_players": [
+            9,
+            7,
+            12,
+            15,
+            10,
+            5
+        ]
+    },
+    "model": "basketball.game"
+}
+]

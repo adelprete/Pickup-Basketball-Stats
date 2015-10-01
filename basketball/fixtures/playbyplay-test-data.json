@@ -1,0 +1,1022 @@
+[
+{
+    "pk": 69,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:01:18",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 15,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 16
+    }
+},
+{
+    "pk": 70,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:01:28",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 14,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 15
+    }
+},
+{
+    "pk": 71,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:01:57",
+        "description": null,
+        "primary_play": "fgm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 15,
+        "game": 2,
+        "assist_player": 10,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 72,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:02:19",
+        "description": null,
+        "primary_play": "threepm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 13,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 73,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:02:35",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 12,
+        "game": 2,
+        "assist_player": 10,
+        "secondary_player": 16
+    }
+},
+{
+    "pk": 74,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:02:53",
+        "description": null,
+        "primary_play": "fgm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 11,
+        "game": 2,
+        "assist_player": 16,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 75,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:03:22",
+        "description": null,
+        "primary_play": "threepa",
+        "secondary_play": "oreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 12,
+        "secondary_player": 9
+    }
+},
+{
+    "pk": 76,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:03:25",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 9,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 16
+    }
+},
+{
+    "pk": 77,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:03:38",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 8,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 10
+    }
+},
+{
+    "pk": 78,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:03:49",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 7,
+        "game": 2,
+        "assist_player": 10,
+        "secondary_player": 16
+    }
+},
+{
+    "pk": 79,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:04:16",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 16,
+        "game": 2,
+        "assist_player": 13,
+        "secondary_player": 7
+    }
+},
+{
+    "pk": 80,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:04:38",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 12,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 16
+    }
+},
+{
+    "pk": 81,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:04:49",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 14,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 15
+    }
+},
+{
+    "pk": 82,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:04:57",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 15,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 16
+    }
+},
+{
+    "pk": 83,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:05:04",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 14,
+        "game": 2,
+        "assist_player": 11,
+        "secondary_player": 10
+    }
+},
+{
+    "pk": 84,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:05:17",
+        "description": null,
+        "primary_play": "threepa",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 9,
+        "game": 2,
+        "assist_player": 10,
+        "secondary_player": 14
+    }
+},
+{
+    "pk": 85,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:05:49",
+        "description": null,
+        "primary_play": "fgm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 11,
+        "game": 2,
+        "assist_player": 16,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 86,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:06:11",
+        "description": null,
+        "primary_play": "pf",
+        "secondary_play": "fd",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 14,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 10
+    }
+},
+{
+    "pk": 87,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:06:32",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 7,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 8
+    }
+},
+{
+    "pk": 88,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:06:48",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 8,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 12
+    }
+},
+{
+    "pk": 89,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:06:48",
+        "description": null,
+        "primary_play": "blk",
+        "secondary_play": "ba",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 8
+    }
+},
+{
+    "pk": 90,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:07:02",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 91,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:07:04",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 16,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 15
+    }
+},
+{
+    "pk": 92,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:07:26",
+        "description": null,
+        "primary_play": "fgm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 7,
+        "game": 2,
+        "assist_player": 12,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 93,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:07:46",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 11,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 94,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:07:57",
+        "description": null,
+        "primary_play": "fgm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 15,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 95,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:08:20",
+        "description": null,
+        "primary_play": "threepa",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 8,
+        "game": 2,
+        "assist_player": 16,
+        "secondary_player": 6
+    }
+},
+{
+    "pk": 96,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:08:47",
+        "description": null,
+        "primary_play": "fgm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 15,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 97,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:09:15",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 11,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 7
+    }
+},
+{
+    "pk": 98,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:09:26",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 8
+    }
+},
+{
+    "pk": 99,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:10:31",
+        "description": null,
+        "primary_play": "pf",
+        "secondary_play": "fd",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 12,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 16
+    }
+},
+{
+    "pk": 100,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:10:56",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 14,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 10
+    }
+},
+{
+    "pk": 101,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:11:24",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 12,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 14
+    }
+},
+{
+    "pk": 102,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:11:50",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 8,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 6
+    }
+},
+{
+    "pk": 103,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:12:22",
+        "description": null,
+        "primary_play": "fgm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 9,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 104,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:12:50",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 11,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 12
+    }
+},
+{
+    "pk": 105,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:13:12",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 7,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 16
+    }
+},
+{
+    "pk": 106,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:13:26",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 16,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 7
+    }
+},
+{
+    "pk": 107,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:13:36",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 15,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 13
+    }
+},
+{
+    "pk": 108,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:13:47",
+        "description": null,
+        "primary_play": "threepa",
+        "secondary_play": "oreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 13,
+        "game": 2,
+        "assist_player": 14,
+        "secondary_player": 14
+    }
+},
+{
+    "pk": 109,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:13:59",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 8,
+        "game": 2,
+        "assist_player": 16,
+        "secondary_player": 12
+    }
+},
+{
+    "pk": 110,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:14:10",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "oreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 12,
+        "secondary_player": 15
+    }
+},
+{
+    "pk": 111,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:14:14",
+        "description": null,
+        "primary_play": "threepa",
+        "secondary_play": "oreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 15,
+        "secondary_player": 12
+    }
+},
+{
+    "pk": 112,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:14:22",
+        "description": null,
+        "primary_play": "threepm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 12,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 113,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:14:53",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 16,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 9
+    }
+},
+{
+    "pk": 114,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:15:00",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 12,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 13
+    }
+},
+{
+    "pk": 115,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:15:09",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "oreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 11,
+        "game": 2,
+        "assist_player": 8,
+        "secondary_player": 13
+    }
+},
+{
+    "pk": 116,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:15:16",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 16,
+        "game": 2,
+        "assist_player": 11,
+        "secondary_player": 12
+    }
+},
+{
+    "pk": 117,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:15:20",
+        "description": null,
+        "primary_play": "threepm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 12,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 118,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:15:50",
+        "description": null,
+        "primary_play": "threepm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 14,
+        "game": 2,
+        "assist_player": 8,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 119,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:16:18",
+        "description": null,
+        "primary_play": "threepa",
+        "secondary_play": "oreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 15,
+        "secondary_player": 10
+    }
+},
+{
+    "pk": 120,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:16:22",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 121,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:16:39",
+        "description": null,
+        "primary_play": "fgm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 13,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 122,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:16:59",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 7,
+        "game": 2,
+        "assist_player": 12,
+        "secondary_player": 13
+    }
+},
+{
+    "pk": 123,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:17:12",
+        "description": null,
+        "primary_play": "threepa",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 8,
+        "game": 2,
+        "assist_player": 16,
+        "secondary_player": 12
+    }
+},
+{
+    "pk": 124,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:17:20",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 12,
+        "secondary_player": 8
+    }
+},
+{
+    "pk": 125,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:17:26",
+        "description": null,
+        "primary_play": "fga",
+        "secondary_play": "dreb",
+        "top_play_players": [],
+        "assist": "pot_ast",
+        "top_play_rank": "",
+        "primary_player": 16,
+        "game": 2,
+        "assist_player": 8,
+        "secondary_player": 7
+    }
+},
+{
+    "pk": 126,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:17:33",
+        "description": null,
+        "primary_play": "to",
+        "secondary_play": "stls",
+        "top_play_players": [],
+        "assist": "",
+        "top_play_rank": "",
+        "primary_player": 7,
+        "game": 2,
+        "assist_player": null,
+        "secondary_player": 11
+    }
+},
+{
+    "pk": 127,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:17:40",
+        "description": null,
+        "primary_play": "threepm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 8,
+        "game": 2,
+        "assist_player": 11,
+        "secondary_player": null
+    }
+},
+{
+    "pk": 128,
+    "model": "basketball.playbyplay",
+    "fields": {
+        "time": "00:18:15",
+        "description": null,
+        "primary_play": "threepm",
+        "secondary_play": "",
+        "top_play_players": [],
+        "assist": "asts",
+        "top_play_rank": "",
+        "primary_player": 10,
+        "game": 2,
+        "assist_player": 15,
+        "secondary_player": null
+    }
+}
+]

@@ -26,8 +26,7 @@ def root(request, template="base.html"):
     """
     # latest_game will help us find the latest set of games.
     latest_game = bmodels.Game.objects.all().latest('date')
-    game_set = bmodels.Game.objects.filter(
-        date=latest_game.date).order_by('title')
+    game_set = bmodels.Game.objects.filter(date=latest_game.date).order_by('title')
 
     top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
     not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')

@@ -1,0 +1,61 @@
+[
+{
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+        "email": "",
+        "is_superuser": true,
+        "last_login": "2015-09-29T19:30:10.297Z",
+        "user_permissions": [],
+        "is_active": true,
+        "date_joined": "2015-06-26T14:09:01.786Z",
+        "is_staff": true,
+        "last_name": "",
+        "first_name": "",
+        "username": "master",
+        "password": "pbkdf2_sha256$20000$rwpTF2M4WsDz$gV44RMlKkq36GAM9ZzYoK49Lj+JhpGnbFLaGdls2AK8=",
+        "groups": []
+    }
+},
+{
+    "pk": 2,
+    "model": "auth.user",
+    "fields": {
+        "email": "",
+        "is_superuser": false,
+        "last_login": "2015-08-26T18:54:55.117Z",
+        "user_permissions": [],
+        "is_active": true,
+        "date_joined": "2015-08-25T16:19:25Z",
+        "is_staff": true,
+        "last_name": "",
+        "first_name": "",
+        "username": "volunteer",
+        "password": "pbkdf2_sha256$20000$9DCzPnUoYvtr$lFlb06Sj9bysfSMDWixyCUYyHBuMym9HD+LkmN3E2Ag=",
+        "groups": [
+            1
+        ]
+    }
+},
+{
+    "pk": 1,
+    "model": "auth.group",
+    "fields": {
+        "name": "Volunteer",
+        "permissions": [
+            22,
+            23,
+            24,
+            28,
+            29,
+            30,
+            19,
+            20,
+            21,
+            25,
+            26,
+            27
+        ]
+    }
+}
+]

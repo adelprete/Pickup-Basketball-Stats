@@ -1,0 +1,38 @@
+[
+{
+    "model": "basketball.season",
+    "pk": 1,
+    "fields": {
+        "title": "Summer 2015",
+        "end_date": "2015-09-22",
+        "start_date": "2015-06-21"
+    }
+},
+{
+    "model": "basketball.season",
+    "pk": 2,
+    "fields": {
+        "title": "Spring 2015",
+        "end_date": "2015-06-20",
+        "start_date": "2015-03-20"
+    }
+},
+{
+    "model": "basketball.season",
+    "pk": 3,
+    "fields": {
+        "title": "2013",
+        "end_date": "2013-12-31",
+        "start_date": "2013-01-01"
+    }
+},
+{
+    "model": "basketball.season",
+    "pk": 4,
+    "fields": {
+        "title": "Fall 2015",
+        "end_date": "2015-12-20",
+        "start_date": "2015-09-23"
+    }
+}
+]
