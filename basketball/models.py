@@ -439,7 +439,7 @@ class StatLine(models.Model):
 
 class PlayByPlay(models.Model):
     game = models.ForeignKey('basketball.Game')
-    time = models.TimeField()
+    time = models.DurationField()
     primary_play = models.CharField(max_length=30, choices=PRIMARY_PLAY)
     primary_player = models.ForeignKey('basketball.Player', related_name='primary_plays')
     secondary_play = models.CharField(max_length=30, choices=SECONDARY_PLAY, blank=True)

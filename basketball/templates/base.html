@@ -106,7 +106,7 @@
 					{% for play in top_plays %}
 						<div>
 							{{ forloop.counter }} 
-							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time|seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
+							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time.seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
 								{% bootstrap_icon "play" %}</a> - 
 							{{ play.game.title }}: {{ play.description }}
 						</div>
@@ -117,7 +117,7 @@
 					{% for play in not_top_plays %}
 						<div>
 							{{ forloop.counter }} 
-							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time|seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
+							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time.seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
 								{% bootstrap_icon "play" %}</a> - 
 							{{ play.game.title }}: {{ play.description }}
 						</div>
@@ -167,7 +167,7 @@
 			});
 		}
 		function onPlayerReady(event) {
-			event.target.seekTo({{ top_plays.0.time|seconds }});
+			event.target.seekTo({{ top_plays.0.time.seconds }});
 		}
 		function seekPlayerToPlay(time,youtube_id) {
 			player.cueVideoById({videoId:youtube_id,

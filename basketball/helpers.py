@@ -19,9 +19,9 @@ def create_plays(pk, f):
         # parse time
         time_split = line[0].split(':')
         if len(time_split) == 3:
-            play_dict['time'] = datetime.time(int(time_split[0]), int(time_split[1]), int(time_split[2]))
+            play_dict['time'] = datetime.timedelta(0, int(time_split[2]), 0, 0, int(time_split[1]), int(time_split[0]), )
         else:
-            play_dict['time'] = datetime.time(0, int(time_split[0]), int(time_split[1]))
+            play_dict['time'] = datetime.timedelta(0, int(time_split[1]), 0, 0, int(time_split[0]))
 
         # primary play
         for play_type in bmodels.PRIMARY_PLAY:

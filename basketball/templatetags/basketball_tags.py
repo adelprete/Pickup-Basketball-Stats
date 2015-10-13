@@ -15,12 +15,19 @@ per_100_statistics = ['dreb', 'oreb', 'asts', 'pot_ast', 'stls', 'to', 'blk',
 def access(value, arg):
     return value[arg]
 
+@register.filter
+def formattime(time):
+    time_str = "%02d:%02d" % (int((time.seconds / 60) % 60), int(time.seconds % 60))
+    hour = ""
+    if time.seconds/3600 >= 1:
+        hour = "%02d:" % (int(time.seconds / 3600))
+    return hour + time_str
+
 
 @register.filter
 def seconds(time):
     if time != '':
         return datetime.timedelta(hours=time.hour, minutes=time.minute, seconds=time.second).total_seconds()
-
 
 @register.filter
 def top_play_check(rank):
