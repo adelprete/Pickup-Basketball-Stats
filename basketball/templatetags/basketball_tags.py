@@ -23,19 +23,12 @@ def formattime(time):
         hour = "%02d:" % (int(time.seconds / 3600))
     return hour + time_str
 
-
-@register.filter
-def seconds(time):
-    if time != '':
-        return datetime.timedelta(hours=time.hour, minutes=time.minute, seconds=time.second).total_seconds()
-
 @register.filter
 def top_play_check(rank):
     if rank and rank[0] == 't':
         return True
     else:
         return False
-
 
 @register.filter
 def not_top_play_check(rank):

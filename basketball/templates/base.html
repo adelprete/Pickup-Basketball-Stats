@@ -98,6 +98,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-9">
+				<div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden;"></div>
 				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
 					<div id=player></div>
 				</div>
@@ -190,7 +191,7 @@
 	        player.stopVideo();
 		}
 		function jumpToAnchor() {
-			window.location = String(window.location).replace(/\#.*$/, "") + "#player";
+			window.location = String(window.location).replace(/\#.*$/, "") + "#playeranchor";
 		}
     </script>
 	<script type="text/javascript">
