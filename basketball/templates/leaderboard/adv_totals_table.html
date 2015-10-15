@@ -22,6 +22,10 @@ $(function () {
 				<a href="?adv_tot_sort=unast_fgm&adv_tot_active_pill={{key}}{{ get_string }}">UNAST FGM</a>
 				{% if tot_sort_col == 'unast_fgm' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
+			<td data-toggle="tooltip" title="Assisted Points (Points scored off your assists)">
+				<a href="?adv_tot_sort=ast_points&adv_tot_active_pill={{key}}{{ get_string }}">AST PTS</a>
+				{% if tot_sort_col == 'ast_points' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+			</td>
 			<td data-toggle="tooltip" title="Putbacks Made">
 				<a href="?adv_tot_sort=pga&adv_tot_active_pill={{key}}{{ get_string }}">PGM</a>
 				{% if tot_sort_col == 'pgm' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
@@ -54,6 +58,7 @@ $(function () {
 				<td>{{ value.gp }}</td>
 				<td>{{ value.ast_fgm }}</td>
 				<td>{{ value.unast_fgm }}</td>
+				<td>{{ value.ast_points }}</td>
 				<td>{{ value.pgm }}</td>
 				<td>{{ value.pga }}</td>
 				<td>{{ value.def_pos }}</td>

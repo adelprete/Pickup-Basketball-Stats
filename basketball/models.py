@@ -202,6 +202,12 @@ class Player(models.Model):
             if result['fga__sum']:
                 percentage = result['pga__sum'] / result['fga__sum'] * 100
 
+        #True Passing % = (Assisted Points / Assisted Shots) x 100
+        elif stat == 'tp_percent':
+            result = statlines.aggregate(Sum('ast_points'), Sum('asts'), Sum('pot_ast'))
+            if result['ast_points__sum']:
+                percentage = result['ast_points__sum'] / (result['asts__sum'] + result['pot_ast__sum']) * 100
+
 
         #Offensive Rating = (Total Team Points / Offensive Possessions) x 100
         #Defensive Rating = (Total Team Points / Defensive Possessions) x 100
@@ -319,6 +325,7 @@ class Game(models.Model):
                 if play[0] not in ['sub_out', 'sub_in', 'misc']:
                     setattr(line, play[0], 0)
             line.points = 0
+            line.ast_points = 0
             line.total_rebounds = 0
             line.def_pos = 0
             line.off_pos = 0
@@ -423,18 +430,25 @@ class Game(models.Model):
                     assist_line = StatLine.objects.get(game=self, player=play.assist_player)
                     orig_val = getattr(assist_line, play.assist)
                     setattr(assist_line, play.assist, orig_val + 1)
-                    assist_line.save()
+                    
                     if play.assist == 'asts':
                         primary_line.ast_fgm += 1
-                        primary_line.save()
+
+                        if play.primary_play == 'fgm':
+                            assist_line.ast_points += 1
+                        elif play.primary_play == 'threepm':
+                            assist_line.ast_points += 2
+
+                    assist_line.save()
+
                 elif play.primary_play in ['fgm', 'threepm']:
                     primary_line.unast_fgm += 1
-                    primary_line.save()
 
             elif play.primary_play in ['sub_out', 'sub_in']:
                 bench.append(play.primary_player.pk)
                 bench.remove(play.secondary_player.pk)
-
+            
+            primary_line.save()
             prev_play = play
 
         statlines.update(total_pos=F('off_pos') + F('def_pos'))
@@ -465,6 +479,7 @@ class StatLine(models.Model):
     points = models.PositiveIntegerField(default=0)
 
     #advanced
+    ast_points = models.PositiveIntegerField(default=0)
     def_pos = models.PositiveIntegerField(default=0)
     off_pos = models.PositiveIntegerField(default=0)
     total_pos = models.PositiveIntegerField(default=0)

@@ -9,7 +9,7 @@ register = template.Library()
 per_100_statistics = ['dreb', 'oreb', 'asts', 'pot_ast', 'stls', 'to', 'blk', 
     'points', 'total_rebounds', 'fgm_percent', 'threepm_percent', 
     'dreb_percent', 'oreb_percent', 'treb_percent', 'ts_percent', 
-    'off_rating', 'def_rating']
+    'off_rating', 'def_rating', 'tp_percent']
 
 @register.filter(name='access')
 def access(value, arg):
@@ -210,7 +210,7 @@ def calculate_lb_totals_dictionary(context, statistics, season=None, sort_column
 @register.inclusion_tag('leaderboard/adv_totals.html', takes_context=True)
 def lb_adv_totals(context, game_type="5v5", season=None):
     """Returns a dictionary of advanced totals for all players"""
-    statistics = ['ast_fgm', 'unast_fgm', 'pgm', 'pga', 'def_pos', 'off_pos', 'dreb_opp', 'oreb_opp']
+    statistics = ['ast_fgm', 'unast_fgm', 'ast_points', 'pgm', 'pga', 'def_pos', 'off_pos', 'dreb_opp', 'oreb_opp']
     sort_column = context['request'].GET.get('adv_tot_sort')
 
     totals_tables, totals_footer = calculate_lb_totals_dictionary(context,statistics,season=season,sort_column=sort_column)
@@ -286,9 +286,11 @@ def top_players_table(player_list, title, bgcolor='white'):
     elif title == "3PT%":
         tooltip_desc = "3 Point Percentage. Percentage of 3pointers made"
     elif title == "TS%":
-        tooltip_desc = "True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA"
+        tooltip_desc = "True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is (Points) / (FGA)"
     elif title == "BLKS":
         tooltip_desc = "Blocks"
+    elif title == "TP%":
+        tooltip_desc = "True Passing Percentage.  Percentage of assists and potential assists that lead to points.  Formula is (Points assisted by you) / (Your passes that lead to shots) "
 
     return {'player_list': player_list, 'title': title, 'tooltip_desc': tooltip_desc, 'bgcolor': bgcolor}
 
