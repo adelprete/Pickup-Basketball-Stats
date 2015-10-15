@@ -23,6 +23,8 @@ $(function () {
 		<td data-toggle="tooltip" title="Fouls Drawn (Whenever you are fouled)">FD</td>
 		<td data-toggle="tooltip" title="Personal Fouls (Amount of fouls that you have been called on)">PF</td>
 		<td data-toggle="tooltip" title="Points (Amount of points scored)">Pts</td>
+		<td>pgm</td>
+		<td>pga</td>
 	</tr>
 	{% for line in statlines %}
 		<tr>
@@ -41,6 +43,8 @@ $(function () {
 			<td>{{ line.fd }}</td>
 			<td>{{ line.pf }}</td>
 			<td>{{ line.points }}</td>
+			<td>{{ line.pgm }}</td>
+			<td>{{ line.pga }}</td>
 		</tr>
 	{% endfor %}
 		<tr>

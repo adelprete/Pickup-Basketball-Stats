@@ -78,23 +78,6 @@ $(function () {
 				<a href="?tot_sort=points&tot_active_pill={{key}}{{ get_string }}">Pts</a>
 				{% if tot_sort_col == 'points' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
 			</td>
-			<td data-toggle="tooltip" title="Defensive Possessions">
-				<a href="?tot_sort=def_pos&tot_active_pill={{key}}{{ get_string }}">Def.Pos</a>
-				{% if tot_sort_col == 'def_pos' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Offensive Possessions">
-				<a href="?tot_sort=off_pos&tot_active_pill={{key}}{{ get_string }}">Off.Pos</a>
-				{% if tot_sort_col == 'off_pos' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Defensive Rebound Opportunities">
-				<a href="?tot_sort=dreb_opp&tot_active_pill={{key}}{{ get_string }}">Dreb.Opp</a>
-				{% if tot_sort_col == 'dreb_opp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Offensive Rebound Opportunities">
-				<a href="?tot_sort=oreb_opp&tot_active_pill={{key}}{{ get_string }}">Oreb.Opp</a>
-				{% if tot_sort_col == 'oreb_opp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-
 		</tr>
 		{% for value in player_totals_list %}
 			<tr>
@@ -116,10 +99,6 @@ $(function () {
 				<td>{{ value.fd }}</td>
 				<td>{{ value.pf }}</td>
 				<td>{{ value.points }}</td>
-				<td>{{ value.def_pos }}</td>
-				<td>{{ value.off_pos }}</td>
-				<td>{{ value.dreb_opp }}</td>
-				<td>{{ value.oreb_opp }}</td>
 			</tr>
 		{% empty %}
 			<tr>
@@ -145,10 +124,6 @@ $(function () {
 				<td>{{ totals.fd }}</td>
 				<td>{{ totals.pf }}</td>
 				<td>{{ totals.points }}</td>
-				<td>{{ totals.def_pos }}</td>
-				<td>{{ totals.off_pos }}</td>
-				<td>{{ totals.dreb_opp }}</td>
-				<td>{{ totals.oreb_opp }}</td>
 			</tr>
 	</table>	
 </div>

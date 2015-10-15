@@ -120,9 +120,13 @@ class Player(models.Model):
 		
         return pos_count['off_pos__sum'] or 0
 
-    def get_per_100_possessions_data(self, stat, game_type, season=None):
+    def get_per_100_possessions_data(self, stat, game_type, season_id=None):
         """Returns per 100 possessions data"""
         
+        season=None
+        if season_id:
+            season = Season.objects.get(id=season_id)
+
         percentage = 0.0
         simple_statistics = [
                 'dreb',
@@ -191,6 +195,13 @@ class Player(models.Model):
             result = statlines.aggregate(Sum('points'), Sum('fga'))
             if result['fga__sum']:
                 percentage = result['points__sum'] / result['fga__sum'] * 100
+
+        #Putback Attempt % = (Putback Attempts / Field Goals Attempts) x 100
+        elif stat == 'pga_percent':
+            result = statlines.aggregate(Sum('pga'), Sum('fga'))
+            if result['fga__sum']:
+                percentage = result['pga__sum'] / result['fga__sum'] * 100
+
 
         #Offensive Rating = (Total Team Points / Offensive Possessions) x 100
         #Defensive Rating = (Total Team Points / Defensive Possessions) x 100
@@ -314,6 +325,10 @@ class Game(models.Model):
             line.dreb_opp = 0
             line.oreb_opp = 0
             line.total_pos = 0
+            line.ast_fgm = 0
+            line.unast_fgm = 0
+            line.pgm = 0
+            line.pga = 0
             line.save()
 
     def get_bench(self):
@@ -343,14 +358,25 @@ class Game(models.Model):
         statlines = self.statline_set.all()
         team1_statlines = statlines.filter(player__in=self.team1.all())
         team2_statlines = statlines.filter(player__in=self.team2.all())
+        prev_play = None  #will store the previous play in the loop for putback data
         for play in playbyplays:
             if play.primary_play not in ['sub_out', 'sub_in', 'misc']:
                 primary_line = StatLine.objects.get(game=self, player=play.primary_player)
                 orig_val = getattr(primary_line, play.primary_play)
                 setattr(primary_line, play.primary_play, orig_val + 1)
+
+                # primary play
                 if play.primary_play == 'fgm':
+                    if prev_play and ((play.time - prev_play.time).seconds <= 4) \
+                        and prev_play.secondary_play == 'oreb' and prev_play.secondary_player == play.primary_player:
+                            primary_line.pgm += 1
+                            primary_line.pga += 1
                     primary_line.fga += 1
                     primary_line.points += 1
+                elif play.primary_play == 'fga':
+                    if prev_play and ((play.time - prev_play.time).seconds <= 4) \
+                        and prev_play.secondary_play == 'oreb' and prev_play.secondary_player == play.primary_player:
+                            primary_line.pga += 1
                 elif play.primary_play == 'threepa':
                     primary_line.fga += 1
                 elif play.primary_play == 'threepm':
@@ -373,6 +399,7 @@ class Game(models.Model):
                     else:
                         team1_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp') + 1)
                         team2_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp') + 1)
+                
                 # secondary play
                 if play.secondary_play:
                     secondary_line = StatLine.objects.get(game=self, player=play.secondary_player)
@@ -397,9 +424,18 @@ class Game(models.Model):
                     orig_val = getattr(assist_line, play.assist)
                     setattr(assist_line, play.assist, orig_val + 1)
                     assist_line.save()
+                    if play.assist == 'asts':
+                        primary_line.ast_fgm += 1
+                        primary_line.save()
+                elif play.primary_play in ['fgm', 'threepm']:
+                    primary_line.unast_fgm += 1
+                    primary_line.save()
+
             elif play.primary_play in ['sub_out', 'sub_in']:
                 bench.append(play.primary_player.pk)
                 bench.remove(play.secondary_player.pk)
+
+            prev_play = play
 
         statlines.update(total_pos=F('off_pos') + F('def_pos'))
         self.calculate_game_score()
@@ -426,12 +462,18 @@ class StatLine(models.Model):
     to = models.PositiveIntegerField(default=0)
     fd = models.PositiveIntegerField(default=0)
     pf = models.PositiveIntegerField(default=0)
+    points = models.PositiveIntegerField(default=0)
+
+    #advanced
     def_pos = models.PositiveIntegerField(default=0)
     off_pos = models.PositiveIntegerField(default=0)
     total_pos = models.PositiveIntegerField(default=0)
-    points = models.PositiveIntegerField(default=0)
     dreb_opp = models.PositiveIntegerField(default=0)
     oreb_opp = models.PositiveIntegerField(default=0)
+    ast_fgm = models.PositiveIntegerField(default=0)
+    unast_fgm = models.PositiveIntegerField(default=0)
+    pga = models.PositiveIntegerField(default=0)
+    pgm = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return '%s - %s - %s' % (self.player.first_name, self.game.title, self.game.date.isoformat())

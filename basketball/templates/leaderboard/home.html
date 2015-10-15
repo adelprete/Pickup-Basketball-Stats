@@ -36,8 +36,11 @@
 		<li role="presentation" {% if default_tab == "totals" %}class="active"{% endif %}>
 			<a href="#totals" aria-controls="profile" role="tab" data-toggle="tab">Totals</a>
 		</li>
+		<li role="presentation" {% if default_tab == "adv_totals" %}class="active"{% endif %}>
+			<a href="#advtotals" aria-controls="profile" role="tab" data-toggle="tab">Adv. Totals</a>
+		</li>
 		<li role="presentation" {% if default_tab == "possessions" %}class="active"{% endif %}>
-			<a href="#possessions" aria-controls="profile" role="tab" data-toggle="tab">Per 100 Possessions</a>
+			<a href="#possessions" aria-controls="profile" role="tab" data-toggle="tab">Per 100</a>
 		</li>
 	</ul>
 	<div class="tab-content">
@@ -51,6 +54,12 @@
 			<div style="color: #777;font-size:17px;width:100%;">Data from {% if season %}{{ season }}{% else %}all seasons{% endif %}</div>
 			{% lb_totals season=season %}
 		</div>
+		<div role="tabpanel" class="tab-pane {% if default_tab == "adv_totals" %}active{% endif %}" id="advtotals">
+			<h3 class="accent">Advanced Totals</h3>
+			<div style="color: #777;font-size:17px;width:100%;">Data from {% if season %}{{ season }}{% else %}all seasons{% endif %}</div>
+			{% lb_adv_totals season=season %}
+		</div>
+
 		<div role="tabpanel" class="tab-pane {% if default_tab == "possessions" %}active{% endif %}" id="possessions">
 			<h3 class="accent">Per 100 Possessions</h3>
 			<div style="color: #777;font-size:17px;width:100%;">Data from {% if season %}{{ season }}{% else %}all seasons{% endif %} with a minimum of {{ possessions_min }} total possessions</div>
