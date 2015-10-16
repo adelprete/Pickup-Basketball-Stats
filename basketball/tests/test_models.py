@@ -34,10 +34,10 @@ class PlayerUnitTests(BaseTestCase):
         per_100_statistics = ['dreb', 'oreb', 'asts', 'pot_ast', 'stls', 'to', 'blk',
                 'points', 'total_rebounds', 'fgm_percent', 'threepm_percent',
                 'dreb_percent', 'oreb_percent', 'treb_percent', 'ts_percent',
-                'off_rating', 'def_rating']
+                'off_rating', 'def_rating', 'tp_percent']
 
         for stat in per_100_statistics:
-            self.assertTrue(isinstance(player.get_per_100_possessions_data(stat, game_type='5v5', season=season), float))
+            self.assertTrue(isinstance(player.get_per_100_possessions_data(stat, game_type='5v5', season_id=season.id), float))
 
     def test_get_averages(self):
         player = bmodels.Player.objects.get(id=9)
@@ -50,7 +50,6 @@ class PlayerUnitTests(BaseTestCase):
 
 
 class GameUnitTests(BaseTestCase):
-
 
     game = bmodels.Game.objects.get(id=2)
 
