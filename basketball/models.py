@@ -432,7 +432,9 @@ class Game(models.Model):
                     setattr(assist_line, play.assist, orig_val + 1)
                     
                     if play.assist == 'asts':
+                        primary_line = StatLine.objects.get(game=self, player=play.primary_player)
                         primary_line.ast_fgm += 1
+                        primary_line.save()
 
                         if play.primary_play == 'fgm':
                             assist_line.ast_points += 1
@@ -442,13 +444,14 @@ class Game(models.Model):
                     assist_line.save()
 
                 elif play.primary_play in ['fgm', 'threepm']:
+                    primary_line = StatLine.objects.get(game=self, player=play.primary_player)
                     primary_line.unast_fgm += 1
+                    primary_line.save()
 
             elif play.primary_play in ['sub_out', 'sub_in']:
                 bench.append(play.primary_player.pk)
                 bench.remove(play.secondary_player.pk)
             
-            primary_line.save()
             prev_play = play
 
         statlines.update(total_pos=F('off_pos') + F('def_pos'))
