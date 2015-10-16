@@ -83,9 +83,11 @@ def player_five_on_five_pos(context, player_pk=None):
 def lb_overview(context, game_type="5v5", player_pk=None):
         """Returns many lists of tuples for each statistical category"""
 
+        season_id = None
         season = None
         if context.get('season', None):
-                season = context['season']
+            season = context['season']
+            season_id = season.id
         possessions_min = int(context.get('possessions_min', 100))
 
         excluded_pks = []
@@ -96,14 +98,14 @@ def lb_overview(context, game_type="5v5", player_pk=None):
 
                 # exclude players that dont meet the minimum 100 possessions requirement
                 for player in players:
-                        if player.get_possessions_count(game_type=game_type, season=season) < possessions_min:
+                        if player.get_possessions_count(game_type=game_type, season_id=season_id) < possessions_min:
                                 excluded_pks.append(player.pk)
 
                 players = players.exclude(pk__in=excluded_pks)
         
         top5_leaderboard = {}
         for stat in per_100_statistics:
-            player_data_list = [(player.get_full_name(), round(player.get_per_100_possessions_data(stat, game_type, season_id=season.id),1))for player in players]
+            player_data_list = [(player.get_full_name(), round(player.get_per_100_possessions_data(stat, game_type, season_id=season_id),1))for player in players]
             if stat == 'def_rating':
                 player_data_list = sorted(player_data_list, key=lambda x: x[1])
             else:
@@ -123,7 +125,9 @@ def lb_overview(context, game_type="5v5", player_pk=None):
 @register.inclusion_tag('leaderboard/possessions.html', takes_context=True)
 def lb_possessions(context, season=None):
     """Returns every players per 100 stats for each game type""" 
-
+    season_id = None
+    if season:
+        season_id = season_id
     possessions_min = int(context.get('possessions_min', 100))
     players = bmodels.Player.objects.all().exclude(first_name__startswith="Team").order_by('first_name') 
     possessions_tables = OrderedDict()
@@ -135,12 +139,12 @@ def lb_possessions(context, season=None):
         
         for player in players:
             
-            if player.get_possessions_count(game_type=game_type[0], season=season) >= possessions_min:
+            if player.get_possessions_count(game_type=game_type[0], season_id=season_id) >= possessions_min:
                 
                 player_data = {'player_obj': player}
                 
                 for stat in per_100_statistics: 
-                    player_data[stat] = round(player.get_per_100_possessions_data(stat, game_type[0], season_id=season.id), 1)
+                    player_data[stat] = round(player.get_per_100_possessions_data(stat, game_type[0], season_id=season_id), 1)
                 
                 # Lastly, count how many games the player played
                 statlines = player.statline_set.filter(game__game_type=game_type[0])
@@ -167,10 +171,12 @@ def lb_possessions(context, season=None):
     
     return context
 
-def calculate_lb_totals_dictionary(context, statistics, season=None, sort_column="",):
+def calculate_lb_totals_dictionary(context, statistics, season_id=None, sort_column="",):
 
         players = bmodels.Player.objects.all().exclude(first_name__contains="Team").order_by('first_name')
-
+        season = None
+        if season_id:
+            season = bmodels.Season.objects.get(id=season_id)
         totals_tables = OrderedDict()
         totals_footer = {}
         # For each game type we create a list of each player's total stats
@@ -179,7 +185,7 @@ def calculate_lb_totals_dictionary(context, statistics, season=None, sort_column
             totals = {}
             for player in players:
                
-                if player.get_possessions_count(game_type=game_type[0], season=season) > 0:
+                if player.get_possessions_count(game_type=game_type[0], season_id=season_id) > 0:
                     player_data = {'player_obj': player}
                     
                     for stat in statistics:
@@ -213,7 +219,7 @@ def lb_adv_totals(context, game_type="5v5", season=None):
     statistics = ['ast_fgm', 'unast_fgm', 'ast_points', 'pgm', 'pga', 'def_pos', 'off_pos', 'dreb_opp', 'oreb_opp']
     sort_column = context['request'].GET.get('adv_tot_sort')
 
-    totals_tables, totals_footer = calculate_lb_totals_dictionary(context,statistics,season=season,sort_column=sort_column)
+    totals_tables, totals_footer = calculate_lb_totals_dictionary(context,statistics,season_id=getattr(season,'id',None),sort_column=sort_column)
 
     # we use this variable in our template for template readability sake
     get_string = "&default_tab=adv_totals&possessions_min=" + str(context['possessions_min']) + "&submit=&season="
@@ -240,7 +246,7 @@ def lb_totals(context, game_type="5v5", season=None):
         statistics = [stat[0] for stat in bmodels.ALL_PLAY_TYPES] + ['total_rebounds', 'points']
         sort_column = context['request'].GET.get('tot_sort')
 
-        totals_tables, totals_footer = calculate_lb_totals_dictionary(context,statistics,season=season,sort_column=sort_column)
+        totals_tables, totals_footer = calculate_lb_totals_dictionary(context,statistics,season_id=getattr(season,'id',None),sort_column=sort_column)
 
         # we use this variable in our template for template readability sake
         get_string = "&default_tab=totals&possessions_min=" + str(context['possessions_min']) + "&submit=&season="

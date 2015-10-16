@@ -108,8 +108,12 @@ class Player(models.Model):
         
         return losses
 		
-    def get_possessions_count(self, game_type=None, season=None):
+    def get_possessions_count(self, game_type=None, season_id=None):
         
+        season=None
+        if season_id:
+            season = Season.objects.get(id=season_id)
+       
         statlines = self.statline_set.all()
         if game_type:
             statlines = statlines.filter(game__game_type=game_type)
