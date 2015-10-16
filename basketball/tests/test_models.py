@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse 
@@ -6,30 +7,24 @@ from basketball import models as bmodels
 
 class PlayerUnitTests(BaseTestCase):
 
+    player = bmodels.Player.objects.get(id=9)
+    season = bmodels.Season.objects.get(id=2)
+    
     def test_full_name(self):
+        self.assertTrue(isinstance(self.player, bmodels.Player))
         player = bmodels.Player.objects.get(id=9)
-        self.assertTrue(isinstance(player, bmodels.Player))
         self.assertEqual(player.get_full_name(), "Anthony Delprete")
 
     def test_total_wins(self):
-        player = bmodels.Player.objects.get(id=9)
-        season = bmodels.Season.objects.get(id=2)
-        self.assertTrue(isinstance(player.total_wins(season=season), int))
+        self.assertTrue(isinstance(self.player.total_wins(season=self.season), int))
     
     def test_total_losses(self):
-        player = bmodels.Player.objects.get(id=9)
-        season = bmodels.Season.objects.get(id=2)
-        self.assertTrue(isinstance(player.total_losses(season=season), int))
+        self.assertTrue(isinstance(self.player.total_losses(season=self.season), int))
     
     def test_total_games(self):
-        player = bmodels.Player.objects.get(id=9)
-        season = bmodels.Season.objects.get(id=2)
-        self.assertTrue(isinstance(player.total_games(season=season), int))
+        self.assertTrue(isinstance(self.player.total_games(season=self.season), int))
 
     def test_per_100_data(self):
-        player = bmodels.Player.objects.get(id=9)
-        season = bmodels.Season.objects.get(id=2)
-
         #test fgm_percent
         per_100_statistics = ['dreb', 'oreb', 'asts', 'pot_ast', 'stls', 'to', 'blk',
                 'points', 'total_rebounds', 'fgm_percent', 'threepm_percent',
@@ -37,15 +32,13 @@ class PlayerUnitTests(BaseTestCase):
                 'off_rating', 'def_rating', 'tp_percent']
 
         for stat in per_100_statistics:
-            self.assertTrue(isinstance(player.get_per_100_possessions_data(stat, game_type='5v5', season_id=season.id), float))
+            self.assertTrue(isinstance(self.player.get_per_100_possessions_data(stat, game_type='5v5', season_id=self.season.id), float))
 
     def test_get_averages(self):
-        player = bmodels.Player.objects.get(id=9)
-        self.assertTrue(isinstance(player.get_averages('points'), float))
+        self.assertTrue(isinstance(self.player.get_averages('points'), float))
     
     def test_get_totals(self):
-        player = bmodels.Player.objects.get(id=9)
-        self.assertTrue(isinstance(player.get_totals('points'), int))
+        self.assertTrue(isinstance(self.player.get_totals('points'), int))
 
 
 
@@ -71,5 +64,13 @@ class GameUnitTests(BaseTestCase):
         self.game.reset_statlines()
         self.game.calculate_statlines()
 
+    def test_off_def_possessions_count(self):
+        team1_pos_count = self.game.statline_set.filter(player__pk__in=self.game.team1.values_list('pk',flat=True)).aggregate(Sum('def_pos'),Sum('off_pos'))
+        team2_pos_count = self.game.statline_set.filter(player__pk__in=self.game.team2.values_list('pk',flat=True)).aggregate(Sum('def_pos'),Sum('off_pos'))
+
+        self.assertEqual(team1_pos_count['def_pos__sum'], 150)
+        self.assertEqual(team1_pos_count['off_pos__sum'], 156)
+        self.assertEqual(team2_pos_count['def_pos__sum'], 156)
+        self.assertEqual(team2_pos_count['off_pos__sum'], 150)
 
 

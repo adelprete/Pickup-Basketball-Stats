@@ -6,7 +6,6 @@ from basketball.tests.test_base import BaseTestCase
 
 class RequestTests(BaseTestCase):
 
-        
     def test_homepage(self):
         response = self.client.get(reverse("root"))
         self.failUnlessEqual(response.status_code, 200)
@@ -57,4 +56,18 @@ class RequestTests(BaseTestCase):
     #leaderboard tests
     def test_leaderboard_page(self):
         response = self.client.get(reverse("leaderboard_home"))
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_leaderboard_filter(self):
+        response = self.client.get("%s?season=&possessions_min=100&submit=" % reverse("leaderboard_home"))
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_leaderboard_totals_col_sort(self):
+        response = self.client.get("%s?tot_sort=fgm&tot_active_pill=5on5&default_tab=totals&possessions_min=100&submit=&season=" \
+                % reverse("leaderboard_home"))
+        self.failUnlessEqual(response.status_code, 200)
+
+    def test_leaderboard_totals_col_sort(self):
+        response = self.client.get("%s?adv_tot_sort=ast_fgm&adv_tot_active_pill=5on5&default_tab=adv_totals&possessions_min=100&submit=&season=" \
+                % reverse("leaderboard_home"))
         self.failUnlessEqual(response.status_code, 200)
