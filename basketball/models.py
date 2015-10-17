@@ -126,7 +126,6 @@ class Player(models.Model):
 
     def get_per_100_possessions_data(self, stat, game_type, season_id=None):
         """Returns per 100 possessions data"""
-        
         season=None
         if season_id:
             season = Season.objects.get(id=season_id)
@@ -244,7 +243,8 @@ class Player(models.Model):
                 percentage = total_team_points / result['def_pos__sum'] * 100
 
         else:
-            raise ValueError('First argument must be either dreb, oreb, asts, pot_ast, stls, to, blk, points, total_rebounds, fgm_percent, 3pm_percent, dreb_percent, oreb_percent, treb_percent, ts_percent, off_rating, def_rating')
+            print(stat)
+            raise ValueError('First argument must be either dreb, oreb, asts, pot_ast, stls, to, blk, points, total_rebounds, fgm_percent, threepm_percent, dreb_percent, oreb_percent, treb_percent, ts_percent, off_rating, def_rating')
             
         return percentage
 

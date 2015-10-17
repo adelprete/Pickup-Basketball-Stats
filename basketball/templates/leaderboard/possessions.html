@@ -1,24 +1,11 @@
-<div role="tabpanel" class="tab-pane" style="padding-top:15px;">
-	<div class="row">
-		<div class="col-sm-12">
-			<ul class="nav nav-pills">
-				{% for key,value in possessions_tables.items %}
-					{% if value %}
-						<li role="presentation" {% if active_pill == key %}class="active"{% endif %}>
-							<a href="#{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-			<div class="tab-content">
-				{% for key,value in possessions_tables.items %}
-					{% if value %}
-						<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="{{key}}">
-							{% include 'leaderboard/possessions_table.html' with player_pos_list=value  type=key %}
-						</div>
-					{% endif %}
-				{% endfor %}
-			</div>
-		</div>
+{% extends 'leaderboard/tab_base.html' %}
+{% block tab %}
+	<li role="presentation" {% if active_pill == key %}class="active"{% endif %}>
+		<a href="#{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
+	</li>
+{% endblock %}
+{% block tab_content %}
+	<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="{{key}}">
+		{% include 'leaderboard/possessions_table.html' with rows_list=value  type=key %}
 	</div>
-</div>
+{% endblock %}

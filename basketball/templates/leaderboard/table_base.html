@@ -1,0 +1,32 @@
+<script>
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip({
+		container : 'body'
+	});
+});
+</script>
+{% load bootstrap3 %}
+{% load basketball_tags %}
+<div class="table-responsive">
+	<table class="table table-hover">
+		<tr style="background:#d9edf7">
+			<td></td>
+			{% for header in headers %}
+				{% block headers %}
+				{% endblock %}
+			{% endfor %}
+		</tr>
+		{% for value in rows_list %}
+			<tr>
+				{% block rows %}
+				{% endblock %}
+			</tr>
+		{% empty %}
+			<tr>
+				<td>No data recorded yet</td>
+			</tr>
+		{% endfor %}
+		{% block footer %}
+		{% endblock %}
+	</table>	
+</div>

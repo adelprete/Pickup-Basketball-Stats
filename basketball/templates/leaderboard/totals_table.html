@@ -1,129 +1,23 @@
-<script>
-$(function () {
-	$('[data-toggle="tooltip"]').tooltip({
-		container : 'body'
-	});
-});
-</script>
+{% extends 'leaderboard/table_base.html' %}
 {% load bootstrap3 %}
-<div class="table-responsive">
-	<table class="table table-hover">
-		<tr style="background:#d9edf7">
-			<td></td>
-			<td data-toggle="tooltip" title="Games Played">
-				<a href="?tot_sort=gp&tot_active_pill={{key}}{{ get_string }}">GP</a>
-				{% if tot_sort_col == 'gp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Field Goals Made (Any made basket)">
-				<a href="?tot_sort=fgm&tot_active_pill={{key}}{{ get_string }}">FGM</a>
-				{% if tot_sort_col == 'fgm' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Field Goals Attempted (Any basket attempted)">
-				<a href="?tot_sort=fga&tot_active_pill={{key}}{{ get_string }}">FGA</a>
-				{% if tot_sort_col == 'fga' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Three Pointers Made (Any shot made behind the 3point line)">
-				<a href="?tot_sort=threepm&tot_active_pill={{key}}{{ get_string }}">3PM</a>
-				{% if tot_sort_col == 'threepm' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Three Pointers Attempted (Any shot attempted behind the 3point line)">
-				<a href="?tot_sort=threepa&tot_active_pill={{key}}{{ get_string }}">3PA</a>
-				{% if tot_sort_col == 'threepa' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Offensive Rebounds (A rebound after a teammate/self misses)">
-				<a href="?tot_sort=oreb&tot_active_pill={{key}}{{ get_string }}">Off</a>
-				{% if tot_sort_col == 'oreb' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Defensive Rebounds (A rebound after an opponent misses)">
-				<a href="?tot_sort=dreb&tot_active_pill={{key}}{{ get_string }}">Def</a>
-				{% if tot_sort_col == 'dreb' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Total Rebounds (A rebound after any miss)">
-				<a href="?tot_sort=total_rebounds&tot_active_pill={{key}}{{ get_string }}">Reb</a>
-				{% if tot_sort_col == 'total_rebounds' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Assists (A pass that leads to a score)">
-				<a href="?tot_sort=asts&tot_active_pill={{key}}{{ get_string }}">Ast</a>
-				{% if tot_sort_col == 'asts' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Potential Assist (A pass that would’ve lead to a score if the receiver made the shot)">
-				<a href="?tot_sort=pot_ast&tot_active_pill={{key}}{{ get_string }}">P.Ast</a>
-				{% if tot_sort_col == 'pot_ast' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Turnover (Anytime you give the ball to the other team)">
-				<a href="?tot_sort=to&tot_active_pill={{key}}{{ get_string }}">TO</a>
-				{% if tot_sort_col == 'to' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Steals (Anytime you cause a turnover from the other team)">
-				<a href="?tot_sort=stls&tot_active_pill={{key}}{{ get_string }}">Stl</a>
-				{% if tot_sort_col == 'stls' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Blocks (Whenever you deflect a shot attempt)">
-				<a href="?tot_sort=blk&tot_active_pill={{key}}{{ get_string }}">Blk</a>
-				{% if tot_sort_col == 'blk' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Blocks Allowed (How many shot attempts have been deflected)">
-				<a href="?tot_sort=ba&tot_active_pill={{key}}{{ get_string }}">BA</a>
-				{% if tot_sort_col == 'ba' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Fouls Drawn (Whenever you are fouled)">
-				<a href="?tot_sort=fd&tot_active_pill={{key}}{{ get_string }}">FD</a>
-				{% if tot_sort_col == 'fd' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Personal Fouls (Amount of fouls that you have been called on)">
-				<a href="?tot_sort=pf&tot_active_pill={{key}}{{ get_string }}">PF</a>
-				{% if tot_sort_col == 'pf' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Points (Amount of points scored)">
-				<a href="?tot_sort=points&tot_active_pill={{key}}{{ get_string }}">Pts</a>
-				{% if tot_sort_col == 'points' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-		</tr>
-		{% for value in player_totals_list %}
-			<tr>
-				<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
-				<td>{{ value.gp }}</td>
-				<td>{{ value.fgm }}</td>
-				<td>{{ value.fga }}</td>
-				<td>{{ value.threepm }}</td>
-				<td>{{ value.threepa }}</td>
-				<td>{{ value.oreb }}</td>
-				<td>{{ value.dreb }}</td>
-				<td>{{ value.total_rebounds }}</td>
-				<td>{{ value.asts }}</td>
-				<td>{{ value.pot_ast }}</td>
-				<td>{{ value.to }}</td>
-				<td>{{ value.stls }}</td>
-				<td>{{ value.blk }}</td>
-				<td>{{ value.ba }}</td>
-				<td>{{ value.fd }}</td>
-				<td>{{ value.pf }}</td>
-				<td>{{ value.points }}</td>
-			</tr>
-		{% empty %}
-			<tr>
-				<td>No data recorded yet</td>
-			</tr>
+{% load basketball_tags %}
+{% block headers %}
+	<td data-toggle="tooltip" title="{{ header.title }}">
+		<a href="?tot_sort={{ header.stat }}&tot_active_pill={{key}}{{ get_string }}">{{ header.header }}</a>
+		{% if tot_sort_col == header.stat %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+	</td>
+{% endblock %}
+{% block rows %}
+	<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
+	{% for header in headers %}
+		<td>{{ value|access:header.stat }}</td>
+	{% endfor %}
+{% endblock %}
+{% block footer %}
+	<tr style="background:#d9edf7">	
+		<td>Total</td>
+		{% for header in headers %}
+			<td>{{ totals|access:header.stat}}</td>
 		{% endfor %}
-			<tr style="background:#d9edf7">	
-				<td>Total</td>
-				<td>{{ totals.gp }}</td>
-				<td>{{ totals.fgm }}</td>
-				<td>{{ totals.fga }}</td>
-				<td>{{ totals.threepm }}</td>
-				<td>{{ totals.threepa }}</td>
-				<td>{{ totals.oreb }}</td>
-				<td>{{ totals.dreb }}</td>
-				<td>{{ totals.total_rebounds }}</td>
-				<td>{{ totals.asts }}</td>
-				<td>{{ totals.pot_ast }}</td>
-				<td>{{ totals.to }}</td>
-				<td>{{ totals.stls }}</td>
-				<td>{{ totals.blk }}</td>
-				<td>{{ totals.ba }}</td>
-				<td>{{ totals.fd }}</td>
-				<td>{{ totals.pf }}</td>
-				<td>{{ totals.points }}</td>
-			</tr>
-	</table>	
-</div>
+	</tr>
+{% endblock %}

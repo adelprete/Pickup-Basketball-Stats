@@ -1,114 +1,15 @@
-<script>
-$(function () {
-	$('[data-toggle="tooltip"]').tooltip({
-		container : 'body'
-	});
-});
-</script>
+{% extends 'leaderboard/table_base.html' %}
 {% load bootstrap3 %}
-<div class="table-responsive">
-	<table class="table table-hover">
-		<tr style="background:#d9edf7">
-			<td></td>
-			<td data-toggle="tooltip" title="Games Played">
-				<a href="?pos_sort=gp&pos_active_pill={{key}}{{ get_string }}">GP</a>
-				{% if pos_sort_col == 'gp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Points">
-				<a href="?pos_sort=points&pos_active_pill={{key}}{{ get_string }}">Pts</a>
-				{% if pos_sort_col == 'points' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Field Goal Percentage.  Percentage of Field Goals made">
-				<a href="?pos_sort=fgm_percent&pos_active_pill={{key}}{{ get_string }}">FGM %</a>
-				{% if pos_sort_col == 'fgm_percent' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="3 Point Percentage. Percentage of 3 pointers made">
-				<a href="?pos_sort=threepm_percent&pos_active_pill={{key}}{{ get_string }}">3PM %</a>
-				{% if pos_sort_col == 'threepm_percent' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA">
-				<a href="?pos_sort=ts_percent&pos_active_pill={{key}}{{ get_string }}">TS %</a>
-				{% if pos_sort_col == 'ts_percent' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Assists">
-				<a href="?pos_sort=asts&pos_active_pill={{key}}{{ get_string }}">Asts</a>
-				{% if pos_sort_col == 'asts' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Potential Assists. A pass that would’ve lead to a score if the receiver made the shot.">
-				<a href="?pos_sort=pot_ast&pos_active_pill={{key}}{{ get_string }}">P.Asts</a>
-				{% if pos_sort_col == 'pot_ast' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Defensive Rebounds">
-				<a href="?pos_sort=dreb&pos_active_pill={{key}}{{ get_string }}">Dreb</a>
-				{% if pos_sort_col == 'dreb' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Offensive Rebounds">
-				<a href="?pos_sort=oreb&pos_active_pill={{key}}{{ get_string }}">Oreb</a>
-				{% if pos_sort_col == 'oreb' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Percentage of defensive rebounds grabbed against total defensive rebounds available">
-				<a href="?pos_sort=dreb_percent&pos_active_pill={{key}}{{ get_string }}">Dreb %</a>
-				{% if pos_sort_col == 'dreb_percent' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Percentage of offensive rebounds grabbed against total offensive rebounds available">
-				<a href="?pos_sort=oreb_percent&pos_active_pill={{key}}{{ get_string }}">Oreb %</a>
-				{% if pos_sort_col == 'oreb_percent' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Steals (Anytime you cause a turnover from the other team)">
-				<a href="?pos_sort=total_rebounds&pos_active_pill={{key}}{{ get_string }}">Reb</a>
-				{% if pos_sort_col == 'total_rebounds' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Blocks (Whenever you deflect a shot attempt)">
-				<a href="?pos_sort=treb_percent&pos_active_pill={{key}}{{ get_string }}">Reb %</a>
-				{% if pos_sort_col == 'treb_percent' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Steals">
-				<a href="?pos_sort=stls&pos_active_pill={{key}}{{ get_string }}">Stls</a>
-				{% if pos_sort_col == 'stls' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Turnovers">
-				<a href="?pos_sort=to&pos_active_pill={{key}}{{ get_string }}">To</a>
-				{% if pos_sort_col == 'to' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Blocks">
-				<a href="?pos_sort=blk&pos_active_pill={{key}}{{ get_string }}">Blk</a>
-				{% if pos_sort_col == 'blk' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Points scored per 100 possessions while you’re on the floor">
-				<a href="?pos_sort=off_rating&pos_active_pill={{key}}{{ get_string }}">Off.Rating</a>
-				{% if pos_sort_col == 'off_rating' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Points scored against your per 100 possessions while you’re on the floor">
-				<a href="?pos_sort=def_rating&pos_active_pill={{key}}{{ get_string }}">Def.Rating</a>
-				{% if pos_sort_col == 'def_rating' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-		</tr>
-		{% for value in player_pos_list %}
-			<tr>
-				<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
-				<td>{{ value.gp }}</td>
-				<td>{{ value.points }}</td>
-				<td>{{ value.fgm_percent }}</td>
-				<td>{{ value.threepm_percent }}</td>
-				<td>{{ value.ts_percent }}</td>
-				<td>{{ value.asts }}</td>
-				<td>{{ value.pot_ast }}</td>
-				<td>{{ value.dreb }}</td>
-				<td>{{ value.oreb }}</td>
-				<td>{{ value.dreb_percent }}</td>
-				<td>{{ value.oreb_percent }}</td>
-				<td>{{ value.total_rebounds }}</td>
-				<td>{{ value.treb_percent }}</td>
-				<td>{{ value.stls }}</td>
-				<td>{{ value.to }}</td>
-				<td>{{ value.blk }}</td>
-				<td>{{ value.off_rating }}</td>
-				<td>{{ value.def_rating }}</td>
-			</tr>
-		{% empty %}
-			<tr>
-				<td>No data recorded yet</td>
-			</tr>
-		{% endfor %}
-	</table>	
-</div>
+{% load basketball_tags %}
+{% block headers %}
+	<td data-toggle="tooltip" title="{{ header.title }}">
+		<a href="?pos_sort={{ header.stat }}&pos_active_pill={{key}}{{ get_string }}">{{ header.header }}</a>
+		{% if pos_sort_col == header.stat %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+	</td>
+{% endblock %}
+{% block rows %}
+	<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
+	{% for header in headers %}
+		<td>{{ value|access:header.stat }}</td>
+	{% endfor %}
+{% endblock %}

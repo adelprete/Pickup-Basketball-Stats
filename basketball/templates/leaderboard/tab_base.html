@@ -1,0 +1,29 @@
+{% load basketball_tags %}
+<div role="tabpanel" class="tab-pane" style="padding-top:15px;">
+	<div class="row">
+		<div class="col-sm-12">
+			<ul class="nav nav-pills">
+				{% for key,value in tables.items %}
+					{% if value %}
+						{% block tab %}
+							<li role="presentation" {% if active_pill == key %}class="active"{% endif %}>
+								<a href="#tot-{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
+							</li>
+						{% endblock %}
+					{% endif %}
+				{% endfor %}
+			</ul>
+			<div class="tab-content">
+				{% for key,value in tables.items %}
+					{% if value %}
+						{% block tab_content %}
+						<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="tot-{{key}}">
+							{% include 'leaderboard/totals_table.html' with rows_list=value totals=totals_footer|access:key type=key %}
+						</div>
+						{% endblock %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>

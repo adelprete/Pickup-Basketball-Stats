@@ -1,88 +1,23 @@
-<script>
-$(function () {
-	$('[data-toggle="tooltip"]').tooltip({
-		container : 'body'
-	});
-});
-</script>
+{% extends "leaderboard/table_base.html" %}
 {% load bootstrap3 %}
-<div class="table-responsive">
-	<table class="table table-hover">
-		<tr style="background:#d9edf7">
-			<td></td>
-			<td data-toggle="tooltip" title="Games Played">
-				<a href="?adv_tot_sort=gp&adv_tot_active_pill={{key}}{{ get_string }}">GP</a>
-				{% if tot_sort_col == 'gp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Assisted Field Goals Made">
-				<a href="?adv_tot_sort=ast_fgm&adv_tot_active_pill={{key}}{{ get_string }}">AST FGM</a>
-				{% if tot_sort_col == 'ast_fgm' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="UnAssisted Field Goals Made">
-				<a href="?adv_tot_sort=unast_fgm&adv_tot_active_pill={{key}}{{ get_string }}">UNAST FGM</a>
-				{% if tot_sort_col == 'unast_fgm' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Assisted Points (Points scored off your assists)">
-				<a href="?adv_tot_sort=ast_points&adv_tot_active_pill={{key}}{{ get_string }}">AST PTS</a>
-				{% if tot_sort_col == 'ast_points' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Putbacks Made">
-				<a href="?adv_tot_sort=pga&adv_tot_active_pill={{key}}{{ get_string }}">PGM</a>
-				{% if tot_sort_col == 'pgm' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Putbacks Attempted">
-				<a href="?adv_tot_sort=pgm&adv_tot_active_pill={{key}}{{ get_string }}">PGA</a>
-				{% if tot_sort_col == 'pga' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Defensive Possessions">
-				<a href="?adv_tot_sort=def_pos&adv_tot_active_pill={{key}}{{ get_string }}">Def.Pos</a>
-				{% if tot_sort_col == 'def_pos' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Offensive Possessions">
-				<a href="?adv_tot_sort=off_pos&adv_tot_active_pill={{key}}{{ get_string }}">Off.Pos</a>
-				{% if tot_sort_col == 'off_pos' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Defensive Rebound Opportunities">
-				<a href="?adv_tot_sort=dreb_opp&adv_tot_active_pill={{key}}{{ get_string }}">Dreb.Opp</a>
-				{% if tot_sort_col == 'dreb_opp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-			<td data-toggle="tooltip" title="Offensive Rebound Opportunities">
-				<a href="?adv_tot_sort=oreb_opp&adv_tot_active_pill={{key}}{{ get_string }}">Oreb.Opp</a>
-				{% if tot_sort_col == 'oreb_opp' %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
-			</td>
-
-		</tr>
-		{% for value in player_totals_list %}
-			<tr>
-				<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
-				<td>{{ value.gp }}</td>
-				<td>{{ value.ast_fgm }}</td>
-				<td>{{ value.unast_fgm }}</td>
-				<td>{{ value.ast_points }}</td>
-				<td>{{ value.pgm }}</td>
-				<td>{{ value.pga }}</td>
-				<td>{{ value.def_pos }}</td>
-				<td>{{ value.off_pos }}</td>
-				<td>{{ value.dreb_opp }}</td>
-				<td>{{ value.oreb_opp }}</td>
-			</tr>
-		{% empty %}
-			<tr>
-				<td>No data recorded yet</td>
-			</tr>
+{% load basketball_tags %}
+{% block headers %}
+	<td data-toggle="tooltip" title="{{ header.title }}">
+		<a href="?adv_tot_sort={{ header.stat }}&adv_tot_active_pill={{key}}{{ get_string }}">{{ header.header }}</a>
+		{% if tot_sort_col == header.stat %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+	</td>
+{% endblock %}
+{% block rows %}
+	<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
+	{% for header in headers %}
+		<td>{{ value|access:header.stat }}</td>
+	{% endfor %}
+{% endblock %}
+{% block footer %}
+	<tr style="background:#d9edf7">	
+		<td>Total</td>
+		{% for header in headers %}
+			<td>{{ totals|access:header.stat}}</td>
 		{% endfor %}
-			<tr style="background:#d9edf7">	
-				<td>Total</td>
-				<td>{{ totals.gp }}</td>
-				<td>{{ totals.ast_fgm }}</td>
-				<td>{{ totals.unast_fgm }}</td>
-				<td>{{ totals.ast_points }}</td>
-				<td>{{ totals.pgm }}</td>
-				<td>{{ totals.pga }}</td>
-				<td>{{ totals.def_pos }}</td>
-				<td>{{ totals.off_pos }}</td>
-				<td>{{ totals.dreb_opp }}</td>
-				<td>{{ totals.oreb_opp }}</td>
-			</tr>
-	</table>	
-</div>
+	</tr>
+{% endblock %}
