@@ -22,7 +22,9 @@ totals_statistics = [
 adv_totals_statistics = [
         {'stat':'gp', 'header':'GP', 'title':'Games Played'},
         {'stat':'ast_fgm', 'header':'AST FGM', 'title':'Assisted Field Goals Made'},
+        {'stat':'ast_fga', 'header':'AST FGA', 'title':'Assisted Field Goal Attempts'}, 
         {'stat':'unast_fgm', 'header':'UNAST FGM', 'title':'Unassisted Field Goals Made'},
+        {'stat':'unast_fga', 'header':'UNAST FGA', 'title':'Unassisted Field Goal Attempts'},
         {'stat':'ast_points', 'header':'AST PTS', 'title':'Assisted Points (Points scored off your assists)'},
         {'stat':'pgm', 'header':'PGM', 'title':'Putbacks Made'},
         {'stat':'pga', 'header':'PGA', 'title':'Putbacks Attempted'},
@@ -30,6 +32,7 @@ adv_totals_statistics = [
         {'stat':'off_pos', 'header':'OFF.POS', 'title':'Offensive Possessions'},
         {'stat':'dreb_opp', 'header':'DREB.OPP', 'title':'Defensive Rebound Opportunities'},
         {'stat':'oreb_opp', 'header':'OREB.OPP', 'title':'Offensive Rebound Opportunities'}, 
+       
         ]
 
 per_100_statistics = [

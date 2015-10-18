@@ -337,7 +337,9 @@ class Game(models.Model):
             line.oreb_opp = 0
             line.total_pos = 0
             line.ast_fgm = 0
+            line.ast_fga = 0
             line.unast_fgm = 0
+            line.unast_fga = 0
             line.pgm = 0
             line.pga = 0
             line.save()
@@ -435,10 +437,9 @@ class Game(models.Model):
                     orig_val = getattr(assist_line, play.assist)
                     setattr(assist_line, play.assist, orig_val + 1)
                     
+                    StatLine.objects.filter(game=self, player=play.primary_player).update(ast_fga=F('ast_fga') + 1)
                     if play.assist == 'asts':
-                        primary_line = StatLine.objects.get(game=self, player=play.primary_player)
-                        primary_line.ast_fgm += 1
-                        primary_line.save()
+                        StatLine.objects.filter(game=self, player=play.primary_player).update(ast_fgm=F('ast_fgm') + 1)
 
                         if play.primary_play == 'fgm':
                             assist_line.ast_points += 1
@@ -446,11 +447,11 @@ class Game(models.Model):
                             assist_line.ast_points += 2
 
                     assist_line.save()
-
+                
                 elif play.primary_play in ['fgm', 'threepm']:
-                    primary_line = StatLine.objects.get(game=self, player=play.primary_player)
-                    primary_line.unast_fgm += 1
-                    primary_line.save()
+                    StatLine.objects.filter(game=self, player=play.primary_player).update(unast_fga=F('unast_fga') + 1,unast_fgm=F('unast_fgm') + 1)
+                elif play.primary_play in ['fga','threepa']:
+                    StatLine.objects.filter(game=self, player=play.primary_player).update(unast_fga=F('unast_fga') + 1)
 
             elif play.primary_play in ['sub_out', 'sub_in']:
                 bench.append(play.primary_player.pk)
@@ -485,7 +486,7 @@ class StatLine(models.Model):
     pf = models.PositiveIntegerField(default=0)
     points = models.PositiveIntegerField(default=0)
 
-    #advanced
+    #advanced stats
     ast_points = models.PositiveIntegerField(default=0)
     def_pos = models.PositiveIntegerField(default=0)
     off_pos = models.PositiveIntegerField(default=0)
@@ -493,7 +494,9 @@ class StatLine(models.Model):
     dreb_opp = models.PositiveIntegerField(default=0)
     oreb_opp = models.PositiveIntegerField(default=0)
     ast_fgm = models.PositiveIntegerField(default=0)
+    ast_fga = models.PositiveIntegerField(default=0)
     unast_fgm = models.PositiveIntegerField(default=0)
+    unast_fga = models.PositiveIntegerField(default=0)
     pga = models.PositiveIntegerField(default=0)
     pgm = models.PositiveIntegerField(default=0)
 
