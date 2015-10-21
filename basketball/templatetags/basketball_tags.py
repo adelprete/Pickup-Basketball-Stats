@@ -129,16 +129,16 @@ def lb_overview(context, game_type="5v5", player_pk=None):
 
         return context
 
-@register.inclusion_tag('leaderboard/possessions.html', takes_context=True)
-def lb_possessions(context, season=None):
-    """Returns every players per 100 stats for each game type""" 
-    season_id = None
-    if season:
-        season_id = season.id
+def calculate_lb_possessions_dictionaries(context, statistics, season_id=None, sort_column=""):
+    
+    players = bmodels.Player.objects.all().exclude(first_name__contains="Team").order_by('first_name')
+    season = None
+    if season_id:
+        season = bmodels.Season.objects.get(id=season_id)
+
+    possessions_tables = OrderedDict() 
     possessions_min = int(context.get('possessions_min', 100))
-    players = bmodels.Player.objects.all().exclude(first_name__startswith="Team").order_by('first_name') 
-    possessions_tables = OrderedDict()
-    sort_column = context['request'].GET.get('pos_sort')
+
     # For each game type we create a list of each player's per 100 stats
     for game_type in bmodels.GAME_TYPES:
         
@@ -149,8 +149,9 @@ def lb_possessions(context, season=None):
             if player.get_possessions_count(game_type=game_type[0], season_id=season_id) >= possessions_min:
                 player_data = {'player_obj': player}
                 
-                for stat in headers.per_100_statistics[1:]: 
-                    player_data[stat['stat']] = round(player.get_per_100_possessions_data(stat['stat'], game_type[0], season_id=season_id), 1)
+                for stat in statistics:
+                    if stat['stat'] != 'gp':
+                        player_data[stat['stat']] = round(player.get_per_100_possessions_data(stat['stat'], game_type[0], season_id=getattr(season,'id',None)), 1)
                 
                 # Lastly, count how many games the player played
                 statlines = player.statline_set.filter(game__game_type=game_type[0])
@@ -162,6 +163,37 @@ def lb_possessions(context, season=None):
 
         if sort_column:
             possessions_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
+
+    return possessions_tables
+
+@register.inclusion_tag('leaderboard/adv_possessions.html', takes_context=True)
+def lb_adv_possessions(context, season=None):
+    """Returns every players per 100 stats for each game type"""
+    sort_column = context['request'].GET.get('adv_pos_sort')
+    
+    possessions_tables = calculate_lb_possessions_dictionaries(context,headers.adv_per_100_statistics, season_id=getattr(season,'id',None),sort_column=sort_column)
+    
+    # we use this variable in our template for template readability sake
+    get_string = "&default_tab=adv_possessions&possessions_min=" + str(context['possessions_min']) + "&submit=&season="
+    if season:
+        get_string += str(season.id)
+
+    context = {
+        'tables': possessions_tables,
+        'get_string': get_string,
+        'pos_sort_col': sort_column,
+        'active_pill': context['request'].GET.get('adv_pos_active_pill') or '5on5',
+        'headers': headers.adv_per_100_statistics,
+    }
+    
+    return context
+
+@register.inclusion_tag('leaderboard/possessions.html', takes_context=True)
+def lb_possessions(context, season=None):
+    """Returns every players per 100 stats for each game type"""
+    sort_column = context['request'].GET.get('pos_sort')
+
+    possessions_tables = calculate_lb_possessions_dictionaries(context,headers.per_100_statistics, season_id=getattr(season,'id',None),sort_column=sort_column)
     
     # we use this variable in our template for template readability sake
     get_string = "&default_tab=possessions&possessions_min=" + str(context['possessions_min']) + "&submit=&season="
@@ -178,7 +210,7 @@ def lb_possessions(context, season=None):
     
     return context
 
-def calculate_lb_totals_dictionary(context, statistics, season_id=None, sort_column="",):
+def calculate_lb_totals_dictionaries(context, statistics, season_id=None, sort_column="",):
 
         players = bmodels.Player.objects.all().exclude(first_name__contains="Team").order_by('first_name')
         season = None
@@ -225,7 +257,7 @@ def lb_adv_totals(context, game_type="5v5", season=None):
     """Returns a dictionary of advanced totals for all players"""
     sort_column = context['request'].GET.get('adv_tot_sort')
 
-    totals_tables, totals_footer = calculate_lb_totals_dictionary(context,headers.adv_totals_statistics[1:],season_id=getattr(season,'id',None),sort_column=sort_column)
+    totals_tables, totals_footer = calculate_lb_totals_dictionaries(context,headers.adv_totals_statistics[1:],season_id=getattr(season,'id',None),sort_column=sort_column)
 
     # we use this variable in our template for template readability sake
     get_string = "&default_tab=adv_totals&possessions_min=" + str(context['possessions_min']) + "&submit=&season="
@@ -252,7 +284,7 @@ def lb_totals(context, game_type="5v5", season=None):
         
         sort_column = context['request'].GET.get('tot_sort')
 
-        totals_tables, totals_footer = calculate_lb_totals_dictionary(context,headers.totals_statistics[1:],season_id=getattr(season,'id',None),sort_column=sort_column)
+        totals_tables, totals_footer = calculate_lb_totals_dictionaries(context,headers.totals_statistics[1:],season_id=getattr(season,'id',None),sort_column=sort_column)
 
         # we use this variable in our template for template readability sake
         get_string = "&default_tab=totals&possessions_min=" + str(context['possessions_min']) + "&submit=&season="

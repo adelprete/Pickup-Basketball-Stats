@@ -32,7 +32,6 @@ adv_totals_statistics = [
         {'stat':'off_pos', 'header':'OFF.POS', 'title':'Offensive Possessions'},
         {'stat':'dreb_opp', 'header':'DREB.OPP', 'title':'Defensive Rebound Opportunities'},
         {'stat':'oreb_opp', 'header':'OREB.OPP', 'title':'Offensive Rebound Opportunities'}, 
-       
         ]
 
 per_100_statistics = [
@@ -40,7 +39,6 @@ per_100_statistics = [
         {'stat':'points', 'header':'Points', 'title':'Points'}, 
         {'stat':'fgm_percent', 'header':'FGM %', 'title':'Field Goal Percentage.  Percentage of Field Goals Made'}, 
         {'stat':'threepm_percent', 'header':'3PM %', 'title':'3 Point Percentage. Percentage of 3 pointers made'},
-        {'stat':'ts_percent', 'header':'TS %', 'title':'True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA'}, 
         {'stat':'asts', 'header':'Asts', 'title':'Assists'}, 
         {'stat':'pot_ast', 'header':'P.Asts', 'title':'Potential Assists. A pass that would’ve lead to a score if the receiver made the shot.'}, 
         {'stat':'dreb', 'header':'Dreb', 'title':'Defensive Rebounds'}, 
@@ -54,4 +52,52 @@ per_100_statistics = [
         {'stat':'blk', 'header':'Blk', 'title':'Blocks (Whenever you deflect a shot attempt)'},
         {'stat':'off_rating', 'header':'Off.Rating', 'title':"Points scord per 100 possessions while you're on the floor"},
         {'stat':'def_rating', 'header':'Def.Rating', 'title':"Points scored against your per 100 possessions while you're on the floor"},
+        ]
+
+adv_per_100_statistics = [
+        {
+            'stat':'gp', 
+            'header':'GP', 
+            'title':'Games Played'
+        },
+        {
+            'stat':'ts_percent', 
+            'header':'TS %', 
+            'title':'True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA'
+        },
+        {
+            'stat':'tp_percent', 
+            'header':'TP %', 
+            'title':'True Passing Percentage. Percentage of points made following your assists and potential assists'
+        },
+        {
+            'stat':'ast_fgm_percent', 
+            'header':'AST FGM %', 
+            'title':'Assisted Shooting %.  Shooting percentage of shots that were assisted by another player.'
+        }, 
+        {
+            'stat':'ast_fga_percent', 
+            'header':'AST FGA %', 
+            'title':'Assisted Field Goal %. Percentage of shots attempted that were assisted by another player.'
+        }, 
+        {
+            'stat':'unast_fgm_percent', 
+            'header':'UNAST FGM %', 
+            'title':'Unassisted Shooting %. Shooting percentage of shots that were not assisted by another player.'
+        },
+        {
+            'stat':'unast_fga_percent', 
+            'header':'UNAST FGA %', 
+            'title':'Unassisted Field Goal %. Percentage of shots attempted that were not assisted by another player.'
+        }, 
+        {
+            'stat':'pgm_percent', 
+            'header':'PGM %', 
+            'title':'Putback Shooting %.  Percentage of putbacks that go in.'
+        }, 
+        {
+            'stat':'pga_percent', 
+            'header':'PGA %', 
+            'title':'Putback Field Goal %.  Percentage of shots that are considered putbacks.'
+        }, 
         ]

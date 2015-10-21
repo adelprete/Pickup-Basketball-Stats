@@ -42,6 +42,9 @@
 		<li role="presentation" {% if default_tab == "possessions" %}class="active"{% endif %}>
 			<a href="#possessions" aria-controls="profile" role="tab" data-toggle="tab">Per 100</a>
 		</li>
+		<li role="presentation" {% if default_tab == "advpossessions" %}class="active"{% endif %}>
+			<a href="#advpossessions" aria-controls="profile" role="tab" data-toggle="tab">Adv. Per 100</a>
+		</li>
 	</ul>
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="overview">
@@ -64,6 +67,11 @@
 			<h3 class="accent">Per 100 Possessions</h3>
 			<div style="color: #777;font-size:17px;width:100%;">Data from {% if season %}{{ season }}{% else %}all seasons{% endif %} with a minimum of {{ possessions_min }} total possessions</div>
 			{% lb_possessions season=season %}
+		</div>
+		<div role="tabpanel" class="tab-pane {% if default_tab == "adv_possessions" %}active{% endif %}" id="advpossessions">
+			<h3 class="accent">Advanced Per 100 Possessions</h3>
+			<div style="color: #777;font-size:17px;width:100%;">Data from {% if season %}{{ season }}{% else %}all seasons{% endif %} with a minimum of {{ possessions_min }} total possessions</div>
+			{% lb_adv_possessions season=season %}
 		</div>
 	</div>
 	<script type="text/javascript">

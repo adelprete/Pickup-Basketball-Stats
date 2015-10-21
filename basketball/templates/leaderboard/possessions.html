@@ -1,11 +1,11 @@
 {% extends 'leaderboard/tab_base.html' %}
 {% block tab %}
 	<li role="presentation" {% if active_pill == key %}class="active"{% endif %}>
-		<a href="#{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
+		<a href="#pos-{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
 	</li>
 {% endblock %}
 {% block tab_content %}
-	<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="{{key}}">
+	<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="pos-{{key}}">
 		{% include 'leaderboard/possessions_table.html' with rows_list=value  type=key %}
 	</div>
 {% endblock %}

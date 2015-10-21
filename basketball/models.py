@@ -140,7 +140,9 @@ class Player(models.Model):
                 'stls',
                 'to',
                 'points',
-                'blk'
+                'blk',
+                'ast_fga',
+                'ast_fgm',
         ]
 
         """Statistics from the list are calculated the same way."""
@@ -162,12 +164,48 @@ class Player(models.Model):
 
         """The following statistics have unique calculations"""
 
-        #Field Goals Made % = (field goal makes / field goal attempts) x 100
+        #Field Goals Made % = (Field Goal Makes / Field Goal Attempts) x 100
         if stat == "fgm_percent":
             result = statlines.aggregate(Sum('fgm'), Sum('fga'))
             if result['fga__sum'] and result['fga__sum'] is not 0:
                 percentage = result['fgm__sum'] / result['fga__sum'] * 100
         
+        #Assisted Field Goals Made % = (Assisted Field Goal Attempts / Field Goal Attempts) x 100
+        elif stat == "ast_fga_percent":
+            result = statlines.aggregate(Sum('ast_fga'), Sum('fga'))
+            if result['fga__sum'] and result['fga__sum'] is not 0:
+                percentage = result['ast_fga__sum'] / result['fga__sum'] * 100
+
+        #Assisted Field Goals Made Shooting % = (Assisted Field Goal Made / Field goal attempts) x 100
+        elif stat == "ast_fgm_percent":
+            result = statlines.aggregate(Sum('ast_fgm'), Sum('ast_fga'))
+            if result['ast_fga__sum'] and result['ast_fga__sum'] is not 0:
+                percentage = result['ast_fgm__sum'] / result['ast_fga__sum'] * 100
+
+        #Unassisted Field Goals Made % = (Unassisted Field Goal Attempts / Field Goal Attempts) x 100
+        elif stat == "unast_fga_percent":
+            result = statlines.aggregate(Sum('unast_fga'), Sum('fga'), Sum('pga'))
+            if result['fga__sum'] and result['fga__sum'] is not 0:
+                percentage = (result['unast_fga__sum'] - result['pga__sum']) / result['fga__sum'] * 100
+
+        #Unassisted Field Goals Made Shooting % = (Unassisted Field Goal Made / Field Goal Attempts) x 100
+        elif stat == "unast_fgm_percent":
+            result = statlines.aggregate(Sum('unast_fgm'), Sum('unast_fga'), Sum('pgm'), Sum('pga'))
+            if result.get('unast_fga__sum') is not 0 and (result['unast_fga__sum'] != result['pga__sum']):
+                percentage = (result['unast_fgm__sum'] - result['pgm__sum']) / (result['unast_fga__sum'] - result['pga__sum']) * 100
+
+        #Putback Attempt % = (Putback Attempts / Field Goals Attempts) x 100
+        elif stat == 'pga_percent':
+            result = statlines.aggregate(Sum('pga'), Sum('fga'))
+            if result['fga__sum']:
+                percentage = result['pga__sum'] / result['fga__sum'] * 100
+        
+        #Putback Shooting % = (Putback Makes / Putbacks Attempted) x 100
+        elif stat == 'pgm_percent':
+            result = statlines.aggregate(Sum('pgm'), Sum('pga'))
+            if result['pga__sum']:
+                percentage = result['pgm__sum'] / result['pga__sum'] * 100
+
         #3 Pointers Made % = (3 pointers made / 3 pointers attempts) x 100
         elif stat == 'threepm_percent':
             result = statlines.aggregate(Sum('threepm'), Sum('threepa'), Sum('off_pos'))
@@ -199,18 +237,11 @@ class Player(models.Model):
             if result['fga__sum']:
                 percentage = result['points__sum'] / result['fga__sum'] * 100
 
-        #Putback Attempt % = (Putback Attempts / Field Goals Attempts) x 100
-        elif stat == 'pga_percent':
-            result = statlines.aggregate(Sum('pga'), Sum('fga'))
-            if result['fga__sum']:
-                percentage = result['pga__sum'] / result['fga__sum'] * 100
-
         #True Passing % = (Assisted Points / Assisted Shots) x 100
         elif stat == 'tp_percent':
             result = statlines.aggregate(Sum('ast_points'), Sum('asts'), Sum('pot_ast'))
             if result['ast_points__sum']:
                 percentage = result['ast_points__sum'] / (result['asts__sum'] + result['pot_ast__sum']) * 100
-
 
         #Offensive Rating = (Total Team Points / Offensive Possessions) x 100
         #Defensive Rating = (Total Team Points / Defensive Possessions) x 100
@@ -244,7 +275,7 @@ class Player(models.Model):
 
         else:
             print(stat)
-            raise ValueError('First argument must be either dreb, oreb, asts, pot_ast, stls, to, blk, points, total_rebounds, fgm_percent, threepm_percent, dreb_percent, oreb_percent, treb_percent, ts_percent, off_rating, def_rating')
+            raise ValueError('First argument must be either dreb, oreb, asts, pot_ast, stls, to, blk, points, total_rebounds, fgm_percent, threepm_percent, dreb_percent, oreb_percent, treb_percent, ts_percent, tp_percent, pga_percent, pgm_percent, off_rating, def_rating')
             
         return percentage
 
