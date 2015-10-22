@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from basketball import models as bmodels
 from basketball import forms as bforms
+from basketball import headers
 
 
 def players_home(request, template="players/home.html"):
@@ -34,6 +35,8 @@ def player_page(request, id, template="players/detail.html"):
 
     #Loop over each season a calculate both averages and totals
     #Then store values in a dictionary by game types(5v5,4v4,etc)
+    stats_list = [header['stat'] for header in headers.totals_statistics if header['stat'] != 'gp' ]
+
     game_type_totals = OrderedDict()
     game_type_averages = OrderedDict()
     for season in seasons:
@@ -44,11 +47,9 @@ def player_page(request, id, template="players/detail.html"):
             if player_statlines.filter(game__game_type=game_type[0]):
                 player_totals, player_averages = {}, {}
                 games_played = player.statline_set.filter(game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date)).count()
-
-                for stat in all_statistics:
-                    if stat not in ['misc', 'sub_out', 'sub_in']:
-                        player_totals[stat] = player.get_totals(stat, game_type=game_type[0], season=season)
-                        player_averages[stat] = player.get_averages(stat, game_type=game_type[0], season=season)
+                
+                player_totals.update(player.get_totals(stats_list, game_type=game_type[0], season=season))
+                player_averages.update(player.get_averages(stats_list, game_type=game_type[0], season=season))
                 
                 player_totals['season'] = season.title
                 player_totals['gp'] = games_played
@@ -67,12 +68,10 @@ def player_page(request, id, template="players/detail.html"):
     totals = {}
     averages = {}
     for game_type in bmodels.GAME_TYPES:
-        overall_totals, overall_averages = {}, {}
         if player.get_possessions_count(game_type=game_type[0]):
-            for stat in all_statistics:
-                if stat not in ['misc', 'sub_in', 'sub_out']:
-                    overall_totals[stat] = player.get_totals(stat, game_type=game_type[0])
-                    overall_averages[stat] = player.get_averages(stat, game_type=game_type[0])
+            
+            overall_totals = player.get_totals(stats_list, game_type=game_type[0])
+            overall_averages = player.get_averages(stats_list, game_type=game_type[0])
             overall_totals['gp'] = player.statline_set.filter(game__game_type=game_type[0]).count()
             overall_averages['gp'] = player.statline_set.filter(game__game_type=game_type[0]).count()
 

@@ -31,14 +31,13 @@ class PlayerUnitTests(BaseTestCase):
                 'dreb_percent', 'oreb_percent', 'treb_percent', 'ts_percent',
                 'off_rating', 'def_rating', 'tp_percent']
 
-        for stat in per_100_statistics:
-            self.assertTrue(isinstance(self.player.get_per_100_possessions_data(stat, game_type='5v5', season_id=self.season.id), float))
+        self.assertTrue(isinstance(self.player.get_per_100_possessions_data(per_100_statistics, game_type='5v5', season_id=self.season.id), dict))
 
     def test_get_averages(self):
-        self.assertTrue(isinstance(self.player.get_averages('points'), float))
+        self.assertTrue(isinstance(self.player.get_averages(['points']), dict))
     
     def test_get_totals(self):
-        self.assertTrue(isinstance(self.player.get_totals('points'), int))
+        self.assertTrue(isinstance(self.player.get_totals(['points']), dict))
 
 
 
