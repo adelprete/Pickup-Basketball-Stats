@@ -149,8 +149,7 @@ class Player(models.Model):
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
         
         for stat in stats_list:
-            
-            data_dict[stat] = 0.0
+            percentage = 0.0
             """Statistics from the list are calculated the same way."""
             #(stat total / offensive possessions totals) x 100
             if stat in simple_statistics:
@@ -158,7 +157,7 @@ class Player(models.Model):
                 result = statlines.aggregate(Sum(stat), Sum('off_pos'))
                 
                 if result['off_pos__sum'] and result['off_pos__sum'] is not 0:
-                    data_dict[stat] = (result[stat + '__sum'] / result['off_pos__sum']) * 100
+                    percentage = (result[stat + '__sum'] / result['off_pos__sum']) * 100
 
 
             #The following statistics have unique calculations
@@ -167,80 +166,80 @@ class Player(models.Model):
             elif stat == "fgm_percent":
                 result = statlines.aggregate(Sum('fgm'), Sum('fga'))
                 if result['fga__sum'] and result['fga__sum'] is not 0:
-                    data_dict[stat] = result['fgm__sum'] / result['fga__sum'] * 100
+                    percentage = result['fgm__sum'] / result['fga__sum'] * 100
             
             #Assisted Field Goals Made % = (Assisted Field Goal Attempts / Field Goal Attempts) x 100
             elif stat == "ast_fga_percent":
                 result = statlines.aggregate(Sum('ast_fga'), Sum('fga'))
                 if result['fga__sum'] and result['fga__sum'] is not 0:
-                    data_dict[stat] = result['ast_fga__sum'] / result['fga__sum'] * 100
+                    percentage = result['ast_fga__sum'] / result['fga__sum'] * 100
 
             #Assisted Field Goals Made Shooting % = (Assisted Field Goal Made / Field goal attempts) x 100
             elif stat == "ast_fgm_percent":
                 result = statlines.aggregate(Sum('ast_fgm'), Sum('ast_fga'))
                 if result['ast_fga__sum'] and result['ast_fga__sum'] is not 0:
-                    data_dict[stat] = result['ast_fgm__sum'] / result['ast_fga__sum'] * 100
+                    percentage = result['ast_fgm__sum'] / result['ast_fga__sum'] * 100
 
             #Unassisted Field Goals Made % = (Unassisted Field Goal Attempts / Field Goal Attempts) x 100
             elif stat == "unast_fga_percent":
                 result = statlines.aggregate(Sum('unast_fga'), Sum('fga'), Sum('pga'))
                 if result['fga__sum'] and result['fga__sum'] is not 0:
-                    data_dict[stat] = (result['unast_fga__sum'] - result['pga__sum']) / result['fga__sum'] * 100
+                    percentage = (result['unast_fga__sum'] - result['pga__sum']) / result['fga__sum'] * 100
 
             #Unassisted Field Goals Made Shooting % = (Unassisted Field Goal Made / Field Goal Attempts) x 100
             elif stat == "unast_fgm_percent":
                 result = statlines.aggregate(Sum('unast_fgm'), Sum('unast_fga'), Sum('pgm'), Sum('pga'))
                 if result.get('unast_fga__sum') is not 0 and (result['unast_fga__sum'] != result['pga__sum']):
-                    data_dict[stat] = (result['unast_fgm__sum'] - result['pgm__sum']) / (result['unast_fga__sum'] - result['pga__sum']) * 100
+                    percentage = (result['unast_fgm__sum'] - result['pgm__sum']) / (result['unast_fga__sum'] - result['pga__sum']) * 100
 
             #Putback Attempt % = (Putback Attempts / Field Goals Attempts) x 100
             elif stat == 'pga_percent':
                 result = statlines.aggregate(Sum('pga'), Sum('fga'))
                 if result['fga__sum']:
-                    data_dict[stat] = result['pga__sum'] / result['fga__sum'] * 100
+                    percentage = result['pga__sum'] / result['fga__sum'] * 100
             
             #Putback Shooting % = (Putback Makes / Putbacks Attempted) x 100
             elif stat == 'pgm_percent':
                 result = statlines.aggregate(Sum('pgm'), Sum('pga'))
                 if result['pga__sum']:
-                    data_dict[stat] = result['pgm__sum'] / result['pga__sum'] * 100
+                    percentage = result['pgm__sum'] / result['pga__sum'] * 100
 
             #3 Pointers Made % = (3 pointers made / 3 pointers attempts) x 100
             elif stat == 'threepm_percent':
                 result = statlines.aggregate(Sum('threepm'), Sum('threepa'), Sum('off_pos'))
                 if result['threepa__sum'] and result['threepa__sum'] is not 0:
-                    data_dict[stat] = result['threepm__sum'] / result['threepa__sum'] * 100
+                    percentage = result['threepm__sum'] / result['threepa__sum'] * 100
 
             #Defensive Rebound % = (Defensive Rebounds / Defensive Opportunities) x 100
             elif stat == 'dreb_percent':
                 result = statlines.aggregate(Sum('dreb'), Sum('dreb_opp'))
                 if result['dreb_opp__sum'] and result['dreb_opp__sum'] is not 0:
-                    data_dict[stat] = result['dreb__sum'] / result['dreb_opp__sum'] * 100
+                    percentage = result['dreb__sum'] / result['dreb_opp__sum'] * 100
 
             #Offensive Rebound % = (Offensive Rebounds / Offensive Opportunities) x 100
             elif stat == 'oreb_percent':
                 result = statlines.aggregate(Sum('oreb'), Sum('oreb_opp'))
                 if result['oreb_opp__sum'] and result['oreb_opp__sum'] is not 0:
-                    data_dict[stat] = result['oreb__sum'] / result['oreb_opp__sum'] * 100
+                    percentage = result['oreb__sum'] / result['oreb_opp__sum'] * 100
 
             #Total Rebound % = (Total Rebounds / (Offensive Opportunities + Defensive Opportunities)) x 100
             elif stat == 'treb_percent':
                 result = statlines.aggregate(Sum('total_rebounds'), Sum('dreb_opp'), Sum('oreb_opp'))
                 if result['dreb_opp__sum']:
-                    data_dict[stat] = result['total_rebounds__sum'] / \
+                    percentage = result['total_rebounds__sum'] / \
                                 (result['oreb_opp__sum'] + result['dreb_opp__sum']) * 100
 
             #True Shooting % = (Points / Field Goals Attempted) x 100
             elif stat == 'ts_percent':
                 result = statlines.aggregate(Sum('points'), Sum('fga'))
                 if result['fga__sum']:
-                    data_dict[stat] = result['points__sum'] / result['fga__sum'] * 100
+                    percentage = result['points__sum'] / result['fga__sum'] * 100
 
             #True Passing % = (Assisted Points / Assisted Shots) x 100
             elif stat == 'tp_percent':
                 result = statlines.aggregate(Sum('ast_points'), Sum('asts'), Sum('pot_ast'))
                 if result['ast_points__sum']:
-                    data_dict[stat] = result['ast_points__sum'] / (result['asts__sum'] + result['pot_ast__sum']) * 100
+                    percentage = result['ast_points__sum'] / (result['asts__sum'] + result['pot_ast__sum']) * 100
 
             #Offensive Rating = (Total Team Points / Offensive Possessions) x 100
             #Defensive Rating = (Total Team Points / Defensive Possessions) x 100
@@ -268,14 +267,14 @@ class Player(models.Model):
 
                 total_team_points = team1_result['team1_score__sum'] + team2_result['team2_score__sum']
                 if stat == 'off_rating' and result['off_pos__sum']:
-                    data_dict[stat] = total_team_points / result['off_pos__sum'] * 100
+                    percentage = total_team_points / result['off_pos__sum'] * 100
                 elif stat == 'def_rating' and result['def_pos__sum']:
-                    data_dict[stat] = total_team_points / result['def_pos__sum'] * 100
+                    percentage = total_team_points / result['def_pos__sum'] * 100
 
             else:
                 print(stat)
                 raise ValueError('First argument must be either dreb, oreb, asts, pot_ast, stls, to, blk, points, total_rebounds, fgm_percent, threepm_percent, dreb_percent, oreb_percent, treb_percent, ts_percent, tp_percent, pga_percent, pgm_percent, off_rating, def_rating')
-                
+            data_dict[stat] = round(percentage, 1) 
         return data_dict
 
     def get_averages(self, stats_list, game_type=None, season=None):

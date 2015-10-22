@@ -71,6 +71,7 @@ def player_five_on_five_pos(context, player_pk=None):
     player = bmodels.Player.objects.get(pk=player_pk)
     stats_list = ['points', 'total_rebounds', 'stls', 'asts', 'to', 'fgm_percent']
     data_dict = player.get_per_100_possessions_data(stats_list, '5v5')
+    
     context = {
         'points': data_dict['points'],
         'rebounds': data_dict['total_rebounds'],
