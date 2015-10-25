@@ -124,6 +124,7 @@
 		});
 		var pbp_form = $('#pbp_form');
 		pbp_form.submit(function () {
+				$("#play_message").html("<br><font style='color:blue;'>Adding play. Please wait...</font><br><br>");
 			$.ajax({
 				type: "post",
 				url: "{% url 'ajax_add_play' pk=game.pk %}",
@@ -133,7 +134,7 @@
 					$("#play_message").html(data);
 				},
 				error: function(data) {
-					$("#play_message").html("Something went wrong!");
+				$("#play_message").html("<br><font style='color:red';>Something went wrong!</font><br><br>");
 				}
 			});
 			return false;
