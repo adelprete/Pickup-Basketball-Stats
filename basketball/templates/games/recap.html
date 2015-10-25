@@ -26,38 +26,54 @@
 		</div>
 		<div class="row">
 			<div class="col-md-9">
-				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
-					<div id=player></div>
-				</div>
-				<div class="col-sm-6" style="margin-top:10px;margin-left:0px;">
-					<h3 class="accent">Top Plays</h3>
-					{% if top_plays %}
-						{% for play in top_plays %}
-							<div>
-								{{ forloop.counter }} 
-								{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time.seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
-									{% bootstrap_icon "play" %}</a> - 
-								{{ play.game.title }}: {{ play.description }}
-							</div>
-						{% endfor %}
-					{% else %}
-						No Top Plays
-					{% endif %}
-				</div>
-				<div class="col-sm-6" style="margin-top:10px;">
-					<h3 class="accent">Not Top Plays</h3>
-					{% if not_top_plays %}
-						{% for play in not_top_plays %}
-							<div>
-								{{ forloop.counter }} 
-								{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time.seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
-									{% bootstrap_icon "play" %}</a> - 
-								{{ play.game.title }}: {{ play.description }}
-							</div>
-						{% endfor %}
-					{% else %}
-						No Not Top Plays
-					{% endif %}
+				<ul class="nav nav-tabs" role="tablist" style="margin:5px 0px;">
+					<li role="presentation" {% if not default_tab %}class="active"{% endif %}>
+						<a href="#highlights" aria-controls="home" role="tab" data-toggle="tab" style="font-weight:bold;">Highlights</a>
+					</li>
+					<li role="presentation" {% if default_tab == "totals" %}class='active'{% endif %}>
+						<a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a>
+					</li>
+				</ul>
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="highlights" style="padding-top:15px;">
+
+						<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
+							<div id=player></div>
+						</div>
+						<div class="col-sm-6" style="margin-top:10px;margin-left:0px;">
+							<h3 class="accent">Top Plays</h3>
+							{% if top_plays %}
+								{% for play in top_plays %}
+									<div>
+										{{ forloop.counter }} 
+										{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time.seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
+											{% bootstrap_icon "play" %}</a> - 
+										{{ play.game.title }}: {{ play.description }}
+									</div>
+								{% endfor %}
+							{% else %}
+								No Top Plays
+							{% endif %}
+						</div>
+						<div class="col-sm-6" style="margin-top:10px;">
+							<h3 class="accent">Not Top Plays</h3>
+							{% if not_top_plays %}
+								{% for play in not_top_plays %}
+									<div>
+										{{ forloop.counter }} 
+										{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time.seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
+											{% bootstrap_icon "play" %}</a> - 
+										{{ play.game.title }}: {{ play.description }}
+									</div>
+								{% endfor %}
+							{% else %}
+								No Not Top Plays
+							{% endif %}
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane{% if default_tab == "totals" %}active{% endif %}" id="totals" style="padding-top:15px;">
+						{% recap_totals games %}
+					</div>
 				</div>
 			</div>
 			</div>

@@ -210,8 +210,9 @@ def lb_possessions(context, season=None):
     return context
 
 def calculate_lb_totals_dictionaries(context, statistics, season_id=None, sort_column="",):
-
+	
         players = bmodels.Player.objects.all().exclude(first_name__contains="Team").order_by('first_name')
+
         season = None
         if season_id:
             season = bmodels.Season.objects.get(id=season_id)
@@ -274,6 +275,22 @@ def lb_adv_totals(context, game_type="5v5", season=None):
         }
     return context
    
+@register.inclusion_tag('games/recap_totals.html', takes_context=True)
+def recap_totals(context, games):
+    sort_column = context['request'].GET.get('tot_sort')
+
+    date = games[0].date
+    player_ids = set(list(games.values_list('team1', flat=True)) + list(games.values_list('team2', flat=True)))
+    totals_tables, totals_footer = helpers.recap_totals_dictionaries(headers.totals_statistics, player_ids, date=date, sort_column=sort_column)
+    
+    context = {
+        'tables': totals_tables,
+        'totals_footer': totals_footer,
+        'headers': headers.totals_statistics,
+        'tot_sort_col': sort_column,
+        'active_pill': context['request'].GET.get('tot_active_pill') or '5on5'
+        }
+    return context
 
 @register.inclusion_tag('leaderboard/totals.html', takes_context=True)
 def lb_totals(context, game_type="5v5", season=None):

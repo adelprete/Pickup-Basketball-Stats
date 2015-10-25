@@ -46,11 +46,15 @@ def recap(request, game_id, template='games/recap.html'):
 
     top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
     not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
+    
+	#if we are sorting a table we want to bring the relevant tab up after page reload.
+    default_tab = request.GET.get('default_tab')
 
     context = {
         'games': game_set,
         'top_plays': top_plays,
         'not_top_plays': not_top_plays,
+		'default_tab': default_tab
     }
 
     return render(request, template, context)

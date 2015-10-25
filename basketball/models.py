@@ -108,7 +108,7 @@ class Player(models.Model):
         
         return losses
 		
-    def get_possessions_count(self, game_type=None, season_id=None):
+    def get_possessions_count(self, game_type=None, season_id=None, date=None):
         
         season=None
         if season_id:
@@ -119,6 +119,8 @@ class Player(models.Model):
             statlines = statlines.filter(game__game_type=game_type)
         if season:
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
+        elif date:
+            statlines = statlines.filter(game__date=date)
 
         pos_count = statlines.aggregate(Sum('off_pos'))
 		
@@ -281,16 +283,18 @@ class Player(models.Model):
         """Returns a dictionary of the player's averages"""
         return self.get_player_data(stats_list, report_type='Avg', game_type=game_type, season=season)
 
-    def get_totals(self, stats_list, game_type=None, season=None):
+    def get_totals(self, stats_list, game_type=None, season=None, date=None):
         """Returns a dictionary of the player's totals"""
-        return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season)
+        return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season, date=date)
 
-    def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None):
+    def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None):
             
         qs = self.statline_set.all()
         if game_type:
             qs = qs.filter(game__game_type=game_type)
-            if season:
+            if date:
+                qs = qs.filter(game__date=date)
+            elif season:
                 qs = qs.filter(game__date__range=(
                     season.start_date, season.end_date))
 

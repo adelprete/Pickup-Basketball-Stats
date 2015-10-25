@@ -59,11 +59,11 @@
 			  {% if not request.user.is_anonymous %}
 					<li id="admin_link"><a href="{% url 'admin:index' %}">Admin</a></li>
 			  {% endif %}
-			</ul>
+		</ul>
     </div>
+</div>
 </nav>
 
-	</div>
 	{% endblock %}
 	<div class="container" style="margin-bottom:100px;margin-top:80px;">
 		{% if messages %}
@@ -73,85 +73,102 @@
 			{% endfor %}
 		</ul>
 		{% endif %}
-	{% block body %}
-		<div class="page-header">
-			<h3 class="accent"><div style="display:inline;">Last Week:</div> <div style="display:inline;">{{games.0.date }}</div></h3>
-		</div>
-		<div class="row">
-			{% for game in games %}
-				<div class="col-xs-6 col-sm-4 col-md-2 panel panel-default" style="padding:0px;">
-					<table class="game-nibblet">
-						<tr>
-							<td class="game-title" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
-						</tr>
-						<tr>
-							<td class="team-name">Good Guys:</td>
-							<td class="team-score">{{ game.team1_score }}</td>
-						</tr>
-						<tr>
-							<td class="team-name">Bad Guys:</td>
-							<td class="team-score">{{ game.team2_score }}</td>			
-						</tr>
-					</table>
-				</div>	
-			{% endfor %}
-		</div>
-		<div class="row">
-			<div class="col-md-9">
-				<div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden;"></div>
-				<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
-					<div id=player></div>
-				</div>
-				<div class="col-sm-6" style="margin-top:10px;margin-left:0px;">
-					<h3 class="accent">Top Plays</h3>
-					{% for play in top_plays %}
-						<div>
-							{{ forloop.counter }} 
-							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time.seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
-								{% bootstrap_icon "play" %}</a> - 
-							{{ play.game.title }}: {{ play.description }}
-						</div>
-					{% endfor %}
-				</div>
-				<div class="col-sm-6" style="margin-top:10px;">
-					<h3 class="accent">Not Top Plays</h3>
-					{% for play in not_top_plays %}
-						<div>
-							{{ forloop.counter }} 
-							{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time.seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
-								{% bootstrap_icon "play" %}</a> - 
-							{{ play.game.title }}: {{ play.description }}
-						</div>
-					{% endfor %}
-				</div>
+		{% block body %}
+			<div class="page-header">
+				<h3 class="accent"><div style="display:inline;">Last Week:</div> <div style="display:inline;">{{games.0.date }}</div></h3>
 			</div>
-			<div class="col-sm-12 col-md-3">
-				<div class="col-sm-12">
-				<h3 class="accent">Standings</h3>
-				<form>
-					<div class="form-group">
-						<label name>Seasons</label>
-						<select class="form-control season">
-							{% for season in seasons %}
-							<option 
-								value="{{ season.id }}" 
-								{% if season = default_season %}selected="selected"{% endif %}
-								>
-								{{ season.title }}
-							</option>
-							{% endfor %}
-							<option value="All">All</option>	
-						</select>
+			<div class="row">
+				{% for game in games %}
+					<div class="col-xs-6 col-sm-4 col-md-2 panel panel-default" style="padding:0px;">
+						<table class="game-nibblet">
+							<tr>
+								<td class="game-title" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+							</tr>
+							<tr>
+								<td class="team-name">Good Guys:</td>
+								<td class="team-score">{{ game.team1_score }}</td>
+							</tr>
+							<tr>
+								<td class="team-name">Bad Guys:</td>
+								<td class="team-score">{{ game.team2_score }}</td>			
+							</tr>
+						</table>
+					</div>	
+				{% endfor %}
+			</div>
+			<div class="row">
+				<div class="col-md-9">
+					<ul class="nav nav-tabs" role="tablist" style="margin:5px 0px;">
+						<li role="presentation" {% if not default_tab %}class="active"{% endif %}>
+							<a href="#highlights" aria-controls="home" role="tab" data-toggle="tab" style="font-weight:bold;">Highlights</a>
+						</li>
+						<li role="presentation" {% if default_tab == "totals" %}class='active'{% endif %}>
+							<a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a>
+						</li>
+					</ul>
+				
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="highlights" style="padding-top:15px;">
+							<div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden;"></div>
+							<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
+								<div id=player></div>
+							</div>
+							<div class="col-sm-6" style="margin-top:10px;margin-left:0px;">
+								<h3 class="accent">Top Plays</h3>
+								{% for play in top_plays %}
+									<div>
+										{{ forloop.counter }} 
+										{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time.seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
+											{% bootstrap_icon "play" %}</a> - 
+										{{ play.game.title }}: {{ play.description }}
+									</div>
+								{% endfor %}
+							</div>
+							<div class="col-sm-6" style="margin-top:10px;">
+								<h3 class="accent">Not Top Plays</h3>
+								{% for play in not_top_plays %}
+									<div>
+										{{ forloop.counter }} 
+										{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time.seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
+										{% bootstrap_icon "play" %}</a> - 
+										{{ play.game.title }}: {{ play.description }}
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane{% if default_tab == "totals" %}active{% endif %}" id="totals" style="padding-top:15px;">
+							{% recap_totals games %}
+						</div>
 					</div>
-				</form>	
-				<div id="player_standings">
-					{% include 'players/standings.html' %}
-				</div>	
-			</div>
+				</div>
+				<div class="col-sm-12 col-md-3">
+					<div class="col-sm-12">
+					<h3 class="accent">Standings</h3>
+					<form>
+						<div class="form-group">
+							<label name>Seasons</label>
+							<select class="form-control season">
+								{% for season in seasons %}
+								<option 
+									value="{{ season.id }}" 
+									{% if season = default_season %}selected="selected"{% endif %}
+									>
+									{{ season.title }}
+								</option>
+								{% endfor %}
+								<option value="All">All</option>	
+							</select>
+						</div>
+					</form>	
+					<div id="player_standings">
+						{% include 'players/standings.html' %}
+					</div>	
+				</div>
 			</div>
 		</div>
-		<script>
-	    var tag = document.createElement('script');
+	</div>
+	<script>
+		var tag = document.createElement('script');
 		tag.src = "https://www.youtube.com/iframe_api";
 		var firstScriptTag = document.getElementsByTagName('script')[0];
 		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -188,7 +205,7 @@
 			}
 		}
 		function stopVideo() {
-	        player.stopVideo();
+			player.stopVideo();
 		}
 		function jumpToAnchor() {
 			window.location = String(window.location).replace(/\#.*$/, "") + "#playeranchor";

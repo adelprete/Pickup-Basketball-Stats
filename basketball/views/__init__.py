@@ -28,10 +28,10 @@ def root(request, template="base.html"):
     latest_game = bmodels.Game.objects.all().latest('date')
     game_set = bmodels.Game.objects.filter(date=latest_game.date).order_by('title')
 
+    # top plays and not top plays
     top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
     not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
 
-    
     players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
 
     try:
@@ -45,6 +45,9 @@ def root(request, template="base.html"):
             player_tuples.append((player.first_name, player.total_wins(season=season), player.total_losses(season=season)))
 
     player_standings = sorted(player_tuples, key=lambda player: player[1], reverse=True)
+    
+    #if we are sorting a table we want to bring the relevant tab up after page reload.
+    default_tab = request.GET.get('default_tab')
 
     context = {
         'games': game_set,
@@ -52,6 +55,7 @@ def root(request, template="base.html"):
         'not_top_plays': not_top_plays,
         'standings': player_standings,
         'default_season': season,
+        'default_tab': default_tab,
         'seasons': bmodels.Season.objects.all()
     }
     return render(request, template, context)

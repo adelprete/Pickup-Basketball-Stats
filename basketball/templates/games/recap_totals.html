@@ -1,0 +1,12 @@
+{% extends 'leaderboard/tab_base.html' %}
+{% load basketball_tags %}
+{% block tab %} 
+	<li role="presentation" {% if active_pill == key %}class="active"{% endif %}>
+		<a href="#tot-{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
+	</li>
+{% endblock %}
+{% block tab_content %}
+	<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="tot-{{key}}">
+		{% include 'games/recap_totals_table.html' with rows_list=value totals=totals_footer|access:key type=key %}
+	</div>
+{% endblock %}

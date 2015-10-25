@@ -1,7 +1,7 @@
 import datetime
 from django.db.models import Q, Sum
 from basketball import models as bmodels
-
+from collections import OrderedDict
 
 def create_plays(pk, f):
     """Reads from a .csv file with a list of plays on it and creates PlayByPlay objects from the data read.
@@ -97,3 +97,41 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
         player_list.append((player.first_name, percentage))
     
     return sorted(player_list, key=lambda x: x[1], reverse=True)
+
+def recap_totals_dictionaries(statistics, player_ids, date=None, sort_column=""):
+	
+	players = bmodels.Player.objects.filter(id__in=player_ids).exclude(first_name__contains="Team").order_by('first_name')
+
+	totals_tables = OrderedDict()
+	totals_footer = {}
+	# For each game type we create a list of each player's total stats
+	for game_type in bmodels.GAME_TYPES:
+		totals_tables[game_type[1]] = []
+		totals = {}
+		for player in players:
+		   
+			if player.get_possessions_count(game_type=game_type[0], date=date) > 0:
+				player_data = {'player_obj': player}
+				
+				stats_list = [header['stat'] for header in statistics if header['stat'] != 'gp']
+				player_data.update(player.get_totals(stats_list, game_type=game_type[0], date=date))
+				
+				# Lastly, count how many games the player played
+				statlines = player.statline_set.filter(game__game_type=game_type[0], game__date=date)
+				player_data['gp'] = statlines.count()
+
+				totals_tables[game_type[1]].append(player_data)
+				for key, value in player_data.items():
+					if key is not 'player_obj':
+						if key in totals:
+							totals[key] += value
+						else:
+							totals[key] = value
+
+		totals_footer[game_type[1]] = totals
+
+		if sort_column:
+			totals_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
+
+	return totals_tables, totals_footer
+

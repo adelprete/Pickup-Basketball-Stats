@@ -1,0 +1,23 @@
+{% extends 'leaderboard/table_base.html' %}
+{% load bootstrap3 %}
+{% load basketball_tags %}
+{% block headers %}
+	<td data-toggle="tooltip" title="{{ header.title }}">
+		<a href="?tot_sort={{ header.stat }}&tot_active_pill={{key}}&default_tab=totals">{{ header.header }}</a>
+		{% if tot_sort_col == header.stat %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+	</td>
+{% endblock %}
+{% block rows %}
+	<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
+	{% for header in headers %}
+		<td>{{ value|access:header.stat }}</td>
+	{% endfor %}
+{% endblock %}
+{% block footer %}
+	<tr style="background:#d9edf7">	
+		<td>Total</td>
+		{% for header in headers %}
+			<td>{{ totals|access:header.stat}}</td>
+		{% endfor %}
+	</tr>
+{% endblock %}
