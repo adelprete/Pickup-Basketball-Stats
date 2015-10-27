@@ -24,8 +24,10 @@ class GameForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)
         self.fields['team1'].widget.attrs = {"size": 15}
+        self.fields['team1'].queryset = bmodels.Player.player_objs.all()
         self.fields['team2'].widget.attrs = {"size": 15}
-    
+        self.fields['team2'].queryset = bmodels.Player.player_objs.all()
+   
     def clean_team1(self):
         team1_qs = self.cleaned_data.get('team1', None)
         if team1_qs:
