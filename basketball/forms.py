@@ -25,6 +25,18 @@ class GameForm(forms.ModelForm):
         super(GameForm, self).__init__(*args, **kwargs)
         self.fields['team1'].widget.attrs = {"size": 15}
         self.fields['team2'].widget.attrs = {"size": 15}
+    
+    def clean_team1(self):
+        team1_qs = self.cleaned_data.get('team1', None)
+        if team1_qs:
+            team1_qs = team1_qs | bmodels.Player.objects.filter(first_name='Team1')
+        return team1_qs
+    
+    def clean_team2(self):
+        team2_qs = self.cleaned_data.get('team2', None)
+        if team2_qs:
+            team2_qs = team2_qs | bmodels.Player.objects.filter(first_name='Team2')
+        return team2_qs
 
     class Meta:
         model = bmodels.Game

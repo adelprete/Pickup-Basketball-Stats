@@ -33,7 +33,7 @@ def root(request, template="base.html"):
     top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
     not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
 
-    players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
+    players = bmodels.Player.player_objs.all()
 
     try:
         season = bmodels.Season.objects.get(start_date__lt=datetime.datetime.today(), end_date__gt=datetime.datetime.today())
@@ -62,7 +62,7 @@ def root(request, template="base.html"):
     return render(request, template, context)
 
 
-@cache_page(60 * 5)
+@cache_page(60 * 20)
 def leaderboard_home(request, template="leaderboard/home.html"):
 	"""
 	Generates the leaderboard page.
@@ -125,7 +125,7 @@ def ajax_standings(request):
     if request.GET['season_id'] != 'All':
         season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
     
-    players = bmodels.Player.objects.all().exclude(first_name__contains="Team")
+    players = bmodels.Player.player_objs.all()
 
     player_tuples = []
     for player in players:

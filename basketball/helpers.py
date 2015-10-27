@@ -80,7 +80,7 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
     if player_pk:
         players = bmodels.Player.objects.filter(pk=player_pk)
     else:
-        players = bmodels.Player.objects.all().exclude(Q(first_name__contains="Team") | Q(pk__in=excluded_pks))
+        players = bmodels.Player.objects.all().exclude(pk__in=excluded_pks)
     
     player_list = []
     for player in players:
@@ -100,7 +100,7 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
 
 def recap_totals_dictionaries(statistics, player_ids, date=None, sort_column=""):
 	
-	players = bmodels.Player.objects.filter(id__in=player_ids).exclude(first_name__contains="Team").order_by('first_name')
+	players = bmodels.Player.objects.filter(id__in=player_ids).order_by('first_name')
 
 	totals_tables = OrderedDict()
 	totals_footer = {}

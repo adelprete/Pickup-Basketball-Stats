@@ -54,7 +54,7 @@ def recap(request, game_id, template='games/recap.html'):
         'games': game_set,
         'top_plays': top_plays,
         'not_top_plays': not_top_plays,
-		'default_tab': default_tab
+	'default_tab': default_tab
     }
 
     return render(request, template, context)
@@ -177,31 +177,22 @@ class PlayByPlayFormView(FormView):
         if 'delete' in request.POST:
             bmodels.PlayByPlay.objects.get(id=self.kwargs['play_id']).delete()
             messages.success(request, 'Play deleted')
-            game = self.get_game(self.kwargs['game_id'])
+            game = bmodels.Game.objects.get(id=self.kwargs['game_id'])
             game.calculate_statlines()
             return redirect(game.get_absolute_url())
         return super(PlayByPlayFormView, self).post(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(PlayByPlayFormView, self).get_form_kwargs()
-        play = self.get_play(self.kwargs['play_id'])
-        game = self.get_game(self.kwargs['game_id'])
+        game = bmodels.Game.objects.get(id=self.kwargs['game_id'])
+        play = bmodels.PlayByPlay.objects.get(id=self.kwargs['play_id'])
         self.success_url = game.get_absolute_url()
         kwargs.update({'game': game, 'instance': play})
         return kwargs
 
     def form_valid(self, form):
         self.object = form.save()
-        game = self.get_game(self.kwargs['game_id'])
+        game = bmodels.Game.objects.get(id=self.kwargs['game_id'])       
         game.calculate_statlines()
         messages.success(self.request, "Play saved")
         return super(PlayByPlayFormView, self).form_valid(form)
-
-    def get_game(self, id):
-        return bmodels.Game.objects.get(id=id)
-
-    def get_play(self, id):
-        return bmodels.PlayByPlay.objects.get(id=id)
-
-
-

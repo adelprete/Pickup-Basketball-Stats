@@ -11,8 +11,7 @@ from basketball import headers
 def players_home(request, template="players/home.html"):
     """Generates a list of all the players on the site"""
 
-    players = bmodels.Player.objects.exclude(
-        first_name__in=['Team1', 'Team2']).order_by('first_name')
+    players = bmodels.Player.player_objs.order_by('first_name')
 
     context = {
         'players': players,

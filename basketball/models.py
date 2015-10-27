@@ -67,6 +67,13 @@ NOT_TOP_PLAY_RANKS = [
 RANKS = TOP_PLAY_RANKS + NOT_TOP_PLAY_RANKS
 
 
+class RealPlayerManager(models.Manager):
+    def get_queryset(self):
+        return super(RealPlayerManager, self).get_queryset().all().exclude(first_name__in=['Team1', 'Team2'])
+
+class AllPlayerManager(models.Manager):
+    use_for_related_field = True    
+
 class Player(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30, blank=True)
@@ -75,6 +82,9 @@ class Player(models.Model):
     image_src = models.ImageField(upload_to='player_images/', blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     position = models.CharField(max_length=30, blank=True)
+
+    objects = AllPlayerManager()
+    player_objs = RealPlayerManager()
 
     def __str__(self):
         return self.get_full_name()
@@ -325,19 +335,11 @@ class Player(models.Model):
         ordering = ['first_name']
 
 
-def model_team1():
-    return [Player.objects.get(first_name='Team1').pk]
-
-
-def model_team2():
-    return [Player.objects.get(first_name='Team2').pk]
-
-
 class Game(models.Model):
     date = models.DateField(null=True)
     title = models.CharField(max_length=30)
-    team1 = models.ManyToManyField('basketball.Player', default=model_team1(), related_name='team1_set')
-    team2 = models.ManyToManyField('basketball.Player', default=model_team2(), related_name='team2_set')
+    team1 = models.ManyToManyField('basketball.Player', related_name='team1_set')
+    team2 = models.ManyToManyField('basketball.Player', related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0, help_text="Leave 0 if entering plays")
     team2_score = models.PositiveIntegerField(default=0, help_text="Leave 0 if entering plays")
     winning_players = models.ManyToManyField('basketball.Player', related_name='winning_players_set', blank=True)
