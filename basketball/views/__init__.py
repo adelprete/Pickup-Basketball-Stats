@@ -4,6 +4,7 @@ import operator
 from collections import OrderedDict
 from datetime import time, timedelta
 
+from django.views.decorators.cache import cache_page
 from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -61,7 +62,7 @@ def root(request, template="base.html"):
     return render(request, template, context)
 
 
-
+@cache_page(60 * 5)
 def leaderboard_home(request, template="leaderboard/home.html"):
 	"""
 	Generates the leaderboard page.
