@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
@@ -17,7 +18,6 @@ def players_home(request, template="players/home.html"):
         'players': players,
     }
     return render(request, template, context)
-
 
 def player_page(request, id, template="players/detail.html"):
     """This generates an individual player's page"""
@@ -89,6 +89,7 @@ def player_page(request, id, template="players/detail.html"):
     return render(request, template, context)
 
 
+@login_required
 def player_basics(request, id=None, form_class=bforms.PlayerForm, template='players/form.html'):
     """The View handles editing and deleting play profiles"""
     model = None

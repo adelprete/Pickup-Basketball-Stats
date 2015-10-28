@@ -1,10 +1,11 @@
 from django.conf.urls import include, url
 from basketball.views import game as gviews
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
 	url(r'^$',                 gviews.games_home,       name='games_home'),
 	url(r'^(?P<id>\d+)/box-score/$',        gviews.box_score,            name='box_score'),
-	url(r'^(?P<game_id>\d+)/play/(?P<play_id>[0-9]+)/$',  gviews.PlayByPlayFormView.as_view(), name='playbyplay_detail'),
+	url(r'^(?P<game_id>\d+)/play/(?P<play_id>[0-9]+)/$',  login_required(gviews.PlayByPlayFormView.as_view()), name='playbyplay_detail'),
 	url(r'^new-game/$',        gviews.game_basics,            name='create_game'),
 	url(r'^(?P<game_id>\d+)/edit-game/$',        gviews.game_basics, name='edit_game'),
 	url(r'^recap/(?P<game_id>\d+)/$',  gviews.recap, name='recap'),

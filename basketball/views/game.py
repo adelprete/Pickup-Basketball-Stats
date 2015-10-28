@@ -1,6 +1,8 @@
 import itertools
 import operator
 from collections import OrderedDict
+
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
@@ -59,7 +61,7 @@ def recap(request, game_id, template='games/recap.html'):
 
     return render(request, template, context)
 
-
+@login_required
 def game_basics(request, game_id=None, form_class=bforms.GameForm, template='games/form.html'):
     """Our game form where we can create or edit a games details"""
     model = None
@@ -164,7 +166,6 @@ def delete_play(request, pk):
     messages.success(request, "Play deleted")
 
     return redirect(play.game.get_absolute_url())
-
 
 class PlayByPlayFormView(FormView):
     """Our PlaybyPlayform for editing or deleting plays"""
