@@ -19,9 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$dfklzee&=n(+4gj!4x&wfsx@b_f2ui^uofj9(g_obrv(9zn!m'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -30,13 +27,15 @@ ADMINS = (('Anthony','adelprete87@gmail.com'))
 # Application definition
 
 INSTALLED_APPS = (
+    'base',
+    'basketball',
+    'registration',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'basketball',
     'bootstrap3',
     'easy_thumbnails',
 )
@@ -64,7 +63,10 @@ ROOT_URLCONF = 'saturdayball.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/basketball/templates/'],
+        'DIRS': [
+            '/base/templates/',
+            '/basketball/templates/'
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -102,6 +104,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Django Registration Settings
+ACCOUNT_ACTIVATION_DAYS = 7
+REGISTRATION_OPEN = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

@@ -13,4 +13,5 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
+        self.client.login(username='master', password='turnover')
 

@@ -1,0 +1,15 @@
+{% extends 'registration/registration_base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+	<div class="page-header">
+		<h3 class="accent">Registration Form</h3>
+	</div>
+	<div class="row">
+		<div class="col-sm-8 col-md-6">
+			<form method="post" action="">{% csrf_token %}
+				{% bootstrap_form form %}
+				<input class="btn btn-primary" type="submit" value="Register">
+			</form>
+		</div>
+	</div>
+{% endblock %}

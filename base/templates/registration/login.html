@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load bootstrap3 %}
+<div class="page-header">
+	<h3 class="accent">Log In</h3>
+</div>
+<form method=post action="{% comment %}{% url 'django.contrib.auth.views.login' %}{% endcomment %}">{% csrf_token %}
+	<div class="row">
+		<div class="col-md-4">
+			{% bootstrap_form form %}
+		</div>
+	</div>
+	<input class="btn btn-primary" type="submit" value="Log in">
+</form>
+<p>Forgot your password? <a href="{% url 'auth_password_reset' %}">Reset it</a>.</p>
+<p>Not a member? <a href="{% url 'registration_register' %}">Register</a>.</p>
+{% endblock %}

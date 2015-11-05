@@ -1,5 +1,5 @@
 {% extends 'players/home.html' %}
-{% block body %}
+{% block content %}
 {% load bootstrap3 %}
 	<div class="page-header"><h3 class="accent">{% if form.instance.id %}Edit Player{% else %}Create Player{% endif %}</h3></div>
 	<form method=post>{% csrf_token %}
