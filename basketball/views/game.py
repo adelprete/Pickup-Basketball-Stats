@@ -100,9 +100,19 @@ def box_score(request, id, template="games/box_score.html"):
     -A PlayByPlay upload form is available for uploading a .csv file full of plays
     -With each new play by play sheet uploaded the stats are recalculated.
     """
-    if id:
-        game = get_object_or_404(bmodels.Game, id=id)
+    game = get_object_or_404(bmodels.Game, id=id)
 
+    # finding the previous and next game on the list for navigation purposes
+    game_set = bmodels.Game.objects.filter(date=game.date).order_by('title')
+    prev_game, next_game = None, None
+    for i, g in enumerate(game_set):
+        if g.id == game.id:
+            if i+1 != game_set.count():
+                next_game = game_set[i+1]
+            if i != 0:
+                prev_game = game_set[i-1]
+
+    # forms and filters
     pbp_form = bforms.PlayByPlayForm(game)
     pbp_filter = bforms.PlayByPlayFilter(request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
     
@@ -122,6 +132,8 @@ def box_score(request, id, template="games/box_score.html"):
         'form': pbp_form,
         'file_form': bforms.PlayByPlayFileForm(),
         'pbp_filter': pbp_filter,
+        'prev_game': prev_game,
+        'next_game': next_game,
     }
     return render(request, template, context)
 

@@ -16,7 +16,15 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-9" style="font-size:25px;">
-				<div class="col-md-12" style="text-align:center;"><a href="{% url 'recap' game.pk %}">{{ game.date }}</a> - {{ game.title }}</div>
+				<div class="col-md-12" style="text-align:center;">
+					{% if prev_game %}
+						<a href="{{ prev_game.get_absolute_url }}">{% bootstrap_icon "chevron-left" %}</a>
+					{% endif %}
+					<a href="{% url 'recap' game.pk %}">{{ game.date }}</a> - {{ game.title }}
+					{% if next_game %}
+						<a href="{{ next_game.get_absolute_url }}">{% bootstrap_icon "chevron-right" %}</a>
+					{% endif %}
+				</div>
 			</div>
 			<div class="col-md-7 col-md-offset-1 score-board">	
 				<div class="sb-top-team">Good Guys</div>
