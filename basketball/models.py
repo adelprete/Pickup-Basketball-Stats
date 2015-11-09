@@ -372,7 +372,7 @@ class Game(models.Model):
         self.save()
 
     def get_top_player(self):
-        statlines = StatLine.objects.filter(game=self, player__in=self.winning_players.all()).order_by('-points','-fgm','fga','player__first_name')
+        statlines = StatLine.objects.filter(game=self, player__in=self.winning_players.all()).order_by('-points','fga','to','player__first_name')
         return statlines[0].player if statlines else None
 
     def reset_statlines(self):
