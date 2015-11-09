@@ -12,6 +12,7 @@
 	{% load bootstrap3 %}
 	{% load basketball_tags %}
 	{% load staticfiles %}
+	{% load thumbnail %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -80,21 +81,7 @@
 			</div>
 			<div class="row">
 				{% for game in games %}
-					<div class="col-xs-6 col-sm-4 col-md-2 panel panel-default" style="padding:0px;">
-						<table class="game-nibblet">
-							<tr>
-								<td class="game-title" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
-							</tr>
-							<tr>
-								<td class="team-name">Good Guys:</td>
-								<td class="team-score">{{ game.team1_score }}</td>
-							</tr>
-							<tr>
-								<td class="team-name">Bad Guys:</td>
-								<td class="team-score">{{ game.team2_score }}</td>			
-							</tr>
-						</table>
-					</div>	
+					{% game_snippet game %}
 				{% endfor %}
 			</div>
 			<div class="row">

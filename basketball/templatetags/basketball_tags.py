@@ -40,6 +40,17 @@ def not_top_play_check(rank):
     else:
         return False
 
+@register.inclusion_tag('games/game_snippet.html')
+def game_snippet(game):
+
+    top_statline = bmodels.StatLine.objects.filter(game=game,player=game.top_player)
+
+    context = {
+        'game': game,
+        'statline': top_statline[0] if top_statline else None
+    }
+    return context
+
 @register.inclusion_tag('games/box_scores_table.html')
 def box_score(statlines, bgcolor="white"):
     """

@@ -345,6 +345,7 @@ class Game(models.Model):
     winning_players = models.ManyToManyField('basketball.Player', related_name='winning_players_set', blank=True)
     youtube_id = models.CharField("Youtube Video ID", max_length=2000, blank=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, null=True)
+    top_player = models.ForeignKey('basketball.Player', related_name='top_player_set', null=True, blank=True)
 
     def __str__(self):
         return "%s: %s" % (self.date.isoformat(), self.title)
@@ -367,7 +368,12 @@ class Game(models.Model):
         elif self.team1_score < self.team2_score:
             self.winning_players = self.team2.all()
 
+        self.top_player = self.get_top_player()
         self.save()
+
+    def get_top_player(self):
+        statlines = StatLine.objects.filter(game=self, player__in=self.winning_players.all()).order_by('-points','-fgm','fga','player__first_name')
+        return statlines[0].player if statlines else None
 
     def reset_statlines(self):
         """Resets the statlines for each player to zero accross all fields

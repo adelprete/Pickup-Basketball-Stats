@@ -1,0 +1,41 @@
+{% load thumbnail %}
+<div class="col-xs-12 col-sm-5 col-md-3 panel panel-default" style="padding-top:5px;">
+	<div style="float:right; width: 50%; display: inline-block; overflow:hidden;">
+		<table class="game-nibblet" style="margin: 0px auto;">
+			<tr>
+				<td class="game-title" colspan=2><a href="{{ game.get_absolute_url }}"><u>{{ game.title }}</u></a></td>
+			</tr>
+			<tr>
+				<td class="team-name">Good Guys:</td>
+				<td class="team-score">{{ game.team1_score }}</td>
+			</tr>
+			<tr>
+				<td class="team-name">Bad Guys:</td>
+				<td class="team-score">{{ game.team2_score }}</td>			
+			</tr>
+		</table>
+	</div>
+	<div style="width:50%; display: inline-block;">
+		<table>
+			<tr>
+				<td rowspan=3 style="padding-right: 15px;">
+					{% if game.top_player.image_src %}
+						<img src="{% thumbnail game.top_player.image_src 45x45 %}" class="img-responsive img-rounded" style="margin: 0px auto;">
+					{% else %}
+						<img src="{% thumbnail object.image|default:'signup_male.png' 40x40 %}" class="img-responsive img-rounded" style="margin:0px auto;">
+					{% endif %}
+					<center>{% if game.top_player %}{{ game.top_player.first_name|truncatechars:8 }}{% else %}unknown{% endif %}</center>
+				</td>	
+				<td>Pts - {% if statline %}{{ statline.points }}{% else %}0{% endif %}</td>
+		</tr>
+		<tr>
+			<td>Reb - {% if statline %}{{ statline.total_rebounds }}{% else %}0{% endif %}</td>
+		</tr>
+		<tr>
+			<td>Ast - {% if statline %}{{ statline.asts }}{% else %}0{% endif %}</td>
+		</tr>
+		</table>
+	</div>
+	
+</div>	
+
