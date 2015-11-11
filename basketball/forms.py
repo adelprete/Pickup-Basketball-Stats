@@ -42,7 +42,7 @@ class GameForm(forms.ModelForm):
 
     class Meta:
         model = bmodels.Game
-        exclude = ['winning_players']
+        exclude = ['winning_players','top_player']
 
 
 class PlayByPlayForm(forms.ModelForm):
