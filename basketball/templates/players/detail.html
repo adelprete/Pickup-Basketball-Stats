@@ -58,6 +58,8 @@
 				{% endif %}
 				<li role="presentation" {% if not has_top_plays %}class="active"{% endif %}><a href="#averages" aria-controls="averages" role="tab" data-toggle="tab" style="font-weight:bold;">Averages</a></li>
 				<li role="presentation"><a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a></li>
+				{# <li role="presentation"><a href="#per100" aria-controls="per100" role="tab" data-toggle="tab" style="font-weight:bold;">Per 100</a></li> #}
+
 				<li role="presentation"><a href="#gamelog" aria-controls="gamelog" role="tab" data-toggle="tab" style="font-weight:bold;">Game Log</a></li>
 			</ul>
 			<div class="tab-content">
@@ -67,7 +69,8 @@
 						{% player_highlights player.id %}
 					</div>
 				{% endif %}
-
+				
+				{# Highlights  #}
 				<div role="tabpanel" class="tab-pane {% if not has_top_plays %}active{% endif %}" id="averages" style="padding-top:15px;">
 					{% for key, value in game_type_averages.items %}
 					<div class="row">
@@ -81,7 +84,8 @@
 						No recorded data yet
 					{% endfor %}
 				</div>
-				
+
+				{# Totals #}
 				<div role="tabpanel" class="tab-pane" id="totals" style="padding-top:15px;">
 					{% for key, value in game_type_totals.items %}
 						<div class="row">
@@ -96,6 +100,39 @@
 					{% endfor %}
 				</div>
 				
+				{% comment %}
+				{# Per 100 #}
+				<div role="tabpanel" class="tab-pane" id="per100" style="padding-top:15px;">
+					{% for key, value in game_type_totals.items %}
+						<div class="row">
+							<div class="col-sm-12">
+								<h4 class="accent">{{ key }} Totals</h4>
+								{% player_possessions player=pk %}
+								{% include "players/totals_table.html" with season_data_list=value overall=totals|access:key %}
+							</div>
+						</div>
+					{% empty %}
+						<h4 class="accent">Totals</h4>
+						No recorded data yet
+					{% endfor %}
+				</div>
+				{% endcomment %}
+				
+				{# Adv Totals #}
+				<div role="tabpanel" class="tab-pane" id="totals" style="padding-top:15px;">
+					{% for key, value in game_type_totals.items %}
+						<div class="row">
+							<div class="col-sm-12">
+								<h4 class="accent">{{ key }} Totals</h4>
+								{% include "players/totals_table.html" with season_data_list=value overall=totals|access:key %}
+							</div>
+						</div>
+					{% empty %}
+						<h4 class="accent">Totals</h4>
+						No recorded data yet
+					{% endfor %}
+				</div>
+				{# Gamelog  #}
 				<div role="tabpanel" class="tab-pane" id="gamelog" style="padding-top:15px;">
 					<div class="row">
 						<div class="col-sm-12">

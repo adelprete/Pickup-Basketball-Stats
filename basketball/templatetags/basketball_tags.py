@@ -126,7 +126,10 @@ def lb_overview(context, game_type="5v5", player_pk=None):
         top5_leaderboard = {}
         for stat in overview_statistics:
             
-            player_data_list = [(player.get_full_name(), round(player.get_per_100_possessions_data([stat], game_type, season_id=season_id)[stat],1)) for player in players]
+            player_data_list = [
+                    (player.get_full_name(), 
+                    round(player.get_per_100_possessions_data([stat], game_type, season_id=season_id, fga_min=15)[stat],1)) for player in players
+                    ]
             if stat == 'def_rating':
                 player_data_list = sorted(player_data_list, key=lambda x: x[1])
             else:
@@ -159,6 +162,39 @@ def calculate_lb_possessions_dictionaries(context, headers, season_id=None, sort
         possessions_tables[game_type[1]] = []
         
         for player in players:
+            
+            if player.get_possessions_count(game_type=game_type[0], season_id=season_id) >= possessions_min:
+                player_data = {'player_obj': player}
+                stats_list = [header['stat'] for header in headers if header['stat'] != 'gp']
+                player_data.update(player.get_per_100_possessions_data(stats_list, game_type[0], season_id=getattr(season,'id',None)))
+                
+                # Lastly, count how many games the player played
+                statlines = player.statline_set.filter(game__game_type=game_type[0])
+                if season:
+                    statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
+                player_data['gp'] = statlines.count()
+
+                possessions_tables[game_type[1]].append(player_data)
+
+        if sort_column:
+            possessions_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
+
+    return possessions_tables
+
+def calculate_player_possessions_dictionaries(context, headers, player_id=None, sort_column=""):
+    
+    seasons = bmodels.Season.objects.all()
+    player = bmodels.Player.objects.get(id=player_id)
+
+    possessions_tables = OrderedDict() 
+    possessions_min = int(context.get('possessions_min', 100))
+
+    # For each game type we create a list of each player's per 100 stats
+    for game_type in bmodels.GAME_TYPES:
+        
+        possessions_tables[game_type[1]] = []
+        
+        for player in playes:
             
             if player.get_possessions_count(game_type=game_type[0], season_id=season_id) >= possessions_min:
                 player_data = {'player_obj': player}

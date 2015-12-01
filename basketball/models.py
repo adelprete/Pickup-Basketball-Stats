@@ -136,7 +136,7 @@ class Player(models.Model):
 		
         return pos_count['off_pos__sum'] or 0
 
-    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None):
+    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, fga_min=1):
         """Returns per 100 possessions data"""
         season=None
         if season_id:
@@ -177,7 +177,7 @@ class Player(models.Model):
             #Field Goals Made % = (Field Goal Makes / Field Goal Attempts) x 100
             elif stat == "fgm_percent":
                 result = statlines.aggregate(Sum('fgm'), Sum('fga'))
-                if result['fga__sum'] and result['fga__sum'] is not 0:
+                if result['fga__sum'] and result['fga__sum'] is not 0 and result['fga__sum'] >= fga_min:
                     percentage = result['fgm__sum'] / result['fga__sum'] * 100
             
             #Assisted Field Goals Made % = (Assisted Field Goal Attempts / Field Goal Attempts) x 100
@@ -202,7 +202,7 @@ class Player(models.Model):
             elif stat == "unast_fgm_percent":
                 result = statlines.aggregate(Sum('unast_fgm'), Sum('unast_fga'), Sum('pgm'), Sum('pga'))
                 if result.get('unast_fga__sum') is not 0 and (result['unast_fga__sum'] != result['pga__sum']):
-                    percentage = (result['unast_fgm__sum'] - result['pgm__sum']) / (result['unast_fga__sum'] - result['pga__sum']) * 100
+                            percentage = (result['unast_fgm__sum'] - result['pgm__sum']) / (result['unast_fga__sum'] - result['pga__sum']) * 100
 
             #Putback Attempt % = (Putback Attempts / Field Goals Attempts) x 100
             elif stat == 'pga_percent':
@@ -219,7 +219,7 @@ class Player(models.Model):
             #3 Pointers Made % = (3 pointers made / 3 pointers attempts) x 100
             elif stat == 'threepm_percent':
                 result = statlines.aggregate(Sum('threepm'), Sum('threepa'), Sum('off_pos'))
-                if result['threepa__sum'] and result['threepa__sum'] is not 0:
+                if result['threepa__sum'] and result['threepa__sum'] is not 0 and result['threepa__sum'] >= fga_min:
                     percentage = result['threepm__sum'] / result['threepa__sum'] * 100
 
             #Defensive Rebound % = (Defensive Rebounds / Defensive Opportunities) x 100
@@ -244,7 +244,7 @@ class Player(models.Model):
             #True Shooting % = (Points / Field Goals Attempted) x 100
             elif stat == 'ts_percent':
                 result = statlines.aggregate(Sum('points'), Sum('fga'))
-                if result['fga__sum']:
+                if result['fga__sum'] and result['fga__sum'] >= fga_min:
                     percentage = result['points__sum'] / result['fga__sum'] * 100
 
             #True Passing % = (Assisted Points / Assisted Shots) x 100
