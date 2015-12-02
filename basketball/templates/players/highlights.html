@@ -68,6 +68,7 @@
 		});
 	}
 	function onPlayerReady(event) {
+		event.target.mute();
 		{% if top_plays.0 %}
 			event.target.seekTo({{ top_plays.0.time.seconds }});
 		{% endif %}

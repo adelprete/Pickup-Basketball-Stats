@@ -3,12 +3,11 @@
 {% load basketball_tags %}
 {% block headers %}
 	<td data-toggle="tooltip" title="{{ header.title }}">
-		<a href="?adv_pos_sort={{ header.stat }}&adv_pos_active_pill={{key}}{{ get_string }}">{{ header.header }}</a>
-		{% if pos_sort_col == header.stat %}{% bootstrap_icon 'sort-by-order-alt' %}{% endif %}
+		{{ header.header }}
 	</td>
 {% endblock %}
 {% block rows %}
-	<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
+	<td>{{ value.title }}</td>
 	{% for header in headers %}
 		<td>{{ value|access:header.stat }}</td>
 	{% endfor %}

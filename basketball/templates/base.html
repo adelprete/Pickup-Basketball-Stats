@@ -173,6 +173,7 @@
 			});
 		}
 		function onPlayerReady(event) {
+			event.target.mute();
 			event.target.seekTo({{ top_plays.0.time.seconds }});
 		}
 		function seekPlayerToPlay(time,youtube_id) {
