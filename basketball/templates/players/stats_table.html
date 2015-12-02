@@ -12,3 +12,15 @@
 		<td>{{ value|access:header.stat }}</td>
 	{% endfor %}
 {% endblock %}
+{% block footer %}
+	{% if totals_footer %}
+		{% with totals=totals_footer|access:type %}
+			<tr style="background:#d9edf7">	
+				<td>Total</td>
+				{% for header in headers %}
+					<td>{{ totals|access:header.stat}}</td>
+				{% endfor %}
+			</tr>
+		{% endwith %}
+	{% endif %}
+{% endblock %}

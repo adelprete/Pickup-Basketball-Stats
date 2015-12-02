@@ -1,5 +1,6 @@
 {% extends 'players/home.html' %}
 {% load basketball_tags %}
+{% load player_tags %}
 {% block title %}
 <title>{{ player.get_full_name }}</title>
 {% endblock %}
@@ -88,17 +89,12 @@
 
 				{# Totals #}
 				<div role="tabpanel" class="tab-pane" id="totals" style="padding-top:15px;">
-					{% for key, value in game_type_totals.items %}
-						<div class="row">
-							<div class="col-sm-12">
-								<h4 class="accent">{{ key }} Totals</h4>
-								{% include "players/totals_table.html" with season_data_list=value overall=totals|access:key %}
-							</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<h4 class="accent">Totals</h4>
+							{% player_totals player_id=player.pk %}
 						</div>
-					{% empty %}
-						<h4 class="accent">Totals</h4>
-						No recorded data yet
-					{% endfor %}
+					</div>
 				</div>
 				
 				{# Per 100 #}
@@ -136,10 +132,12 @@
 						No recorded data yet
 					{% endfor %}
 				</div>
+
 				{# Gamelog  #}
 				<div role="tabpanel" class="tab-pane" id="gamelog" style="padding-top:15px;">
 					<div class="row">
 						<div class="col-sm-12">
+							<h4 class="accent">Game Log</h4><br />
 							<ul class="nav nav-pills">
 								<li role="presentation" class="active"><a href="#5on5" aria-controls="home" role="tab" data-toggle="tab">5on5</a></li>
 								<li role="presentation"><a href="#4on4" aria-controls="profile" role="tab" data-toggle="tab">4on4</a></li>

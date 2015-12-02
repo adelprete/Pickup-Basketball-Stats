@@ -9,7 +9,7 @@ register = template.Library()
 
 @register.filter(name='access')
 def access(value, arg):
-    return value[arg]
+	return value[arg]
 
 @register.filter
 def formattime(time):
@@ -215,6 +215,7 @@ def lb_possessions(context, season=None):
         'active_pill': context['request'].GET.get('pos_active_pill') or '5on5',
         'headers': headers.per_100_statistics,
     }
+
     return context
 
 def calculate_lb_totals_dictionaries(context, statistics, season_id=None, sort_column="",):
@@ -361,68 +362,6 @@ def top_players_table(player_list, title, bgcolor='white'):
     return {'player_list': player_list, 'title': title, 'tooltip_desc': tooltip_desc, 'bgcolor': bgcolor}
 
 
-@register.inclusion_tag('players/highlights.html')
-def player_highlights(player_pk):
-    top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='t', top_play_players__pk=player_pk)
-    not_top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='nt', top_play_players__pk=player_pk)
-
-    context = {
-        'top_plays': top_plays,
-        'not_top_plays': not_top_plays
-    }
-    return context
 
 
-def calculate_player_possessions_dictionaries(context, headers, player_id=None, sort_column=""):
-    
-    seasons = bmodels.Season.objects.all()
-    player = bmodels.Player.objects.get(id=player_id)
-
-    possessions_tables = OrderedDict() 
-
-    # For each game type we create a list of each player's per 100 stats
-    for game_type in bmodels.GAME_TYPES:
-        
-        possessions_tables[game_type[1]] = []
-        
-        for season in seasons:
-            
-            if player.get_possessions_count(game_type=game_type[0], season_id=season.id) >= 100:
-                season_data = {'title': season.title}
-                stats_list = [header['stat'] for header in headers if header['stat'] != 'gp']
-                season_data.update(player.get_per_100_possessions_data(stats_list, game_type[0], season_id=season.id))
-                
-                # Lastly, count how many games the player played
-                statlines = player.statline_set.filter(game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date))
-                season_data['gp'] = statlines.count()
-
-                possessions_tables[game_type[1]].append(season_data)
-
-        #if sort_column:
-        #    possessions_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
-    return possessions_tables
-
-@register.inclusion_tag('players/possessions.html', takes_context=True)
-def player_possessions(context, player_id):
-    """Return a player's per 100 stats for each season"""
-    possessions_tables = calculate_player_possessions_dictionaries(context,headers.per_100_statistics, player_id=player_id)
-    
-    context = {
-        'tables': possessions_tables,
-        'active_pill': '5on5',
-        'headers': headers.per_100_statistics,
-    }
-    return context
-
-@register.inclusion_tag('players/possessions.html', takes_context=True)
-def player_adv_possessions(context, player_id):
-    """Return a player's per 100 stats for each season"""
-    possessions_tables = calculate_player_possessions_dictionaries(context,headers.adv_per_100_statistics, player_id=player_id)
-    
-    context = {
-        'tables': possessions_tables,
-        'active_pill': '5on5',
-        'headers': headers.adv_per_100_statistics,
-    }
-    return context
 

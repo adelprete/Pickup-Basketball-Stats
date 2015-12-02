@@ -1,4 +1,5 @@
 {% extends 'tab_base.html' %}
+{% load basketball_tags %}
 {% block tab %}
 	<li role="presentation" {% if active_pill == key %}class="active"{% endif %}>
 		<a href="#pos-{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
@@ -6,6 +7,6 @@
 {% endblock %}
 {% block tab_content %}
 	<div role="tabpanel" class="tab-pane {% if active_pill == key %}active{% endif %}" id="pos-{{key}}">
-		{% include 'players/possessions_table.html' with rows_list=value  type=key %}
+		{% include 'players/stats_table.html' with rows_list=value  type=key %}
 	</div>
 {% endblock %}
