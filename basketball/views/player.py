@@ -23,7 +23,6 @@ def player_page(request, id, template="players/detail.html"):
     """This generates an individual player's page"""
 
     player = get_object_or_404(bmodels.Player, id=id)
-    all_statistics = [stat[0] for stat in bmodels.ALL_PLAY_TYPES] + ['total_rebounds', 'points', 'def_pos', 'off_pos', 'dreb_opp', 'oreb_opp']
     statlines = player.statline_set.all().order_by('-game__date', 'game__title')
 
     has_top_plays = False
@@ -31,60 +30,11 @@ def player_page(request, id, template="players/detail.html"):
         has_top_plays = True
 
     seasons = bmodels.Season.objects.all().order_by('-start_date')
-
-    #Loop over each season a calculate both averages and totals
-    #Then store values in a dictionary by game types(5v5,4v4,etc)
-    stats_list = [header['stat'] for header in headers.totals_statistics if header['stat'] != 'gp' ]
-
-    game_type_totals = OrderedDict()
-    game_type_averages = OrderedDict()
-    for season in seasons:
-
-        player_statlines = player.statline_set.filter(game__date__range=(season.start_date, season.end_date))
-        
-        for game_type in bmodels.GAME_TYPES:
-            if player_statlines.filter(game__game_type=game_type[0]):
-                player_totals, player_averages = {}, {}
-                games_played = player.statline_set.filter(game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date)).count()
-                
-                player_totals.update(player.get_totals(stats_list, game_type=game_type[0], season=season))
-                player_averages.update(player.get_averages(stats_list, game_type=game_type[0], season=season))
-                
-                player_totals['season'] = season.title
-                player_totals['gp'] = games_played
-
-                player_averages['season'] = season.title
-                player_averages['gp'] = games_played
-
-                if game_type_totals.get(game_type[1]):
-                    game_type_totals[game_type[1]].append(player_totals)
-                    game_type_averages[game_type[1]].append(player_averages)
-                else:
-                    game_type_totals[game_type[1]] = [player_totals]
-                    game_type_averages[game_type[1]] = [player_averages]
-
-    #calculate totals and averages for each game_type
-    totals = {}
-    averages = {}
-    for game_type in bmodels.GAME_TYPES:
-        if player.get_possessions_count(game_type=game_type[0]):
-            
-            overall_totals = player.get_totals(stats_list, game_type=game_type[0])
-            overall_averages = player.get_averages(stats_list, game_type=game_type[0])
-            overall_totals['gp'] = player.statline_set.filter(game__game_type=game_type[0]).count()
-            overall_averages['gp'] = player.statline_set.filter(game__game_type=game_type[0]).count()
-
-            totals[game_type[1]] = overall_totals
-            averages[game_type[1]] = overall_averages
     
     context = {
         'player': player,
         'has_top_plays': has_top_plays,
         'statlines': statlines,
-        'averages': averages,
-        'game_type_averages': game_type_averages,
-        'totals': totals,
-        'game_type_totals': game_type_totals,
     }
     return render(request, template, context)
 
