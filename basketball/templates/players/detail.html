@@ -59,6 +59,7 @@
 				{% endif %}
 				<li role="presentation" {% if not has_top_plays %}class="active"{% endif %}><a href="#averages" aria-controls="averages" role="tab" data-toggle="tab" style="font-weight:bold;">Averages</a></li>
 				<li role="presentation"><a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a></li>
+				<li role="presentation"><a href="#advtotals" aria-controls="advtotals" role="tab" data-toggle="tab" style="font-weight:bold;">Adv Totals</a></li>
 				<li role="presentation"><a href="#per100" aria-controls="per100" role="tab" data-toggle="tab" style="font-weight:bold;">Per 100</a></li>
 				<li role="presentation"><a href="#advper100" aria-controls="advper100" role="tab" data-toggle="tab" style="font-weight:bold;">Adv Per 100</a></li>
 
@@ -91,7 +92,17 @@
 						</div>
 					</div>
 				</div>
-				
+
+				{# Adv Totals #}
+				<div role="tabpanel" class="tab-pane" id="advtotals" style="padding-top:15px;">
+					<div class="row">
+						<div class="col-sm-12">
+							<h4 class="accent">Adv Totals</h4>
+							{% player_adv_totals player_id=player.pk %}
+						</div>
+					</div>
+				</div>
+			
 				{# Per 100 #}
 				<div role="tabpanel" class="tab-pane" id="per100" style="padding-top:15px;">
 					<div class="row">
@@ -111,23 +122,6 @@
 						</div>
 					</div>
 				</div>
-
-				{% comment %}	
-				{# Adv Totals #}
-				<div role="tabpanel" class="tab-pane" id="totals" style="padding-top:15px;">
-					{% for key, value in game_type_totals.items %}
-						<div class="row">
-							<div class="col-sm-12">
-								<h4 class="accent">{{ key }} Totals</h4>
-								{% include "players/totals_table.html" with season_data_list=value overall=totals|access:key %}
-							</div>
-						</div>
-					{% empty %}
-						<h4 class="accent">Totals</h4>
-						No recorded data yet
-					{% endfor %}
-				</div>
-				{% endcomment %}
 
 				{# Gamelog  #}
 				<div role="tabpanel" class="tab-pane" id="gamelog" style="padding-top:15px;">
