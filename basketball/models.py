@@ -319,16 +319,7 @@ class Player(models.Model):
                 data_dict[stat] = temp_data[stat+'__sum'] or 0
             else:
                 data_dict[stat] = temp_data[stat+'__avg'] or 0
-        """
-        for stat in stats_list:
-            try:
-                if report_type=='Sum':
-                    data_dict[stat] = qs.aggregate(Sum(stat))[stat+'__sum'] or 0
-                else:
-                    data_dict[stat] = qs.aggregate(Avg(stat))[stat+'__avg'] or 0
-            except FieldError:
-                print('invalid stat provided: %s' % (stat))
-        """
+        
         return data_dict
         
     class Meta():

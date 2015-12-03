@@ -9,16 +9,16 @@
 {% block rows %}
 	<td>{{ value.title }}</td>
 	{% for header in headers %}
-		<td>{{ value|access:header.stat }}</td>
+		<td>{{ value|access:header.stat|floatformat }}</td>
 	{% endfor %}
 {% endblock %}
 {% block footer %}
-	{% if totals_footer %}
-		{% with totals=totals_footer|access:type %}
+	{% if overall_footer %}
+		{% with overall=overall_footer|access:type %}
 			<tr style="background:#d9edf7">	
-				<td>Total</td>
+				<td>Overall</td>
 				{% for header in headers %}
-					<td>{{ totals|access:header.stat}}</td>
+					<td>{{ overall|access:header.stat|floatformat}}</td>
 				{% endfor %}
 			</tr>
 		{% endwith %}

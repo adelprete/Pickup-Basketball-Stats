@@ -74,17 +74,12 @@
 				
 				{# Highlights  #}
 				<div role="tabpanel" class="tab-pane {% if not has_top_plays %}active{% endif %}" id="averages" style="padding-top:15px;">
-					{% for key, value in game_type_averages.items %}
 					<div class="row">
 						<div class="col-sm-12">
-							<h4 class="accent">{{ key }} Averages</h4>
-							{% include "players/averages_table.html" with season_data_list=value overall=averages|access:key %}
+							<h4 class="accent">Per Game Averages</h4>
+							{% player_averages player_id=player.pk %}
 						</div>
 					</div>
-					{% empty %}
-						<h4 class="accent">Averages</h4>
-						No recorded data yet
-					{% endfor %}
 				</div>
 
 				{# Totals #}
@@ -117,7 +112,7 @@
 					</div>
 				</div>
 
-				
+				{% comment %}	
 				{# Adv Totals #}
 				<div role="tabpanel" class="tab-pane" id="totals" style="padding-top:15px;">
 					{% for key, value in game_type_totals.items %}
@@ -132,6 +127,7 @@
 						No recorded data yet
 					{% endfor %}
 				</div>
+				{% endcomment %}
 
 				{# Gamelog  #}
 				<div role="tabpanel" class="tab-pane" id="gamelog" style="padding-top:15px;">
