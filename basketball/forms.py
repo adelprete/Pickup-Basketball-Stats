@@ -17,6 +17,8 @@ class PlayerForm(forms.ModelForm):
         model = bmodels.Player
         exclude = [""]
 
+class PlayerFilterForm(forms.Form):
+    season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
 
 class GameForm(forms.ModelForm):
     required_css_class = 'required'

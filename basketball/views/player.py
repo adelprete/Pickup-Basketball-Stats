@@ -1,3 +1,4 @@
+import datetime
 from collections import OrderedDict
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -10,14 +11,37 @@ from basketball import headers
 
 
 def players_home(request, template="players/home.html"):
-    """Generates a list of all the players on the site"""
+	"""Generates a list of all the players on the site"""
 
-    players = bmodels.Player.player_objs.order_by('first_name')
+	players = bmodels.Player.player_objs.order_by('first_name')
 
-    context = {
-        'players': players,
-    }
-    return render(request, template, context)
+	season=None
+	if 'submit' in request.GET:
+		form = bforms.PlayerFilterForm(request.GET)
+		if form.is_valid():
+			season_id = form.data.get('season', None)
+			if season_id:
+				season = bmodels.Season.objects.get(id=season_id)
+	else:
+		try:
+			#get current season if there is one
+			season = bmodels.Season.objects.get(start_date__lt=datetime.datetime.today(), end_date__gt=datetime.datetime.today())
+		except:
+			#if not in a current season, grab last season.
+			season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
+		
+		form = bforms.PlayerFilterForm(initial={'season': season.id})
+
+	if season:
+		players = bmodels.Player.player_objs.filter(statline__game__date__range=(season.start_date, season.end_date)).distinct()
+
+	context = {
+		'players': players,
+		'season': season,
+		'form': form,
+	}
+	
+	return render(request, template, context)
 
 def player_page(request, id, template="players/detail.html"):
     """This generates an individual player's page"""

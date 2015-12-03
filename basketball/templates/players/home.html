@@ -3,11 +3,11 @@
 	<title>Players</title>
 {% endblock %}
 {% block content %}
-	{% load staticfiles %}
-	{% load thumbnail %}
+	{% load staticfiles thumbnail bootstrap3 %}
 	<div class="page-header">
-	<h3 class="accent">Players</h3>
+		<h3 class="accent">Players - {% if season %} {{ season }} {% else %} All {% endif %}</h3>
 	</div>
+
 	{% if not request.user.is_anonymous %}
 		<div class="row">
 			<div class="col-md-1">	
@@ -17,6 +17,26 @@
 			</div>
 		</div><br>
 	{% endif %}
+	<div>
+		<div class="row">
+			<div class="col-md-12">
+				<a id="toggle_filterform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Filter Options</a>
+			</div>
+		</div>
+		<form id="filter_form" method="GET" style="display: none;">
+			<div class="row">
+				<div class="col-md-2">
+					{% bootstrap_field form.season %}
+				</div>
+					</div>
+			<div class="row">
+				<div class="col-md-1">
+					<button type="submit" name="submit" class="btn btn-primary btn-block">Filter</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
 	<div class="row">
 		{% for player in players %}
 			<div class="col-xs-4 col-sm-2" style="margin-top:15px;text-align:center;">
@@ -29,8 +49,15 @@
 				{{player}}</a>
 			</div>
 			<div class="col-sm-offset-1"></div>
+		{% empty %}
+			<div class="col-sm-6"><h3>No players have played in this season</h3></div>
 		{% endfor %}
 	</div>
+	<script type="text/javascript">
+		$("#toggle_filterform").click(function(){
+			$('#filter_form').toggle();
+		});
+	</script>
 {% endblock %}
 {% block active_tab %}
 	<script>$('#players_link').addClass('active')</script>
