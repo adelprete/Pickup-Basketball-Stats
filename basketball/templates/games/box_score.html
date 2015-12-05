@@ -72,6 +72,7 @@
 					</form>
 					<div><a id="toggle_form" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Play By Play Form</a></div>
 					<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
+						<div id="play_result_message" style="display:none;"></div>
 						<h3 style="margin-top:5px;">Add Play</h3>
 						{% bootstrap_form form %}
 						<button type="submit" name="submit" class="btn btn-primary btn-block">Save</button>
@@ -112,20 +113,22 @@
 			player.cueVideoById({videoId:"{{ game.youtube_id}}",
 					startSeconds:time,
 					suggestedQuality:"hd1080"})
-			jumpToAnchor()
+			jumpToPlayerAnchor()
 			player.playVideo();
 		}
     </script>
 	<script type="text/javascript">
-		function jumpToAnchor() {
+		function jumpToPlayerAnchor() {
 			window.location = String(window.location).replace(/\#.*$/, "") + "#playeranchor";
+		}
+		function jumpToPbpAnchor() {
+			window.location = String(window.location).replace(/\#.*$/, "") + "#play_title";
 		}
 		$("#toggle_fileform").click(function(){
 			$('#pbp_file_form').toggle();
 		});
 		$("#toggle_form").click(function(){
 			$('#pbp_form').toggle();
-			$('#play_message').toggle();
 		});
 		$("#toggle_filterform").click(function(){
 			$('#filter_form').toggle();
@@ -139,7 +142,9 @@
 				data: pbp_form.serialize(),
 				success: function (data) {
 					$('.form-control').val("");
-					$("#play_message").html(data);
+					jumpToPbpAnchor();
+					$('#play_result_message').html(data)
+					$("#play_message").html('');
 				},
 				error: function(data) {
 				$("#play_message").html("<br><font style='color:red';>Something went wrong!</font><br><br>");
@@ -153,7 +158,9 @@
 				type: frm.attr('method'),
 				url: "{% url 'ajax_filter_plays' pk=game.pk %}",
 				data: frm.serialize(),
-				success: function (data) {
+				success: function (daita) {
+					jumpToPbpAnchor();
+					$("#filter_form").toggle();
 					$("#playbyplay_list").html(data);
 				},
 			});
