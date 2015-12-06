@@ -8,7 +8,7 @@
 	</td>
 {% endblock %}
 {% block rows %}
-	<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj }}</a></td>
+	<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj.get_abbr_name }}</a></td>
 	{% for header in headers %}
 		<td>{{ value|access:header.stat }}</td>
 	{% endfor %}

@@ -92,6 +92,11 @@ class Player(models.Model):
     def get_full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
 
+    def get_abbr_name(self):
+        if self.last_name:
+            return "%s %s." % (self.first_name, self.last_name[0])
+        return "%s" % (self.first_name)
+
     def get_absolute_url(self):
         return reverse("player_page", kwargs={'id': self.id})
 

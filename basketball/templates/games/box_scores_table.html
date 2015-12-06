@@ -28,7 +28,7 @@ $(function () {
 	</tr>
 	{% for line in statlines %}
 		<tr>
-			<td><a href="{{ line.player.get_absolute_url }}">{{ line.player.get_full_name }}</a></td>
+			<td><a href="{{ line.player.get_absolute_url }}">{{ line.player.get_abbr_name }}</a></td>
 			<td>{{ line.fgm }}-{{ line.fga }}</td>
 			<td>{{ line.threepm }}-{{ line.threepa }}</td>
 			<td>{{ line.oreb }}</td>

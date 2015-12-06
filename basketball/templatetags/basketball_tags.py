@@ -120,7 +120,7 @@ def lb_overview(context, game_type="5v5", player_pk=None):
         for stat in overview_statistics:
             
             player_data_list = [
-                    (player.get_full_name(), 
+                    (player.get_abbr_name(), 
                     round(player.get_per_100_possessions_data([stat], game_type, season_id=season_id, fga_min=15)[stat],1)) for player in players
                     ]
             if stat == 'def_rating':

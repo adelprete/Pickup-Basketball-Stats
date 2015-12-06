@@ -8,12 +8,12 @@
 		<a onclick="seekPlayerToPlay('{{play.time.seconds }}')" style="cursor:pointer;">{{ play.time|formattime }}</a> 
 		{% if play.top_play_rank|top_play_check %}{% bootstrap_icon "star" %}{% endif %}
 		{% if play.top_play_rank|not_top_play_check %}{% bootstrap_icon "cloud" %}{% endif %}
-		- {{ play.get_primary_play_display }} {{ play.primary_player }} 
+		- {{ play.get_primary_play_display }} {{ play.primary_player.get_abbr_name }} 
 		{% if play.secondary_play %}
-			/ {{ play.get_secondary_play_display }} {{ play.secondary_player }}
+			/ {{ play.get_secondary_play_display }} {{ play.secondary_player.get_abbr_name }}
 		{% endif %}
 		{% if play.assist %}
-			/ {{ play.get_assist_display }} {{ play.assist_player }}
+			/ {{ play.get_assist_display }} {{ play.assist_player.get_abbr_name }}
 		{% endif %}
 		{% if play.description %}
 			/ {{ play.description }}
