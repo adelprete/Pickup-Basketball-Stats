@@ -2,6 +2,7 @@ import itertools
 import operator
 from collections import OrderedDict
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -20,22 +21,36 @@ def games_home(request, template='games/home.html'):
     latest_games = bmodels.Game.objects.all()
 
     keyfunc = operator.attrgetter('date')
-
+    
+    #group games by date and format date string while we're at it
     latest_games = sorted(latest_games, key=keyfunc)
     group_list = [{k.strftime('%m-%d-%Y'): list(g)} for k, g in itertools.groupby(latest_games, keyfunc)]
+    
+    #merge list of dictionaries into one dictionary
+    group_dict = { key: value for d in group_list for key, value in d.items() }
 
-    keys_list = []
-    group_dict = {}
-    for d in group_list:
-        group_dict.update(d)
-        keys_list += d.keys()
-    keys_list.sort(reverse=True)
-    sorted_dict = OrderedDict()
-    for key in keys_list:
-        sorted_dict[key] = sorted(group_dict[key], key=lambda game: game.title)
+    #convert dictionary into list of tuples (key, value)
+    games_tuple_list = []
+    for key, value in iter(group_dict.items()):
+        games_tuple_list.append((key, value))
+
+    games_tuple_list = sorted(games_tuple_list, key=lambda date: date, reverse=True)
+
+    #use Django paginator to paginate
+    paginator = Paginator(games_tuple_list, 25)
+    
+    page = request.GET.get('page')
+    try:
+        games_tuple_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        games_tuple_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        games_tuple_list = paginator.page(paginator.num_pages)
 
     context = {
-        'group_list': sorted_dict,
+        'games_list': games_tuple_list,
     }
     return render(request, template, context)
 
