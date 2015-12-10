@@ -46,6 +46,9 @@ def calculate_player_overall_dictionaries(context, category, statistics, player_
         for game_type in bmodels.GAME_TYPES:
             tables[game_type[1]] = []
             overall = {}
+            statlines_used = []
+            
+            # Calculate stats for statlines within each season.
             for season in seasons:
                
                 if player.get_possessions_count(game_type=game_type[0], season_id=season.id) > 0:
@@ -74,7 +77,37 @@ def calculate_player_overall_dictionaries(context, category, statistics, player_
                         overall = player.get_averages(stats_list, game_type=game_type[0])
                         overall['gp'] = ''
 
+                    #keep track of the statlines used for each game type
+                    statlines_used = statlines_used + list(statlines.values_list('id', flat=True))
+            
+            # Calculate stats for statlines that are not within a season
+            sls_out_of_season = player.statline_set.filter(game__game_type=game_type[0]).exclude(id__in=statlines_used)
+            if sls_out_of_season:
+                season_data = {'title': 'Other'}
+                
+                stats_list = [header['stat'] for header in statistics if header['stat'] != 'gp']
+                if category == 'totals':
+                    season_data.update(player.get_totals(stats_list, game_type=game_type[0], out_of_season=True))
+                elif category == 'averages':
+                    season_data.update(player.get_averages(stats_list, game_type=game_type[0], out_of_season=True))
+
+                season_data['gp'] = sls_out_of_season.count()
+
+                tables[game_type[1]].append(season_data)
+
+                if category == 'totals':
+                    for key, value in season_data.items():
+                        if key is not 'title':
+                            if key in overall:
+                                overall[key] += value
+                            else:
+                                overall[key] = value
+                elif category == 'averages':
+                    overall = player.get_averages(stats_list, game_type=game_type[0])
+                    overall['gp'] = ''
+
             overall_footer[game_type[1]] = overall
+
         return tables, overall_footer
 
 @register.inclusion_tag('players/stats_tab.html', takes_context=True)
@@ -121,7 +154,9 @@ def calculate_player_possessions_dictionaries(context, headers, player_id=None, 
         
         possessions_tables[game_type[1]] = []
         stats_list = [header['stat'] for header in headers if header['stat'] != 'gp']
+        statlines_used = []
 
+        # Get possession data from each season
         for season in seasons:
             
             if player.get_possessions_count(game_type=game_type[0], season_id=season.id) >= 100:
@@ -130,10 +165,24 @@ def calculate_player_possessions_dictionaries(context, headers, player_id=None, 
                 
                 # Lastly, count how many games the player played
                 statlines = player.statline_set.filter(game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date))
+                statlines_used = statlines_used + list(statlines.values_list('id',flat=True))
+
                 season_data['gp'] = statlines.count()
 
                 possessions_tables[game_type[1]].append(season_data)
-    
+
+        # Get possession data from each statline not within a season
+        sls_out_of_season = player.statline_set.filter(game__game_type=game_type[0]).exclude(id__in=statlines_used)
+        if sls_out_of_season:
+            if player.get_possessions_count(game_type=game_type[0], out_of_season=True) >= 100:
+                season_data = {'title': 'Other'}
+                season_data.update(player.get_per_100_possessions_data(stats_list, game_type[0], out_of_season=True))
+                
+                # Lastly, count how many games the player played
+                season_data['gp'] = sls_out_of_season.count()
+
+                possessions_tables[game_type[1]].append(season_data) 
+
         overall_footer[game_type[1]] = player.get_per_100_possessions_data(stats_list, game_type[0])
         overall_footer[game_type[1]]['gp'] = ''
     

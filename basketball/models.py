@@ -123,7 +123,7 @@ class Player(models.Model):
         
         return losses
 		
-    def get_possessions_count(self, game_type=None, season_id=None, date=None):
+    def get_possessions_count(self, game_type=None, season_id=None, date=None, out_of_season=False):
         
         season=None
         if season_id:
@@ -134,14 +134,17 @@ class Player(models.Model):
             statlines = statlines.filter(game__game_type=game_type)
         if season:
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
-        elif date:
+        if date:
             statlines = statlines.filter(game__date=date)
+        if out_of_season:
+            for season in Season.objects.all():
+                statlines = statlines.exclude(game__date__range=(season.start_date, season.end_date))
 
         pos_count = statlines.aggregate(Sum('off_pos'))
 		
         return pos_count['off_pos__sum'] or 0
 
-    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, fga_min=1):
+    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, out_of_season=False, fga_min=1):
         """Returns per 100 possessions data"""
         season=None
         if season_id:
@@ -164,6 +167,9 @@ class Player(models.Model):
         statlines = self.statline_set.filter(game__game_type=game_type)
         if season:
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
+        if out_of_season:
+            for season in Season.objects.all():
+                statlines = statlines.exclude(game__date__range=(season.start_date, season.end_date))
         
         for stat in stats_list:
             percentage = 0.0
@@ -294,24 +300,27 @@ class Player(models.Model):
             data_dict[stat] = round(percentage, 1) 
         return data_dict
 
-    def get_averages(self, stats_list, game_type=None, season=None):
+    def get_averages(self, stats_list, game_type=None, season=None, date=None, out_of_season=False):
         """Returns a dictionary of the player's averages"""
-        return self.get_player_data(stats_list, report_type='Avg', game_type=game_type, season=season)
+        return self.get_player_data(stats_list, report_type='Avg', game_type=game_type, season=season, date=date, out_of_season=out_of_season)
 
-    def get_totals(self, stats_list, game_type=None, season=None, date=None):
+    def get_totals(self, stats_list, game_type=None, season=None, date=None, out_of_season=False):
         """Returns a dictionary of the player's totals"""
-        return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season, date=date)
+        return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season, date=date, out_of_season=out_of_season)
 
-    def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None):
+    def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None, out_of_season=False):
             
         qs = self.statline_set.all()
         if game_type:
             qs = qs.filter(game__game_type=game_type)
-            if date:
-                qs = qs.filter(game__date=date)
-            elif season:
-                qs = qs.filter(game__date__range=(
-                    season.start_date, season.end_date))
+        
+        if date:
+            qs = qs.filter(game__date=date)
+        if season:
+            qs = qs.filter(game__date__range=(season.start_date, season.end_date))
+        if out_of_season:
+            for season in Season.objects.all():
+                qs = qs.exclude(game__date__range=(season.start_date,season.end_date))
 
         data_dict = {}
         if report_type=='Sum':
@@ -329,7 +338,6 @@ class Player(models.Model):
         
     class Meta():
         ordering = ['first_name']
-
 
 class Game(models.Model):
     date = models.DateField(null=True)
