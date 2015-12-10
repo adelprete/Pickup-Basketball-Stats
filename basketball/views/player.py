@@ -3,7 +3,7 @@ from collections import OrderedDict
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Q
 from basketball import models as bmodels
 from basketball import forms as bforms
@@ -54,11 +54,13 @@ def player_page(request, id, template="players/detail.html"):
         has_top_plays = True
 
     seasons = bmodels.Season.objects.all().order_by('-start_date')
-    
+   
+    game_log_form = bforms.PlayerGameLogForm() 
     context = {
         'player': player,
         'has_top_plays': has_top_plays,
         'statlines': statlines,
+        'game_log_form': game_log_form
     }
     return render(request, template, context)
 
@@ -88,3 +90,11 @@ def player_basics(request, id=None, form_class=bforms.PlayerForm, template='play
 
     return render(request, template, {'form': form})
 
+def ajax_game_log(request):
+	"""Filters a players game log by season"""
+	
+	season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
+
+	statlines = bmodels.StatLine.objects.filter(player__id=request.GET['player_id'], game__date__range=(season.start_date,season.end_date)).order_by('-game__date', 'game__title')
+	
+	return render_to_response('players/game_log.html', {'statlines': statlines})

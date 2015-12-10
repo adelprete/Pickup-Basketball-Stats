@@ -17,6 +17,9 @@ class PlayerForm(forms.ModelForm):
         model = bmodels.Player
         exclude = [""]
 
+class PlayerGameLogForm(forms.Form):
+    season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), initial=bmodels.Season.objects.all()[0])
+
 class PlayerFilterForm(forms.Form):
     season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
 

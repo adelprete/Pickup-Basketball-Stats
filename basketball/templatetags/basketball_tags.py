@@ -60,34 +60,6 @@ def box_score(statlines, bgcolor="white"):
             'team_totals': team_totals,
             'bgcolor': bgcolor}
 
-
-@register.inclusion_tag('players/box_scores.html')
-def player_box_score(statlines, bgcolor="white", game_type='5v5'):
-    """
-    Passes a single player's statlines to a template that will display them in a table like format.
-    """
-    return {'statlines': statlines.filter(game__game_type=game_type), 'bgcolor': bgcolor}
-
-
-@register.inclusion_tag('players/5on5_possessions.html', takes_context=True)
-def player_five_on_five_pos(context, player_pk=None):
-
-    player = bmodels.Player.objects.get(pk=player_pk)
-    stats_list = ['points', 'total_rebounds', 'stls', 'asts', 'to', 'fgm_percent']
-    data_dict = player.get_per_100_possessions_data(stats_list, '5v5')
-    
-    context = {
-        'points': data_dict['points'],
-        'rebounds': data_dict['total_rebounds'],
-        'steals': data_dict['stls'],
-        'assists': data_dict['asts'],
-        'turnovers': data_dict['to'],
-        'fgm_percent': data_dict['fgm_percent'],
-    }
-
-    return context
-
-
 @register.inclusion_tag('leaderboard/overview.html', takes_context=True)
 def lb_overview(context, game_type="5v5", player_pk=None):
         """Returns many lists of tuples for each statistical category"""

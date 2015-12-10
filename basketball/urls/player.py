@@ -6,4 +6,5 @@ urlpatterns = [
 	url(r'^(?P<id>[0-9]+)/$',					pviews.player_page,     name='player_page'),
 	url(r'^(?P<id>[0-9]+)/edit-player/$',		pviews.player_basics,   name='edit_player'),
 	url(r'^new-player$',						pviews.player_basics,   name='create_player'),
+        url(r'^game-log/$',						pviews.ajax_game_log,   name='ajax_player_game_log'),
 ]

@@ -5,7 +5,7 @@
 <title>{{ player.get_full_name }}</title>
 {% endblock %}
 {% block content %}
-{% load staticfiles %}
+{% load staticfiles bootstrap3 %}
 {% load thumbnail %}
 <div class="container">
 	<div class="row">
@@ -128,6 +128,16 @@
 					<div class="row">
 						<div class="col-sm-12">
 							<h4 class="accent">Game Log</h4><br />
+							<form>
+								<div class="row">
+									<div class="col-md-2">
+										{% bootstrap_field game_log_form.season %}
+									</div>
+								</div>
+							</form>
+							<div id="player_game_log">
+							</div>
+							{% comment %}
 							<ul class="nav nav-pills">
 								<li role="presentation" class="active"><a href="#5on5" aria-controls="home" role="tab" data-toggle="tab">5on5</a></li>
 								<li role="presentation"><a href="#4on4" aria-controls="profile" role="tab" data-toggle="tab">4on4</a></li>
@@ -140,6 +150,7 @@
 									{% player_box_score statlines "#d9edf7" "4v4" %}
 								</div>
 							</div>
+							{% endcomment %}
 						</div>
 					</div>
 				</div>
@@ -147,4 +158,28 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	function ajax_game_log_call(){
+		$.ajax({
+			type: "get",
+			url: "{% url 'ajax_player_game_log' %}",
+			data: {
+				season_id: $('#id_season').val(),
+				player_id: {{ player.id }}
+				},
+			success: function (data){
+				$("#player_game_log").html(data);
+			}
+		});
+	};
+	$( document ).ready(function() {
+		ajax_game_log_call();	
+	});
+	$("#id_season").change(function() {
+		$("#player_game_log").html('<img src="/media/loading-indicator.gif" style="display: block; margin:0px auto;">');
+		ajax_game_log_call();
+		
+	});
+</script>
+
 {% endblock %}
