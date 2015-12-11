@@ -109,24 +109,26 @@ class LeaderboardForm(forms.Form):
 
 
 class SeasonForm(forms.ModelForm):
-	
-	def clean(self):
-		data = self.cleaned_data
-		start_date = data['start_date']
-		end_date = data['end_date']
 
-		if start_date > end_date:
-			raise forms.ValidationError("Start Date can't be before end date")
-	
-		season = bmodels.Season.objects.filter(
-				Q(Q(start_date__lt=start_date)&Q(end_date__gt=start_date))
-				|Q(Q(start_date__lt=end_date)&Q(end_date__gt=end_date)))
-		if season:
-			raise forms.ValidationError("Dates can't cross over into other seasons. Crossed over with %s" % (season[0].title))
+    def clean(self):
+        data = self.cleaned_data
+        start_date = data['start_date']
+        end_date = data['end_date']
 
-		return data
+        if start_date > end_date:
+                raise forms.ValidationError("Start Date can't be before end date")
+        
+        season = bmodels.Season.objects.filter(
+                        Q(Q(start_date__lt=start_date)&Q(end_date__gt=start_date))
+                        |Q(Q(start_date__lt=end_date)&Q(end_date__gt=end_date)))
+        if self.instance:
+            season = season.exclude(id=self.instance.id)
 
+        if season:
+                raise forms.ValidationError("Dates can't cross over into other seasons. Crossed over with %s" % (season[0].title))
 
-	class Meta:
-		model = bmodels.Season
-		fields = ['start_date','end_date','title']
+        return data
+    
+    class Meta:
+        model = bmodels.Season
+        fields = ['start_date','end_date','title']
