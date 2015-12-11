@@ -13,14 +13,17 @@
 		<div class="row">
 			<div class="col-md-9">
 				<ul class="nav nav-tabs" role="tablist" style="margin:5px 0px;">
+					{% if top_plays or not_top_plays %}
 					<li role="presentation" {% if not default_tab %}class="active"{% endif %}>
 						<a href="#highlights" aria-controls="home" role="tab" data-toggle="tab" style="font-weight:bold;">Highlights</a>
 					</li>
+					{% endif %}
 					<li role="presentation" {% if default_tab == "totals" %}class='active'{% endif %}>
 						<a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a>
 					</li>
 				</ul>
 				<div class="tab-content">
+					{% if top_plays or not_top_plays %}
 					<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="highlights" style="padding-top:15px;">
 
 						<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
@@ -57,6 +60,7 @@
 							{% endif %}
 						</div>
 					</div>
+					{% endif %}
 					<div role="tabpanel" class="tab-pane{% if default_tab == "totals" %}active{% endif %}" id="totals" style="padding-top:15px;">
 						{% recap_totals games %}
 					</div>

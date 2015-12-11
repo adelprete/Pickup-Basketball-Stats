@@ -20,10 +20,8 @@
 	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type="text/css">
 	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}" type="text/css">
 	<link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
-	<link rel="stylesheet" href="{% static 'other/datepicker/css/datepicker.css' %}" type="text/css">
-	<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/jquery-1.11.3.js' %}"></script>
-	<script type="text/javascript" src="{% static 'other/datepicker/js/bootstrap-datepicker.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>	
 	{% endblock %}
   </head>
@@ -229,11 +227,6 @@
 	   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 		ga('create', 'UA-66942273-1', 'auto');
 		ga('send', 'pageview');
-	</script>
-	<script>
-		$(document).ready(function() {
-		    $('.datepicker').datepicker();
-		});
 	</script>
   </body>
 </html>

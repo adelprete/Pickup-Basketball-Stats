@@ -262,14 +262,25 @@ def recap_totals(context, games):
 
     date = games[0].date
     player_ids = set(list(games.values_list('team1', flat=True)) + list(games.values_list('team2', flat=True)))
+    team_ids = bmodels.Player.objects.filter(first_name__in=["Team1","Team2"]).values_list('id', flat=True)
+    player_ids = filter(lambda id: id not in team_ids, player_ids)
+    
     totals_tables, totals_footer = helpers.recap_totals_dictionaries(headers.totals_statistics, player_ids, date=date, sort_column=sort_column)
     
+    # find first active game type for our tab navigation
+    active_pill =  context['request'].GET.get('tot_active_pill', None)
+    if not active_pill:
+        for key, value in totals_tables.items():
+            if value:
+                active_pill = key
+                break
+
     context = {
         'tables': totals_tables,
         'totals_footer': totals_footer,
         'headers': headers.totals_statistics,
         'tot_sort_col': sort_column,
-        'active_pill': context['request'].GET.get('tot_active_pill') or '5on5'
+        'active_pill': active_pill
         }
     return context
 

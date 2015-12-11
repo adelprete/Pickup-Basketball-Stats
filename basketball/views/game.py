@@ -66,6 +66,9 @@ def recap(request, game_id, template='games/recap.html'):
     
 	#if we are sorting a table we want to bring the relevant tab up after page reload.
     default_tab = request.GET.get('default_tab')
+    
+    if not top_plays and not not_top_plays:
+        default_tab = "totals"
 
     context = {
         'games': game_set,
