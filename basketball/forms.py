@@ -5,6 +5,13 @@ import django_filters
 from django.db import models
 
 
+class DateMaskWidget(forms.TextInput):
+    def __init__(self,*args,**kwargs):
+        super(DateMaskWidget,self).__init__(*args,**kwargs)
+        cls = ' '.join(['datepicker'])
+        self.attrs.update({'class': cls})
+
+
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=30, required=True)
     password = forms.CharField(max_length=30, widget=forms.PasswordInput)
@@ -17,14 +24,18 @@ class PlayerForm(forms.ModelForm):
         model = bmodels.Player
         exclude = [""]
 
+
 class PlayerGameLogForm(forms.Form):
     season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), initial=bmodels.Season.objects.all()[0])
+
 
 class PlayerFilterForm(forms.Form):
     season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
 
+
 class GameForm(forms.ModelForm):
     required_css_class = 'required'
+    date = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'})) 
 
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)
@@ -47,7 +58,7 @@ class GameForm(forms.ModelForm):
 
     class Meta:
         model = bmodels.Game
-        exclude = ['winning_players','top_player']
+        exclude = ['winning_players','top_player', 'team1_score', 'team2_score']
 
 
 class PlayByPlayForm(forms.ModelForm):
@@ -106,6 +117,7 @@ class PlayByPlayFilter(NicerFilterSet):
 class LeaderboardForm(forms.Form):
     season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
     possessions_min = forms.IntegerField(label="Minimum Possessions", min_value=1)
+
 
 
 class SeasonForm(forms.ModelForm):
