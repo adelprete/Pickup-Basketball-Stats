@@ -72,11 +72,11 @@
 					</form>
 					<div><a id="toggle_form" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Play By Play Form</a></div>
 					<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
-						<div id="play_result_message" style="display:none;"></div>
+						<div id="play_result_message"></div>
 						<h3 style="margin-top:5px;">Add Play</h3>
 						{% bootstrap_form form %}
 						<button type="submit" name="submit" class="btn btn-primary btn-block">Save</button>
-						<div id="play_message" style="display:none;"></div>
+						<div id="play_message"></div>
 					</form>
 					{% endif %}
 					<div><a id="toggle_filterform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Play Filter Form</a></div>
@@ -135,7 +135,8 @@
 		});
 		var pbp_form = $('#pbp_form');
 		pbp_form.submit(function () {
-				$("#play_message").html("<br><font style='color:blue;'>Adding play. Please wait...</font><br><br>");
+			$("#play_message").html("<br><font style='color:blue;'>Adding play. Please wait...</font><br><br>");
+			$("#play_result_message").html("");
 			$.ajax({
 				type: "post",
 				url: "{% url 'ajax_add_play' pk=game.pk %}",
