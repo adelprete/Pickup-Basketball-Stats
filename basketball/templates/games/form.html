@@ -1,11 +1,11 @@
 {% extends 'games/home.html' %}
+{% load bootstrap3 staticfiles %}
 {% block head %}
 	{{ block.super }}
 	<link rel="stylesheet" href="{% static 'other/datepicker/css/datepicker.css' %}" type="text/css">
 	<script type="text/javascript" src="{% static 'other/datepicker/js/bootstrap-datepicker.js' %}"></script>
 {% endblock %}
 {% block content %}
-{% load bootstrap3 staticfiles %}
 <style>
 	.large-field {
 		height:100px;

@@ -62,7 +62,6 @@ def root(request, template="base.html"):
     return render(request, template, context)
 
 
-@cache_page(60 * 20)
 def leaderboard_home(request, template="leaderboard/home.html"):
 	"""
 	Generates the leaderboard page.
