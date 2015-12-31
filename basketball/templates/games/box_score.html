@@ -159,7 +159,7 @@
 				type: frm.attr('method'),
 				url: "{% url 'ajax_filter_plays' pk=game.pk %}",
 				data: frm.serialize(),
-				success: function (daita) {
+				success: function (data) {
 					jumpToPbpAnchor();
 					$("#filter_form").toggle();
 					$("#playbyplay_list").html(data);
