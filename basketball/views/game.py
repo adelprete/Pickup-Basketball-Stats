@@ -1,5 +1,5 @@
 import itertools
-import operator
+import operator, datetime
 from collections import OrderedDict
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -18,22 +18,21 @@ from basketball import helpers
 
 def games_home(request, template='games/home.html'):
     """Currently only passes a list of all the games to the template"""
-    latest_games = bmodels.Game.objects.all()
+    games = bmodels.Game.objects.all()
 
     keyfunc = operator.attrgetter('date')
     
-    #group games by date and format date string while we're at it
-    latest_games = sorted(latest_games, key=keyfunc)
-    group_list = [{k.strftime('%m-%d-%Y'): list(g)} for k, g in itertools.groupby(latest_games, keyfunc)]
+    #group games by date where key is datime obj and value is games list
+    group_list = [{k: list(g)} for k, g in itertools.groupby(games, keyfunc)]
     
     #merge list of dictionaries into one dictionary
     group_dict = { key: value for d in group_list for key, value in d.items() }
-
+    
     #convert dictionary into list of tuples (key, value)
     games_tuple_list = []
     for key, value in iter(group_dict.items()):
         games_tuple_list.append((key, value))
-
+    
     games_tuple_list = sorted(games_tuple_list, key=lambda date: date, reverse=True)
 
     #use Django paginator to paginate
