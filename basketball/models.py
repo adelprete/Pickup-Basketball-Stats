@@ -103,16 +103,16 @@ class Player(models.Model):
     def total_games(self, season=None):
         
         if season:
-            return Game.objects.filter(Q(team1=self) | Q(team2=self), date__range=(season.start_date, season.end_date)).distinct().count()
+            return Game.objects.filter(Q(team1=self) | Q(team2=self), date__range=(season.start_date, season.end_date), exhibition=False).distinct().count()
 
-        return Game.objects.filter(Q(team1=self) | Q(team2=self)).distinct().count()
+        return Game.objects.filter(Q(team1=self) | Q(team2=self), exhibition=False).distinct().count()
 
     def total_wins(self, season=None):
         
         if season:
-            return self.winning_players_set.filter(date__range=(season.start_date, season.end_date)).count()
+            return self.winning_players_set.filter(date__range=(season.start_date, season.end_date),exhibition=False).count()
         
-        return self.winning_players_set.all().count()
+        return self.winning_players_set.filter(exhibition=False).count()
 
     def total_losses(self, season=None):
         
@@ -128,14 +128,19 @@ class Player(models.Model):
         season=None
         if season_id:
             season = Season.objects.get(id=season_id)
-       
+
         statlines = self.statline_set.all()
         if game_type:
             statlines = statlines.filter(game__game_type=game_type)
+
         if season:
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
+
         if date:
             statlines = statlines.filter(game__date=date)
+        else:
+            statlines = statlines.filter(game__exhibition=False)
+
         if out_of_season:
             for season in Season.objects.all():
                 statlines = statlines.exclude(game__date__range=(season.start_date, season.end_date))
@@ -164,7 +169,7 @@ class Player(models.Model):
                 'ast_fga',
                 'ast_fgm',
         ]
-        statlines = self.statline_set.filter(game__game_type=game_type)
+        statlines = self.statline_set.filter(game__exhibition=False,game__game_type=game_type)
         if season:
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
         if out_of_season:
@@ -316,8 +321,12 @@ class Player(models.Model):
         
         if date:
             qs = qs.filter(game__date=date)
+        else:
+            qs = qs.filter(game__exhibition=False)
+
         if season:
             qs = qs.filter(game__date__range=(season.start_date, season.end_date))
+
         if out_of_season:
             for season in Season.objects.all():
                 qs = qs.exclude(game__date__range=(season.start_date,season.end_date))
@@ -342,6 +351,7 @@ class Player(models.Model):
 class Game(models.Model):
     date = models.DateField(null=True)
     title = models.CharField(max_length=30)
+    exhibition = models.BooleanField("Exhibition Game?", default=False, help_text="Stats for Exhibition games are NOT counted.")
     team1 = models.ManyToManyField('basketball.Player', related_name='team1_set')
     team2 = models.ManyToManyField('basketball.Player', related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0, help_text="Leave 0 if entering plays")

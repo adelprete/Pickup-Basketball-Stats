@@ -86,9 +86,9 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
     for player in players:
         
         if season:
-            result = player.statline_set.filter(game__game_type=game_type, game__date__range=(season.start_date, season.end_date)).aggregate(Sum(stat), Sum('off_pos'))
+            result = player.statline_set.filter(game__exhibition=False,game__game_type=game_type, game__date__range=(season.start_date, season.end_date)).aggregate(Sum(stat), Sum('off_pos'))
         else:
-            result = player.statline_set.filter(game__game_type=game_type).aggregate(Sum(stat), Sum('off_pos'))
+            result = player.statline_set.filter(game__exhibition=False,game__game_type=game_type).aggregate(Sum(stat), Sum('off_pos'))
         if result['off_pos__sum'] and result['off_pos__sum'] is not 0:
             percentage = (result[stat + '__sum'] / result['off_pos__sum']) * 100
         else:
@@ -100,38 +100,38 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
 
 def recap_totals_dictionaries(statistics, player_ids, date=None, sort_column=""):
 	
-	players = bmodels.Player.objects.filter(id__in=player_ids).order_by('first_name')
+    players = bmodels.Player.objects.filter(id__in=player_ids).order_by('first_name')
 
-	totals_tables = OrderedDict()
-	totals_footer = {}
-	# For each game type we create a list of each player's total stats
-	for game_type in bmodels.GAME_TYPES:
-		totals_tables[game_type[1]] = []
-		totals = {}
-		for player in players:
+    totals_tables = OrderedDict()
+    totals_footer = {}
+    # For each game type we create a list of each player's total stats
+    for game_type in bmodels.GAME_TYPES:
+        totals_tables[game_type[1]] = []
+        totals = {}
+        for player in players:
 		   
-			if player.get_possessions_count(game_type=game_type[0], date=date) > 0:
-				player_data = {'player_obj': player}
+            if player.get_possessions_count(game_type=game_type[0], date=date) > 0:
+                player_data = {'player_obj': player}
 				
-				stats_list = [header['stat'] for header in statistics if header['stat'] != 'gp']
-				player_data.update(player.get_totals(stats_list, game_type=game_type[0], date=date))
-				
-				# Lastly, count how many games the player played
-				statlines = player.statline_set.filter(game__game_type=game_type[0], game__date=date)
-				player_data['gp'] = statlines.count()
+                stats_list = [header['stat'] for header in statistics if header['stat'] != 'gp']
+                player_data.update(player.get_totals(stats_list, game_type=game_type[0], date=date))
 
-				totals_tables[game_type[1]].append(player_data)
-				for key, value in player_data.items():
-					if key is not 'player_obj':
-						if key in totals:
-							totals[key] += value
-						else:
-							totals[key] = value
+                # Lastly, count how many games the player played
+                statlines = player.statline_set.filter(game__game_type=game_type[0], game__date=date)
+                player_data['gp'] = statlines.count()
 
-		totals_footer[game_type[1]] = totals
+                totals_tables[game_type[1]].append(player_data)
+                for key, value in player_data.items():
+                    if key is not 'player_obj':
+                        if key in totals:
+                            totals[key] += value
+                        else:
+                            totals[key] = value
 
-		if sort_column:
-			totals_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
+        totals_footer[game_type[1]] = totals
 
-	return totals_tables, totals_footer
+        if sort_column:
+            totals_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
+
+    return totals_tables, totals_footer
 

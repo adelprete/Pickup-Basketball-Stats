@@ -8,8 +8,8 @@ register = template.Library()
 @register.inclusion_tag('players/highlights.html')
 def player_highlights(player_pk):
     
-    top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='t', top_play_players__pk=player_pk)
-    not_top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='nt', top_play_players__pk=player_pk)
+    top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='t', top_play_players__pk=player_pk, game__exhibition=False)
+    not_top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='nt', top_play_players__pk=player_pk, game__exhibition=False)
 
     context = {
         'top_plays': top_plays,
@@ -61,7 +61,7 @@ def calculate_player_overall_dictionaries(context, category, statistics, player_
                         season_data.update(player.get_averages(stats_list, game_type=game_type[0], season=season))
                     
                     # Lastly, count how many games the player played
-                    statlines = player.statline_set.filter(game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date))
+                    statlines = player.statline_set.filter(game__exhibition=False, game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date))
                     season_data['gp'] = statlines.count()
 
                     tables[game_type[1]].append(season_data)
@@ -81,7 +81,7 @@ def calculate_player_overall_dictionaries(context, category, statistics, player_
                     statlines_used = statlines_used + list(statlines.values_list('id', flat=True))
             
             # Calculate stats for statlines that are not within a season
-            sls_out_of_season = player.statline_set.filter(game__game_type=game_type[0]).exclude(id__in=statlines_used)
+            sls_out_of_season = player.statline_set.filter(game__exhibition=False, game__game_type=game_type[0]).exclude(id__in=statlines_used)
             if sls_out_of_season:
                 season_data = {'title': 'Other'}
                 
@@ -164,7 +164,7 @@ def calculate_player_possessions_dictionaries(context, headers, player_id=None, 
                 season_data.update(player.get_per_100_possessions_data(stats_list, game_type[0], season_id=season.id))
                 
                 # Lastly, count how many games the player played
-                statlines = player.statline_set.filter(game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date))
+                statlines = player.statline_set.filter(game__exhibition=False, game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date))
                 statlines_used = statlines_used + list(statlines.values_list('id',flat=True))
 
                 season_data['gp'] = statlines.count()
@@ -172,7 +172,7 @@ def calculate_player_possessions_dictionaries(context, headers, player_id=None, 
                 possessions_tables[game_type[1]].append(season_data)
 
         # Get possession data from each statline not within a season
-        sls_out_of_season = player.statline_set.filter(game__game_type=game_type[0]).exclude(id__in=statlines_used)
+        sls_out_of_season = player.statline_set.filter(game__exhibition=False, game__game_type=game_type[0]).exclude(id__in=statlines_used)
         if sls_out_of_season:
             if player.get_possessions_count(game_type=game_type[0], out_of_season=True) >= 100:
                 season_data = {'title': 'Other'}

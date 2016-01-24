@@ -1,4 +1,5 @@
 from django import forms
+from base import fields
 from basketball import models as bmodels
 from django.db.models import Q
 import django_filters
@@ -35,7 +36,8 @@ class PlayerFilterForm(forms.Form):
 
 class GameForm(forms.ModelForm):
     required_css_class = 'required'
-    date = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'})) 
+    date = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}))
+    exhibition = fields.BooleanChoiceField(label="Exhibition Game?", required=True, initial=False, help_text="Stats for Exhibition games are NOT counted.")
 
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)

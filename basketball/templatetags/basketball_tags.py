@@ -134,7 +134,7 @@ def calculate_lb_possessions_dictionaries(context, headers, season_id=None, sort
                 player_data.update(player.get_per_100_possessions_data(stats_list, game_type[0], season_id=getattr(season,'id',None)))
                 
                 # Lastly, count how many games the player played
-                statlines = player.statline_set.filter(game__game_type=game_type[0])
+                statlines = player.statline_set.filter(game__exhibition=False, game__game_type=game_type[0])
                 if season:
                     statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
                 player_data['gp'] = statlines.count()
@@ -212,7 +212,7 @@ def calculate_lb_totals_dictionaries(context, statistics, season_id=None, sort_c
                     player_data.update(player.get_totals(stats_list, game_type=game_type[0], season=season))
                     
                     # Lastly, count how many games the player played
-                    statlines = player.statline_set.filter(game__game_type=game_type[0])
+                    statlines = player.statline_set.filter(game__game_type=game_type[0],game__exhibition=False)
                     if season:
                         statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
                     player_data['gp'] = statlines.count()

@@ -47,19 +47,17 @@ def player_page(request, id, template="players/detail.html"):
     """This generates an individual player's page"""
 
     player = get_object_or_404(bmodels.Player, id=id)
-    statlines = player.statline_set.all().order_by('-game__date', 'game__title')
 
     has_top_plays = False
-    if bmodels.PlayByPlay.objects.filter(top_play_players=player):
+    if bmodels.PlayByPlay.objects.filter(game__exhibition=False, top_play_players=player):
         has_top_plays = True
 
     seasons = bmodels.Season.objects.all().order_by('-start_date')
    
-    game_log_form = bforms.PlayerGameLogForm() 
+    game_log_form = bforms.PlayerGameLogForm()
     context = {
         'player': player,
         'has_top_plays': has_top_plays,
-        'statlines': statlines,
         'game_log_form': game_log_form
     }
     return render(request, template, context)
@@ -96,5 +94,5 @@ def ajax_game_log(request):
 	season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
 
 	statlines = bmodels.StatLine.objects.filter(player__id=request.GET['player_id'], game__date__range=(season.start_date,season.end_date)).order_by('-game__date', 'game__title')
-	
+
 	return render_to_response('players/game_log.html', {'statlines': statlines})
