@@ -23,7 +23,7 @@
 	{% for line in statlines %}
 		<tr>
 			<td>{{ line.game.date }}</td>
-			<td><a href="{{ line.game.get_absolute_url }}">{{ line.game.title }}</a></td>
+			<td><a href="{{ line.game.get_absolute_url }}">{{ line.game.get_full_title }}</a></td>
 			<td>{{ line.fgm }}-{{ line.fga }}</td>
 			<td>{{ line.threepm }}-{{ line.threepa }}</td>
 			<td>{{ line.oreb }}</td>

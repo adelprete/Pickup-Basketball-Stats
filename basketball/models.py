@@ -363,6 +363,12 @@ class Game(models.Model):
 
     def __str__(self):
         return "%s: %s" % (self.date.isoformat(), self.title)
+    
+    def get_full_title(self):
+        title = self.title
+        if self.exhibition:
+            title += " (E)"
+        return title
 
     def get_absolute_url(self):
         return reverse("box_score", kwargs={'id': self.id})

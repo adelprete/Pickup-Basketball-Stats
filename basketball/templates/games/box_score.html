@@ -9,7 +9,7 @@
 </script>
 {% endblock %}
 {% block title %}
-	<title>{{ game.date }} - {{ game.title }}</title>
+	<title>{{ game.date }} - {{ game.get_full_title }}</title>
 {% endblock %}
 {% block content %}
 	{% load basketball_tags %}
@@ -20,7 +20,7 @@
 					{% if prev_game %}
 						<a href="{{ prev_game.get_absolute_url }}">{% bootstrap_icon "chevron-left" %}</a>
 					{% endif %}
-					<a href="{% url 'recap' game.pk %}">{{ game.date }}</a> - {{ game.title }}
+					<a href="{% url 'recap' game.pk %}">{{ game.date }}</a> - {{ game.get_full_title }}
 					{% if next_game %}
 						<a href="{{ next_game.get_absolute_url }}">{% bootstrap_icon "chevron-right" %}</a>
 					{% endif %}
