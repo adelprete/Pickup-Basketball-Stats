@@ -2,7 +2,7 @@
 {% block content %}
 {% load bootstrap3 %}
 	<div class="page-header"><h3 class="accent">{% if form.instance.id %}Edit Player{% else %}Create Player{% endif %}</h3></div>
-	<form method=post>{% csrf_token %}
+	<form enctype='multipart/form-data' method=post>{% csrf_token %}
 		<div class="row">
 			<div class="col-sm-5 col-md-3">
 				{% bootstrap_field form.first_name %}
@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-5 col-md-3">
+			<div class="col-sm-5 col-md-5">
 				{% bootstrap_field form.image_src %}
 			</div>
 		</div>

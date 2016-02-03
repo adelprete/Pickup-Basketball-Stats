@@ -72,7 +72,7 @@ def player_basics(request, id=None, form_class=bforms.PlayerForm, template='play
 
     form = form_class(instance=model)
     if request.POST:
-        form = form_class(request.POST, instance=model)
+        form = form_class(request.POST, request.FILES, instance=model)
         if "delete" in request.POST:
             model.delete()
             messages.success(request, 'Player Deleted')
