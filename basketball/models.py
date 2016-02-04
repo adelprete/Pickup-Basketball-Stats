@@ -537,6 +537,16 @@ class Game(models.Model):
 
         statlines.update(total_pos=F('off_pos') + F('def_pos'))
         self.calculate_game_score()
+    
+    def save(self):
+        super(Game, self).save()
+
+        #Delete Statlines for the those players that are no longer on either team
+        game_statlines = StatLine.objects.filter(game=self)
+        for statline in game_statlines:
+            if statline.player not in self.team1.all() and statline.player not in self.team2.all():
+                statline.delete()
+
 
     class Meta():
         ordering = ['-date', 'title']
