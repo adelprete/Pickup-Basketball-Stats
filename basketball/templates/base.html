@@ -17,18 +17,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type="text/css">
-	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}" type="text/css">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}" type="text/css">
 	<link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
 	<script type="text/javascript" src="{% static 'js/jquery-1.11.3.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
-	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>	
+	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 	{% endblock %}
   </head>
 
   <body>
 	{% block top_menu %}
-    
+
 <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -56,7 +56,7 @@
 				<li><a href="{% url 'registration_register' %}">Signup</a></li>
 			  {% else %}
 			  <p class="navbar-text navbar-right" style="color:white;">Signed in as {{ request.user.username }}</p>
-			  <li><a href="{% url 'logout' %}">Log Out</a></li>			  
+			  <li><a href="{% url 'logout' %}">Log Out</a></li>
 			  {% endif %}
 			  {% if not request.user.is_anonymous %}
 					<li id="admin_link"><a href="{% url 'admin:index' %}">Admin</a></li>
@@ -94,7 +94,7 @@
 							<a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a>
 						</li>
 					</ul>
-				
+
 					<div class="tab-content">
 						<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="highlights" style="padding-top:15px;">
 							<div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden;"></div>
@@ -105,9 +105,9 @@
 								<h3 class="accent">Top Plays</h3>
 								{% for play in top_plays %}
 									<div>
-										{{ forloop.counter }} 
+										{{ forloop.counter }}
 										{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay({{ play.time.seconds }},"{{ play.game.youtube_id }}")' style="cursor:pointer;">
-											{% bootstrap_icon "play" %}</a> - 
+											{% bootstrap_icon "play" %}</a> -
 										{{ play.game.title }}: {{ play.description }}
 									</div>
 								{% endfor %}
@@ -116,9 +116,9 @@
 								<h3 class="accent">Not Top Plays</h3>
 								{% for play in not_top_plays %}
 									<div>
-										{{ forloop.counter }} 
+										{{ forloop.counter }}
 										{% if forloop.counter < 10 %}-{% endif %} <a onclick='seekPlayerToPlay("{{ play.time.seconds }}","{{ play.game.youtube_id }}")' style="cursor:pointer;">
-										{% bootstrap_icon "play" %}</a> - 
+										{% bootstrap_icon "play" %}</a> -
 										{{ play.game.title }}: {{ play.description }}
 									</div>
 								{% endfor %}
@@ -137,20 +137,20 @@
 							<label name>Seasons</label>
 							<select class="form-control season">
 								{% for season in seasons %}
-								<option 
-									value="{{ season.id }}" 
+								<option
+									value="{{ season.id }}"
 									{% if season = default_season %}selected="selected"{% endif %}
 									>
 									{{ season.title }}
 								</option>
 								{% endfor %}
-								<option value="All">All</option>	
+								<option value="All">All</option>
 							</select>
 						</div>
-					</form>	
+					</form>
 					<div id="player_standings">
 						{% include 'players/standings.html' %}
-					</div>	
+					</div>
 				</div>
 			</div>
 		</div>
@@ -160,7 +160,7 @@
 		tag.src = "https://www.youtube.com/iframe_api";
 		var firstScriptTag = document.getElementsByTagName('script')[0];
 		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-		
+
 		var player;
 		var timeout;
 		function onYouTubeIframeAPIReady() {
@@ -214,7 +214,7 @@
 		});
 	</script>
 	{% endblock %}
-	</div>	
+	</div>
 	{% block active_tab %}
 		<script>$('#home_link').addClass('active')</script>
 	{% endblock %}
