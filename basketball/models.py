@@ -421,6 +421,7 @@ class Game(models.Model):
             line.pga = 0
             line.fastbreaks = 0
             line.fastbreak_points = 0
+            line.second_chance_points = 0
             line.save()
 
     def get_bench(self):
@@ -450,6 +451,7 @@ class Game(models.Model):
         statlines = self.statline_set.all()
         team1_statlines = statlines.filter(player__in=self.team1.all())
         team2_statlines = statlines.filter(player__in=self.team2.all())
+        second_chance_window = False
         prev_play = prev_prev_play = None  #will store store previsous plays for putback and fastbreak data
         for play in playbyplays:
             if play.primary_play not in ['sub_out', 'sub_in', 'misc']:
@@ -465,6 +467,9 @@ class Game(models.Model):
                             primary_line.pga += 1
                     primary_line.fga += 1
                     primary_line.points += 1
+                    if second_chance_window:
+                        print(str(play.time) + " " + play.__str__())
+                        primary_line.second_chance_points += 1
                 elif play.primary_play == 'fga':
                     if prev_play and ((play.time - prev_play.time).seconds <= settings.PUTBACK_TIME) \
                         and prev_play.secondary_play == 'oreb' and prev_play.secondary_player == play.primary_player:
@@ -476,6 +481,9 @@ class Game(models.Model):
                     primary_line.fga += 1
                     primary_line.fgm += 1
                     primary_line.points += 2
+                    if second_chance_window:
+                        print(play)
+                        primary_line.second_chance_points += 2
 
                 #Analyze fast breaks
                 #If the previous play ended on a DREB check if a goal is made in a certain amount of time seconds
@@ -491,12 +499,14 @@ class Game(models.Model):
 
                 primary_line.save()
                 if play.primary_play in ['threepm', 'fgm', 'to']:
+                    second_chance_window = False
                     if primary_line.player in self.team1.all():
                         team1_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
                         team2_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
                     else:
                         team1_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
                         team2_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
+
                 if play.primary_play in ['fga', 'threepa']:
                     if primary_line.player in self.team1.all():
                         team1_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp') + 1)
@@ -513,9 +523,12 @@ class Game(models.Model):
 
                     if play.secondary_play == 'dreb' or play.secondary_play == 'oreb':
                         secondary_line.total_rebounds += 1
+                        if play.secondary_play == 'oreb':
+                            second_chance_window = True
 
                     secondary_line.save()
                     if play.secondary_play == 'dreb':
+                        second_chance_window = False
                         if primary_line.player in self.team1.all():
                             team1_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
                             team2_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
@@ -604,6 +617,7 @@ class StatLine(models.Model):
     pgm = models.PositiveIntegerField(default=0)
     fastbreaks = models.PositiveIntegerField(default=0)
     fastbreak_points = models.PositiveIntegerField(default=0)
+    second_chance_points = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return '%s - %s - %s' % (self.player.first_name, self.game.title, self.game.date.isoformat())

@@ -29,6 +29,7 @@ adv_totals_statistics = [
         {'stat':'pgm', 'header':'PGM', 'title':'Putbacks Made'},
         {'stat':'pga', 'header':'PGA', 'title':'Putbacks Attempted'},
         {'stat':'fastbreak_points', 'header':'FB PTS', 'title':'FastBreak Points'},
+        {'stat':'second_chance_points', 'header':'SC PTS', 'title':'Second Chance Points'},
         {'stat':'def_pos', 'header':'DEF.POS', 'title':'Defensive Possessions'},
         {'stat':'off_pos', 'header':'OFF.POS', 'title':'Offensive Possessions'},
         {'stat':'dreb_opp', 'header':'DREB.OPP', 'title':'Defensive Rebound Opportunities'},

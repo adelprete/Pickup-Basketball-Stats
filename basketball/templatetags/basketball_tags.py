@@ -66,8 +66,8 @@ def adv_box_score(statlines, bgcolor="white"):
     Passes a team's statlines to a template that will display them in a box score format
     """
     team_totals = {}
-    for stat in ['pga','pgm','fastbreaks','fastbreak_points', 'ast_fgm', 'ast_fga',
-		'unast_fgm', 'unast_fga', 'ast_points']:
+    for stat in ['pga','pgm', 'fastbreak_points', 'ast_fgm', 'ast_fga',
+		'unast_fgm', 'unast_fga', 'ast_points', 'second_chance_points']:
         x = statlines.all().aggregate(Sum(stat))
         team_totals.update(x)
 

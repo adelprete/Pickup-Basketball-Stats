@@ -11,7 +11,8 @@ $(function () {
 		<td></td>
 		<td data-toggle="tooltip" title="Putback Goals (Putback attempts by the player)">PG</td>
 		{% comment %}<td data-toggle="tooltip" title="Fastbreaks">FBs</td>{% endcomment %}
-		<td data-toggle="tooltip" title="Fastbreak Points (Points scored off fastbreaks)">FB PTS</td>
+		<td data-toggle="tooltip" title="Fastbreak Points (Points scored off fastbreaks)">FASTBREAK PTS</td>
+		<td data-toggle="tooltip" title="Second Chance Points (Points scored after an Offensive Rebound)">SECOND CHANCE PTS</td>
 		<td data-toggle="tooltip" title="Assisted Field Goals (Field goals the player attempted that were assisted)">AST FGS</td>
 		<td data-toggle="tooltip" title="Unassisted Field Goals (Field goals the player attempted that were unassisted)">UNAST FGS</td>
 		<td data-toggle="tooltip" title="Assisted Points (Points scored off your assists)">AST PTS</td>
@@ -22,6 +23,7 @@ $(function () {
 			<td>{{ line.pgm }}-{{ line.pga }}</td>
 			{% comment %}<td>{{ line.fastbreaks }}</td>{% endcomment %}
 			<td>{{ line.fastbreak_points }}</td>
+			<td>{{ line.second_chance_points }}</td>
 			<td>{{ line.ast_fgm }}-{{ line.ast_fga }}</td>
 			<td>{{ line.unast_fgm }}-{{ line.unast_fga }}</td>
 			<td>{{ line.ast_points }}</td>
@@ -32,6 +34,7 @@ $(function () {
 			<td>{{ team.pgm }}-{{ team.pga }}</td>
 			{% comment %}<td>{{ team.fastbreaks }}</td>{% endcomment %}
 			<td>{{ team.fastbreak_points }}</td>
+			<td>{{ team.second_chance_points }}</td>
 			<td>{{ team.ast_fgm }}-{{ team.ast_fga }}</td>
 			<td>{{ team.unast_fgm }}-{{ team.unast_fga }}</td>
 			<td>{{ team.ast_points }}</td>
@@ -41,6 +44,7 @@ $(function () {
 		<td>{{ team_totals.pgm__sum }}-{{ team_totals.pga__sum }}</td>
 		{% comment %}<td>{{ team_totals.fastbreaks__sum }}</td>{% endcomment %}
 		<td>{{ team_totals.fastbreak_points__sum }}</td>
+		<td>{{ team.second_chance_points__sum }}</td>
 		<td>{{ team_totals.ast_fgm__sum }}-{{ team_totals.ast_fga__sum }}</td>
 		<td>{{ team_totals.unast_fgm__sum }}-{{ team_totals.unast_fga__sum }}</td>
 		<td>{{ team_totals.ast_points__sum }}</td>
