@@ -117,5 +117,8 @@ THUMBNAIL_ALIASES = {
     },
 }
 
-from saturdayball.private import *
+#Global variables
+PUTBACK_TIME = 6
+FASTBREAK_TIME = 10
 
+from saturdayball.private import *
