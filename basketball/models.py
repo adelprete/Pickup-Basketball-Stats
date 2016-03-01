@@ -468,7 +468,6 @@ class Game(models.Model):
                     primary_line.fga += 1
                     primary_line.points += 1
                     if second_chance_window:
-                        print(str(play.time) + " " + play.__str__())
                         primary_line.second_chance_points += 1
                 elif play.primary_play == 'fga':
                     if prev_play and ((play.time - prev_play.time).seconds <= settings.PUTBACK_TIME) \
@@ -482,7 +481,6 @@ class Game(models.Model):
                     primary_line.fgm += 1
                     primary_line.points += 2
                     if second_chance_window:
-                        print(play)
                         primary_line.second_chance_points += 2
 
                 #Analyze fast breaks
