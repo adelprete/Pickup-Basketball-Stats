@@ -486,7 +486,7 @@ class Game(models.Model):
                 #Analyze fast breaks
                 #If the previous play ended on a DREB check if a goal is made in a certain amount of time seconds
                 #in case of a BLK we have to look 2 plays back for the DREB
-                if (prev_play and prev_play.secondary_play in ['dreb', 'stl']) \
+                if (prev_play and prev_play.secondary_play in ['dreb', 'stls']) \
                     or (prev_prev_play and prev_play.primary_play == ['BLK'] and prev_prev_play.secondary_play in ['dreb']):
                         if ((play.time - prev_play.time).seconds <= settings.FASTBREAK_TIME) and play.primary_play in ['fgm', 'threepm']:
                             primary_line.fastbreaks += 1
