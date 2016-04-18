@@ -353,6 +353,7 @@ class Game(models.Model):
     date = models.DateField(null=True)
     title = models.CharField(max_length=30)
     exhibition = models.BooleanField("Exhibition Game?", default=False, help_text="Stats for Exhibition games are NOT counted.")
+    points_to_win = models.CharField(max_length=30, choices=(('11','11'), ('30','30'), ('other','Other')), default='11')
     team1 = models.ManyToManyField('basketball.Player', related_name='team1_set')
     team2 = models.ManyToManyField('basketball.Player', related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0, help_text="Leave 0 if entering plays")
@@ -648,3 +649,13 @@ class Season(models.Model):
 
     class Meta():
         ordering = ["-end_date"]
+
+
+class TableMatrix(models.Model):
+    title = models.CharField(max_length=30)
+    out_of_date = models.BooleanField(default=True)
+
+class Cell(models.Model):
+    matrix = models.ForeignKey('basketball.TableMatrix')
+    row = models.PositiveIntegerField()
+    column = models.PositiveIntegerField()

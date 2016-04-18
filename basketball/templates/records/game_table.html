@@ -1,0 +1,24 @@
+<div class="">
+	<table class="table table-hover table-condensed">
+        {% for row in table_matrix %}
+            {% if forloop.first %}
+                <tr style="background:#d9edf7;">
+                    <th class="col-lg-2 col-md-2 col-sm-2 col-xs-1" style="text-align:left;">{{ row.0 }}</th>
+                    <th>{{ row.1 }}</th>
+                    <th>{{ row.2 }}</th>
+                    <th>{{ row.3 }}</th>
+                    <th>{{ row.4 }}</th>
+                </tr>
+            {% else %}
+                <tr>
+                    <td style="font-weight: bold;">{{ row.0 }}</td>
+                    <td>{{ row.1 }}</td>
+                    <td>{{ row.2 }}</td>
+                    <td>{{ row.3 }}</td>
+                    <td>{{ row.4 }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+
+	</table>
+</div>

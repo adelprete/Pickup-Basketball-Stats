@@ -97,6 +97,13 @@ def leaderboard_home(request, template="leaderboard/home.html"):
 		}
 	return render(request, template, context)
 
+def records_home(request, template="records/home.html"):
+    """
+    Generates the Records page
+    This page uses tabs that loads various templatetags that display different record information
+    """
+    return render(request, template, {})
+
 
 def login(request, template="login.html"):
     username = None
