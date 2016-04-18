@@ -11,7 +11,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td style="font-weight: bold;">{{ row.0 }}</td>
+                    <td style="font-weight: bold;">{% ifchanged row.0 %}{{ row.0 }}{% else %}{% endifchanged %}</td>
                     <td>{{ row.1 }}</td>
                     <td>{{ row.2 }}</td>
                     <td>{{ row.3 }}</td>

@@ -47,17 +47,20 @@ def game_records_table():
         # Most points scored in a game
         for stat in stats:
             statlines = models.StatLine.objects.filter(game__points_to_win='11').order_by("-" + stat[0],"-game__date")[:20]
-            record = getattr(statlines[0], stat[0], 0)
+            record = False
+            if stat[0] == 'unast_fga':
+                import pdb;pdb.set_trace()
             for statline in statlines:
+                if statline.player.get_possessions_count() < 200:
+                    continue
+                elif not record:
+                    record = getattr(statline, stat[0], 0)
                 row = []
                 if record == 0:
                     array_matrix.append([stat[1], "none", "none", "none", "none"])
 
                 if getattr(statline, stat[0], 0) == record:
-                    if statline is statlines[0]:
-                        row.append(stat[1])
-                    else:
-                        row.append("")
+                    row.append(stat[1])
                     row.append(statline.player)
                     row.append(getattr(statline, stat[0], 0))
                     row.append(statline.game.date)
