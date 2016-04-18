@@ -48,13 +48,12 @@ def game_records_table():
         for stat in stats:
             statlines = models.StatLine.objects.filter(game__points_to_win='11').order_by("-" + stat[0],"-game__date")[:20]
             record = False
-            if stat[0] == 'unast_fga':
-                import pdb;pdb.set_trace()
             for statline in statlines:
                 if statline.player.get_possessions_count() < 200:
                     continue
                 elif not record:
                     record = getattr(statline, stat[0], 0)
+
                 row = []
                 if record == 0:
                     array_matrix.append([stat[1], "none", "none", "none", "none"])
