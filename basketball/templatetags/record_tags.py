@@ -63,7 +63,7 @@ def game_records_table():
                     row.append(statline.player)
                     row.append(getattr(statline, stat[0], 0))
                     row.append(statline.game.date)
-                    row.append(statline.game.title)
+                    row.append(statline.game)
                     array_matrix.append(row)
                 else:
                     break
