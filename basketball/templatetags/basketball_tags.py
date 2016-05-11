@@ -9,7 +9,11 @@ register = template.Library()
 
 @register.filter(name='access')
 def access(value, arg):
-	return value[arg]
+    return value[arg]
+
+@register.filter(name='getattribute')
+def getattribute(obj, attr):
+	return getattr(obj,attr)
 
 @register.filter
 def formattime(time):
@@ -272,17 +276,39 @@ def lb_adv_totals(context, game_type="5v5", season=None):
         }
     return context
 
+#@register.inclusion_tag('games/recap_totals.html', takes_context=True)
 @register.inclusion_tag('games/recap_totals.html', takes_context=True)
 def recap_totals(context, games):
+
     sort_column = context['request'].GET.get('tot_sort')
 
     date = games[0].date
+
     player_ids = set(list(games.values_list('team1', flat=True)) + list(games.values_list('team2', flat=True)))
-    team_ids = bmodels.Player.objects.filter(first_name__in=["Team1","Team2"]).values_list('id', flat=True)
+    team_ids = bmodels.Player.objects.filter(first_name__in=["Team1", "Team2"]).values_list('id', flat=True)
     player_ids = filter(lambda id: id not in team_ids, player_ids)
 
-    totals_tables, totals_footer = helpers.recap_totals_dictionaries(headers.totals_statistics, player_ids, date=date, sort_column=sort_column)
+    totals_tables, totals_footer = helpers.recap_totals_dictionaries(headers.totals_statistics, player_ids,
+                                                                          date=date, sort_column=sort_column)
+    """
+    totals_by_type, totals_data = OrderedDict(), {}
+    temp_total_data = {}
+    statlines_by_type = OrderedDict()
+    for game_type in bmodels.GAME_TYPES:
 
+        daily_statlines = bmodels.DailyStatline.objects.filter(date=date, game_type=game_type[0]).exclude(player__first_name__in=['Team1','Team2'])
+        if sort_column:
+            daily_statlines = daily_statlines.order_by("-"+sort_column)
+        statlines_by_type[game_type[1]] = daily_statlines
+
+        temp_total_data = daily_statlines.aggregate(*[Sum(stat[0]) for stat in bmodels.STATS])
+        for stat in bmodels.STATS:
+            totals_data[stat[0]] = temp_total_data[stat[0] + '__sum'] or 0
+        totals_data['gp'] = bmodels.Game.objects.filter(date=date, game_type=game_type[0]).count()
+
+        import copy
+        totals_by_type[game_type[1]] = copy.copy(totals_data)
+    """
     # find first active game type for our tab navigation
     active_pill =  context['request'].GET.get('tot_active_pill', None)
     if not active_pill:
@@ -292,6 +318,8 @@ def recap_totals(context, games):
                 break
 
     context = {
+        #'tables': statlines_by_type,
+        #'totals_footer': totals_by_type,
         'tables': totals_tables,
         'totals_footer': totals_footer,
         'headers': headers.totals_statistics,

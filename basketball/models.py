@@ -1,3 +1,4 @@
+import _thread
 from django.db import models
 from django.db.models import F, Sum, Q, Avg, signals
 from django.core.urlresolvers import reverse
@@ -67,6 +68,39 @@ NOT_TOP_PLAY_RANKS = [
 ]
 RANKS = TOP_PLAY_RANKS + NOT_TOP_PLAY_RANKS
 
+STATS = [
+    ('points', 'Points'),
+    ('asts', 'Assists'),
+    ('total_rebounds', 'Rebounds'),
+    ('dreb', 'Defensive Rebounds'),
+    ('oreb', 'Offensive Rebounds'),
+    ('stls', 'Steals'),
+    ('blk', 'Blocks'),
+    ('fgm', 'Field Goals Made'),
+    ('fga', 'Field Goals Attempted'),
+    ('threepm', '3 Pointers Made'),
+    ('threepa', '3 Pointers Attempted'),
+    ('pot_ast', 'Potential Assists'),
+    ('ba', 'Blocks Against'),
+    ('pf', 'Personal Fouls'),
+    ('fd', 'Fouls Drawn'),
+    ('to', 'Turnovers'),
+    ('ast_points', 'Assisted Points'),
+    ('ast_fgm', 'Assisted Field Goals Made'),
+    ('ast_fga', 'Assisted Field Goal Attempts'),
+    ('unast_fgm', 'Unassisted Field Goals Made'),
+    ('unast_fga', 'Unassisted Field Goal Attempts'),
+    ('pgm', 'Putbacks Made'),
+    ('pga', 'Putbacks Attempted'),
+    ('fastbreaks', 'Fastbreaks'),
+    ('fastbreak_points', 'Fastbreak Points'),
+    ('second_chance_points', 'Second Chance Points'),
+    ('def_pos','Defensive Possessions'),
+    ('off_pos', 'Offensive Possessions'),
+    ('total_pos', 'Total Possessions'),
+    ('dreb_opp', 'Dreb Opportunities'),
+    ('oreb_opp', 'Oreb Opportunities'),
+]
 
 class RealPlayerManager(models.Manager):
     def get_queryset(self):
@@ -306,19 +340,22 @@ class Player(models.Model):
             data_dict[stat] = round(percentage, 1)
         return data_dict
 
-    def get_averages(self, stats_list, game_type=None, season=None, date=None, out_of_season=False):
+    def get_averages(self, stats_list, game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
         """Returns a dictionary of the player's averages"""
-        return self.get_player_data(stats_list, report_type='Avg', game_type=game_type, season=season, date=date, out_of_season=out_of_season)
+        return self.get_player_data(stats_list, report_type='Avg', game_type=game_type, season=season, date=date, out_of_season=out_of_season, points_to_win=points_to_win)
 
-    def get_totals(self, stats_list, game_type=None, season=None, date=None, out_of_season=False):
+    def get_totals(self, stats_list, game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
         """Returns a dictionary of the player's totals"""
-        return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season, date=date, out_of_season=out_of_season)
+        return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season, date=date, out_of_season=out_of_season, points_to_win=points_to_win)
 
-    def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None, out_of_season=False):
+    def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
 
         qs = self.statline_set.all()
         if game_type:
             qs = qs.filter(game__game_type=game_type)
+
+        if points_to_win:
+            qs = qs.filter(game__points_to_win=points_to_win)
 
         if date:
             qs = qs.filter(game__date=date)
@@ -348,6 +385,64 @@ class Player(models.Model):
 
     class Meta():
         ordering = ['first_name']
+
+def update_game_record_statlines(game):
+
+    statlines = game.statline_set.all()
+    game_type = statlines[0].game.game_type
+
+    for statline in statlines:
+        record_statline = RecordStatline.objects.get_or_create(
+            player=statline.player,
+            game_type=game_type,
+            record_type='game',
+            points_to_win=game.points_to_win)[0]
+
+        for stat in STATS:
+            if getattr(statline,stat[0],0) > getattr(record_statline, stat[0], 0):
+                setattr(record_statline,stat[0], getattr(statline,stat[0],0))
+
+        record_statline.save()
+
+    TableMatrix.objects.filter(title='day_records').update(out_of_date=True)
+
+def update_daily_statlines(game):
+
+    statlines = game.statline_set.all()
+    date = statlines[0].game.date
+    game_type = statlines[0].game.game_type
+
+    for statline in statlines:
+
+        stats = StatLine._meta.get_all_field_names()
+
+        stats.remove('game')
+        stats.remove('game_id')
+        stats.remove('player');
+        stats.remove('player_id')
+
+        player_data = statline.player.get_totals(stats, date=date, game_type=game_type, points_to_win=game.points_to_win)
+
+        player_data['gp'] = StatLine.objects.filter(game__date=date,
+                                                    player=statline.player,
+                                                    game__game_type=game.game_type,
+                                                    game__points_to_win=game.points_to_win
+                                                    ).count()
+        player_data['player'] = statline.player
+        player_data['date'] = date
+        player_data['game_type'] = game_type
+        player_data.pop('id', None)
+
+        DailyStatline.objects.update_or_create(
+            defaults=player_data,
+            player=statline.player,
+            date=date,
+            game_type=game_type,
+            points_to_win = game.points_to_win
+        )
+
+    TableMatrix.objects.filter(title='game_records').update(out_of_date=True)
+
 
 class Game(models.Model):
     date = models.DateField(null=True)
@@ -567,6 +662,9 @@ class Game(models.Model):
         statlines.update(total_pos=F('off_pos') + F('def_pos'))
         self.calculate_game_score()
 
+        _thread.start_new_thread(update_daily_statlines, (self,))
+        _thread.start_new_thread(update_game_record_statlines, (self,))
+
     def save(self):
         super(Game, self).save()
 
@@ -580,9 +678,7 @@ class Game(models.Model):
     class Meta():
         ordering = ['-date', 'title']
 
-
-class StatLine(models.Model):
-    game = models.ForeignKey('basketball.Game')
+class BaseStatline(models.Model):
     player = models.ForeignKey('basketball.Player')
     fgm = models.PositiveIntegerField(default=0)
     fga = models.PositiveIntegerField(default=0)
@@ -601,7 +697,7 @@ class StatLine(models.Model):
     pf = models.PositiveIntegerField(default=0)
     points = models.PositiveIntegerField(default=0)
 
-    #advanced stats
+    # advanced stats
     ast_points = models.PositiveIntegerField(default=0)
     def_pos = models.PositiveIntegerField(default=0)
     off_pos = models.PositiveIntegerField(default=0)
@@ -618,8 +714,40 @@ class StatLine(models.Model):
     fastbreak_points = models.PositiveIntegerField(default=0)
     second_chance_points = models.PositiveIntegerField(default=0)
 
+    class Meta():
+        abstract=True
+
+class StatLine(BaseStatline):
+    game = models.ForeignKey('basketball.Game')
+
     def __str__(self):
         return '%s - %s - %s' % (self.player.first_name, self.game.title, self.game.date.isoformat())
+
+class DailyStatline(BaseStatline):
+    date = models.DateField()
+    game_type = models.CharField(max_length=30, choices=GAME_TYPES)
+    points_to_win = models.CharField(max_length=30, choices=(('11','11'), ('30','30'), ('other','Other')), default='11')
+    gp = models.PositiveIntegerField("Games Played", default=0)
+
+    def __str__(self):
+        return '%s - %s - %s' % (self.player.first_name, "Day ", self.date)
+
+class SeasonStatline(BaseStatline):
+    season = models.ForeignKey('basketball.Season')
+    game_type = models.CharField(max_length=30, choices=GAME_TYPES)
+    gp = models.PositiveIntegerField("Games Played", default=0)
+    points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='11')
+
+    def __str__(self):
+        return '%s - %s - %s' % (self.player.first_name, "Season ", self.season)
+
+class RecordStatline(BaseStatline):
+    game_type = models.CharField(max_length=30, choices=GAME_TYPES)
+    record_type = models.CharField(max_length=30, choices=(('game','Game'), ('day','day'), ('season','Season')))
+    points_to_win = models.CharField(max_length=30, choices=(('11','11'), ('30','30'), ('other','Other')), default='11')
+
+    def __str__(self):
+        return "%s - Game Records" % (self.player.get_full_name(),)
 
 
 class PlayByPlay(models.Model):
@@ -657,5 +785,6 @@ class TableMatrix(models.Model):
 
 class Cell(models.Model):
     matrix = models.ForeignKey('basketball.TableMatrix')
-    row = models.PositiveIntegerField()
-    column = models.PositiveIntegerField()
+    row = models.PositiveIntegerField(null=True)
+    column = models.PositiveIntegerField(null=True)
+    value = models.CharField(max_length=80, null=True)

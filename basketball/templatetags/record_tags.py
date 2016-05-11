@@ -3,6 +3,13 @@ from basketball import models
 from django import template
 register = template.Library()
 
+IGNORED_STATS = [
+    ('def_pos', 'Defensive Possessions'),
+    ('off_pos', 'Offensive Possessions'),
+    ('total_pos', 'Total Possessions'),
+    ('dreb_opp', 'Dreb Opportunities'),
+    ('oreb_opp', 'Oreb Opportunities'),
+]
 
 @register.inclusion_tag('records/game_table.html')
 def game_records_table():
@@ -11,61 +18,124 @@ def game_records_table():
     """
 
     # grab record matrix if it exists
-    record_matrix = models.TableMatrix.objects.get_or_create(title="game_records")
+    record_matrix = models.TableMatrix.objects.get_or_create(title="game_records")[0]
 
-    if record_matrix[0].out_of_date:
+    if record_matrix.out_of_date:
+        record_matrix.delete()
         array_matrix = []
         array_matrix.append(["Stat", "Name", "Value", "Date", "Game"])
 
-        stats = [
-            ('points', 'Points'),
-            ('asts', 'Assists'),
-            ('total_rebounds', 'Rebounds'),
-            ('dreb', 'Defensive Rebounds'),
-            ('oreb', 'Offensive Rebounds'),
-            ('stls', 'Steals'),
-            ('blk', 'Blocks'),
-            ('fgm', 'Field Goals Made'),
-            ('fga', 'Field Goals Attempted'),
-            ('threepm', '3 Pointers Made'),
-            ('threepa', '3 Pointers Attempted'),
-            ('pot_ast', 'Potential Assists'),
-            ('ba', 'Blocks Against'),
-            ('to', 'Turnovers'),
-            ('ast_points', 'Assisted Points'),
-            ('ast_fgm', 'Assisted Field Goals Made'),
-            ('ast_fga', 'Assisted Field Goal Attempts'),
-            ('unast_fgm', 'Unassisted Field Goals Made'),
-            ('unast_fga', 'Unassisted Field Goal Attempts'),
-            ('pgm', 'Putbacks Made'),
-            ('pga', 'Putbacks Attempted'),
-            ('fastbreaks', 'Fastbreaks'),
-            ('fastbreak_points', 'Fastbreak Points'),
-            ('second_chance_points', 'Second Chance Points'),
-        ]
+        # Run through each stat and find the best statline for each one
+        for stat in models.STATS:
+            if stat not in IGNORED_STATS:
+                statlines = models.StatLine.objects.filter(game__points_to_win='11').order_by("-" + stat[0],"-game__date")[:20]
+                record = False
+                for statline in statlines:
 
-        # Most points scored in a game
-        for stat in stats:
-            statlines = models.StatLine.objects.filter(game__points_to_win='11').order_by("-" + stat[0],"-game__date")[:20]
-            record = False
-            for statline in statlines:
-                if statline.player.get_possessions_count() < 200:
-                    continue
-                elif not record:
-                    record = getattr(statline, stat[0], 0)
+                    if statline.player.get_possessions_count() < 200:
+                        continue
+                    elif not record:
+                        record = getattr(statline, stat[0], 0)
 
-                row = []
-                if record == 0:
-                    array_matrix.append([stat[1], "none", "none", "none", "none"])
+                    row = []
+                    if record == 0:
+                        array_matrix.append([stat[1], "none", "none", "none", "none"])
 
-                if getattr(statline, stat[0], 0) == record:
-                    row.append(stat[1])
-                    row.append(statline.player)
-                    row.append(getattr(statline, stat[0], 0))
-                    row.append(statline.game.date)
-                    row.append(statline.game)
-                    array_matrix.append(row)
-                else:
-                    break
+                    if getattr(statline, stat[0], 0) == record:
+                        array_matrix.append([
+                            stat[1],
+                            statline.player.get_full_name(),
+                            str(getattr(statline, stat[0], 0)),
+                            statline.game.date.strftime('%b %d %Y'),
+                            statline.game.title,
+                        ])
+                    else:
+                        break
+
+        matrix = models.TableMatrix.objects.create(title="game_records",out_of_date=False)
+
+        for y, row in enumerate(array_matrix):
+            for x, value in enumerate(row):
+                cell = models.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
+                cell.save()
+
+    else:
+        array_matrix = []
+        cells = record_matrix.cell_set.all()
+
+        for i in range(0, int(cells.count()/5)):
+            row = [
+                cells.get(row=i,column=0).value,
+                cells.get(row=i, column=1).value,
+                cells.get(row=i, column=2).value,
+                cells.get(row=i, column=3).value,
+            ]
+            array_matrix.append(row)
 
     return {"table_matrix":array_matrix}
+
+from django.db.models import Count, Min, Sum, Avg
+@register.inclusion_tag('records/game_table.html')
+def day_records_table():
+    """
+    Calculate records on achieved on a single day
+    """
+
+    # grab record matrix if it exists
+    record_matrix = models.TableMatrix.objects.get_or_create(title="day_records")[0]
+
+    if record_matrix.out_of_date:
+        record_matrix.delete()
+        array_matrix = []
+        array_matrix.append(["Stat", "Name", "Value", "Date"])
+
+        # Run through each stat and find the best statline for each one
+        for stat in models.STATS:
+            if stat not in IGNORED_STATS:
+                statlines = models.DailyStatline.objects.filter(points_to_win='11').order_by("-" + stat[0], "-date")[:20]
+                record = False
+
+                for statline in statlines:
+
+                    if statline.player.get_possessions_count() < 200:
+                        continue
+                    elif not record:
+                        record = getattr(statline, stat[0], 0)
+
+                    row = []
+                    if record == 0:
+                        array_matrix.append([stat[1], "none", "none", "none", "none"])
+
+                    if getattr(statline, stat[0], 0) == record:
+                        array_matrix.append([
+                            stat[1],
+                            statline.player.get_full_name(),
+                            str(getattr(statline, stat[0], 0)),
+                            statline.date.strftime('%b %d %Y'),
+                        ])
+                    else:
+                        break
+
+        matrix = models.TableMatrix.objects.create(title="day_records", out_of_date=False)
+
+        for y, row in enumerate(array_matrix):
+            for x, value in enumerate(row):
+                cell = models.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
+                cell.save()
+
+    else:
+        array_matrix = []
+        cells = record_matrix.cell_set.all()
+
+        for i in range(0, int(cells.count() / 4)):
+            row = [
+                cells.get(row=i, column=0).value,
+                cells.get(row=i, column=1).value,
+                cells.get(row=i, column=2).value,
+                cells.get(row=i, column=3).value,
+            ]
+            array_matrix.append(row)
+
+    return {"table_matrix": array_matrix}
+
+
