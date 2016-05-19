@@ -350,24 +350,32 @@ class Player(models.Model):
 
     def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
 
-        qs = self.statline_set.all()
-        if game_type:
-            qs = qs.filter(game__game_type=game_type)
+        if not season:
+            qs = self.statline_set.all()
+            if game_type:
+                qs = qs.filter(game__game_type=game_type)
 
-        if points_to_win:
-            qs = qs.filter(game__points_to_win=points_to_win)
+            if points_to_win:
+                qs = qs.filter(game__points_to_win=points_to_win)
 
-        if date:
-            qs = qs.filter(game__date=date)
+            if date:
+                qs = qs.filter(game__date=date)
+            else:
+                qs = qs.filter(game__exhibition=False)
+
+            if out_of_season:
+                for season in Season.objects.all():
+                    qs = qs.exclude(game__date__range=(season.start_date,season.end_date))
         else:
-            qs = qs.filter(game__exhibition=False)
+            qs = DailyStatline.objects.filter(player=self)
+            if game_type:
+                qs = qs.filter(game_type=game_type)
 
-        if season:
-            qs = qs.filter(game__date__range=(season.start_date, season.end_date))
+            if points_to_win:
+                qs = qs.filter(points_to_win=points_to_win)
 
-        if out_of_season:
-            for season in Season.objects.all():
-                qs = qs.exclude(game__date__range=(season.start_date,season.end_date))
+            if season:
+                qs = qs.filter(date__range=(season.start_date, season.end_date))
 
         data_dict = {}
         if report_type=='Sum':
@@ -441,7 +449,45 @@ def update_daily_statlines(game):
             points_to_win = game.points_to_win
         )
 
-    TableMatrix.objects.filter(title='game_records').update(out_of_date=True)
+    TableMatrix.objects.filter(title='day_records').update(out_of_date=True)
+    #update_season_statlines(game)
+
+def update_season_statlines(game):
+    print("Start Season")
+    statlines = game.statline_set.all()
+    date = statlines[0].game.date
+    game_type = statlines[0].game.game_type
+    season = Season.objects.get(start_date__lte=date, end_date__gte=date)
+
+    for statline in statlines:
+
+        stats = StatLine._meta.get_all_field_names()
+
+        stats.remove('game')
+        stats.remove('game_id')
+        stats.remove('player');
+        stats.remove('player_id')
+
+        player_data = statline.player.get_totals(stats, game_type=game_type, season=season, points_to_win=game.points_to_win)
+
+        player_data['gp'] = StatLine.objects.filter(game__date__range=(season.start_date, season.end_date),
+                                                         player=statline.player,
+                                                         game__game_type=game.game_type,
+                                                         game__points_to_win=game.points_to_win
+                                                         ).count()
+
+        player_data.pop('id', None)
+
+        SeasonStatline.objects.update_or_create(
+            defaults=player_data,
+            player=statline.player,
+            game_type=game_type,
+            season=season,
+            points_to_win = game.points_to_win
+        )
+
+    #TableMatrix.objects.filter(title='game_records').update(out_of_date=True)
+    print("End season")
 
 
 class Game(models.Model):
@@ -666,14 +712,31 @@ class Game(models.Model):
         _thread.start_new_thread(update_game_record_statlines, (self,))
 
     def save(self):
+
+        # Check if date changed, if it did we need to update the DailyStatlines for that day after we save.
+        orig_game = Game.objects.get(id=self.id)
+        old_date = None
+        if orig_game.date != self.date:
+            old_date = orig_game.date
+
         super(Game, self).save()
 
-        #Delete Statlines for the those players that are no longer on either team
+        # Delete all Daily Statlines on old date and re calculate them
+        if old_date:
+            DailyStatline.objects.filter(date=old_date, game_type=self.game_type,
+                                         points_to_win=self.points_to_win).delete()
+            games = Game.objects.filter(date=old_date,game_type=self.game_type, points_to_win=self.points_to_win)
+            for game in games:
+                update_daily_statlines(game)
+
+
+        # Delete Statlines for the those players that are no longer on either team
         game_statlines = StatLine.objects.filter(game=self)
         for statline in game_statlines:
             if statline.player not in self.team1.all() and statline.player not in self.team2.all():
                 statline.delete()
 
+        update_daily_statlines(self)
 
     class Meta():
         ordering = ['-date', 'title']

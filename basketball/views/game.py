@@ -94,7 +94,6 @@ def game_basics(request, game_id=None, form_class=bforms.GameForm, template='gam
             return redirect('/games/')
         if form.is_valid():
             game_record = form.save()
-
             for player in game_record.team1.iterator():
                 if not bmodels.StatLine.objects.filter(game=game_record, player=player):
                     bmodels.StatLine.objects.create(game=game_record, player=player)
