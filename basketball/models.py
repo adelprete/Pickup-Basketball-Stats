@@ -417,40 +417,41 @@ def update_game_record_statlines(game):
 def update_daily_statlines(game):
 
     statlines = game.statline_set.all()
-    date = statlines[0].game.date
-    game_type = statlines[0].game.game_type
+    if statlines:
+        date = statlines[0].game.date
+        game_type = statlines[0].game.game_type
 
-    for statline in statlines:
+        for statline in statlines:
 
-        stats = StatLine._meta.get_all_field_names()
+            stats = StatLine._meta.get_all_field_names()
 
-        stats.remove('game')
-        stats.remove('game_id')
-        stats.remove('player');
-        stats.remove('player_id')
+            stats.remove('game')
+            stats.remove('game_id')
+            stats.remove('player')
+            stats.remove('player_id')
 
-        player_data = statline.player.get_totals(stats, date=date, game_type=game_type, points_to_win=game.points_to_win)
+            player_data = statline.player.get_totals(stats, date=date, game_type=game_type, points_to_win=game.points_to_win)
 
-        player_data['gp'] = StatLine.objects.filter(game__date=date,
-                                                    player=statline.player,
-                                                    game__game_type=game.game_type,
-                                                    game__points_to_win=game.points_to_win
-                                                    ).count()
-        player_data['player'] = statline.player
-        player_data['date'] = date
-        player_data['game_type'] = game_type
-        player_data.pop('id', None)
+            player_data['gp'] = StatLine.objects.filter(game__date=date,
+                                                        player=statline.player,
+                                                        game__game_type=game.game_type,
+                                                        game__points_to_win=game.points_to_win
+                                                        ).count()
+            player_data['player'] = statline.player
+            player_data['date'] = date
+            player_data['game_type'] = game_type
+            player_data.pop('id', None)
 
-        DailyStatline.objects.update_or_create(
-            defaults=player_data,
-            player=statline.player,
-            date=date,
-            game_type=game_type,
-            points_to_win = game.points_to_win
-        )
+            DailyStatline.objects.update_or_create(
+                defaults=player_data,
+                player=statline.player,
+                date=date,
+                game_type=game_type,
+                points_to_win = game.points_to_win
+            )
 
-    TableMatrix.objects.filter(title='day_records').update(out_of_date=True)
-    #update_season_statlines(game)
+        TableMatrix.objects.filter(title='day_records').update(out_of_date=True)
+        #update_season_statlines(game)
 
 def update_season_statlines(game):
     print("Start Season")
@@ -714,10 +715,11 @@ class Game(models.Model):
     def save(self):
 
         # Check if date changed, if it did we need to update the DailyStatlines for that day after we save.
-        orig_game = Game.objects.get(id=self.id)
         old_date = None
-        if orig_game.date != self.date:
-            old_date = orig_game.date
+        if self.id:
+            orig_game = Game.objects.get(id=self.id)
+            if orig_game.date != self.date:
+                old_date = orig_game.date
 
         super(Game, self).save()
 
