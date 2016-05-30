@@ -48,14 +48,17 @@
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="game">
 			<h3 class="accent">Individual Game Records</h3>
+			<div style="color: #777;font-size:17px;width:100%;">Games up to {{ points_to_win }}</div>
 			{% game_records_table points_to_win %}
 		</div>
 		<div role="tabpanel" class="tab-pane" id="week">
 			<h3 class="accent">Week Records</h3>
+			<div style="color: #777;font-size:17px;width:100%;">Games up to {{ points_to_win }}</div>
 			{% day_records_table points_to_win %}
 		</div>
 		<div role="tabpanel" class="tab-pane" id="season">
 			<h3 class="accent">Season Records</h3>
+			<div style="color: #777;font-size:17px;width:100%;">Games up to {{ points_to_win }}</div>
 			{% season_records_table points_to_win %}
 		</div>
 	</div>
