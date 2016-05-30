@@ -350,32 +350,25 @@ class Player(models.Model):
 
     def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
 
-        if not season:
-            qs = self.statline_set.all()
-            if game_type:
-                qs = qs.filter(game__game_type=game_type)
 
-            if points_to_win:
-                qs = qs.filter(game__points_to_win=points_to_win)
+        qs = self.statline_set.all()
+        if game_type:
+            qs = qs.filter(game__game_type=game_type)
 
-            if date:
-                qs = qs.filter(game__date=date)
-            else:
-                qs = qs.filter(game__exhibition=False)
+        if points_to_win:
+            qs = qs.filter(game__points_to_win=points_to_win)
 
-            if out_of_season:
-                for season in Season.objects.all():
-                    qs = qs.exclude(game__date__range=(season.start_date,season.end_date))
+        if date:
+            qs = qs.filter(game__date=date)
         else:
-            qs = DailyStatline.objects.filter(player=self)
-            if game_type:
-                qs = qs.filter(game_type=game_type)
+            qs = qs.filter(game__exhibition=False)
 
-            if points_to_win:
-                qs = qs.filter(points_to_win=points_to_win)
+        if out_of_season:
+            for season in Season.objects.all():
+                qs = qs.exclude(game__date__range=(season.start_date,season.end_date))
 
-            if season:
-                qs = qs.filter(date__range=(season.start_date, season.end_date))
+        if season:
+            qs = qs.filter(game__date__range=(season.start_date, season.end_date))
 
         data_dict = {}
         if report_type=='Sum':
@@ -422,13 +415,7 @@ def update_daily_statlines(game):
         game_type = statlines[0].game.game_type
 
         for statline in statlines:
-
-            stats = StatLine._meta.get_all_field_names()
-
-            stats.remove('game')
-            stats.remove('game_id')
-            stats.remove('player')
-            stats.remove('player_id')
+            stats = [stat[0] for stat in STATS]
 
             player_data = statline.player.get_totals(stats, date=date, game_type=game_type, points_to_win=game.points_to_win)
 
@@ -451,44 +438,41 @@ def update_daily_statlines(game):
             )
 
         TableMatrix.objects.filter(title='day_records').update(out_of_date=True)
-        #update_season_statlines(game)
 
 def update_season_statlines(game):
-    print("Start Season")
+
     statlines = game.statline_set.all()
-    date = statlines[0].game.date
-    game_type = statlines[0].game.game_type
-    season = Season.objects.get(start_date__lte=date, end_date__gte=date)
+    if statlines:
+        date = statlines[0].game.date
+        game_type = statlines[0].game.game_type
+        try:
+            season = Season.objects.get(start_date__lte=date, end_date__gte=date)
+        except:
+            pass
+        else:
+            for statline in statlines:
 
-    for statline in statlines:
+                stats = [stat[0] for stat in STATS]
 
-        stats = StatLine._meta.get_all_field_names()
+                player_data = statline.player.get_totals(stats, game_type=game_type, season=season, points_to_win=game.points_to_win)
 
-        stats.remove('game')
-        stats.remove('game_id')
-        stats.remove('player');
-        stats.remove('player_id')
+                player_data['gp'] = StatLine.objects.filter(game__date__range=(season.start_date, season.end_date),
+                                                                 player=statline.player,
+                                                                 game__game_type=game.game_type,
+                                                                 game__points_to_win=game.points_to_win
+                                                                 ).count()
 
-        player_data = statline.player.get_totals(stats, game_type=game_type, season=season, points_to_win=game.points_to_win)
+                player_data.pop('id', None)
 
-        player_data['gp'] = StatLine.objects.filter(game__date__range=(season.start_date, season.end_date),
-                                                         player=statline.player,
-                                                         game__game_type=game.game_type,
-                                                         game__points_to_win=game.points_to_win
-                                                         ).count()
+                SeasonStatline.objects.update_or_create(
+                    defaults=player_data,
+                    player=statline.player,
+                    game_type=game_type,
+                    season=season,
+                    points_to_win = game.points_to_win
+                )
 
-        player_data.pop('id', None)
-
-        SeasonStatline.objects.update_or_create(
-            defaults=player_data,
-            player=statline.player,
-            game_type=game_type,
-            season=season,
-            points_to_win = game.points_to_win
-        )
-
-    #TableMatrix.objects.filter(title='game_records').update(out_of_date=True)
-    print("End season")
+            TableMatrix.objects.filter(title='season_records').update(out_of_date=True)
 
 
 class Game(models.Model):
@@ -711,6 +695,7 @@ class Game(models.Model):
 
         _thread.start_new_thread(update_daily_statlines, (self,))
         _thread.start_new_thread(update_game_record_statlines, (self,))
+        _thread.start_new_thread(update_season_statlines, (self,))
 
     def save(self):
 
@@ -723,14 +708,37 @@ class Game(models.Model):
 
         super(Game, self).save()
 
-        # Delete all Daily Statlines on old date and re calculate them
         if old_date:
-            DailyStatline.objects.filter(date=old_date, game_type=self.game_type,
-                                         points_to_win=self.points_to_win).delete()
+            daily_statlines = DailyStatline.objects.filter(date=old_date,
+                                                           game_type=self.game_type,
+                                                           points_to_win=self.points_to_win)
+            players = daily_statlines.values_list('player', flat=True)
+
+            # if old date is in a different season, delete Season Statlines for each player from the game
+            # find a random game for each player during the old season to recalculate a new season statline
+            season=None
+            try:
+                season = Season.objects.get(start_date__lte=old_date, end_date__gte=old_date)
+            except:
+                pass
+            else:
+                if season.start_date > self.date or season.end_date < self.date:
+                    SeasonStatline.objects.filter(player__in=players,
+                                                  points_to_win=self.points_to_win,
+                                                  game_type=self.game_type,
+                                                  season__start_date__lte=old_date,
+                                                  season__end_date__gte=old_date).delete()
+                    for player in players:
+                        games = Game.objects.filter(date__gte=season.start_date, date__lte=season.end_date, statline__player=player)
+                        for game in games:
+                            update_season_statlines(game)
+                            break
+
+            # delete Daily Statlines for each player in the game
+            daily_statlines.delete()
             games = Game.objects.filter(date=old_date,game_type=self.game_type, points_to_win=self.points_to_win)
             for game in games:
                 update_daily_statlines(game)
-
 
         # Delete Statlines for the those players that are no longer on either team
         game_statlines = StatLine.objects.filter(game=self)
@@ -739,6 +747,7 @@ class Game(models.Model):
                 statline.delete()
 
         update_daily_statlines(self)
+        update_season_statlines(self)
 
     class Meta():
         ordering = ['-date', 'title']

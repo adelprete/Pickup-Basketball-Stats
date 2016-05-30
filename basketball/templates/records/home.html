@@ -12,12 +12,12 @@
 			<a href="#game" aria-controls="home" role="tab" data-toggle="tab">Game</a>
 		</li>
 		<li role="presentation">
-			<a href="#season" aria-controls="profile" role="tab" data-toggle="tab">Week</a>
+			<a href="#week" aria-controls="profile" role="tab" data-toggle="tab">Week</a>
 		</li>
-       {% comment %}
 		<li role="presentation">
-			<a href="#advtotals" aria-controls="profile" role="tab" data-toggle="tab">Adv. Totals</a>
+			<a href="#season" aria-controls="profile" role="tab" data-toggle="tab">Season</a>
 		</li>
+		{% comment %}
 		<li role="presentation">
 			<a href="#possessions" aria-controls="profile" role="tab" data-toggle="tab">Per 100</a>
 		</li>
@@ -31,9 +31,13 @@
 			<h3 class="accent">Individual Game Records</h3>
 			{% game_records_table %}
 		</div>
-		<div role="tabpanel" class="tab-pane" id="season">
-			<h3 class="accent">Week</h3>
+		<div role="tabpanel" class="tab-pane" id="week">
+			<h3 class="accent">Week Records</h3>
 			{% day_records_table %}
+		</div>
+		<div role="tabpanel" class="tab-pane" id="season">
+			<h3 class="accent">Season Records</h3>
+			{% season_records_table %}
 		</div>
 	</div>
 {% endblock %}
