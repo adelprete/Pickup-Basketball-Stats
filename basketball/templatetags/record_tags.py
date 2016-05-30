@@ -12,13 +12,13 @@ IGNORED_STATS = [
 ]
 
 @register.inclusion_tag('records/game_table.html')
-def game_records_table():
+def game_records_table(points_to_win):
     """
     Returns a matrix of all time game records
     """
 
     # grab record matrix if it exists
-    record_matrix = models.TableMatrix.objects.get_or_create(title="game_records")[0]
+    record_matrix = models.TableMatrix.objects.get_or_create(title="game_records",points_to_win=points_to_win)[0]
 
     if record_matrix.out_of_date:
         record_matrix.delete()
@@ -28,7 +28,7 @@ def game_records_table():
         # Run through each stat and find the best statline for each one
         for stat in models.STATS:
             if stat not in IGNORED_STATS:
-                statlines = models.StatLine.objects.filter(game__points_to_win='11').order_by("-" + stat[0],"-game__date")[:20]
+                statlines = models.StatLine.objects.filter(game__points_to_win=points_to_win).order_by("-" + stat[0],"-game__date")[:20]
                 record = False
                 for statline in statlines:
 
@@ -52,7 +52,7 @@ def game_records_table():
                     else:
                         break
 
-        matrix = models.TableMatrix.objects.create(title="game_records",out_of_date=False)
+        matrix = models.TableMatrix.objects.create(title="game_records", points_to_win=points_to_win, out_of_date=False)
 
         for y, row in enumerate(array_matrix):
             for x, value in enumerate(row):
@@ -76,13 +76,13 @@ def game_records_table():
 
 from django.db.models import Count, Min, Sum, Avg
 @register.inclusion_tag('records/game_table.html')
-def day_records_table():
+def day_records_table(points_to_win):
     """
     Calculate records on achieved on a single day
     """
 
     # grab record matrix if it exists
-    record_matrix = models.TableMatrix.objects.get_or_create(title="day_records")[0]
+    record_matrix = models.TableMatrix.objects.get_or_create(title="day_records",points_to_win=points_to_win)[0]
 
     if record_matrix.out_of_date:
         record_matrix.delete()
@@ -92,7 +92,7 @@ def day_records_table():
         # Run through each stat and find the best statline for each one
         for stat in models.STATS:
             if stat not in IGNORED_STATS:
-                statlines = models.DailyStatline.objects.filter(points_to_win='11').order_by("-" + stat[0], "-date")[:20]
+                statlines = models.DailyStatline.objects.filter(points_to_win=points_to_win).order_by("-" + stat[0], "-date")[:20]
                 record = False
 
                 for statline in statlines:
@@ -116,7 +116,7 @@ def day_records_table():
                     else:
                         break
 
-        matrix = models.TableMatrix.objects.create(title="day_records", out_of_date=False)
+        matrix = models.TableMatrix.objects.create(title="day_records", points_to_win=points_to_win, out_of_date=False)
 
         for y, row in enumerate(array_matrix):
             for x, value in enumerate(row):
@@ -139,13 +139,13 @@ def day_records_table():
     return {"table_matrix": array_matrix}
 
 @register.inclusion_tag('records/game_table.html')
-def season_records_table():
+def season_records_table(points_to_win):
     """
     Calculate records achieved on during a season
     """
 
     # grab record matrix if it exists
-    record_matrix = models.TableMatrix.objects.get_or_create(title="season_records")[0]
+    record_matrix = models.TableMatrix.objects.get_or_create(title="season_records", points_to_win=points_to_win)[0]
 
     if record_matrix.out_of_date:
         record_matrix.delete()
@@ -155,7 +155,7 @@ def season_records_table():
         # Run through each stat and find the best statline for each one
         for stat in models.STATS:
             if stat not in IGNORED_STATS:
-                statlines = models.SeasonStatline.objects.filter(points_to_win='11').order_by("-" + stat[0], "-season__end_date")[:20]
+                statlines = models.SeasonStatline.objects.filter(points_to_win=points_to_win).order_by("-" + stat[0], "-season__end_date")[:20]
                 record = False
 
                 for statline in statlines:
@@ -179,7 +179,7 @@ def season_records_table():
                     else:
                         break
 
-        matrix = models.TableMatrix.objects.create(title="season_records", out_of_date=False)
+        matrix = models.TableMatrix.objects.create(title="season_records", points_to_win=points_to_win, out_of_date=False)
 
         for y, row in enumerate(array_matrix):
             for x, value in enumerate(row):

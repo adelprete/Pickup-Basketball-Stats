@@ -7,6 +7,25 @@
     <div class="page-header">
 		<h3 class="accent">All-Time Records</h3>
 	</div>
+	<div>
+		<div class="row">
+			<div class="col-md-12">
+				<a id="toggle_filterform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Filter Options</a>
+			</div>
+		</div>
+		<form id="filter_form" method="GET" style="display:none;">
+			<div class="row">
+				<div class="col-md-2">
+					{% bootstrap_field form.points_to_win %}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1">
+					<button type="submit" name="submit" class="btn btn-primary btn-block">Filter</button>
+				</div>
+			</div>
+		</form>
+	</div>
 <ul class="nav nav-tabs" role="tablist" style="margin-top:15px;">
 		<li role="presentation" class="active">
 			<a href="#game" aria-controls="home" role="tab" data-toggle="tab">Game</a>
@@ -29,17 +48,22 @@
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="game">
 			<h3 class="accent">Individual Game Records</h3>
-			{% game_records_table %}
+			{% game_records_table points_to_win %}
 		</div>
 		<div role="tabpanel" class="tab-pane" id="week">
 			<h3 class="accent">Week Records</h3>
-			{% day_records_table %}
+			{% day_records_table points_to_win %}
 		</div>
 		<div role="tabpanel" class="tab-pane" id="season">
 			<h3 class="accent">Season Records</h3>
-			{% season_records_table %}
+			{% season_records_table points_to_win %}
 		</div>
 	</div>
+	<script type="text/javascript">
+		$("#toggle_filterform").click(function(){
+			$('#filter_form').toggle();
+		});
+	</script>
 {% endblock %}
 
 {% block active_tab %}

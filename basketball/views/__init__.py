@@ -102,7 +102,20 @@ def records_home(request, template="records/home.html"):
     Generates the Records page
     This page uses tabs that loads various templatetags that display different record information
     """
-    return render(request, template, {})
+
+    points_to_win = 11
+    if 'submit' in request.GET:
+        form = bforms.RecordForm(request.GET)
+        if form.is_valid():
+            points_to_win = form.data.get('points_to_win', 11)
+    else:
+        form = bforms.RecordForm(initial={'points_to_win':'11'})
+
+    context = {
+        'form': form,
+        'points_to_win':points_to_win
+    }
+    return render(request, template, context)
 
 
 def login(request, template="login.html"):

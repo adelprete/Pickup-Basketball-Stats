@@ -855,6 +855,7 @@ class Season(models.Model):
 
 class TableMatrix(models.Model):
     title = models.CharField(max_length=30)
+    points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='11')
     out_of_date = models.BooleanField(default=True)
 
 class Cell(models.Model):
