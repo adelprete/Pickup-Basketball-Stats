@@ -870,6 +870,7 @@ class TableMatrix(models.Model):
                                                               ('season_records', 'Season Records')))
     points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='')
     season = models.ForeignKey('basketball.Season',blank=True,null=True)
+    game_type = models.CharField(max_length=30, choices=GAME_TYPES, default='')
     out_of_date = models.BooleanField(default=True)
 
 class Cell(models.Model):

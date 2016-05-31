@@ -43,7 +43,7 @@ class SeasonAdmin(admin.ModelAdmin):
 	form = bforms.SeasonForm
 
 class TableMatrixAdmin(admin.ModelAdmin):
-    list_display = ('type', 'points_to_win', 'season', 'out_of_date')
+    list_display = ('type', 'points_to_win', 'season', 'game_type', 'out_of_date')
 
 admin.site.register(bmodels.Player, PlayerAdmin)
 admin.site.register(bmodels.Game, GameAdmin)

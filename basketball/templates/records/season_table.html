@@ -2,12 +2,12 @@
 
     {% block tab %}
         <li role="presentation" {% if forloop.first %}class="active"{% endif %}>
-            <a href="#game-{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
+            <a href="#season-{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
         </li>
     {% endblock %}
 
     {% block tab_content %}
-        <div role="tabpanel" class="tab-pane {% if forloop.first %}active{% endif %}" id="game-{{key}}">
+        <div role="tabpanel" class="tab-pane {% if forloop.first %}active{% endif %}" id="season-{{key}}">
             <table class="table table-hover table-condensed">
                 {% for row in value %}
                     {% if forloop.first %}
