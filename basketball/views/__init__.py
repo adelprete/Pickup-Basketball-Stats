@@ -104,16 +104,19 @@ def records_home(request, template="records/home.html"):
     """
 
     points_to_win = 11
+    season = None
     if 'submit' in request.GET:
         form = bforms.RecordForm(request.GET)
         if form.is_valid():
             points_to_win = form.data.get('points_to_win', 11)
+            season = bmodels.Season.objects.get(id=form.data.get('season', None))
     else:
-        form = bforms.RecordForm(initial={'points_to_win':'11'})
+        form = bforms.RecordForm(initial={'points_to_win':'11','season':''})
 
     context = {
         'form': form,
-        'points_to_win':points_to_win
+        'points_to_win':points_to_win,
+        'season':season
     }
     return render(request, template, context)
 

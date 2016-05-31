@@ -18,6 +18,9 @@
 				<div class="col-md-2">
 					{% bootstrap_field form.points_to_win %}
 				</div>
+				<div class="col-md-2">
+					{% bootstrap_field form.season %}
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-1">
@@ -48,17 +51,41 @@
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="game">
 			<h3 class="accent">Individual Game Records</h3>
-			<div style="color: #777;font-size:17px;width:100%;">Games up to {{ points_to_win }}</div>
-			{% game_records_table points_to_win %}
+			<div style="color: #777;font-size:17px;width:100%;">
+				{% if points_to_win != 'other' %}
+					Data pulled from games played to {{ points_to_win }}
+				{% else %}
+					Data pulled from games that were inappropriately scored
+				{% endif %}
+				{% if season %}
+					during the {{ season }} season
+				{% endif %}
+			</div>
+			{% game_records_table points_to_win season %}
 		</div>
 		<div role="tabpanel" class="tab-pane" id="week">
 			<h3 class="accent">Week Records</h3>
-			<div style="color: #777;font-size:17px;width:100%;">Games up to {{ points_to_win }}</div>
-			{% day_records_table points_to_win %}
+			<div style="color: #777;font-size:17px;width:100%;">
+				{% if points_to_win != 'other' %}
+					Data pulled from games played to {{ points_to_win }}
+				{% else %}
+					Data pulled from games that were inappropriately scored
+				{% endif %}
+				{% if season %}
+					during the {{ season }} season
+				{% endif %}
+			</div>
+			{% day_records_table points_to_win season %}
 		</div>
 		<div role="tabpanel" class="tab-pane" id="season">
 			<h3 class="accent">Season Records</h3>
-			<div style="color: #777;font-size:17px;width:100%;">Games up to {{ points_to_win }}</div>
+			<div style="color: #777;font-size:17px;width:100%;">
+				{% if points_to_win != 'other' %}
+					Data pulled from games played to {{ points_to_win }}
+				{% else %}
+					Data pulled from games that were inappropriately scored
+				{% endif %}
+			</div>
 			{% season_records_table points_to_win %}
 		</div>
 	</div>

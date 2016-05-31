@@ -121,7 +121,8 @@ class LeaderboardForm(forms.Form):
     possessions_min = forms.IntegerField(label="Minimum Possessions", min_value=1)
 
 class RecordForm(forms.Form):
-    points_to_win = forms.ChoiceField(label="Games up to",choices=(('11','11'), ('30','30'), ('other','Other')))
+    season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
+    points_to_win = forms.ChoiceField(label="Games played to",choices=(('11','11'), ('30','30'), ('other','Other')))
 
 
 class SeasonForm(forms.ModelForm):

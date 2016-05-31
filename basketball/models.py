@@ -405,7 +405,14 @@ def update_game_record_statlines(game):
 
         record_statline.save()
 
-    TableMatrix.objects.filter(title='day_records').update(out_of_date=True)
+    try:
+        season = Season.objects.get(start_date__lte=game.date, end_date__gte=game.date)
+        TableMatrix.objects.filter(type='game_records', season=season).update(out_of_date=True)
+    except:
+        pass
+
+    TableMatrix.objects.filter(type='game_records', season=None).update(out_of_date=True)
+
 
 def update_daily_statlines(game):
 
@@ -436,8 +443,12 @@ def update_daily_statlines(game):
                 game_type=game_type,
                 points_to_win = game.points_to_win
             )
-
-        TableMatrix.objects.filter(title='day_records').update(out_of_date=True)
+        try:
+            season = Season.objects.get(start_date__lte=date, end_date__gte=date)
+            TableMatrix.objects.filter(type='day_records', season=season).update(out_of_date=True)
+        except:
+            pass
+        TableMatrix.objects.filter(type='day_records', season=None).update(out_of_date=True)
 
 def update_season_statlines(game):
 
@@ -472,7 +483,7 @@ def update_season_statlines(game):
                     points_to_win = game.points_to_win
                 )
 
-            TableMatrix.objects.filter(title='season_records').update(out_of_date=True)
+            TableMatrix.objects.filter(type='season_records').update(out_of_date=True)
 
 
 class Game(models.Model):
@@ -854,8 +865,11 @@ class Season(models.Model):
 
 
 class TableMatrix(models.Model):
-    title = models.CharField(max_length=30)
-    points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='11')
+    type = models.CharField(max_length=30,default='',choices=(('game_records','Game Records'),
+                                                              ('day_records','Day Records'),
+                                                              ('season_records', 'Season Records')))
+    points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='')
+    season = models.ForeignKey('basketball.Season',blank=True,null=True)
     out_of_date = models.BooleanField(default=True)
 
 class Cell(models.Model):
