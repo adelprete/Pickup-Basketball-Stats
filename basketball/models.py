@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import F, Sum, Q, Avg, signals
 from django.core.urlresolvers import reverse
 from django.core.exceptions import FieldError
+from basketball import helpers
 from saturdayball import settings
 
 PRIMARY_PLAY = [
@@ -102,6 +103,8 @@ STATS = [
     ('oreb_opp', 'Oreb Opportunities'),
 ]
 
+
+
 class RealPlayerManager(models.Manager):
     def get_queryset(self):
         return super(RealPlayerManager, self).get_queryset().all().exclude(first_name__in=['Team1', 'Team2'])
@@ -184,7 +187,7 @@ class Player(models.Model):
 
         return pos_count['off_pos__sum'] or 0
 
-    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, out_of_season=False, fga_min=1):
+    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, points_to_win=11, out_of_season=False, fga_min=1):
         """Returns per 100 possessions data"""
         season=None
         if season_id:
@@ -210,6 +213,8 @@ class Player(models.Model):
         if out_of_season:
             for season in Season.objects.all():
                 statlines = statlines.exclude(game__date__range=(season.start_date, season.end_date))
+        if points_to_win:
+            statlines = statlines.filter(game__points_to_win=points_to_win)
 
         for stat in stats_list:
             percentage = 0.0
@@ -334,9 +339,6 @@ class Player(models.Model):
                 elif stat == 'def_rating' and result['def_pos__sum']:
                     percentage = total_team_points / result['def_pos__sum'] * 100
 
-            else:
-                print(stat)
-                raise ValueError('First argument must be either dreb, oreb, asts, pot_ast, stls, to, blk, points, total_rebounds, fgm_percent, threepm_percent, dreb_percent, oreb_percent, treb_percent, ts_percent, tp_percent, pga_percent, pgm_percent, off_rating, def_rating')
             data_dict[stat] = round(percentage, 1)
         return data_dict
 
@@ -386,104 +388,6 @@ class Player(models.Model):
 
     class Meta():
         ordering = ['first_name']
-
-def update_game_record_statlines(game):
-
-    statlines = game.statline_set.all()
-    game_type = statlines[0].game.game_type
-
-    for statline in statlines:
-        record_statline = RecordStatline.objects.get_or_create(
-            player=statline.player,
-            game_type=game_type,
-            record_type='game',
-            points_to_win=game.points_to_win)[0]
-
-        for stat in STATS:
-            if getattr(statline,stat[0],0) > getattr(record_statline, stat[0], 0):
-                setattr(record_statline,stat[0], getattr(statline,stat[0],0))
-
-        record_statline.save()
-
-    try:
-        season = Season.objects.get(start_date__lte=game.date, end_date__gte=game.date)
-        TableMatrix.objects.filter(type='game_records', season=season).update(out_of_date=True)
-    except:
-        pass
-
-    TableMatrix.objects.filter(type='game_records', season=None).update(out_of_date=True)
-
-
-def update_daily_statlines(game):
-
-    statlines = game.statline_set.all()
-    if statlines:
-        date = statlines[0].game.date
-        game_type = statlines[0].game.game_type
-
-        for statline in statlines:
-            stats = [stat[0] for stat in STATS]
-
-            player_data = statline.player.get_totals(stats, date=date, game_type=game_type, points_to_win=game.points_to_win)
-
-            player_data['gp'] = StatLine.objects.filter(game__date=date,
-                                                        player=statline.player,
-                                                        game__game_type=game.game_type,
-                                                        game__points_to_win=game.points_to_win
-                                                        ).count()
-            player_data['player'] = statline.player
-            player_data['date'] = date
-            player_data['game_type'] = game_type
-            player_data.pop('id', None)
-
-            DailyStatline.objects.update_or_create(
-                defaults=player_data,
-                player=statline.player,
-                date=date,
-                game_type=game_type,
-                points_to_win = game.points_to_win
-            )
-        try:
-            season = Season.objects.get(start_date__lte=date, end_date__gte=date)
-            TableMatrix.objects.filter(type='day_records', season=season).update(out_of_date=True)
-        except:
-            pass
-        TableMatrix.objects.filter(type='day_records', season=None).update(out_of_date=True)
-
-def update_season_statlines(game):
-
-    statlines = game.statline_set.all()
-    if statlines:
-        date = statlines[0].game.date
-        game_type = statlines[0].game.game_type
-        try:
-            season = Season.objects.get(start_date__lte=date, end_date__gte=date)
-        except:
-            pass
-        else:
-            for statline in statlines:
-
-                stats = [stat[0] for stat in STATS]
-
-                player_data = statline.player.get_totals(stats, game_type=game_type, season=season, points_to_win=game.points_to_win)
-
-                player_data['gp'] = StatLine.objects.filter(game__date__range=(season.start_date, season.end_date),
-                                                                 player=statline.player,
-                                                                 game__game_type=game.game_type,
-                                                                 game__points_to_win=game.points_to_win
-                                                                 ).count()
-
-                player_data.pop('id', None)
-
-                SeasonStatline.objects.update_or_create(
-                    defaults=player_data,
-                    player=statline.player,
-                    game_type=game_type,
-                    season=season,
-                    points_to_win = game.points_to_win
-                )
-
-            TableMatrix.objects.filter(type='season_records').update(out_of_date=True)
 
 
 class Game(models.Model):
@@ -704,9 +608,10 @@ class Game(models.Model):
         statlines.update(total_pos=F('off_pos') + F('def_pos'))
         self.calculate_game_score()
 
-        _thread.start_new_thread(update_daily_statlines, (self,))
-        _thread.start_new_thread(update_game_record_statlines, (self,))
-        _thread.start_new_thread(update_season_statlines, (self,))
+        _thread.start_new_thread(helpers.update_daily_statlines, (self,))
+        _thread.start_new_thread(helpers.update_game_record_statlines, (self,))
+        _thread.start_new_thread(helpers.update_season_statlines, (self,))
+        _thread.start_new_thread(helpers.update_season_per100_statlines, (self,))
 
     def save(self):
 
@@ -742,14 +647,15 @@ class Game(models.Model):
                     for player in players:
                         games = Game.objects.filter(date__gte=season.start_date, date__lte=season.end_date, statline__player=player)
                         for game in games:
-                            update_season_statlines(game)
+                            helpers.update_season_statlines(game)
+                            helpers.update_season_per100_statlines(self)
                             break
 
             # delete Daily Statlines for each player in the game
             daily_statlines.delete()
             games = Game.objects.filter(date=old_date,game_type=self.game_type, points_to_win=self.points_to_win)
             for game in games:
-                update_daily_statlines(game)
+                helpers.update_daily_statlines(game)
 
         # Delete Statlines for the those players that are no longer on either team
         game_statlines = StatLine.objects.filter(game=self)
@@ -757,8 +663,9 @@ class Game(models.Model):
             if statline.player not in self.team1.all() and statline.player not in self.team2.all():
                 statline.delete()
 
-        update_daily_statlines(self)
-        update_season_statlines(self)
+        helpers.update_daily_statlines(self)
+        helpers.update_season_statlines(self)
+        helpers.update_season_per100_statlines(self)
 
     class Meta():
         ordering = ['-date', 'title']
@@ -826,6 +733,51 @@ class SeasonStatline(BaseStatline):
     def __str__(self):
         return '%s - %s - %s' % (self.player.first_name, "Season ", self.season)
 
+class SeasonPer100Statline(models.Model):
+    player = models.ForeignKey('basketball.Player',null=True)
+    season = models.ForeignKey('basketball.Season', null=True)
+    game_type = models.CharField(max_length=30, choices=GAME_TYPES)
+    gp = models.PositiveIntegerField("Games Played", default=0)
+    points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='11')
+
+    points = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    fgm_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    threepm_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    asts = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    pot_ast = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    dreb = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    oreb = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    dreb_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    oreb_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    total_rebounds = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    treb_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    blk = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    stls = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    to = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    off_rating = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    def_rating = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    unast_fgm_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    unast_fga_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    ts_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    tp_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    ast_fgm_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    ast_fga_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    pgm_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    pga_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+
+    def __str__(self):
+        return '%s - %s - %s' % (self.player.first_name, "Season Per 100", self.season)
+PER_100_STATS = [
+    ('points', 'Points'),
+    ('fgm_percent', 'FGM Percentage'),
+    ('threepm_percent', '3PT Percentage'),
+    ('asts', 'Assists'),
+    ('pot_ast', 'Potential Assists'),
+    ('dreb', 'Defensive Rebounds'),
+    ('oreb', 'Offensive Rebounds'),
+    ('total_rebounds', 'Total Rebounds'),
+    ('treb_percent', 'Total Rebound Percentage'),
+]
 class RecordStatline(BaseStatline):
     game_type = models.CharField(max_length=30, choices=GAME_TYPES)
     record_type = models.CharField(max_length=30, choices=(('game','Game'), ('day','day'), ('season','Season')))
@@ -867,14 +819,16 @@ class Season(models.Model):
 class TableMatrix(models.Model):
     type = models.CharField(max_length=30,default='',choices=(('game_records','Game Records'),
                                                               ('day_records','Day Records'),
-                                                              ('season_records', 'Season Records')))
+                                                              ('season_records', 'Season Records'),
+                                                              ('season_per100_records', 'Season Per100 Records')))
     points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='')
     season = models.ForeignKey('basketball.Season',blank=True,null=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, default='')
     out_of_date = models.BooleanField(default=True)
 
+
 class Cell(models.Model):
     matrix = models.ForeignKey('basketball.TableMatrix')
     row = models.PositiveIntegerField(null=True)
     column = models.PositiveIntegerField(null=True)
-    value = models.CharField(max_length=80, null=True)
+    value = models.CharField(max_length=150, null=True)

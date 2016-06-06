@@ -36,6 +36,9 @@ class RecordStatlineAdmin(admin.ModelAdmin):
 class SeasonStatlineAdmin(admin.ModelAdmin):
     list_display = ('player', 'season', 'game_type', 'points_to_win')
 
+class SeasonPer100StatlineAdmin(admin.ModelAdmin):
+    list_display = ('player', 'season', 'game_type', 'points_to_win')
+
 class PlayByPlayAdmin(admin.ModelAdmin):
     pass
 
@@ -51,6 +54,7 @@ admin.site.register(bmodels.StatLine, StatLineAdmin)
 admin.site.register(bmodels.DailyStatline, DailyStatlineAdmin)
 admin.site.register(bmodels.RecordStatline, RecordStatlineAdmin)
 admin.site.register(bmodels.SeasonStatline, SeasonStatlineAdmin)
+admin.site.register(bmodels.SeasonPer100Statline, SeasonPer100StatlineAdmin)
 admin.site.register(bmodels.PlayByPlay, PlayByPlayAdmin)
 admin.site.register(bmodels.Season, SeasonAdmin)
 admin.site.register(bmodels.TableMatrix, TableMatrixAdmin)

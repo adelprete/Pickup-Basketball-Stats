@@ -37,69 +37,163 @@ adv_totals_statistics = [
         ]
 
 per_100_statistics = [
-        {'stat':'gp', 'header':'GP', 'title':'Games Played'},
-        {'stat':'points', 'header':'Points', 'title':'Points'},
-        {'stat':'fgm_percent', 'header':'FGM %', 'title':'Field Goal Percentage.  Percentage of Field Goals Made'},
-        {'stat':'threepm_percent', 'header':'3PM %', 'title':'3 Point Percentage. Percentage of 3 pointers made'},
-        {'stat':'asts', 'header':'Asts', 'title':'Assists'},
-        {'stat':'pot_ast', 'header':'P.Asts', 'title':'Potential Assists. A pass that would’ve lead to a score if the receiver made the shot.'},
-        {'stat':'dreb', 'header':'Dreb', 'title':'Defensive Rebounds'},
-        {'stat':'oreb', 'header':'Oreb', 'title':'Offensive Rebounds'},
-        {'stat':'dreb_percent', 'header':'Dreb %', 'title':'Percentage of defensive rebounds grabbed against total defensive rebounds available'},
-        {'stat':'oreb_percent', 'header':'Oreb %', 'title':'Percentage of offensive rebounds grabbed against total offensive rebounds available'},
-        {'stat':'total_rebounds', 'header':'Reb', 'title':'Total Rebounds'},
-        {'stat':'treb_percent', 'header':'Reb %', 'title':'Percentage of possessions that result in a rebound'},
-        {'stat':'stls', 'header':'Stls', 'title':'Steals (Anytime you cause a turnover from the other team)'},
-        {'stat':'to', 'header':'To', 'title':'Turnovers'},
-        {'stat':'blk', 'header':'Blk', 'title':'Blocks (Whenever you deflect a shot attempt)'},
-        {'stat':'off_rating', 'header':'Off.Rating', 'title':"Points scord per 100 possessions while you're on the floor"},
-        {'stat':'def_rating', 'header':'Def.Rating', 'title':"Points scored against your per 100 possessions while you're on the floor"},
-        ]
+        {
+            'stat':'gp',
+            'header':'GP',
+            'full_name':'Games Played',
+            'title':'Games Played'
+        },
+        {
+            'stat':'points',
+            'header':'Points',
+            'full_name':'Points',
+            'title':'Points'
+        },
+        {
+            'stat':'fgm_percent',
+            'header':'FGM %',
+            'full_name':'Field Goals Made %',
+            'title':'Field Goal Percentage.  Percentage of Field Goals Made'
+        },
+        {
+            'stat':'threepm_percent',
+            'header':'3PM %',
+            'full_name': '3 Points Made %',
+            'title':'3 Point Percentage. Percentage of 3 pointers made'
+        },
+        {
+            'stat':'asts',
+            'header':'Asts',
+            'full_name': 'Assists',
+            'title':'Assists'
+        },
+        {
+            'stat':'pot_ast',
+            'header':'P.Asts',
+            'full_name': 'Potential Assists',
+            'title':'Potential Assists. A pass that would’ve lead to a score if the receiver made the shot.'
+        },
+        {
+            'stat':'dreb',
+            'header':'Dreb',
+            'full_name': 'Defensive Rebounds',
+            'title':'Defensive Rebounds'
+        },
+        {
+            'stat':'oreb',
+            'header':'Oreb',
+            'full_name': 'Offensive Rebounds',
+            'title':'Offensive Rebounds'
+        },
+        {
+            'stat':'dreb_percent',
+            'header':'Dreb %',
+            'full_name': 'Defensive Rebound %',
+            'title':'Percentage of defensive rebounds grabbed against total defensive rebounds available'
+        },
+        {
+            'stat':'oreb_percent',
+            'header':'Oreb %',
+            'full_name': 'Offensive Rebound %',
+            'title':'Percentage of offensive rebounds grabbed against total offensive rebounds available'
+        },
+        {
+            'stat':'total_rebounds',
+            'header':'Reb',
+            'full_name': 'Total Rebounds',
+            'title':'Total Rebounds'
+        },
+        {
+            'stat':'treb_percent',
+            'header':'Reb %',
+            'full_name': 'Total Rebound %',
+            'title':'Percentage of possessions that result in a rebound'
+        },
+        {
+            'stat':'stls',
+            'header':'Stls',
+            'full_name': 'Steals',
+            'title':'Steals (Anytime you cause a turnover from the other team)'
+        },
+        {
+            'stat':'to',
+            'header':'To',
+            'full_name': 'Turnovers',
+            'title':'Turnovers'
+        },
+        {
+            'stat':'blk',
+            'header':'Blk',
+            'full_name': 'Blocks',
+            'title':'Blocks (Whenever you deflect a shot attempt)'
+        },
+        {
+            'stat':'off_rating',
+            'header':'Off.Rating',
+            'full_name': 'Offensive Rating',
+            'title':"Points scord per 100 possessions while you're on the floor"
+        },
+        {
+            'stat':'def_rating',
+            'header':'Def.Rating',
+            'full_name': 'Defensive Rating',
+            'title':"Points scored against your per 100 possessions while you're on the floor"
+        },
+]
 
 adv_per_100_statistics = [
         {
             'stat':'gp',
             'header':'GP',
+            'full_name': 'Games Played',
             'title':'Games Played'
         },
         {
             'stat':'ts_percent',
             'header':'TS %',
+            'full_name': 'True Shooting %',
             'title':'True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA'
         },
         {
             'stat':'tp_percent',
             'header':'TP %',
+            'full_name': 'True Passing %',
             'title':'True Passing Percentage. Percentage of points made following your assists and potential assists'
         },
         {
             'stat':'ast_fgm_percent',
             'header':'AST FGM %',
+            'full_name': 'Assisted FGM %',
             'title':'Assisted Shooting %.  Shooting percentage of shots that were assisted by another player.'
         },
         {
             'stat':'ast_fga_percent',
             'header':'AST FGA %',
+            'full_name': 'Assisted FGA %',
             'title':'Assisted Field Goal %. Percentage of shots attempted that were assisted by another player.'
         },
         {
             'stat':'unast_fgm_percent',
             'header':'UNAST FGM %',
+            'full_name': 'Unassisted FGM %',
             'title':'Unassisted Shooting %. Shooting percentage of shots that were not assisted by another player.'
         },
         {
             'stat':'unast_fga_percent',
             'header':'UNAST FGA %',
+            'full_name': 'Unassisted FGA %',
             'title':'Unassisted Field Goal %. Percentage of shots attempted that were not assisted by another player.'
         },
         {
             'stat':'pgm_percent',
             'header':'PGM %',
+            'full_name': 'Putback Goals Made %',
             'title':'Putback Shooting %.  Percentage of putbacks that go in.'
         },
         {
             'stat':'pga_percent',
             'header':'PGA %',
+            'full_name': 'Putback Field Goals  %',
             'title':'Putback Field Goal %.  Percentage of shots that are considered putbacks.'
         },
         ]

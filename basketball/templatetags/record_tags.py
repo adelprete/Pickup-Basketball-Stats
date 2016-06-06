@@ -1,4 +1,5 @@
-from basketball import models
+from basketball import models as bmodels
+from basketball import headers
 from collections import OrderedDict
 
 from django import template
@@ -19,9 +20,9 @@ def game_records_table(points_to_win, season=None):
     """
     tables = OrderedDict()
 
-    for game_type in models.GAME_TYPES:
+    for game_type in bmodels.GAME_TYPES:
         # grab record matrix if it exists
-        record_matrix = models.TableMatrix.objects.get_or_create(type="game_records",
+        record_matrix = bmodels.TableMatrix.objects.get_or_create(type="game_records",
                                                                  points_to_win=points_to_win,
                                                                  game_type=game_type[0],
                                                                  season=season)[0]
@@ -29,20 +30,20 @@ def game_records_table(points_to_win, season=None):
             record_matrix.delete()
             array_matrix = []
             array_matrix.append(["Stat", "Name", "Value", "Date", "Game"])
+
+            statlines = bmodels.StatLine.objects.filter(
+                game__points_to_win=points_to_win,
+                game__game_type=game_type[0]
+            )
+            if season:
+                statlines = statlines.filter(
+                    game__date__range=(season.start_date, season.end_date),
+                )
+
             # Run through each stat and find the best statline for each one
-            for stat in models.STATS:
+            for stat in bmodels.STATS:
                 if stat not in IGNORED_STATS:
-                    if season:
-                        statlines = models.StatLine.objects.filter(
-                            game__date__range=(season.start_date, season.end_date),
-                            game__points_to_win=points_to_win,
-                            game__game_type=game_type[0]
-                        ).order_by("-" + stat[0], "-game__date")[:20]
-                    else:
-                        statlines = models.StatLine.objects.filter(
-                            game__points_to_win=points_to_win,
-                            game__game_type=game_type[0]
-                        ).order_by("-" + stat[0],"-game__date")[:20]
+                    statlines = statlines.order_by("-" + stat[0],"-game__date")
 
                     record = False
                     for statline in statlines:
@@ -67,7 +68,7 @@ def game_records_table(points_to_win, season=None):
                         else:
                             break
             if len(array_matrix) > 1:
-                matrix = models.TableMatrix.objects.create(type="game_records",
+                matrix = bmodels.TableMatrix.objects.create(type="game_records",
                                                            points_to_win=points_to_win,
                                                            season=season,
                                                            game_type=game_type[0],
@@ -75,7 +76,7 @@ def game_records_table(points_to_win, season=None):
 
                 for y, row in enumerate(array_matrix):
                     for x, value in enumerate(row):
-                        cell = models.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
+                        cell = bmodels.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
                         cell.save()
 
                 tables[game_type[1]] = array_matrix
@@ -106,9 +107,9 @@ def day_records_table(points_to_win,season=None):
     """
     tables = OrderedDict()
 
-    for game_type in models.GAME_TYPES:
+    for game_type in bmodels.GAME_TYPES:
         # grab record matrix if it exists
-        record_matrix = models.TableMatrix.objects.get_or_create(type="day_records",
+        record_matrix = bmodels.TableMatrix.objects.get_or_create(type="day_records",
                                                                  points_to_win=points_to_win,
                                                                  game_type=game_type[0],
                                                                  season=season)[0]
@@ -118,20 +119,20 @@ def day_records_table(points_to_win,season=None):
             array_matrix = []
             array_matrix.append(["Stat", "Name", "Value", "Date"])
 
+            statlines = bmodels.DailyStatline.objects.filter(
+                    points_to_win=points_to_win,
+                    game_type=game_type[0]
+                )
+            if season:
+                statlines = statlines.objects.filter(
+                    date__range=(season.start_date, season.end_date),
+                )
+
             # Run through each stat and find the best statline for each one
-            for stat in models.STATS:
+            for stat in bmodels.STATS:
                 if stat not in IGNORED_STATS:
-                    if season:
-                        statlines = models.DailyStatline.objects.filter(
-                            date__range=(season.start_date, season.end_date),
-                            points_to_win=points_to_win,
-                            game_type=game_type[0]
-                        ).order_by("-" + stat[0], "-date")[:20]
-                    else:
-                        statlines = models.DailyStatline.objects.filter(
-                            points_to_win=points_to_win,
-                            game_type=game_type[0]
-                        ).order_by("-" + stat[0], "-date")[:20]
+
+                    statlines = statlines.order_by("-" + stat[0], "-date")
 
                     record = False
 
@@ -157,7 +158,7 @@ def day_records_table(points_to_win,season=None):
                             break
 
             if len(array_matrix) > 1:
-                matrix = models.TableMatrix.objects.create(type="day_records",
+                matrix = bmodels.TableMatrix.objects.create(type="day_records",
                                                            points_to_win=points_to_win,
                                                            season=season,
                                                            game_type=game_type[0],
@@ -165,7 +166,7 @@ def day_records_table(points_to_win,season=None):
 
                 for y, row in enumerate(array_matrix):
                     for x, value in enumerate(row):
-                        cell = models.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
+                        cell = bmodels.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
                         cell.save()
 
                 tables[game_type[1]] = array_matrix
@@ -174,7 +175,7 @@ def day_records_table(points_to_win,season=None):
             array_matrix = []
             cells = record_matrix.cell_set.all()
 
-            for i in range(0, int(cells.count() / 4)):
+            for i in range(0, int(cells.count() / 5)):
                 row = [
                     cells.get(row=i, column=0).value,
                     cells.get(row=i, column=1).value,
@@ -195,24 +196,25 @@ def season_records_table(points_to_win):
     """
     tables = OrderedDict()
 
-    for game_type in models.GAME_TYPES:
+    for game_type in bmodels.GAME_TYPES:
         # grab record matrix if it exists
-        record_matrix = models.TableMatrix.objects.get_or_create(type="season_records",
+        record_matrix = bmodels.TableMatrix.objects.get_or_create(type="season_records",
                                                                  points_to_win=points_to_win,
                                                                  game_type=game_type[0])[0]
 
         if record_matrix.out_of_date:
             record_matrix.delete()
             array_matrix = []
-            array_matrix.append(["Stat", "Name", "Value", "Date"])
+            array_matrix.append(["Stat", "Name", "Value", "Season"])
 
+            statlines = bmodels.SeasonStatline.objects.filter(
+                points_to_win=points_to_win,
+                game_type=game_type[0]
+            )
             # Run through each stat and find the best statline for each one
-            for stat in models.STATS:
+            for stat in bmodels.STATS:
                 if stat not in IGNORED_STATS:
-                    statlines = models.SeasonStatline.objects.filter(
-                        points_to_win=points_to_win,
-                        game_type=game_type[0]
-                    ).order_by("-" + stat[0], "-season__end_date")[:20]
+                    statlines = statlines.order_by("-" + stat[0], "-season__end_date")
 
                     record = False
 
@@ -238,11 +240,15 @@ def season_records_table(points_to_win):
                             break
 
             if len(array_matrix) > 1:
-                matrix = models.TableMatrix.objects.create(type="season_records", points_to_win=points_to_win, out_of_date=False)
+                matrix = bmodels.TableMatrix.objects.create(
+                    type="season_records",
+                    points_to_win=points_to_win,
+                    out_of_date=False,
+                    game_type=game_type[0])
 
                 for y, row in enumerate(array_matrix):
                     for x, value in enumerate(row):
-                        cell = models.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
+                        cell = bmodels.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
                         cell.save()
 
                 tables[game_type[1]] = array_matrix
@@ -257,6 +263,99 @@ def season_records_table(points_to_win):
                     cells.get(row=i, column=1).value,
                     cells.get(row=i, column=2).value,
                     cells.get(row=i, column=3).value,
+                ]
+                array_matrix.append(row)
+
+            if len(array_matrix) > 1:
+                tables[game_type[1]] = array_matrix
+
+
+    return {"tables": tables}
+
+@register.inclusion_tag('records/season_per100_table.html')
+def season_per100_records_table(points_to_win):
+    """
+    Calculate records achieved on during a season
+    """
+    tables = OrderedDict()
+
+    stats = headers.per_100_statistics + headers.adv_per_100_statistics
+
+    for game_type in bmodels.GAME_TYPES:
+        # grab record matrix if it exists
+        record_matrix = bmodels.TableMatrix.objects.get_or_create(type="season_per100_records",
+                                                                 points_to_win=points_to_win,
+                                                                 game_type=game_type[0])[0]
+
+        if record_matrix.out_of_date:
+            record_matrix.delete()
+            array_matrix = []
+            array_matrix.append(["Stat", "Name", "Value", "Season", ""])
+
+            # Run through each stat and find the best statline for each one
+            statlines = bmodels.SeasonPer100Statline.objects.filter(
+                points_to_win=points_to_win,
+                game_type=game_type[0]
+            ).exclude(
+                player__first_name__in=['Team1', 'Team2']
+            )
+            for stat in stats:
+                if stat['stat'] != 'gp':
+                    statlines = statlines.order_by("-" + stat['stat'], "-season__end_date")
+
+                    record = False
+
+                    percent_sign = ''
+                    if stat['full_name'][-1] == '%':
+                        percent_sign = '%'
+
+                    for statline in statlines:
+
+                        if statline.player.get_possessions_count() < 200:
+                            continue
+                        elif not record:
+                            record = getattr(statline, stat['stat'], 0)
+
+                        row = []
+                        if record == 0:
+                            array_matrix.append([stat['full_name'], "none", "none", "none", "none"])
+
+                        if getattr(statline, stat['stat'], 0) == record:
+                            array_matrix.append([
+                                stat['full_name'],
+                                statline.player.get_full_name(),
+                                str(getattr(statline, stat['stat'], 0)) + percent_sign,
+                                statline.season.title,
+                                stat['title']
+                            ])
+                        else:
+                            break
+
+            if len(array_matrix) > 1:
+                matrix = bmodels.TableMatrix.objects.create(
+                    type="season_per100_records",
+                    points_to_win=points_to_win,
+                    out_of_date=False,
+                    game_type=game_type[0])
+
+                for y, row in enumerate(array_matrix):
+                    for x, value in enumerate(row):
+                        cell = bmodels.Cell.objects.create(row=y, column=x, value=value, matrix=matrix)
+                        cell.save()
+
+                tables[game_type[1]] = array_matrix
+
+        else:
+            array_matrix = []
+            cells = record_matrix.cell_set.all()
+
+            for i in range(0, int(cells.count() / 5)):
+                row = [
+                    cells.get(row=i, column=0).value,
+                    cells.get(row=i, column=1).value,
+                    cells.get(row=i, column=2).value,
+                    cells.get(row=i, column=3).value,
+                    cells.get(row=i, column=4).value,
                 ]
                 array_matrix.append(row)
 

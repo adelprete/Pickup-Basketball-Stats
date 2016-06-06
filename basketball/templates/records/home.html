@@ -39,14 +39,9 @@
 		<li role="presentation">
 			<a href="#season" aria-controls="profile" role="tab" data-toggle="tab">Season</a>
 		</li>
-		{% comment %}
 		<li role="presentation">
-			<a href="#possessions" aria-controls="profile" role="tab" data-toggle="tab">Per 100</a>
+			<a href="#seasonper100" aria-controls="profile" role="tab" data-toggle="tab">Season Per 100</a>
 		</li>
-		<li role="presentation">
-			<a href="#advpossessions" aria-controls="profile" role="tab" data-toggle="tab">Adv. Per 100</a>
-		</li>
-        {% endcomment %}
 	</ul>
 	<div class="tab-content">
 		<div role="tabpanel" class="tab-pane active" id="game">
@@ -87,6 +82,17 @@
 				{% endif %}
 			</div>
 			{% season_records_table points_to_win %}
+		</div>
+		<div role="tabpanel" class="tab-pane" id="seasonper100">
+			<h3 class="accent">Season Per 100 Records</h3>
+			<div style="color: #777;font-size:17px;width:100%;">
+				{% if points_to_win != 'other' %}
+					Data pulled from games played to {{ points_to_win }}
+				{% else %}
+					Data pulled from games that were inappropriately scored
+				{% endif %}
+			</div>
+			{% season_per100_records_table points_to_win %}
 		</div>
 	</div>
 	<script type="text/javascript">

@@ -3,6 +3,7 @@ from django.db.models import Q, Sum
 from basketball import models as bmodels
 from collections import OrderedDict
 
+
 def create_plays(pk, f):
     """Reads from a .csv file with a list of plays on it and creates PlayByPlay objects from the data read.
     -Takes in a game pk and a file reader.
@@ -135,3 +136,144 @@ def recap_totals_dictionaries(statistics, player_ids, date=None, sort_column="")
 
     return totals_tables, totals_footer
 
+
+def update_game_record_statlines(game):
+
+    statlines = game.statline_set.all()
+    game_type = statlines[0].game.game_type
+
+    for statline in statlines:
+        record_statline = bmodels.RecordStatline.objects.get_or_create(
+            player=statline.player,
+            game_type=game_type,
+            record_type='game',
+            points_to_win=game.points_to_win)[0]
+
+        for stat in bmodels.STATS:
+            if getattr(statline,stat[0],0) > getattr(record_statline, stat[0], 0):
+                setattr(record_statline,stat[0], getattr(statline,stat[0],0))
+
+        record_statline.save()
+
+    try:
+        season = bmodels.Season.objects.get(start_date__lte=game.date, end_date__gte=game.date)
+        bmodels.TableMatrix.objects.filter(type='game_records', season=season).update(out_of_date=True)
+    except:
+        pass
+
+    bmodels.TableMatrix.objects.filter(type='game_records', season=None).update(out_of_date=True)
+
+
+def update_daily_statlines(game):
+
+    statlines = game.statline_set.all()
+    if statlines:
+        date = statlines[0].game.date
+        game_type = statlines[0].game.game_type
+
+        for statline in statlines:
+            stats = [stat[0] for stat in bmodels.STATS]
+
+            player_data = statline.player.get_totals(stats, date=date, game_type=game_type, points_to_win=game.points_to_win)
+
+            player_data['gp'] = bmodels.StatLine.objects.filter(game__date=date,
+                                                        player=statline.player,
+                                                        game__game_type=game.game_type,
+                                                        game__points_to_win=game.points_to_win
+                                                        ).count()
+            player_data['player'] = statline.player
+            player_data['date'] = date
+            player_data['game_type'] = game_type
+            player_data.pop('id', None)
+
+            bmodels.DailyStatline.objects.update_or_create(
+                defaults=player_data,
+                player=statline.player,
+                date=date,
+                game_type=game_type,
+                points_to_win = game.points_to_win
+            )
+        try:
+            season = bmodels.Season.objects.get(start_date__lte=date, end_date__gte=date)
+            bmodels.TableMatrix.objects.filter(type='day_records', season=season).update(out_of_date=True)
+        except:
+            pass
+        bmodels.TableMatrix.objects.filter(type='day_records', season=None).update(out_of_date=True)
+
+def update_season_statlines(game):
+
+    statlines = game.statline_set.all()
+    if statlines:
+        date = statlines[0].game.date
+        game_type = statlines[0].game.game_type
+        try:
+            season = bmodels.Season.objects.get(start_date__lte=date, end_date__gte=date)
+        except:
+            pass
+        else:
+            for statline in statlines:
+
+                stats = [stat[0] for stat in bmodels.STATS]
+
+                player_data = statline.player.get_totals(stats, game_type=game_type, season=season, points_to_win=game.points_to_win)
+
+                player_data['gp'] = bmodels.StatLine.objects.filter(game__date__range=(season.start_date, season.end_date),
+                                                                 player=statline.player,
+                                                                 game__game_type=game.game_type,
+                                                                 game__points_to_win=game.points_to_win
+                                                                 ).count()
+
+                player_data.pop('id', None)
+
+                bmodels.SeasonStatline.objects.update_or_create(
+                    defaults=player_data,
+                    player=statline.player,
+                    game_type=game_type,
+                    season=season,
+                    points_to_win = game.points_to_win
+                )
+
+            bmodels.TableMatrix.objects.filter(type='season_records').update(out_of_date=True)
+
+
+def update_season_per100_statlines(game):
+
+    statlines = game.statline_set.all()
+    if statlines:
+        date = statlines[0].game.date
+        game_type = statlines[0].game.game_type
+
+        try:
+            season = bmodels.Season.objects.get(start_date__lte=date, end_date__gte=date)
+        except:
+            pass
+        else:
+
+            stats = bmodels.SeasonPer100Statline._meta.get_all_field_names()
+            stats.remove('id')
+            stats.remove('season')
+            stats.remove('season_id')
+            stats.remove('player')
+            stats.remove('player_id')
+            stats.remove('game_type')
+            stats.remove('points_to_win')
+
+            for statline in statlines:
+
+                player_data = statline.player.get_per_100_possessions_data(stats, game_type=game_type, season_id=season.id, points_to_win=game.points_to_win)
+
+                player_data['gp'] = bmodels.StatLine.objects.filter(game__date__range=(season.start_date, season.end_date),
+                                                                 player=statline.player,
+                                                                 game__game_type=game.game_type,
+                                                                 game__points_to_win=game.points_to_win
+                                                                 ).count()
+
+                bmodels.SeasonPer100Statline.objects.update_or_create(
+                    defaults=player_data,
+                    player=statline.player,
+                    game_type=game_type,
+                    season=season,
+                    points_to_win = game.points_to_win
+                )
+
+            bmodels.TableMatrix.objects.filter(type='season_per100_records',points_to_win=game.points_to_win).update(out_of_date=True)
