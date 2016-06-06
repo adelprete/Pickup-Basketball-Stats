@@ -767,17 +767,8 @@ class SeasonPer100Statline(models.Model):
 
     def __str__(self):
         return '%s - %s - %s' % (self.player.first_name, "Season Per 100", self.season)
-PER_100_STATS = [
-    ('points', 'Points'),
-    ('fgm_percent', 'FGM Percentage'),
-    ('threepm_percent', '3PT Percentage'),
-    ('asts', 'Assists'),
-    ('pot_ast', 'Potential Assists'),
-    ('dreb', 'Defensive Rebounds'),
-    ('oreb', 'Offensive Rebounds'),
-    ('total_rebounds', 'Total Rebounds'),
-    ('treb_percent', 'Total Rebound Percentage'),
-]
+
+
 class RecordStatline(BaseStatline):
     game_type = models.CharField(max_length=30, choices=GAME_TYPES)
     record_type = models.CharField(max_length=30, choices=(('game','Game'), ('day','day'), ('season','Season')))
