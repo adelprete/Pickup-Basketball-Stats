@@ -211,7 +211,7 @@ class Player(models.Model):
 
         return shot_count[shot_type + '__sum'] or 0
 
-    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, points_to_win=11, out_of_season=False, fga_min=1):
+    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, points_to_win=None, out_of_season=False, fga_min=1):
         """Returns per 100 possessions data"""
         season=None
         if season_id:

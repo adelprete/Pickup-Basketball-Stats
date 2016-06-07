@@ -301,7 +301,10 @@ def season_per100_records_table(points_to_win):
             )
             for stat in stats:
                 if stat['stat'] != 'gp':
-                    statlines = statlines.order_by("-" + stat['stat'], "-season__end_date")
+                    if stat['stat'] != 'def_rating':
+                        statlines = statlines.order_by("-" + stat['stat'], "-season__end_date")
+                    else:
+                        statlines = statlines.order_by(stat['stat'], "-season__end_date")
 
                     record = False
 
