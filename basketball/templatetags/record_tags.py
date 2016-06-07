@@ -311,9 +311,30 @@ def season_per100_records_table(points_to_win):
 
                     for statline in statlines:
 
-                        if statline.player.get_possessions_count() < 200:
+                        #Quickly check different stat categories to see if the player meets the minimum requiremeents
+                        totals_statline = bmodels.SeasonStatline.objects.get(
+                            player=statline.player,
+                            game_type=game_type[0],
+                            season=statline.season,
+                            points_to_win=statline.points_to_win
+                        )
+                        if stat['stat'] in ['fgm_percent','ts_percent','unast_fgm_percent','unast_fga_percent','ast_fgm_percent','ast_fga_percent']:
+                            if totals_statline.fga <= 30:
+                                continue
+                        if stat['stat'] == 'threepm_percent':
+                            if totals_statline.threepa <= 30:
+                                continue
+                        if stat['stat'] == 'tp_percent':
+                            if totals_statline.asts + totals_statline.pot_ast <= 40:
+                                continue
+                        if stat['stat'] == 'pgm_percent':
+                            if totals_statline.pga <= 10:
+                                continue
+                        if totals_statline.off_pos < 200:
                             continue
-                        elif not record:
+
+                        #set a record if there isn't any yet
+                        if not record:
                             record = getattr(statline, stat['stat'], 0)
 
                         row = []

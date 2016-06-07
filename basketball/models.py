@@ -160,7 +160,7 @@ class Player(models.Model):
 
         return losses
 
-    def get_possessions_count(self, game_type=None, season_id=None, date=None, out_of_season=False):
+    def get_possessions_count(self, game_type=None, season_id=None, date=None, points_to_win=None, out_of_season=False):
 
         season=None
         if season_id:
@@ -182,9 +182,34 @@ class Player(models.Model):
             for season in Season.objects.all():
                 statlines = statlines.exclude(game__date__range=(season.start_date, season.end_date))
 
+        if points_to_win:
+            statlines = statlines.filter(game__points_to_win=points_to_win)
+
         pos_count = statlines.aggregate(Sum('off_pos'))
 
         return pos_count['off_pos__sum'] or 0
+
+    def get_shot_count(self, shot_type="fga", game_type=None, season=None, date=None, points_to_win=None):
+
+        statlines = self.statline_set.all()
+
+        if game_type:
+            statlines = statlines.filter(game__game_type=game_type)
+
+        if season:
+            statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
+
+        if date:
+            statlines = statlines.filter(game__date=date)
+        else:
+            statlines = statlines.filter(game__exhibition=False)
+
+        if points_to_win:
+            statlines = statlines.filter(game__points_to_win=points_to_win)
+
+        shot_count = statlines.aggregate(Sum(shot_type))
+
+        return shot_count[shot_type + '__sum'] or 0
 
     def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, points_to_win=11, out_of_season=False, fga_min=1):
         """Returns per 100 possessions data"""
