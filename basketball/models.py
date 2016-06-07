@@ -3,7 +3,6 @@ from django.db import models
 from django.db.models import F, Sum, Q, Avg, signals
 from django.core.urlresolvers import reverse
 from django.core.exceptions import FieldError
-from basketball import helpers
 from saturdayball import settings
 
 PRIMARY_PLAY = [
@@ -608,13 +607,14 @@ class Game(models.Model):
         statlines.update(total_pos=F('off_pos') + F('def_pos'))
         self.calculate_game_score()
 
+        from basketball import helpers
         _thread.start_new_thread(helpers.update_daily_statlines, (self,))
         _thread.start_new_thread(helpers.update_game_record_statlines, (self,))
         _thread.start_new_thread(helpers.update_season_statlines, (self,))
         _thread.start_new_thread(helpers.update_season_per100_statlines, (self,))
 
     def save(self):
-
+        from basketball import helpers
         # Check if date changed, if it did we need to update the DailyStatlines for that day after we save.
         old_date = None
         if self.id:
