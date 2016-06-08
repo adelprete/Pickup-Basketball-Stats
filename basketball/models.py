@@ -100,6 +100,8 @@ STATS = [
     ('total_pos', 'Total Possessions'),
     ('dreb_opp', 'Dreb Opportunities'),
     ('oreb_opp', 'Oreb Opportunities'),
+    ('off_team_pts', 'Offensive Team Points'),
+    ('def_team_pts', 'Defensive Team Points')
 ]
 
 
@@ -336,8 +338,9 @@ class Player(models.Model):
             #Offensive Rating = (Total Team Points / Offensive Possessions) x 100
             #Defensive Rating = (Total Team Points / Defensive Possessions) x 100
             elif stat == 'off_rating' or stat == 'def_rating':
-                result = statlines.aggregate(Sum('off_pos'), Sum('def_pos'))
+                result = statlines.aggregate(Sum('off_pos'), Sum('def_pos'), Sum('off_team_pts'),Sum('def_team_pts'))
 
+                """
                 if stat == 'off_rating':
                     team1_games = Game.objects.filter(team1=self)
                     team2_games = Game.objects.filter(team2=self)
@@ -358,10 +361,12 @@ class Player(models.Model):
                     team2_result['team2_score__sum'] = 0
 
                 total_team_points = team1_result['team1_score__sum'] + team2_result['team2_score__sum']
+                """
+
                 if stat == 'off_rating' and result['off_pos__sum']:
-                    percentage = total_team_points / result['off_pos__sum'] * 100
+                    percentage = result['off_team_pts__sum'] / result['off_pos__sum'] * 100
                 elif stat == 'def_rating' and result['def_pos__sum']:
-                    percentage = total_team_points / result['def_pos__sum'] * 100
+                    percentage = result['def_team_pts__sum'] / result['def_pos__sum'] * 100
 
             data_dict[stat] = round(percentage, 1)
         return data_dict
@@ -468,9 +473,10 @@ class Game(models.Model):
         """
         statlines = self.statline_set.all()
         for line in statlines:
-            for play in ALL_PLAY_TYPES:
-                if play[0] not in ['sub_out', 'sub_in', 'misc']:
-                    setattr(line, play[0], 0)
+            for stat in STATS:
+                if stat[0] not in ['sub_out', 'sub_in', 'misc']:
+                    setattr(line, stat[0], 0)
+            """
             line.points = 0
             line.ast_points = 0
             line.total_rebounds = 0
@@ -488,6 +494,7 @@ class Game(models.Model):
             line.fastbreaks = 0
             line.fastbreak_points = 0
             line.second_chance_points = 0
+            """
             line.save()
 
     def get_bench(self):
@@ -562,22 +569,6 @@ class Game(models.Model):
                                 primary_line.fastbreak_points += 2
 
                 primary_line.save()
-                if play.primary_play in ['threepm', 'fgm', 'to']:
-                    second_chance_window = False
-                    if primary_line.player in self.team1.all():
-                        team1_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
-                        team2_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
-                    else:
-                        team1_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
-                        team2_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
-
-                if play.primary_play in ['fga', 'threepa']:
-                    if primary_line.player in self.team1.all():
-                        team1_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp') + 1)
-                        team2_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp') + 1)
-                    else:
-                        team1_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp') + 1)
-                        team2_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp') + 1)
 
                 # secondary play
                 if play.secondary_play:
@@ -622,6 +613,39 @@ class Game(models.Model):
                 elif play.primary_play in ['fga','threepa']:
                     StatLine.objects.filter(game=self, player=play.primary_player).update(unast_fga=F('unast_fga') + 1)
 
+                # see which players should have their possession data increased
+                if play.primary_play in ['threepm', 'fgm', 'to']:
+                    second_chance_window = False
+                    if primary_line.player in self.team1.all():
+                        team1_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
+                        team2_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
+                    else:
+                        team1_statlines.exclude(player__pk__in=bench).update(def_pos=F('def_pos') + 1)
+                        team2_statlines.exclude(player__pk__in=bench).update(off_pos=F('off_pos') + 1)
+
+                # see which players should have their off and def team points increased
+                if play.primary_play in ['threepm', 'fgm']:
+                    pts = 1
+                    if play.primary_play == 'threepm':
+                        pts = 2
+
+                    if primary_line.player in self.team1.all():
+                        team1_statlines.exclude(player__pk__in=bench).update(off_team_pts=F('off_team_pts') + pts)
+                        team2_statlines.exclude(player__pk__in=bench).update(def_team_pts=F('def_team_pts') + pts)
+                    else:
+                        team1_statlines.exclude(player__pk__in=bench).update(def_team_pts=F('def_team_pts') + pts)
+                        team2_statlines.exclude(player__pk__in=bench).update(off_team_pts=F('off_team_pts') + pts)
+
+                # see which players should have their opportunity data increased
+                if play.primary_play in ['fga', 'threepa']:
+                    if primary_line.player in self.team1.all():
+                        team1_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp') + 1)
+                        team2_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp') + 1)
+                    else:
+                        team1_statlines.exclude(player__pk__in=bench).update(dreb_opp=F('dreb_opp') + 1)
+                        team2_statlines.exclude(player__pk__in=bench).update(oreb_opp=F('oreb_opp') + 1)
+
+
             elif play.primary_play in ['sub_out', 'sub_in']:
                 bench.append(play.primary_player.pk)
                 bench.remove(play.secondary_player.pk)
@@ -632,6 +656,7 @@ class Game(models.Model):
         statlines.update(total_pos=F('off_pos') + F('def_pos'))
         self.calculate_game_score()
 
+    def calculate_meta_statlines(self):
         from basketball import helpers
         _thread.start_new_thread(helpers.update_daily_statlines, (self,))
         _thread.start_new_thread(helpers.update_game_record_statlines, (self,))
@@ -730,6 +755,8 @@ class BaseStatline(models.Model):
     fastbreaks = models.PositiveIntegerField(default=0)
     fastbreak_points = models.PositiveIntegerField(default=0)
     second_chance_points = models.PositiveIntegerField(default=0)
+    off_team_pts = models.PositiveIntegerField(default=0)
+    def_team_pts = models.PositiveIntegerField(default=0)
 
     class Meta():
         abstract=True

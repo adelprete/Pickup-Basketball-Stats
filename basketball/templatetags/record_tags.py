@@ -11,6 +11,8 @@ IGNORED_STATS = [
     ('total_pos', 'Total Possessions'),
     ('dreb_opp', 'Dreb Opportunities'),
     ('oreb_opp', 'Oreb Opportunities'),
+    ('off_team_pts', 'Offensive Team Points'),
+    ('def_team_pts', 'Defensive Team Points')
 ]
 
 @register.inclusion_tag('records/game_table.html')
@@ -34,6 +36,8 @@ def game_records_table(points_to_win, season=None):
             statlines = bmodels.StatLine.objects.filter(
                 game__points_to_win=points_to_win,
                 game__game_type=game_type[0]
+            ).exclude(
+                player__first_name__in=['Team1', 'Team2']
             )
             if season:
                 statlines = statlines.filter(
@@ -122,9 +126,11 @@ def day_records_table(points_to_win,season=None):
             statlines = bmodels.DailyStatline.objects.filter(
                     points_to_win=points_to_win,
                     game_type=game_type[0]
-                )
+            ).exclude(
+                player__first_name__in=['Team1', 'Team2']
+            )
             if season:
-                statlines = statlines.objects.filter(
+                statlines = statlines.filter(
                     date__range=(season.start_date, season.end_date),
                 )
 
@@ -210,6 +216,8 @@ def season_records_table(points_to_win):
             statlines = bmodels.SeasonStatline.objects.filter(
                 points_to_win=points_to_win,
                 game_type=game_type[0]
+            ).exclude(
+                player__first_name__in=['Team1', 'Team2']
             )
             # Run through each stat and find the best statline for each one
             for stat in bmodels.STATS:

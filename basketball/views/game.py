@@ -166,6 +166,7 @@ def ajax_add_play(request, pk):
         play_record.game = game
         play_record.save()
         game.calculate_statlines()
+        game.calculate_meta_statlines()
         return HttpResponse("<br><font style='color:green'>" + play_record.get_primary_play_display() + " Play added.<br>You can add more plays if you'd like.<br>Refresh page to see changes.</font><br><br>")
     elif play_form.errors:
         html_response = "<br><font style='color:red;'>"
