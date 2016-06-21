@@ -163,7 +163,17 @@ class Player(models.Model):
         return losses
 
     def get_possessions_count(self, game_type=None, season_id=None, date=None, points_to_win=None, out_of_season=False):
+        """
+        Gets the number of possessions the player had for the filtered games.
 
+        Params help us look at the games we are interested in
+        :param game_type: string
+        :param season_id: int
+        :param date: date object
+        :param points_to_win: string
+        :param out_of_season: boolean
+        :return: Integer representing the number of possessions
+        """
         season=None
         if season_id:
             season = Season.objects.get(id=season_id)
@@ -214,7 +224,17 @@ class Player(models.Model):
         return shot_count[shot_type + '__sum'] or 0
 
     def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, points_to_win=None, out_of_season=False, fga_min=1):
-        """Returns per 100 possessions data"""
+        """
+        Returns the players per 100 data from the games and stats that we are interested in.
+
+        :param stats_list: a list of strings
+        :param game_type: string
+        :param season_id: integer
+        :param points_to_win: string
+        :param out_of_season: boolean
+        :param fga_min: integer needed or some calculations
+        :return: returns a dictionary of the player's stats
+        """
         season=None
         if season_id:
             season = Season.objects.get(id=season_id)
@@ -380,8 +400,18 @@ class Player(models.Model):
         return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season, date=date, out_of_season=out_of_season, points_to_win=points_to_win)
 
     def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
+        """
+        Returns either a player's Totals or Averages based on the games and stats we are interested in
 
-
+        :param stats_list: list of strings
+        :param report_type: string that equals Sum or Avg
+        :param game_type: string
+        :param season: season object
+        :param date: date object
+        :param out_of_season: boolean
+        :param points_to_win: string
+        :return: returns a dictionary of stats and their averages or totals
+        """
         qs = self.statline_set.all()
         if game_type:
             qs = qs.filter(game__game_type=game_type)
@@ -446,7 +476,11 @@ class Game(models.Model):
         return reverse("box_score", kwargs={'id': self.id})
 
     def calculate_game_score(self):
-        """Calculates a game's score by finding the sum of points for each team's statlines"""
+        """
+        Calculates a game's score by finding the sum of points for each team's statlines
+
+        :return: Returns nothing
+        """
         team1_statlines = StatLine.objects.filter(
             game=self, player__in=self.team1.all())
         team2_statlines = StatLine.objects.filter(
@@ -464,42 +498,34 @@ class Game(models.Model):
         self.save()
 
     def get_top_player(self):
+        """
+        Returns the top player for the game based on pts and other tie breakers
+
+        :return: Returns player object or None
+        """
         statlines = StatLine.objects.filter(game=self, player__in=self.winning_players.all()).order_by('-points','fga','to','player__first_name')
         return statlines[0].player if statlines else None
 
     def reset_statlines(self):
-        """Resets the statlines for each player to zero accross all fields
+        """
+        Resets the statlines for each player to zero across all fields
         Usually used for when you're about to recalculate a game's stats
+
+        :return: Returns nothing
         """
         statlines = self.statline_set.all()
         for line in statlines:
             for stat in STATS:
                 if stat[0] not in ['sub_out', 'sub_in', 'misc']:
                     setattr(line, stat[0], 0)
-            """
-            line.points = 0
-            line.ast_points = 0
-            line.total_rebounds = 0
-            line.def_pos = 0
-            line.off_pos = 0
-            line.dreb_opp = 0
-            line.oreb_opp = 0
-            line.total_pos = 0
-            line.ast_fgm = 0
-            line.ast_fga = 0
-            line.unast_fgm = 0
-            line.unast_fga = 0
-            line.pgm = 0
-            line.pga = 0
-            line.fastbreaks = 0
-            line.fastbreak_points = 0
-            line.second_chance_points = 0
-            """
             line.save()
 
     def get_bench(self):
-        """Returns a list of players that start on the bench for a game.
-        It does so by analyzing the subsitution plays
+        """
+        Returns a list of player ids that start on the bench for a game.
+        It does so by analyzing the substitution plays
+
+        :return: Returns a list of player ids
         """
         playbyplays = self.playbyplay_set.filter(primary_play="sub_out").order_by("time")
         team1_oncourt = self.team1.all().values_list('pk', flat=True)
@@ -515,8 +541,11 @@ class Game(models.Model):
         return bench
 
     def calculate_statlines(self):
-        """Calculates the statlines for a game by looping through the games Play By Play
+        """
+        Calculates the statlines for a game by looping through the games Play By Play
         Statlines are reset to zero before looping over the Play by Plays
+
+        :return: Nothing
         """
         self.reset_statlines()
         playbyplays = self.playbyplay_set.all().order_by('time')
@@ -657,6 +686,11 @@ class Game(models.Model):
         self.calculate_game_score()
 
     def calculate_meta_statlines(self):
+        """
+        Updates each players daily, season, and individual game record statlines that played.
+
+        :return: Nothing
+        """
         from basketball import helpers
         _thread.start_new_thread(helpers.update_daily_statlines, (self,))
         _thread.start_new_thread(helpers.update_game_record_statlines, (self,))
@@ -664,6 +698,11 @@ class Game(models.Model):
         _thread.start_new_thread(helpers.update_season_per100_statlines, (self,))
 
     def save(self):
+        """
+        Save game and if the date changed make sure we update games and statlines that might be effected.
+
+        :return: Nothing
+        """
         from basketball import helpers
         # Check if date changed, if it did we need to update the DailyStatlines for that day after we save.
         old_date = None
@@ -762,12 +801,18 @@ class BaseStatline(models.Model):
         abstract=True
 
 class StatLine(BaseStatline):
+    """
+    A player's statline for a game.
+    """
     game = models.ForeignKey('basketball.Game')
 
     def __str__(self):
         return '%s - %s - %s' % (self.player.first_name, self.game.title, self.game.date.isoformat())
 
 class DailyStatline(BaseStatline):
+    """
+    A player's statline for a day.
+    """
     date = models.DateField()
     game_type = models.CharField(max_length=30, choices=GAME_TYPES)
     points_to_win = models.CharField(max_length=30, choices=(('11','11'), ('30','30'), ('other','Other')), default='11')
@@ -777,6 +822,9 @@ class DailyStatline(BaseStatline):
         return '%s - %s - %s' % (self.player.first_name, "Day ", self.date)
 
 class SeasonStatline(BaseStatline):
+    """
+    A player's statline for a Season.
+    """
     season = models.ForeignKey('basketball.Season')
     game_type = models.CharField(max_length=30, choices=GAME_TYPES)
     gp = models.PositiveIntegerField("Games Played", default=0)
@@ -786,6 +834,9 @@ class SeasonStatline(BaseStatline):
         return '%s - %s - %s' % (self.player.first_name, "Season ", self.season)
 
 class SeasonPer100Statline(models.Model):
+    """
+    A player's per 100 statline for a season.
+    """
     player = models.ForeignKey('basketball.Player',null=True)
     season = models.ForeignKey('basketball.Season', null=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES)
@@ -822,6 +873,9 @@ class SeasonPer100Statline(models.Model):
 
 
 class RecordStatline(BaseStatline):
+    """
+    A players individual single game records saved in a statline
+    """
     game_type = models.CharField(max_length=30, choices=GAME_TYPES)
     record_type = models.CharField(max_length=30, choices=(('game','Game'), ('day','day'), ('season','Season')))
     points_to_win = models.CharField(max_length=30, choices=(('11','11'), ('30','30'), ('other','Other')), default='11')
@@ -831,6 +885,9 @@ class RecordStatline(BaseStatline):
 
 
 class PlayByPlay(models.Model):
+    """
+    Represents a single play within a game.
+    """
     game = models.ForeignKey('basketball.Game')
     time = models.DurationField()
     primary_play = models.CharField(max_length=30, choices=PRIMARY_PLAY)
@@ -848,6 +905,9 @@ class PlayByPlay(models.Model):
 
 
 class Season(models.Model):
+    """
+    Our season objects for organizing stats within periods of time.
+    """
     title = models.CharField(max_length=30)
     start_date = models.DateField()
     end_date = models.DateField()
@@ -860,6 +920,9 @@ class Season(models.Model):
 
 
 class TableMatrix(models.Model):
+    """
+    Used as a way for us to save tables that may take a long time to calculate.
+    """
     type = models.CharField(max_length=30,default='',choices=(('game_records','Game Records'),
                                                               ('day_records','Day Records'),
                                                               ('season_records', 'Season Records'),

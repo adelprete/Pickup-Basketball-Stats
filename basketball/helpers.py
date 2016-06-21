@@ -100,7 +100,7 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
     return sorted(player_list, key=lambda x: x[1], reverse=True)
 
 def recap_totals_dictionaries(statistics, player_ids, date=None, sort_column=""):
-	
+
     players = bmodels.Player.objects.filter(id__in=player_ids).order_by('first_name')
 
     totals_tables = OrderedDict()
