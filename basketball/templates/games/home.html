@@ -16,6 +16,19 @@
 			</div>
 		</div><br>
 	{% endif %}
+	<nav>
+		<ul class="pager">
+			{% if games_list.has_previous %}
+				<li><a href="?page={{ games_list.previous_page_number }}">Previous</a></li>
+			{% endif %}
+			<span class="current">
+				Page {{ games_list.number }} of {{ games_list.paginator.num_pages }}.
+			</span>
+			{% if games_list.has_next %}
+			<li><a href="?page={{ games_list.next_page_number }}">Next</a></li>
+			{% endif %}
+		</ul>
+	</nav>
 	{% for value in games_list %}
 		<div class="row">
 			<div class="col-sm-12">
