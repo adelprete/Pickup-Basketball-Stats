@@ -425,8 +425,8 @@ class Player(models.Model):
             qs = qs.filter(game__exhibition=False)
 
         if out_of_season:
-            for season in Season.objects.all():
-                qs = qs.exclude(game__date__range=(season.start_date,season.end_date))
+            for exclude_season in Season.objects.all():
+                qs = qs.exclude(game__date__range=(exclude_season.start_date,exclude_season.end_date))
 
         if season:
             qs = qs.filter(game__date__range=(season.start_date, season.end_date))
