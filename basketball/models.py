@@ -142,14 +142,21 @@ class Player(models.Model):
     def total_games(self, season=None):
 
         if season:
-            return Game.objects.filter(Q(team1=self) | Q(team2=self), date__range=(season.start_date, season.end_date), exhibition=False).distinct().count()
+            return Game.objects.filter(
+                Q(team1=self) | Q(team2=self),
+                date__range=(season.start_date, season.end_date),
+                exhibition=False,
+                published=True).distinct().count()
 
-        return Game.objects.filter(Q(team1=self) | Q(team2=self), exhibition=False).distinct().count()
+        return Game.objects.filter(
+                Q(team1=self) | Q(team2=self),
+                exhibition=False,
+                published=True).distinct().count()
 
     def total_wins(self, season=None):
 
         if season:
-            return self.winning_players_set.filter(date__range=(season.start_date, season.end_date),exhibition=False).count()
+            return self.winning_players_set.filter(date__range=(season.start_date, season.end_date),exhibition=False, published=True).count()
 
         return self.winning_players_set.filter(exhibition=False).count()
 
@@ -162,7 +169,7 @@ class Player(models.Model):
 
         return losses
 
-    def get_possessions_count(self, game_type=None, season_id=None, date=None, points_to_win=None, out_of_season=False):
+    def get_possessions_count(self, game_type=None, season_id=None, date=None, points_to_win=None, out_of_season=False, published=True):
         """
         Gets the number of possessions the player had for the filtered games.
 
@@ -172,13 +179,14 @@ class Player(models.Model):
         :param date: date object
         :param points_to_win: string
         :param out_of_season: boolean
+        :param published: boolean
         :return: Integer representing the number of possessions
         """
         season=None
         if season_id:
             season = Season.objects.get(id=season_id)
 
-        statlines = self.statline_set.all()
+        statlines = self.statline_set.filter(game__published=published)
         if game_type:
             statlines = statlines.filter(game__game_type=game_type)
 
@@ -201,9 +209,9 @@ class Player(models.Model):
 
         return pos_count['off_pos__sum'] or 0
 
-    def get_shot_count(self, shot_type="fga", game_type=None, season=None, date=None, points_to_win=None):
+    def get_shot_count(self, shot_type="fga", game_type=None, season=None, date=None, points_to_win=None, published=True):
 
-        statlines = self.statline_set.all()
+        statlines = self.statline_set.filter(published=published)
 
         if game_type:
             statlines = statlines.filter(game__game_type=game_type)
@@ -223,7 +231,7 @@ class Player(models.Model):
 
         return shot_count[shot_type + '__sum'] or 0
 
-    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, points_to_win=None, out_of_season=False, fga_min=1):
+    def get_per_100_possessions_data(self, stats_list, game_type, season_id=None, points_to_win=None, out_of_season=False, fga_min=1, published=True):
         """
         Returns the players per 100 data from the games and stats that we are interested in.
 
@@ -233,6 +241,7 @@ class Player(models.Model):
         :param points_to_win: string
         :param out_of_season: boolean
         :param fga_min: integer needed or some calculations
+        :param published: include published or unpublished games only.
         :return: returns a dictionary of the player's stats
         """
         season=None
@@ -253,7 +262,7 @@ class Player(models.Model):
                 'ast_fga',
                 'ast_fgm',
         ]
-        statlines = self.statline_set.filter(game__exhibition=False,game__game_type=game_type)
+        statlines = self.statline_set.filter(game__exhibition=False,game__game_type=game_type, game__published=True)
         if season:
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
         if out_of_season:
@@ -391,15 +400,15 @@ class Player(models.Model):
             data_dict[stat] = round(percentage, 1)
         return data_dict
 
-    def get_averages(self, stats_list, game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
+    def get_averages(self, stats_list, game_type=None, season=None, date=None, out_of_season=False, points_to_win=None, published=True):
         """Returns a dictionary of the player's averages"""
-        return self.get_player_data(stats_list, report_type='Avg', game_type=game_type, season=season, date=date, out_of_season=out_of_season, points_to_win=points_to_win)
+        return self.get_player_data(stats_list, report_type='Avg', game_type=game_type, season=season, date=date, out_of_season=out_of_season, points_to_win=points_to_win, published=published)
 
-    def get_totals(self, stats_list, game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
+    def get_totals(self, stats_list, game_type=None, season=None, date=None, out_of_season=False, points_to_win=None, published=True):
         """Returns a dictionary of the player's totals"""
-        return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season, date=date, out_of_season=out_of_season, points_to_win=points_to_win)
+        return self.get_player_data(stats_list, report_type='Sum', game_type=game_type, season=season, date=date, out_of_season=out_of_season, points_to_win=points_to_win, published=published)
 
-    def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None, out_of_season=False, points_to_win=None):
+    def get_player_data(self, stats_list, report_type='Sum', game_type=None, season=None, date=None, out_of_season=False, points_to_win=None, published=True):
         """
         Returns either a player's Totals or Averages based on the games and stats we are interested in
 
@@ -412,7 +421,8 @@ class Player(models.Model):
         :param points_to_win: string
         :return: returns a dictionary of stats and their averages or totals
         """
-        qs = self.statline_set.all()
+        qs = self.statline_set.filter(game__published=published)
+        
         if game_type:
             qs = qs.filter(game__game_type=game_type)
 
@@ -462,6 +472,7 @@ class Game(models.Model):
     youtube_id = models.CharField("Youtube Video ID", max_length=2000, blank=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, null=True)
     top_player = models.ForeignKey('basketball.Player', related_name='top_player_set', null=True, blank=True)
+    published = models.BooleanField("Publish Game?", default=False)
 
     def __str__(self):
         return "%s: %s" % (self.date.isoformat(), self.title)
@@ -713,7 +724,7 @@ class Game(models.Model):
 
         super(Game, self).save()
 
-        if old_date:
+        if old_date and self.published:
             daily_statlines = DailyStatline.objects.filter(date=old_date,
                                                            game_type=self.game_type,
                                                            points_to_win=self.points_to_win)
@@ -752,9 +763,10 @@ class Game(models.Model):
             if statline.player not in self.team1.all() and statline.player not in self.team2.all():
                 statline.delete()
 
-        helpers.update_daily_statlines(self)
-        helpers.update_season_statlines(self)
-        helpers.update_season_per100_statlines(self)
+        if self.published:
+            helpers.update_daily_statlines(self)
+            helpers.update_season_statlines(self)
+            helpers.update_season_per100_statlines(self)
 
     class Meta():
         ordering = ['-date', 'title']

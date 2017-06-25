@@ -38,6 +38,7 @@ class GameForm(forms.ModelForm):
     required_css_class = 'required'
     date = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}))
     exhibition = fields.BooleanChoiceField(label="Exhibition Game?", required=True, initial=False, help_text="Stats for Exhibition games are NOT counted.")
+    published = fields.BooleanChoiceField(label="Publish Game?", required=True, initial=False, help_text="Publish games when they are ready to be view by others.")
 
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)
@@ -45,13 +46,13 @@ class GameForm(forms.ModelForm):
         self.fields['team1'].queryset = bmodels.Player.player_objs.all()
         self.fields['team2'].widget.attrs = {"size": 15}
         self.fields['team2'].queryset = bmodels.Player.player_objs.all()
-   
+
     def clean_team1(self):
         team1_qs = self.cleaned_data.get('team1', None)
         if team1_qs:
             team1_qs = team1_qs | bmodels.Player.objects.filter(first_name='Team1')
         return team1_qs
-    
+
     def clean_team2(self):
         team2_qs = self.cleaned_data.get('team2', None)
         if team2_qs:
@@ -134,7 +135,7 @@ class SeasonForm(forms.ModelForm):
 
         if start_date > end_date:
                 raise forms.ValidationError("Start Date can't be before end date")
-        
+
         season = bmodels.Season.objects.filter(
                         Q(Q(start_date__lt=start_date)&Q(end_date__gt=start_date))
                         |Q(Q(start_date__lt=end_date)&Q(end_date__gt=end_date)))
@@ -145,7 +146,7 @@ class SeasonForm(forms.ModelForm):
                 raise forms.ValidationError("Dates can't cross over into other seasons. Crossed over with %s" % (season[0].title))
 
         return data
-    
+
     class Meta:
         model = bmodels.Season
         fields = ['start_date','end_date','title']

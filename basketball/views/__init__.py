@@ -26,8 +26,8 @@ def root(request, template="base.html"):
     Currently prints out a list of games grouped by the dates that they were played on
     """
     # latest_game will help us find the latest set of games.
-    latest_game = bmodels.Game.objects.all().latest('date')
-    game_set = bmodels.Game.objects.filter(date=latest_game.date).order_by('title')
+    latest_game = bmodels.Game.objects.filter(published=True).latest('date')
+    game_set = bmodels.Game.objects.filter(date=latest_game.date, published=True).order_by('title')
 
     # top plays and not top plays
     top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
@@ -46,7 +46,7 @@ def root(request, template="base.html"):
             player_tuples.append((player.first_name, player.total_wins(season=season), player.total_losses(season=season)))
 
     player_standings = sorted(player_tuples, key=lambda player: player[1], reverse=True)
-    
+
     #if we are sorting a table we want to bring the relevant tab up after page reload.
     default_tab = request.GET.get('default_tab')
 
@@ -82,7 +82,7 @@ def leaderboard_home(request, template="leaderboard/home.html"):
 			season = bmodels.Season.objects.get(start_date__lt=datetime.datetime.today(), end_date__gt=datetime.datetime.today())
 		except:
 			season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
-		
+
 		form = bforms.LeaderboardForm(initial={'possessions_min': 100, 'season': season.id})
 
 	#if we are sorting a table we want to bring the relevant tab up after page reload.
@@ -149,7 +149,7 @@ def ajax_standings(request):
     season = None
     if request.GET['season_id'] != 'All':
         season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
-    
+
     players = bmodels.Player.player_objs.all()
 
     player_tuples = []

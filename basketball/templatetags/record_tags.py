@@ -35,7 +35,9 @@ def game_records_table(points_to_win, season=None):
 
             statlines = bmodels.StatLine.objects.filter(
                 game__points_to_win=points_to_win,
-                game__game_type=game_type[0]
+                game__game_type=game_type[0],
+                game__exhibition=False,
+                game__published=True,
             ).exclude(
                 player__first_name__in=['Team1', 'Team2']
             )
@@ -396,5 +398,3 @@ def season_per100_records_table(points_to_win):
 
 
     return {"tables": tables}
-
-

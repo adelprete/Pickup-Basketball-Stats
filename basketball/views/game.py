@@ -2,6 +2,7 @@ import itertools
 import operator, datetime
 from collections import OrderedDict
 
+from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -18,26 +19,42 @@ from basketball import helpers
 
 def games_home(request, template='games/home.html'):
     """Currently only passes a list of all the games to the template"""
-    games = bmodels.Game.objects.all()
+    prefix = ""
+
+    if 'create_game' in request.GET:
+        return redirect('create_game')
+    elif 'unpublished_list' in request.GET:
+        games = bmodels.Game.objects.filter(published=False)
+        prefix = 'Unpublished '
+    else:
+        games = bmodels.Game.objects.filter(published=True)
+
+    if not games:
+        context = {
+            'prefix': prefix,
+            'games_list': None,
+        }
+        return render(request, template, context)
+
 
     keyfunc = operator.attrgetter('date')
-    
+
     #group games by date where key is datime obj and value is games list
     group_list = [{k: list(g)} for k, g in itertools.groupby(games, keyfunc)]
-    
+
     #merge list of dictionaries into one dictionary
     group_dict = { key: value for d in group_list for key, value in d.items() }
-    
+
     #convert dictionary into list of tuples (key, value)
     games_tuple_list = []
     for key, value in iter(group_dict.items()):
         games_tuple_list.append((key, value))
-    
+
     games_tuple_list = sorted(games_tuple_list, key=lambda date: date, reverse=True)
 
     #use Django paginator to paginate
     paginator = Paginator(games_tuple_list, 25)
-    
+
     page = request.GET.get('page')
     try:
         games_tuple_list = paginator.page(page)
@@ -49,6 +66,7 @@ def games_home(request, template='games/home.html'):
         games_tuple_list = paginator.page(paginator.num_pages)
 
     context = {
+        'prefix': prefix,
         'games_list': games_tuple_list,
     }
     return render(request, template, context)
@@ -58,14 +76,13 @@ def recap(request, game_id, template='games/recap.html'):
     """View for our recap pages for each set of games"""
     game = get_object_or_404(bmodels.Game, id=game_id)
 
-    game_set = bmodels.Game.objects.filter(date=game.date).order_by('title')
-
+    game_set = bmodels.Game.objects.filter(date=game.date, published=game.published).order_by('title')
     top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
     not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
-    
+
 	#if we are sorting a table we want to bring the relevant tab up after page reload.
     default_tab = request.GET.get('default_tab')
-    
+
     if not top_plays and not not_top_plays:
         default_tab = "totals"
 
@@ -73,7 +90,7 @@ def recap(request, game_id, template='games/recap.html'):
         'games': game_set,
         'top_plays': top_plays,
         'not_top_plays': not_top_plays,
-	'default_tab': default_tab
+	    'default_tab': default_tab
     }
 
     return render(request, template, context)
@@ -131,10 +148,10 @@ def box_score(request, id, template="games/box_score.html"):
     # forms and filters
     pbp_form = bforms.PlayByPlayForm(game)
     pbp_filter = bforms.PlayByPlayFilter(request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
-    
+
     team1_statlines = bmodels.StatLine.objects.filter(game=game, player__in=game.team1.all()).order_by('-points')
     team2_statlines = bmodels.StatLine.objects.filter(game=game, player__in=game.team2.all()).order_by('-points')
-    
+
     if request.POST:
         helpers.create_plays(game.pk, request.FILES['pbpFile'])
         game.reset_statlines()
@@ -222,7 +239,7 @@ class PlayByPlayFormView(FormView):
 
     def form_valid(self, form):
         self.object = form.save()
-        game = bmodels.Game.objects.get(id=self.kwargs['game_id'])       
+        game = bmodels.Game.objects.get(id=self.kwargs['game_id'])
         game.calculate_statlines()
         messages.success(self.request, "Play saved")
         return super(PlayByPlayFormView, self).form_valid(form)

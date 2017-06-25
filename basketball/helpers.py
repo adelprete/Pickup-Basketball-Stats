@@ -82,10 +82,10 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
         players = bmodels.Player.objects.filter(pk=player_pk)
     else:
         players = bmodels.Player.objects.all().exclude(pk__in=excluded_pks)
-    
+
     player_list = []
     for player in players:
-        
+
         if season:
             result = player.statline_set.filter(game__exhibition=False,game__game_type=game_type, game__date__range=(season.start_date, season.end_date)).aggregate(Sum(stat), Sum('off_pos'))
         else:
@@ -94,12 +94,12 @@ def per100_top_stat_players(game_type, stat, player_pk, excluded_pks, season=Non
             percentage = (result[stat + '__sum'] / result['off_pos__sum']) * 100
         else:
             percentage = 0.0
-        
+
         player_list.append((player.first_name, percentage))
-    
+
     return sorted(player_list, key=lambda x: x[1], reverse=True)
 
-def recap_totals_dictionaries(statistics, player_ids, date=None, sort_column=""):
+def recap_totals_dictionaries(statistics, player_ids, date=None, sort_column="", published=True):
 
     players = bmodels.Player.objects.filter(id__in=player_ids).order_by('first_name')
 
@@ -110,15 +110,15 @@ def recap_totals_dictionaries(statistics, player_ids, date=None, sort_column="")
         totals_tables[game_type[1]] = []
         totals = {}
         for player in players:
-		   
-            if player.get_possessions_count(game_type=game_type[0], date=date) > 0:
+
+            if player.get_possessions_count(game_type=game_type[0], date=date, published=published) > 0:
                 player_data = {'player_obj': player}
-				
+
                 stats_list = [header['stat'] for header in statistics if header['stat'] != 'gp']
-                player_data.update(player.get_totals(stats_list, game_type=game_type[0], date=date))
+                player_data.update(player.get_totals(stats_list, game_type=game_type[0], date=date, published=published))
 
                 # Lastly, count how many games the player played
-                statlines = player.statline_set.filter(game__game_type=game_type[0], game__date=date)
+                statlines = player.statline_set.filter(game__game_type=game_type[0], game__date=date, game__published=published)
                 player_data['gp'] = statlines.count()
 
                 totals_tables[game_type[1]].append(player_data)
@@ -174,7 +174,12 @@ def update_daily_statlines(game):
         for statline in statlines:
             stats = [stat[0] for stat in bmodels.STATS]
 
-            player_data = statline.player.get_totals(stats, date=date, game_type=game_type, points_to_win=game.points_to_win)
+            player_data = statline.player.get_totals(
+                stats,
+                date=date,
+                game_type=game_type,
+                points_to_win=game.points_to_win,
+                published=game.published)
 
             player_data['gp'] = bmodels.StatLine.objects.filter(game__date=date,
                                                         player=statline.player,
