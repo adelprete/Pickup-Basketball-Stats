@@ -80,6 +80,7 @@
 						</form>
 					{% endif %}
 					<div id="play_title"><h4 class="accent">Play By Plays</h4></div>
+          <div><a href="{% url 'export_plays' game.id %}" style="cursor: pointer;">Export Plays</a></div>
 					{% if not request.user.is_anonymous %}
 					<div><a id="toggle_fileform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Upload Form</a></div>
 					<form id='pbp_file_form' method="post" action="." enctype="multipart/form-data" style="display:none;">{% csrf_token %}

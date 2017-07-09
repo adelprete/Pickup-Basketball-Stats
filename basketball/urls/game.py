@@ -13,5 +13,5 @@ urlpatterns = [
 	url(r'^ajax-add-play/(?P<pk>[0-9]+)/$',        gviews.ajax_add_play,       name='ajax_add_play'),
 	url(r'ajax-filter-plays/(?P<pk>[0-9]+)/$',      gviews.ajax_filter_plays,   name="ajax_filter_plays"),
 	url(r'^delete-play/(?P<pk>[0-9]+)/$',        gviews.delete_play,       name='delete_play'),
-
+	url(r'^(?P<game_id>\d+)/export_plays/$',        gviews.export_plays,       name='export_plays'),
 ]
