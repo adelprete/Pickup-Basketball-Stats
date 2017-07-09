@@ -218,13 +218,14 @@ def export_plays(request, game_id):
     """Called when a play is deleted from a game's page."""
     game = get_object_or_404(bmodels.Game, id=game_id)
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment;filename=export.csv'
+    filename = "%s_%s" % (game.date.strftime('%m%d%Y'), game.title)
+    response['Content-Disposition'] = 'attachment;filename=%s.csv' % (filename.replace(' ', ''))
     writer = csv.writer(response)
     for play in game.playbyplay_set.all().order_by('time'):
         hours = play.time.seconds // 3600
         minutes = play.time.seconds // 60
         seconds = play.time.seconds % 60
-        
+
         row = [
             '%02d:%02d:%02d' % (hours, minutes, seconds),
             play.get_primary_play_display(),
