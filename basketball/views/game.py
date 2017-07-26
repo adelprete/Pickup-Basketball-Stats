@@ -277,3 +277,77 @@ class PlayByPlayFormView(FormView):
         game.calculate_statlines()
         messages.success(self.request, "Play saved")
         return super(PlayByPlayFormView, self).form_valid(form)
+
+# Angularjs view
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from basketball.serializers import PlayCreateUpdateSerializer, PlayRetrieveListSerializer, GameSerializer
+from rest_framework import viewsets
+from rest_framework.response import Response
+#from base.utils import JSONResponse
+
+class GameViewSet(viewsets.ModelViewSet):
+    queryset = bmodels.Game.objects.all()
+    serializer_class = GameSerializer
+
+    def retrieve(self, request, pk=None):
+        game = get_object_or_404(bmodels.Game, pk=pk)
+        serializer = GameSerializer(game)
+        return Response(serializer.data)
+
+
+class PlaysViewSet(viewsets.ModelViewSet):
+    authentication_classes = (SessionAuthentication, BasicAuthentication)
+    permission_classes = (IsAuthenticated,)
+    queryset = bmodels.PlayByPlay.objects.all()
+    serializer_class = PlayCreateUpdateSerializer
+
+    action_serializers = {
+        'retrieve': PlayRetrieveListSerializer,
+        'list': PlayRetrieveListSerializer,
+    }
+
+    def get_serializer_class(self):
+        if hasattr(self, 'action_serializers'):
+            if self.action in self.action_serializers:
+                return self.action_serializers[self.action]
+        return super(PlaysViewSet, self).get_serializer_class()
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        #if self.action == 'list':
+        #    self.request.get['gameid']
+        #import pdb;pdb.set_trace()
+        if 'gameid' in self.request.GET:
+            queryset = bmodels.PlayByPlay.objects.filter(game__id=self.request.GET['gameid'])
+        else:
+            queryset = bmodels.PlayByPlay.objects.all()
+        #username = self.request.query_params.get('username', None)
+        #if username is not None:
+        #    queryset = queryset.filter(purchaser__username=username)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        response = super(PlaysViewSet, self).create(request, *args, **kwargs)
+        serializer = PlayRetrieveListSerializer(bmodels.PlayByPlay.objects.get(id=response.data['id']))
+        return Response(serializer.data)
+    #def destroy(self, request, *args, **kwargs):
+    #    import pdb;pdb.set_trace()
+    #    super(PlaysViewSet, self).destroy(request, *args, **kwargs)
+
+    #def retrieve(self, request, pk=None):
+    #    queryset = User.objects.all()
+    #    user = get_object_or_404(queryset, pk=pk)
+    #    serializer = UserSerializer(user)
+    #    return Response(serializer.data)
+
+#class GetPlaysView(APIView):
+
+#    def get(self, request):
+#        import pdb;pdb.set_trace()
+#        return JSONResponse(output)

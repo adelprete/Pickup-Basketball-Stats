@@ -1,6 +1,13 @@
 from django.conf.urls import include, url
 from basketball.views import game as gviews
 from django.contrib.auth.decorators import login_required
+from basketball.views.game import PlaysViewSet
+from rest_framework import renderers
+
+plays_list = PlaysViewSet.as_view({
+    'get': 'list',
+})
+
 
 urlpatterns = [
 	url(r'^$',                 gviews.games_home,       name='games_home'),

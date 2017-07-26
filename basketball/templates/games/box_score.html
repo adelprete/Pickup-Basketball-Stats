@@ -13,6 +13,11 @@
 {% endblock %}
 {% block content %}
 	{% load basketball_tags %}
+  <div class="breadcrumbs"> /
+    <a target='_self' ng-href="games/">Games</a> /
+    <a target='_self' ng-href="games/recap/{{ game.id }}">Day recap</a> /
+    {{ game.date }} - {{ game.get_full_title }}
+  </div>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-9" style="font-size:25px;">
@@ -76,8 +81,13 @@
 				<div class="col-md-12">
 					{% if not request.user.is_anonymous %}
 						<form action="{% url 'edit_game' game_id=game.id %}">
-							<button type="submit" class="btn btn-primary btn-sm">Edit Game Details</button>
+							<button name='game_details' type="submit" class="btn btn-primary btn-sm">
+                Edit Game Details
+              </button>
 						</form>
+            <a href="games/{{ game.id }}/add-plays" class="btn btn-primary btn-sm" role="button" style="margin-top:10px;">
+              Add/Edit Plays
+            </a>
 					{% endif %}
 					<div id="play_title"><h4 class="accent">Play By Plays</h4></div>
           <div><a href="{% url 'export_plays' game.id %}" style="cursor: pointer;">Export Plays</a></div>

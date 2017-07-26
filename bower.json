@@ -1,0 +1,24 @@
+{
+  "name": "pickupbasketballstats",
+  "homepage": "https://github.com/adelprete/Pickup-Basketball-Stats",
+  "authors": [
+    "Anthony D <adelprete87@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#^1.6.5",
+    "angular-route": "^1.6.4",
+    "lodash": "^4.17.4",
+    "angular-animate": "^1.6.4",
+    "angular-youtube-mb": "^1.3.1"
+  }
+}
