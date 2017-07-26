@@ -58,7 +58,11 @@ ul.messages li {
 }
 .accent {
 	padding-left:10px;
-	border-left:4px solid #F44336;	
+	border-left:4px solid #F44336;
+}
+
+.page-breadcrumbs {
+	font-size:10px;
 }
 
 .btn-primary {
@@ -111,4 +115,23 @@ ul.messages li {
 	float:right;
 }
 
+/* Editing plays */
+.play-item {
+	transition:0.5s linear all;
+	margin: 5px 0px;
+	padding: 0px 0px 5px 10px;
+	position: relative;
+}
+.play-item.ng-leave {
+	opacity: 1;
+}
+.play-item.ng-leave.ng-leave-active {
+	opacity: 0;
+}
 
+.play-item.ng-enter {
+	opacity: 0;
+}
+.play-item.ng-enter.ng-enter-active {
+	opacity: 1;
+}

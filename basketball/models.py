@@ -422,7 +422,7 @@ class Player(models.Model):
         :return: returns a dictionary of stats and their averages or totals
         """
         qs = self.statline_set.filter(game__published=published)
-        
+
         if game_type:
             qs = qs.filter(game__game_type=game_type)
 
