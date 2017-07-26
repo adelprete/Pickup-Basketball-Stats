@@ -128,7 +128,7 @@
 
 <div name="play" ng-repeat="play in plays" class="row play-item">
   <div class="col-md-10 col-md-offset-1" style="border-bottom: 1px solid black;">
-    <button ng-click="delete(play.id)" style="position: absolute; top: 0px; left: 0px; color: white; background-color:red; border: 0px; z-index: 2;">X</button>
+    <button confirmed-click="delete(play.id)" ng-confirm-click="Delete the play?" style="position: absolute; top: 0px; left: 0px; color: white; background-color:red; border: 0px; z-index: 2;">X</button>
     <div class="col-md-3 col-xs-3">
       <a href="#playeranchor" ng-click="$parent.specifiedTime = play.time; ytplayer.stopVideo(); ytplayer.playVideo();" style="cursor:pointer;">{{ play.time }}</a><br>
       {{play.primary_play_display}}<br>
