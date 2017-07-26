@@ -71,13 +71,15 @@
         </select>
       </div>
       <div class="form-group col-md-10">
-        <label ng-if="play.secondary_play">*Secondary Player</label>
-        <select ng-if="play.secondary_play" class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="secondary_player" ng-model="play.secondary_player" ng-required="play.secondary_play">
-            <option value="">-------</option>
-        </select>
-        <div ng-show="playform.secondary_player.$invalid && playform.secondary_player.$touched">
-           Required!
-        </div>
+        <span ng-if="play.secondary_play">
+          <label>*Secondary Player</label>
+          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="secondary_player" ng-model="play.secondary_player" ng-required="play.secondary_play">
+              <option value="">-------</option>
+          </select>
+          <div ng-show="playform.secondary_player.$invalid && playform.secondary_player.$touched">
+             Required!
+          </div>
+        </span>
       </div>
     </div>
     <div class="col-md-3">
@@ -88,13 +90,15 @@
         </select>
       </div>
       <div class="form-group col-md-8">
-        <label ng-if="play.assist">*Assist Player</label>
-        <select ng-if="play.assist" class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="assist_player" ng-model="play.assist_player" ng-required="play.assist">
-            <option value="">-------</option>
-        </select>
-        <div ng-show="playform.assist_player.$invalid && playform.assist_player.$touched">
-           Required!
-        </div>
+        <span ng-if="play.assist">
+          <label>*Assist Player</label>
+          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="assist_player" ng-model="play.assist_player" ng-required="play.assist">
+              <option value="">-------</option>
+          </select>
+          <div ng-show="playform.assist_player.$invalid && playform.assist_player.$touched">
+             Required!
+          </div>
+        </span>
       </div>
     </div>
   </div>

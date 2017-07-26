@@ -169,9 +169,13 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
         if (play.assist_player && !play.assist){
           delete play.assist_player;
         }
-        if (play.secondary_play == null || play.assist == null){
+        if (play.secondary_play == null){
           delete play.secondary_play;
+          delete play.secondary_player;
+        }
+        if (play.assist == null){
           delete play.assist;
+          delete play.assist_player;
         }
         $scope.message = "Adding Play...."
         GameService.createPlay(play).then(function(response){
