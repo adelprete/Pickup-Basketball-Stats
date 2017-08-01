@@ -129,8 +129,8 @@ def game_basics(request, game_id=None, form_class=bforms.GameForm, template='gam
 
 def box_score(request, id, template="games/box_score.html"):
     """Generates the boxscore page of each game
-    -A PlayByPlay form is on this page to add individual plays to the game
-    -A PlayByPlay upload form is available for uploading a .csv file full of plays
+    -A Play form is on this page to add individual plays to the game
+    -A Play upload form is available for uploading a .csv file full of plays
     -With each new play by play sheet uploaded the stats are recalculated.
     """
     game = get_object_or_404(bmodels.Game, id=id)
@@ -322,7 +322,6 @@ class PlaysViewSet(viewsets.ModelViewSet):
         """
         #if self.action == 'list':
         #    self.request.get['gameid']
-        #import pdb;pdb.set_trace()
         if 'gameid' in self.request.GET:
             queryset = bmodels.PlayByPlay.objects.filter(game__id=self.request.GET['gameid'])
         else:
@@ -337,7 +336,6 @@ class PlaysViewSet(viewsets.ModelViewSet):
         serializer = PlayRetrieveListSerializer(bmodels.PlayByPlay.objects.get(id=response.data['id']))
         return Response(serializer.data)
     #def destroy(self, request, *args, **kwargs):
-    #    import pdb;pdb.set_trace()
     #    super(PlaysViewSet, self).destroy(request, *args, **kwargs)
 
     #def retrieve(self, request, pk=None):
@@ -349,5 +347,4 @@ class PlaysViewSet(viewsets.ModelViewSet):
 #class GetPlaysView(APIView):
 
 #    def get(self, request):
-#        import pdb;pdb.set_trace()
 #        return JSONResponse(output)

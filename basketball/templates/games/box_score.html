@@ -85,11 +85,11 @@
                 Edit Game Details
               </button>
 						</form>
-            <a href="games/{{ game.id }}/add-plays" class="btn btn-primary btn-sm" role="button" style="margin-top:10px;">
+            <a href="/games/{{ game.id }}/add-plays" class="btn btn-primary btn-sm" role="button" style="margin-top:10px;">
               Add/Edit Plays
             </a>
 					{% endif %}
-					<div id="play_title"><h4 class="accent">Play By Plays</h4></div>
+					<div id="play_title"><h4 class="accent">Plays</h4></div>
           <div><a href="{% url 'export_plays' game.id %}" style="cursor: pointer;">Export Plays</a></div>
 					{% if not request.user.is_anonymous %}
 					<div><a id="toggle_fileform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Upload Form</a></div>
