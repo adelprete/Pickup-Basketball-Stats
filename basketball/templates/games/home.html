@@ -7,17 +7,15 @@
 	<div class="page-header">
 		<h3 class="accent">{{ prefix }}Games</h3>
 	</div>
-	{% if not request.user.is_anonymous %}
-		<div class="row">
-				<form class="col-md-12" action="">
-					<div class="btn-toolbar">
-						<input class="btn btn-primary btn-sm" name="create_game" type="submit" value="Create New Game">
-						<input class="btn btn-primary btn-sm" name="unpublished_list" type="submit" value="View Unpublished Games">
-						<input class="btn btn-primary btn-sm" type="submit" value="View published Games">
-					</div>
-				</form>
-		</div><br>
-	{% endif %}
+	<div class="row">
+			<form class="col-md-12" action="">
+				<div class="btn-toolbar">
+					<input class="btn btn-primary btn-sm" name="create_game" type="submit" value="Create New Game">
+					<input class="btn btn-primary btn-sm" name="unpublished_list" type="submit" value="View Unpublished Games">
+					<input class="btn btn-primary btn-sm" type="submit" value="View published Games">
+				</div>
+			</form>
+	</div><br>
 	{% if games_list %}
 		<nav>
 			<ul class="pager">
