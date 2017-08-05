@@ -32,13 +32,18 @@
 
 <form name="playform" style="margin-bottom: 30px;" ng-submit="create(play)" novalidate>
   <div class="row">
-    <div class="col-md-3 col-md-offset-1">
-      <div class="form-group col-md-10">
+    <div class="col-md-6 col-md-offset-1">
+      <div class="form-group col-md-5">
         <label>*Time</label>
         <input type="text" style="width: 100%;" name="timestamp" class="form-control" placeholder="HH:MM:SS or MM:SS" ng-model="play.time" ng-pattern="/^(\d{2}:)?[0-5]\d:[0-5]\d/" required>
         <div ng-show="playform.timestamp.$invalid && playform.timestamp.$touched">
            Required!
         </div>
+      </div>
+      <div class="col-md-3">
+        <span class="hidden-xs hidden-sm"><br></span>
+        <span ng-click="grabTime()" class="clickable">Grab Time</span><br>
+        <span ng-click="grabTime(4)" class="clickable">Grab Time - 4</span>
       </div>
     </div>
   </div>

@@ -14,8 +14,8 @@
 {% block content %}
 	{% load basketball_tags %}
   <div class="breadcrumbs"> /
-    <a target='_self' ng-href="games/" style="cursor: pointer;">Games</a> /
-    <a target='_self' ng-href="games/recap/{{ game.id }}" style="cursor: pointer;">Day recap</a> /
+    <a href="{% url 'games_home' %}" style="cursor: pointer;">Games</a> /
+    <a href="{% url 'recap' game.pk %}" style="cursor: pointer;">Day recap</a> /
     {{ game.date }} - {{ game.get_full_title }}
   </div>
 	<div class="container">

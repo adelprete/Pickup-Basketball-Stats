@@ -115,6 +115,14 @@ ul.messages li {
 	float:right;
 }
 
+.clickable {
+	color: blue;
+}
+.clickable:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 /* Editing plays */
 .play-item {
 	transition:0.5s linear all;

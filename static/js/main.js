@@ -125,7 +125,7 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
           {'code': 'nt10', 'name': 'Not Top 10'},
       ]
     }
-
+    $scope.play = {};
     GameService.getGame($routeParams['gameid']).then(function (response){
       $scope.game = response;
       $scope.OPTIONS.players = []
@@ -200,6 +200,11 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
     };
 
     $scope.specifiedTime = null;
+    $scope.player = null;
+
+    $scope.$on('youtube.player.ready', function($event, player) {
+      $scope.player = player;
+    })
     $scope.$on('youtube.player.playing', function ($event, player) {
       // If specifiedTime, convert to seconds and seek the player to it.
       if ($scope.specifiedTime) {
@@ -216,6 +221,31 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
 
     var jumpToPlayerAnchor = function(){
       window.location = String(window.location).replace(/\#.*$/, "") + "#playeranchor";
+    }
+
+    $scope.grabTime = function(offset=null) {
+      var formattedTime, seconds
+      if (offset) {
+        seconds = $scope.player.getCurrentTime() - offset
+      }
+      else{
+        seconds = $scope.player.getCurrentTime()
+      }
+
+      hours = '' + Math.floor(seconds / 3600)
+      if (hours.length < 2){
+        hours = '0' + hours;
+      }
+      minutes = '' + Math.floor(seconds / 60)
+      if (minutes.length < 2){
+        minutes = '0' + minutes;
+      }
+      seconds = '' + Math.floor(seconds % 60)
+      if (seconds.length < 2){
+        seconds = '0' + seconds;
+      }
+      formattedTime = hours + ':' + minutes + ":" + seconds
+      $scope.play.time = formattedTime;
     }
 
 });
