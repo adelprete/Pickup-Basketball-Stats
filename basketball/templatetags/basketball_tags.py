@@ -341,8 +341,6 @@ def lb_totals(context, game_type="5v5", season=None):
 def top_players_table(player_list, title, bgcolor='white'):
     """
     Returns the top 5 players for the requested stat category.
-
-    Needs to be refactored and optimized better.
     """
     tooltip_desc = ""
     if title == "DREB":

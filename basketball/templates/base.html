@@ -51,6 +51,11 @@
 			<li id="games_link"><a href="{% url 'games_home' %}">Games</a></li>
 			<li id="leaderboard_link"><a href="{% url 'leaderboard_home' %}">Leaderboard</a></li>
 			<li id="records_link"><a href="{% url 'records_home' %}">Records</a></li>
+      {% comment %}
+      {% if request.user.is_superuser %}
+      <li id="settings_link"><a href="/settings" style="color: gold;">Settings</a></li>
+      {% endif %}
+      {% endcomment %}
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
 			  {% if request.user.is_anonymous %}

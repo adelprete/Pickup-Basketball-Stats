@@ -114,6 +114,7 @@ class AllPlayerManager(models.Manager):
     use_for_related_field = True
 
 class Player(models.Model):
+    group = models.ForeignKey('base.Group', blank=True, null=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30, blank=True)
     height = models.CharField(max_length=30, blank=True)
@@ -460,6 +461,7 @@ class Player(models.Model):
 
 
 class Game(models.Model):
+    group = models.ForeignKey('base.Group', blank=True, null=True)
     date = models.DateField(null=True)
     title = models.CharField(max_length=30)
     exhibition = models.BooleanField("Exhibition Game?", default=False, help_text="Stats for Exhibition games are NOT counted.")

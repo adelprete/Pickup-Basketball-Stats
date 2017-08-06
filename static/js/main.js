@@ -11,6 +11,10 @@ saturdayBall.config(function($locationProvider, $routeProvider) {
         templateUrl: "static/partials/add_plays.html",
         controller: 'AddPlaysController'
       })
+      .when("/settings", {
+        templateUrl: 'static/views/settings.html',
+        controller: 'SettingsController'
+      })
       .otherwise({
         resolve: {
           factory: checkRouting
@@ -74,6 +78,10 @@ saturdayBall.factory('GameService', function($q, $http){
       return deferred.promise;
     }
   };
+});
+
+saturdayBall.controller('SettingsController', function SettingsController($scope, $routeParams){
+
 });
 
 saturdayBall.controller('AddPlaysController', function AddPlaysController($scope, $routeParams, GameService) {
