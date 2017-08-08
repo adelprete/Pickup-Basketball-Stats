@@ -1,0 +1,119 @@
+<!-- Modal -->
+<div id="editPlayModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" class="close">&times;</button>
+        <h4 class="modal-title">Edit Play</h4>
+      </div>
+      <div class="modal-body">
+        <form name="editplayform" style="margin-bottom: 30px;" novalidate>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="form-group col-md-5">
+                <label>*Time</label>
+                <input ng-model="editplay.time" ng-pattern="/^(\d{2}:)?[0-5]\d:[0-5]\d/" type="text" style="width: 100%;" name="timestamp" class="form-control" placeholder="HH:MM:SS or MM:SS" required>
+                <div ng-show="editplayform.timestamp.$invalid && editplayform.timestamp.$touched">
+                   Required!
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group col-md-7">
+                  <label>*Primary Play</label>
+                  <select ng-options="o.code as o.name for o in OPTIONS.PRIMARY_PLAY" ng-model="editplay.primary_play" required class="form-control" name='primary_play'>
+                      <option value="">-------</option>
+                  </select>
+                  <div ng-show="editplayform.primary_play.$invalid && editplayform.primary_play.$touched">
+                     Required!
+                  </div>
+              </div>
+              <div class="form-group col-md-10">
+                <label>*Primary Player</label>
+                <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.primary_player" required class="form-control" name="primary_player">
+                    <option value="">-------</option>
+                </select>
+                <div ng-show="editplayform.primary_player.$invalid && editplayform.primary_player.$touched">
+                   Required!
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group col-md-7">
+                <label>Secondary Play</label>
+                <select ng-options="o.code as o.name for o in OPTIONS.SECONDARY_PLAY" ng-model="editplay.secondary_play" class="form-control">
+                    <option value="">-------</option>
+                </select>
+              </div>
+              <div class="form-group col-md-10">
+                <span ng-if="editplay.secondary_play">
+                  <label>*Secondary Player</label>
+                  <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.secondary_player" ng-required="editplay.secondary_play" class="form-control" name="secondary_player">
+                      <option value="">-------</option>
+                  </select>
+                  <div ng-show="editplayform.secondary_player.$invalid && editplayform.secondary_player.$touched">
+                     Required!
+                  </div>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group col-md-7">
+                <label>Assist Play</label>
+                <select ng-options="o.code as o.name for o in OPTIONS.ASSIST_PLAY" ng-model="editplay.assist" class="form-control">
+                    <option value="">-------</option>
+                </select>
+              </div>
+              <div class="form-group col-md-10">
+                <span ng-if="editplay.assist">
+                  <label>*Assist Player</label>
+                  <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.assist_player" ng-required="editplay.assist" class="form-control" name="assist_player">
+                      <option value="">-------</option>
+                  </select>
+                  <div ng-show="editplayform.assist_player.$invalid && editplayform.assist_player.$touched">
+                     Required!
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8" style="background: lightgray; border-radius: 10px;">
+              <div class="col-md-6" style="padding: 5px 0px 0px 0px">
+                <div class="form-group col-md-10">
+                  <label>Play Rank</label>
+                  <select ng-options="o.code as o.name for o in OPTIONS.PLAY_RANKS" ng-model="editplay.top_play_rank" class="form-control">
+                      <option value="">-------</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-12">
+                  <label>Description</label>
+                  <input ng-model="editplay.description" type="text" name="description" class="form-control">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12" style="padding: 5px 0px 5px 0px">
+                  <label>Highlight Players</label>
+                  <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.top_play_players" multiple class="form-control" style="height: 95px;">
+                      <option value="">-------</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button ng-click="update(editplay)" ng-disabled="editplayform.$invalid" type="submit" class="btn btn-default btn-primary">Save</button>
+        <button ng-click="delete(editplay.id)" confirmed-click="delete(play.id)" ng-confirm-click="Delete the play?" class="btn btn-default btn-danger" data-dismiss="modal">Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <div ng-bind="editplaymessage"></div>
+      </div>
+    </div>
+
+  </div>
+</div>

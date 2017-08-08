@@ -67,6 +67,26 @@ saturdayBall.factory('GameService', function($q, $http){
 
       return deferred.promise;
     },
+    updatePlay: function(play){
+      var deferred = $q.defer();
+      $http.post(`/api/plays/${play.id}/`, play).then(function(response, status, config, headers){
+        deferred.resolve(response.data);
+      }, function(response){
+        deferred.reject(response);
+      });
+
+      return deferred.promise;
+    },
+    getPlay: function(playid){
+      var deferred = $q.defer();
+      $http.get(`/api/plays/${playid}/`).then(function(response, status, config, headers){
+        deferred.resolve(response.data);
+      }, function(response){
+        deferred.reject(response);
+      });
+
+      return deferred.promise;
+    },
     deletePlay: function(playid){
       var deferred = $q.defer();
       $http.delete(`/api/plays/${playid}/`).then(function(response, status, config, headers){
@@ -133,7 +153,9 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
           {'code': 'nt10', 'name': 'Not Top 10'},
       ]
     }
+    $scope.editplay = {};
     $scope.play = {};
+
     GameService.getGame($routeParams['gameid']).then(function (response){
       $scope.game = response;
       $scope.OPTIONS.players = []
@@ -153,6 +175,18 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
       });
     };
 
+    $scope.fillEditForm = function(playid){
+      GameService.getPlay(playid).then(function (response){
+        $scope.editplaymessage = "";
+        $scope.editplay = response;
+        $scope.editplay.primary_player = response.primary_player.id;
+        $scope.editplay.secondary_player = (response.secondary_player && response.secondary_player.id) ? response.secondary_player.id : '';
+        $scope.editplay.assist_player = (response.assist_player && response.assist_player.id)? response.assist_player.id : '';
+      }, function(response){
+
+      })
+    }
+
     var calculateScore = function(){
       $scope.team1_score = 0;
       $scope.team2_score = 0;
@@ -166,6 +200,25 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
             $scope.team2_score += score_to_add;
           }
         }
+      });
+    }
+
+    $scope.update = function(play) {
+      if (play.secondary_player && !play.secondary_play){
+        play.secondary_player = "";
+        play.secondary_play = "";
+      }
+      if (play.assist_player && !play.assist){
+        play.assist_player = '';
+        play.assist = "";
+      }
+      $scope.editplaymessage = "Saving Play...."
+      GameService.updatePlay(play).then(function(response){
+        $scope.editplaymessage = "Successfully saved";
+        getPlays();
+        calculateScore();
+      }, function(response){
+        $scope.editplaymessage = "Failed to save play";
       });
     }
 
@@ -199,6 +252,10 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
         });
       };
 
+    $scope.edit = function(play){
+
+    }
+
     $scope.delete = function(playid) {
         GameService.deletePlay(playid).then(function(response){
           _.remove($scope.plays, function(play) { return play.id === playid; });
@@ -207,6 +264,8 @@ saturdayBall.controller('AddPlaysController', function AddPlaysController($scope
         });
     };
 
+
+    // YouTube player logic
     $scope.specifiedTime = null;
     $scope.player = null;
 

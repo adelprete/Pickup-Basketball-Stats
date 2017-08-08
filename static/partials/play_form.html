@@ -1,0 +1,104 @@
+<form name="playform" style="margin-bottom: 30px;" ng-submit="save(play)" novalidate>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-1">
+      <div class="form-group col-md-5">
+        <label>*Time</label>
+        <input type="text" style="width: 100%;" name="timestamp" class="form-control" placeholder="HH:MM:SS or MM:SS" ng-model="play.time" ng-pattern="/^(\d{2}:)?[0-5]\d:[0-5]\d/" required>
+        <div ng-show="playform.timestamp.$invalid && playform.timestamp.$touched">
+           Required!
+        </div>
+      </div>
+      <div class="col-md-3">
+        <span class="hidden-xs hidden-sm"><br></span>
+        <span ng-click="grabTime()" class="clickable">Grab Time</span><br>
+        <span ng-click="grabTime(4)" class="clickable">Grab Time - 4</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 col-md-offset-1">
+      <div class="form-group col-md-7">
+          <label>*Primary Play</label>
+          <select required class="form-control" ng-options="o.code as o.name for o in OPTIONS.PRIMARY_PLAY" name='primary_play' ng-model="play.primary_play">
+              <option value="">-------</option>
+          </select>
+          <div ng-show="playform.primary_play.$invalid && playform.primary_play.$touched">
+             Required!
+          </div>
+      </div>
+      <div class="form-group col-md-10">
+        <label>*Primary Player</label>
+        <select required class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="primary_player" ng-model="play.primary_player">
+            <option value="">-------</option>
+        </select>
+        <div ng-show="playform.primary_player.$invalid && playform.primary_player.$touched">
+           Required!
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group col-md-7">
+        <label>Secondary Play</label>
+        <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.SECONDARY_PLAY" ng-model="play.secondary_play">
+            <option value="">-------</option>
+        </select>
+      </div>
+      <div class="form-group col-md-10">
+        <span ng-if="play.secondary_play">
+          <label>*Secondary Player</label>
+          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="secondary_player" ng-model="play.secondary_player" ng-required="play.secondary_play">
+              <option value="">-------</option>
+          </select>
+          <div ng-show="playform.secondary_player.$invalid && playform.secondary_player.$touched">
+             Required!
+          </div>
+        </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group col-md-7">
+        <label>Assist Play</label>
+        <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.ASSIST_PLAY" ng-model="play.assist">
+            <option value="">-------</option>
+        </select>
+      </div>
+      <div class="form-group col-md-8">
+        <span ng-if="play.assist">
+          <label>*Assist Player</label>
+          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="assist_player" ng-model="play.assist_player" ng-required="play.assist">
+              <option value="">-------</option>
+          </select>
+          <div ng-show="playform.assist_player.$invalid && playform.assist_player.$touched">
+             Required!
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-1" style="background: lightgray; border-radius: 10px;">
+      <div class="col-md-6" style="padding: 5px 0px 0px 0px">
+        <div class="form-group col-md-10">
+          <label>Play Rank</label>
+          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.PLAY_RANKS" ng-model="play.top_play_rank">
+              <option value="">-------</option>
+          </select>
+        </div>
+        <div class="form-group col-md-12">
+          <label>Description</label>
+          <input type="text" name="description" class="form-control" ng-model="play.description">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="col-md-12" style="padding: 5px 0px 5px 0px">
+          <label>Play Rank</label>
+          <select multiple class="form-control" style="height: 95px;" ng-options="o.code as o.name for o in OPTIONS.players" ng-model="play.top_play_players">
+              <option value="">-------</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-default btn-primary col-md-offset-1" style="margin-top:10px;" ng-disabled="playform.$invalid">Submit</button>
+  <div style="display: inline;" ng-bind="message"></div>
+</form>

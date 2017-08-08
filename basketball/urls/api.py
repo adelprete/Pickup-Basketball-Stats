@@ -12,7 +12,8 @@ plays_list = PlaysViewSet.as_view({
 
 plays_details = PlaysViewSet.as_view({
     'delete': 'destroy',
-    'get': 'retrieve'
+    'get': 'retrieve',
+    'post': 'update'
 })
 
 game_details = GameViewSet.as_view({
