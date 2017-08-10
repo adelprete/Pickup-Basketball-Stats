@@ -195,11 +195,11 @@ angular.module('saturdayBall').controller('AddPlaysController', function AddPlay
         seconds = $scope.player.getCurrentTime()
       }
 
-      hours = '' + Math.floor(seconds / 3600)
+      var hours = '' + Math.floor(seconds / 3600)
       if (hours.length < 2){
         hours = '0' + hours;
       }
-      minutes = '' + Math.floor(seconds / 60)
+      var minutes = '' + Math.floor(seconds / 60)
       if (minutes.length < 2){
         minutes = '0' + minutes;
       }
