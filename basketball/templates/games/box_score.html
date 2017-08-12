@@ -101,7 +101,7 @@
 						All previous plays will be removed
 						<button type="submit" name="submit" class="btn btn-primary btn-block">Upload</button>
 					</form>
-					<div><a id="toggle_form" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Play By Play Form</a></div>
+					<div><a id="toggle_form" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Play Form</a></div>
 					<form id='pbp_form' method=post action="" style="display:none;">{% csrf_token %}
 						<div id="play_result_message"></div>
 						<h3 style="margin-top:5px;">Add Play</h3>
@@ -112,7 +112,7 @@
 					{% endif %}
 					<div><a id="toggle_filterform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Play Filter Form</a></div>
 					<form id="filter_form" method=get action"" style="display:none;">
-						<h3 style="margin-top:5px;">Filter Play by Play</h3>
+						<h3 style="margin-top:5px;">Filter Plays</h3>
 						<div class="form-group">{{ pbp_filter.form.primary_play.label_tag }}{{ pbp_filter.form.primary_play }}</div>
 						<div class="form-group">{{ pbp_filter.form.primary_player.label_tag }}{{ pbp_filter.form.primary_player }}</div>
 						<div class="form-group">{{ pbp_filter.form.secondary_play.label_tag }}{{ pbp_filter.form.secondary_play }}</div>

@@ -101,6 +101,7 @@
                   <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.top_play_players" multiple class="form-control" style="height: 95px;">
                       <option value="">-------</option>
                   </select>
+                  <div ng-click="clearRanks()" class="clickable">Clear Play Rank Details</div>
                 </div>
               </div>
             </div>

@@ -78,6 +78,7 @@ angular.module('saturdayBall').controller('AddPlaysController', function AddPlay
         $scope.editplay.primary_player = response.primary_player.id;
         $scope.editplay.secondary_player = (response.secondary_player && response.secondary_player.id) ? response.secondary_player.id : '';
         $scope.editplay.assist_player = (response.assist_player && response.assist_player.id)? response.assist_player.id : '';
+        $scope.editplay.top_play_players = response.top_play_players;
       }, function(response){
 
       })
@@ -209,6 +210,12 @@ angular.module('saturdayBall').controller('AddPlaysController', function AddPlay
       }
       formattedTime = hours + ':' + minutes + ":" + seconds
       $scope.play.time = formattedTime;
+    }
+
+    $scope.clearRanks = function() {
+      $scope.editplay['top_play_rank'] = "";
+      $scope.editplay['description'] = "";
+      $scope.editplay['top_play_players'] = [];
     }
 
 });
