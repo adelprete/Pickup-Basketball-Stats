@@ -200,7 +200,7 @@ angular.module('saturdayBall').controller('AddPlaysController', function AddPlay
       if (hours.length < 2){
         hours = '0' + hours;
       }
-      var minutes = '' + Math.floor(seconds / 60)
+      var minutes = '' + Math.floor(seconds / 60) % 60
       if (minutes.length < 2){
         minutes = '0' + minutes;
       }
