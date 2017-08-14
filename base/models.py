@@ -7,20 +7,13 @@ class Group(models.Model):
     admin = models.ManyToManyField('auth.User', related_name='admin_groups', blank=True, null=True)
     members = models.ManyToManyField('auth.User', related_name='member_groups', blank=True, null=True)
 
+    #leaderboard settings
+    possession_min = models.PositiveIntegerField(default=100)
+    fga_min = models.PositiveIntegerField(default=15)
+
     def __str__(self):
         return "%s" % (self.name)
 
-class GroupSetting(models.Model):
-    group = models.OneToOneField(Group)
-    #leaderboard
-    possession_min = models.PositiveIntegerField(default=100)
-    fga_min = models.PositiveIntegerField(default=15)
-    #advanced
-    putback_window = models.PositiveIntegerField(default=6)
-    fastbreak_window = models.PositiveIntegerField(default=10)
-
-    def __str__(self):
-        return "Settings - %s" % (self.group.name)
 """
 class MemberProfile(models.Model):
     Member profile is used to store some more information about the users

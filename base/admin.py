@@ -5,8 +5,4 @@ from base.models import *
 class GroupAdmin(admin.ModelAdmin):
     pass
 
-class GroupSettingAdmin(admin.ModelAdmin):
-    pass
-
 admin.site.register(Group, GroupAdmin)
-admin.site.register(GroupSetting, GroupSettingAdmin)

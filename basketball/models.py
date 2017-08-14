@@ -475,6 +475,9 @@ class Game(models.Model):
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, null=True)
     top_player = models.ForeignKey('basketball.Player', related_name='top_player_set', null=True, blank=True)
     published = models.BooleanField("Publish Game?", default=False)
+    #advanced
+    putback_window = models.PositiveIntegerField(default=6)
+    fastbreak_window = models.PositiveIntegerField(default=10)
 
     def __str__(self):
         return "%s: %s" % (self.date.isoformat(), self.title)
