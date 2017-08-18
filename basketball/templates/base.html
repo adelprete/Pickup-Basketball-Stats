@@ -60,7 +60,7 @@
 		  <ul class="nav navbar-nav navbar-right">
 			  {% if request.user.is_anonymous %}
 				<li><a href="{% url 'login' %}">Login</a></li>
-				<li><a href="{% url 'registration_register' %}">Signup</a></li>
+				<li><a href="/register">Signup</a></li>
 			  {% else %}
 			  <p class="navbar-text navbar-right" style="color:white;">Signed in as {{ request.user.username }}</p>
 			  <li><a href="{% url 'logout' %}">Log Out</a></li>
