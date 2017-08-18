@@ -463,6 +463,7 @@ class Player(models.Model):
 class Game(models.Model):
     group = models.ForeignKey('base.Group', blank=True, null=True)
     date = models.DateField(null=True)
+    outdated = models.BooleanField(default=True)
     title = models.CharField(max_length=30)
     exhibition = models.BooleanField("Exhibition Game?", default=False, help_text="Stats for Exhibition games are NOT counted.")
     points_to_win = models.CharField(max_length=30, choices=(('11','11'), ('30','30'), ('other','Other')), default='11')
@@ -919,6 +920,11 @@ class PlayByPlay(models.Model):
 
     def __str__(self):
         return "%s - %s - %s" % (self.primary_play, self.primary_player.first_name, self.game.title)
+
+    def save(self, *args, **kwargs):
+        super(PlayByPlay, self).save(*args, **kwargs)
+        self.game.outdated = True
+        self.game.save()
 
 
 class Season(models.Model):

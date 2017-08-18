@@ -134,6 +134,10 @@ def box_score(request, id, template="games/box_score.html"):
     -With each new play by play sheet uploaded the stats are recalculated.
     """
     game = get_object_or_404(bmodels.Game, id=id)
+    if game.outdated:
+        game.calculate_statlines()
+        game.outdated = False
+        game.save()
 
     # finding the previous and next game on the list for navigation purposes
     game_set = bmodels.Game.objects.filter(date=game.date).order_by('title')
