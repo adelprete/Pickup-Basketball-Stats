@@ -1,0 +1,48 @@
+<div class="page-header">
+  <h3 class="accent">
+    Register
+  </h3>
+</div>
+
+<form name="registerform" ng-submit="submit()" novalidate>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label>*First Name</label>
+      <input type="text" name="firstname" ng-model="user.first_name" class="form-control" required></input>
+    </div>
+    <div class="form-group col-md-3">
+      <label>*Last Name</label>
+      <input type="text" name="lastname" ng-model="user.last_name" class="form-control" required></input>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-2">
+      <label>*Zipcode</label>
+      <input type="text" name="zipcode" ng-model="user.memberprofile.zipcode" class="form-control" required></input>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label>*Username</label>
+      <input type="text" name="username" ng-model="user.username" class="form-control" required></input>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label>*Password</label>
+      <input type="password" name="password" ng-model="user.password" class="form-control" required></input>
+    </div>
+    <div class="form-group col-md-3">
+      <label>*Re-type Password</label>
+      <input type="password" name="verifypassword" ng-model="verifiy_password" class="form-control" required></input>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label>*Beta Code</label>
+      <input type="text" name="betacode" ng-model="user.betacode" class="form-control" required></input>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-default btn-primary" ng-disabled="registerform.$invalid">Register</button>
+  {{ message }}
+</form>

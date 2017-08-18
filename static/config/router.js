@@ -10,6 +10,10 @@ angular.module('saturdayBall').config(function($locationProvider, $routeProvider
         templateUrl: 'static/views/settings.html',
         controller: 'SettingsController'
       })
+      .when("/register", {
+        templateUrl: 'static/views/register.html',
+        controller: 'RegisterController'
+      })
       .otherwise({
         resolve: {
           factory: checkRouting
