@@ -1,10 +1,13 @@
 from rest_framework import permissions
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
+from rest_framework import viewsets
 from django.conf import settings
 from django.contrib.auth import get_user_model # If used custom user model
-import json
 from .serializers import UserSerializer
+from base.models import Group
+from base.serializers import GroupSerializer
+import json
 
 class CreateUserView(CreateAPIView):
 
@@ -21,3 +24,7 @@ class CreateUserView(CreateAPIView):
         memberprofile = request.data.pop('memberprofile', None)
         response = super(CreateUserView, self).create(request, *args, **kwargs)
         return Response(response.data)
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer

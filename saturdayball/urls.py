@@ -2,6 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from basketball import views as bviews
 from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -9,12 +10,21 @@ from django.contrib.auth import views as auth_views
 from basketball.views import player
 
 urlpatterns = [
-        url(r'^$',	bviews.root,		name='root'),
-        url(r'^ajax-standings/$',       bviews.ajax_standings,          name='ajax_standings'),
-        url(r'^leaderboard/$',          bviews.leaderboard_home,        name='leaderboard_home'),
-        url(r'^records/$',              bviews.records_home,            name='records_home'),
-        url(r'^players/', include('basketball.urls.player')),
-        url(r'^games/', include('basketball.urls.game')),
+        url(r'^group/(?P<group_id>\d+)/$',
+            bviews.root,
+            name='grouproot'),
+        url(r'^$',RedirectView.as_view(url="http://127.0.0.1:8000/group/1/", permanent=False)),
+        url(r'^ajax-standings/$',
+            bviews.ajax_standings,
+            name='ajax_standings'),
+        url(r'^group/(?P<group_id>\d+)/leaderboard/$',
+            bviews.leaderboard_home,
+            name='leaderboard_home'),
+        url(r'^records/$',
+            bviews.records_home,
+            name='records_home'),
+        url(r'^group/(?P<group_id>\d+)/players/', include('basketball.urls.player')),
+        url(r'^group/(?P<group_id>\d+)/games/', include('basketball.urls.game')),
         url(r'^api/', include('basketball.urls.api')),
         url(r'^accounts/', include('registration.backends.default.urls')),
         url(r'^admin/', include(admin.site.urls)),

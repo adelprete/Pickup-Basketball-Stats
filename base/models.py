@@ -8,7 +8,7 @@ class Group(models.Model):
     members = models.ManyToManyField('auth.User', related_name='member_groups', blank=True, null=True)
 
     #leaderboard settings
-    possession_min = models.PositiveIntegerField(default=100)
+    possessions_min = models.PositiveIntegerField(default=100)
     fga_min = models.PositiveIntegerField(default=15)
 
     def __str__(self):

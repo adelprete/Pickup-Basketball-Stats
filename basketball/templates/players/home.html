@@ -10,8 +10,8 @@
 
 	{% if not request.user.is_anonymous %}
 		<div class="row">
-			<div class="col-md-1">	
-				<form action="{% url 'create_player' %}">
+			<div class="col-md-1">
+				<form action="{% url 'create_player' group_id=1 %}">
 					<input class="btn btn-primary btn-sm" type="submit" value="Create New Player">
 				</form>
 			</div>
@@ -62,4 +62,3 @@
 {% block active_tab %}
 	<script>$('#players_link').addClass('active')</script>
 {% endblock %}
-

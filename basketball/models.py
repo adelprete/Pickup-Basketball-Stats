@@ -138,7 +138,7 @@ class Player(models.Model):
         return "%s" % (self.first_name)
 
     def get_absolute_url(self):
-        return reverse("player_page", kwargs={'id': self.id})
+        return reverse("player_page", kwargs={'group_id': self.group.id, 'id': self.id})
 
     def total_games(self, season=None):
 
@@ -490,7 +490,7 @@ class Game(models.Model):
         return title
 
     def get_absolute_url(self):
-        return reverse("box_score", kwargs={'id': self.id})
+        return reverse("box_score", kwargs={'group_id': self.group.id, 'id': self.id})
 
     def calculate_game_score(self):
         """

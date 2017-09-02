@@ -46,27 +46,34 @@
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-			<li id="home_link"><a href="{% url 'root' %}">Home <span class="sr-only">(current)</span></a></li>
-			<li id="players_link"><a href="{% url 'players_home' %}">Players</a></li>
-			<li id="games_link"><a href="{% url 'games_home' %}">Games</a></li>
-			<li id="leaderboard_link"><a href="{% url 'leaderboard_home' %}">Leaderboard</a></li>
+			<li id="home_link"><a href="{% url 'grouproot' 1 %}">Home <span class="sr-only">(current)</span></a></li>
+			<li id="players_link"><a href="{% url 'players_home' 1 %}">Players</a></li>
+			<li id="games_link"><a href="{% url 'games_home' 1 %}">Games</a></li>
+			<li id="leaderboard_link"><a href="{% url 'leaderboard_home' 1 %}">Leaderboard</a></li>
 			<li id="records_link"><a href="{% url 'records_home' %}">Records</a></li>
-      {% comment %}
       {% if request.user.is_superuser %}
-      <li id="settings_link"><a href="/settings" style="color: gold;">Settings</a></li>
+      <li id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
       {% endif %}
-      {% endcomment %}
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
 			  {% if request.user.is_anonymous %}
 				<li><a href="{% url 'login' %}">Login</a></li>
 				<li><a href="/register">Signup</a></li>
 			  {% else %}
-			  <p class="navbar-text navbar-right" style="color:white;">Signed in as {{ request.user.username }}</p>
 			  <li><a href="{% url 'logout' %}">Log Out</a></li>
-			  {% endif %}
-			  {% if not request.user.is_anonymous %}
-					<li id="admin_link"><a href="{% url 'admin:index' %}">Admin</a></li>
+        <li id="admin_link"><a href="{% url 'admin:index' %}">Admin</a></li>
+        <li class="dropdown">
+          <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user.username }} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li style="padding: 3px 20px;">Your Groups</li>
+            <li role="separator" class="divider"></li>
+            {% for group in request.user.admin_groups.all %}
+              <li><a href="#" style="text-decoration: underline;">{{ group }}</a></li>
+            {% endfor %}
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Create a new Group</a></li>
+          </ul>
+        </li>
 			  {% endif %}
 		</ul>
     </div>

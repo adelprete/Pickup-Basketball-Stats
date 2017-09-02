@@ -12,22 +12,24 @@ from django.db.models import Q
 from django.views.generic.edit import FormView
 from django.http import HttpResponse
 
+from base.models import Group
 from basketball import models as bmodels
 from basketball import forms as bforms
 from basketball import helpers
 
 
-def games_home(request, template='games/home.html'):
+def games_home(request, group_id, template='games/home.html'):
     """Currently only passes a list of all the games to the template"""
+    group=Group.objects.get(id=group_id)
     prefix = ""
 
     if 'create_game' in request.GET:
-        return redirect('create_game')
+        return redirect('create_game', group_id=1)
     elif 'unpublished_list' in request.GET:
-        games = bmodels.Game.objects.filter(published=False)
+        games = bmodels.Game.objects.filter(group=group, published=False)
         prefix = 'Unpublished '
     else:
-        games = bmodels.Game.objects.filter(published=True)
+        games = bmodels.Game.objects.filter(group=group, published=True)
 
     if not games:
         context = {
@@ -72,11 +74,12 @@ def games_home(request, template='games/home.html'):
     return render(request, template, context)
 
 
-def recap(request, game_id, template='games/recap.html'):
+def recap(request, group_id, game_id, template='games/recap.html'):
     """View for our recap pages for each set of games"""
+    group = Group.objects.get(id=group_id)
     game = get_object_or_404(bmodels.Game, id=game_id)
 
-    game_set = bmodels.Game.objects.filter(date=game.date, published=game.published).order_by('title')
+    game_set = bmodels.Game.objects.filter(group=game.group, date=game.date, published=game.published).order_by('title')
     top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='t').order_by('top_play_rank')
     not_top_plays = bmodels.PlayByPlay.objects.filter(game__in=game_set, top_play_rank__startswith='nt').order_by('top_play_rank')
 
@@ -87,6 +90,7 @@ def recap(request, game_id, template='games/recap.html'):
         default_tab = "totals"
 
     context = {
+        'group': group,
         'games': game_set,
         'top_plays': top_plays,
         'not_top_plays': not_top_plays,
@@ -96,8 +100,9 @@ def recap(request, game_id, template='games/recap.html'):
     return render(request, template, context)
 
 @login_required
-def game_basics(request, game_id=None, form_class=bforms.GameForm, template='games/form.html'):
+def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm, template='games/form.html'):
     """Our game form where we can create or edit a games details"""
+    group = Group.objects.get(id=group_id)
     model = None
     if game_id:
         model = get_object_or_404(bmodels.Game, id=game_id)
@@ -110,7 +115,9 @@ def game_basics(request, game_id=None, form_class=bforms.GameForm, template='gam
             messages.success(request, 'Game Deleted')
             return redirect('/games/')
         if form.is_valid():
-            game_record = form.save()
+            game_record = form.save(commit=False)
+            game_record.group = group
+            game_record.save()
             for player in game_record.team1.iterator():
                 if not bmodels.StatLine.objects.filter(game=game_record, player=player):
                     bmodels.StatLine.objects.create(game=game_record, player=player)
@@ -127,12 +134,13 @@ def game_basics(request, game_id=None, form_class=bforms.GameForm, template='gam
     return render(request, template, {'form': form})
 
 
-def box_score(request, id, template="games/box_score.html"):
+def box_score(request, group_id, id, template="games/box_score.html"):
     """Generates the boxscore page of each game
     -A Play form is on this page to add individual plays to the game
     -A Play upload form is available for uploading a .csv file full of plays
     -With each new play by play sheet uploaded the stats are recalculated.
     """
+    group = Group.objects.get(id=group_id)
     game = get_object_or_404(bmodels.Game, id=id)
     if game.outdated:
         game.calculate_statlines()
@@ -140,7 +148,7 @@ def box_score(request, id, template="games/box_score.html"):
         game.save()
 
     # finding the previous and next game on the list for navigation purposes
-    game_set = bmodels.Game.objects.filter(date=game.date).order_by('title')
+    game_set = bmodels.Game.objects.filter(group=game.group, date=game.date).order_by('title')
     prev_game, next_game = None, None
     for i, g in enumerate(game_set):
         if g.id == game.id:
@@ -163,6 +171,7 @@ def box_score(request, id, template="games/box_score.html"):
         game.calculate_game_score()
 
     context = {
+        'group': group,
         'game': game,
         'team1_statlines': team1_statlines,
         'team2_statlines': team2_statlines,
@@ -175,7 +184,7 @@ def box_score(request, id, template="games/box_score.html"):
     return render(request, template, context)
 
 
-def ajax_add_play(request, pk):
+def ajax_add_play(request, group_id, pk):
     """
         Called when an individual play is submitted on a game's page.
         Allows for multiple games to be added without having to wait for a page refresh.
@@ -199,7 +208,7 @@ def ajax_add_play(request, pk):
     return HttpResponse("<br><font style='color:red;'>Failed to Add play</font><br><br>")
 
 
-def ajax_filter_plays(request, pk):
+def ajax_filter_plays(request, group_id, pk):
     """Called when an some wants to filter the play by plays of a game"""
     game = get_object_or_404(bmodels.Game, pk=pk)
     pbp_filter = bforms.PlayByPlayFilter(request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)

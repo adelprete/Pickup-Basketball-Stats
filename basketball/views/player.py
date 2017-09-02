@@ -5,15 +5,17 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Q
+from base.models import Group
 from basketball import models as bmodels
 from basketball import forms as bforms
 from basketball import headers
 
 
-def players_home(request, template="players/home.html"):
+def players_home(request, group_id, template="players/home.html"):
 	"""Generates a list of all the players on the site"""
 
-	players = bmodels.Player.player_objs.order_by('first_name')
+	group = Group.objects.get(id=group_id)
+	players = bmodels.Player.player_objs.filter(group=group).order_by('first_name')
 
 	season=None
 	if 'submit' in request.GET:
@@ -29,21 +31,21 @@ def players_home(request, template="players/home.html"):
 		except:
 			#if not in a current season, grab last season.
 			season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
-		
+
 		form = bforms.PlayerFilterForm(initial={'season': season.id})
 
 	if season:
-		players = bmodels.Player.player_objs.filter(statline__game__date__range=(season.start_date, season.end_date)).distinct()
+		players = bmodels.Player.player_objs.filter(group=group, statline__game__date__range=(season.start_date, season.end_date)).distinct()
 
 	context = {
 		'players': players,
 		'season': season,
 		'form': form,
 	}
-	
+
 	return render(request, template, context)
 
-def player_page(request, id, template="players/detail.html"):
+def player_page(request, group_id, id, template="players/detail.html"):
     """This generates an individual player's page"""
 
     player = get_object_or_404(bmodels.Player, id=id)
@@ -53,7 +55,7 @@ def player_page(request, id, template="players/detail.html"):
         has_top_plays = True
 
     seasons = bmodels.Season.objects.all().order_by('-start_date')
-   
+
     game_log_form = bforms.PlayerGameLogForm()
     context = {
         'player': player,
@@ -64,33 +66,38 @@ def player_page(request, id, template="players/detail.html"):
 
 
 @login_required
-def player_basics(request, id=None, form_class=bforms.PlayerForm, template='players/form.html'):
-    """The View handles editing and deleting play profiles"""
-    model = None
-    if id:
-        model = get_object_or_404(bmodels.Player, id=id)
+def player_basics(request, group_id, id=None, form_class=bforms.PlayerForm, template='players/form.html'):
+	"""The View handles editing and deleting play profiles"""
+	model = None
 
-    form = form_class(instance=model)
-    if request.POST:
-        form = form_class(request.POST, request.FILES, instance=model)
-        if "delete" in request.POST:
-            model.delete()
-            messages.success(request, 'Player Deleted')
-            return redirect('/player/')
-        if form.is_valid():
-            p_record = form.save()
+	group = Group.objects.get(id=group_id)
 
-            if model:
-                messages.success(request, "Player Saved")
-            else:
-                messages.success(request, "Player Created")
-            return redirect(p_record.get_absolute_url())
+	if id:
+		model = get_object_or_404(bmodels.Player, id=id)
 
-    return render(request, template, {'form': form})
+	form = form_class(instance=model)
+	if request.POST:
+		form = form_class(request.POST, request.FILES, instance=model)
+		if "delete" in request.POST:
+			model.delete()
+			messages.success(request, 'Player Deleted')
+			return redirect('/group/%s/players/' % (group.id))
+		if form.is_valid():
+			p_record = form.save(commit=False)
+			p_record.group = group
+			p_record.save()
 
-def ajax_game_log(request):
+			if model:
+				messages.success(request, "Player Saved")
+			else:
+				messages.success(request, "Player Created")
+			return redirect(p_record.get_absolute_url())
+
+	return render(request, template, {'form': form})
+
+def ajax_game_log(request, group_id):
 	"""Filters a players game log by season"""
-	
+
 	season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
 
 	statlines = bmodels.StatLine.objects.filter(player__id=request.GET['player_id'], game__date__range=(season.start_date,season.end_date)).order_by('-game__date', 'game__title')

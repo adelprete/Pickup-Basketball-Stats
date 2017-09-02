@@ -14,8 +14,8 @@
 {% block content %}
 	{% load basketball_tags %}
   <div class="breadcrumbs"> /
-    <a href="{% url 'games_home' %}" style="cursor: pointer;">Games</a> /
-    <a href="{% url 'recap' game.pk %}" style="cursor: pointer;">Day recap</a> /
+    <a href="{% url 'games_home' 1 %}" style="cursor: pointer;">Games</a> /
+    <a href="{% url 'recap' 1 game.pk %}" style="cursor: pointer;">Day recap</a> /
     {{ game.date }} - {{ game.get_full_title }}
   </div>
 	<div class="container">
@@ -25,7 +25,7 @@
 					{% if prev_game %}
 						<a href="{{ prev_game.get_absolute_url }}">{% bootstrap_icon "chevron-left" %}</a>
 					{% endif %}
-					<a href="{% url 'recap' game.pk %}">{{ game.date }}</a> - {{ game.get_full_title }}
+					<a href="{% url 'recap' 1 game.pk %}">{{ game.date }}</a> - {{ game.get_full_title }}
 					{% if next_game %}
 						<a href="{{ next_game.get_absolute_url }}">{% bootstrap_icon "chevron-right" %}</a>
 					{% endif %}
@@ -80,17 +80,17 @@
 			<div class="col-md-3" style="padding:0px;">
 				<div class="col-md-12">
 					{% if not request.user.is_anonymous %}
-						<form action="{% url 'edit_game' game_id=game.id %}">
+						<form action="{% url 'edit_game' group_id=1 game_id=game.id %}">
 							<button name='game_details' type="submit" class="btn btn-primary btn-sm">
                 Edit Game Details
               </button>
 						</form>
-            <a href="/games/{{ game.id }}/add-plays" class="btn btn-primary btn-sm" role="button" style="margin-top:10px;">
+            <a href="/group/{{ group.id }}/games/{{ game.id }}/add-plays" class="btn btn-primary btn-sm" role="button" style="margin-top:10px;">
               Add/Edit Plays
             </a>
 					{% endif %}
 					<div id="play_title"><h4 class="accent">Plays</h4></div>
-          <div><a href="{% url 'export_plays' game.id %}" style="cursor: pointer;">Export Plays</a></div>
+          <div><a href="{% url 'export_plays' 1 game.id %}" style="cursor: pointer;">Export Plays</a></div>
 					{% if not request.user.is_anonymous %}
 					<div><a id="toggle_fileform" style="cursor: pointer;">{% bootstrap_icon "menu-down" %}Toggle Upload Form</a></div>
 					<form id='pbp_file_form' method="post" action="." enctype="multipart/form-data" style="display:none;">{% csrf_token %}
@@ -170,7 +170,7 @@
 			$("#play_result_message").html("");
 			$.ajax({
 				type: "post",
-				url: "{% url 'ajax_add_play' pk=game.pk %}",
+				url: "{% url 'ajax_add_play' group_id=1 pk=game.pk %}",
 				data: pbp_form.serialize(),
 				success: function (data) {
 					$('.form-control').val("");
@@ -188,7 +188,7 @@
 		frm.submit(function () {
 			$.ajax({
 				type: frm.attr('method'),
-				url: "{% url 'ajax_filter_plays' pk=game.pk %}",
+				url: "{% url 'ajax_filter_plays' group_id=1 pk=game.pk %}",
 				data: frm.serialize(),
 				success: function (data) {
 					jumpToPbpAnchor();

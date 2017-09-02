@@ -2,13 +2,13 @@
 
 angular.module('saturdayBall').config(function($locationProvider, $routeProvider) {
     $routeProvider
-      .when("/games/:gameid/add-plays/", {
+      .when("/group/:groupid/games/:gameid/add-plays/", {
         templateUrl: "static/views/add_plays.html",
         controller: 'AddPlaysController'
       })
-      .when("/settings", {
+      .when("/group/:groupid/settings", {
         templateUrl: 'static/views/settings.html',
-        controller: 'SettingsController'
+        controller: 'GroupSettingsController'
       })
       .when("/register", {
         templateUrl: 'static/views/register.html',

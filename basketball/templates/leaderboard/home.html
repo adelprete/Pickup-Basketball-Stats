@@ -50,7 +50,7 @@
 		<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="overview">
 			<h3 class="accent">Per 100 Possessions</h3>
 			<div style="color: #777;font-size:17px;width:100%;">Data from {% if season %}{{ season }}{% else %}all seasons{% endif %} with a minimum of {{ possessions_min }} total possessions</div>
-			{% lb_overview '5v5' %}
+			{% lb_overview game_type='5v5' %}
 		</div>
 		<div role="tabpanel" class="tab-pane {% if default_tab == "totals" %}active{% endif %}" id="totals">
 			<h3 class="accent">Totals</h3>

@@ -10,9 +10,9 @@
 <div class="container">
 	<div class="row">
 		<div class="page-header">
-			<h2 class="accent" style="{% if not request.user.is_anonymous %}display:inline;{% endif %}">{{ player.get_full_name }}</h2> 
+			<h2 class="accent" style="{% if not request.user.is_anonymous %}display:inline;{% endif %}">{{ player.get_full_name }}</h2>
 			{% if not request.user.is_anonymous %}
-				<form style="display:inline;" action="{% url 'edit_player' id=player.id %}">
+				<form style="display:inline;" action="{% url 'edit_player' group_id=1 id=player.id %}">
 					<button type="submit" class="btn btn-primary btn-sm" style="margin:-10px 0px 0px 10px;">Edit Player Details</button>
 				</form>
 			{% endif %}
@@ -53,7 +53,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<ul class="nav nav-tabs" role="tablist" style="margin:5px 0px;">
-				
+
 				{% if has_top_plays %}
 				<li role="presentation" class="active"><a href="#highlights" aria-controls="home" role="tab" data-toggle="tab" style="font-weight:bold;">Highlights</a></li>
 				{% endif %}
@@ -66,13 +66,13 @@
 				<li role="presentation"><a href="#gamelog" aria-controls="gamelog" role="tab" data-toggle="tab" style="font-weight:bold;">Game Log</a></li>
 			</ul>
 			<div class="tab-content">
-				
+
 				{% if has_top_plays %}
 					<div role="tabpanel" class="tab-pane active" id="highlights" style="padding-top:15px;">
 						{% player_highlights player.id %}
 					</div>
 				{% endif %}
-				
+
 				{# Highlights  #}
 				<div role="tabpanel" class="tab-pane {% if not has_top_plays %}active{% endif %}" id="averages" style="padding-top:15px;">
 					<div class="row">
@@ -102,7 +102,7 @@
 						</div>
 					</div>
 				</div>
-			
+
 				{# Per 100 #}
 				<div role="tabpanel" class="tab-pane" id="per100" style="padding-top:15px;">
 					<div class="row">
@@ -112,7 +112,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				{# Adv Per 100 #}
 				<div role="tabpanel" class="tab-pane" id="advper100" style="padding-top:15px;">
 					<div class="row">
@@ -148,7 +148,7 @@
 	function ajax_game_log_call(){
 		$.ajax({
 			type: "get",
-			url: "{% url 'ajax_player_game_log' %}",
+			url: "{% url 'ajax_player_game_log' 1 %}",
 			data: {
 				season_id: $('#id_season').val(),
 				player_id: {{ player.id }}
@@ -159,12 +159,12 @@
 		});
 	};
 	$( document ).ready(function() {
-		ajax_game_log_call();	
+		ajax_game_log_call();
 	});
 	$("#id_season").change(function() {
 		$("#player_game_log").html('<img src="/media/loading-indicator.gif" style="display: block; margin:0px auto;">');
 		ajax_game_log_call();
-		
+
 	});
 </script>
 

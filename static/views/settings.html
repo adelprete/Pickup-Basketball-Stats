@@ -3,3 +3,29 @@
     Settings
   </h3>
 </div>
+
+<h4>Leaderboard Settings</h4>
+<form name="settingsform" ng-submit="save()" novalidate>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label>*Possessions Min</label>
+      <input ng-model="settings.possessions_min" type="number" style="width: 100%;" name="possessions_min" class="form-control" required>
+      <p class="help-block">Number of possessions needed for a player to appear on leaderboards</p>
+      <div ng-show="settingsform.possessions_min.$invalid && settingsform.possessions_min.$touched">
+         Required!
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label>*Field Goal Attempts Min</label>
+      <input ng-model="settings.fga_min" type="number" style="width: 100%;" name="fga_min" class="form-control" required>
+      <p class="help-block">Field goal attempts needed for a player to appear on leaderboards</p>
+      <div ng-show="settingsform.fga_min.$invalid && settingsform.fga_min.$touched">
+         Required!
+      </div>
+    </div>
+  </div>
+  <button ng-disabled="settingsform.$invalid" type="submit" class="btn btn-default btn-primary" style="margin-top:10px;">Save</button>
+  {{ message }}
+</form>

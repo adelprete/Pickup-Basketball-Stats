@@ -88,12 +88,13 @@ def lb_overview(context, game_type="5v5", player_pk=None):
             'dreb_percent', 'oreb_percent', 'treb_percent', 'ts_percent',
             'off_rating', 'def_rating', 'tp_percent']
 
+        group = context.get('group', None)
         season_id = None
         season = None
         if context.get('season', None):
             season = context['season']
             season_id = season.id
-        possessions_min = int(context.get('possessions_min', 100))
+        possessions_min = int(context.get('possessions_min', group.possessions_min))
 
         excluded_pks = []
         if player_pk:
@@ -113,7 +114,7 @@ def lb_overview(context, game_type="5v5", player_pk=None):
 
             player_data_list = [
                     (player.get_abbr_name(),
-                    round(player.get_per_100_possessions_data([stat], game_type, season_id=season_id, fga_min=15)[stat],1)) for player in players
+                    round(player.get_per_100_possessions_data([stat], game_type, season_id=season_id, fga_min=group.fga_min)[stat],1)) for player in players
                     ]
             if stat == 'def_rating':
                 player_data_list = sorted(player_data_list, key=lambda x: x[1])
@@ -133,13 +134,15 @@ def lb_overview(context, game_type="5v5", player_pk=None):
 
 def calculate_lb_possessions_dictionaries(context, headers, season_id=None, sort_column=""):
 
+    group = context.get('group', None)
+
     players = bmodels.Player.player_objs.all().order_by('first_name')
     season = None
     if season_id:
         season = bmodels.Season.objects.get(id=season_id)
 
     possessions_tables = OrderedDict()
-    possessions_min = int(context.get('possessions_min', 100))
+    possessions_min = int(context.get('possessions_min', group.possessions_min))
 
     # For each game type we create a list of each player's per 100 stats
     for game_type in bmodels.GAME_TYPES:
@@ -282,12 +285,13 @@ def recap_totals(context, games):
     """
     Calculates and displays the totals for the day on recap pages.
     """
+    group = context.get('group', None)
     sort_column = context['request'].GET.get('tot_sort')
 
     date = games[0].date
 
     player_ids = set(list(games.values_list('team1', flat=True)) + list(games.values_list('team2', flat=True)))
-    team_ids = bmodels.Player.objects.filter(first_name__in=["Team1", "Team2"]).values_list('id', flat=True)
+    team_ids = bmodels.Player.objects.filter(group=group, first_name__in=["Team1", "Team2"]).values_list('id', flat=True)
     player_ids = filter(lambda id: id not in team_ids, player_ids)
 
     totals_tables, totals_footer = helpers.recap_totals_dictionaries(headers.totals_statistics, player_ids,
