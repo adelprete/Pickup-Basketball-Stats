@@ -13,7 +13,7 @@ urlpatterns = [
         url(r'^group/(?P<group_id>\d+)/$',
             bviews.root,
             name='grouproot'),
-        url(r'^$',RedirectView.as_view(url="http://saturdayball.com/group/1/", permanent=False)),
+        url(r'^$',RedirectView.as_view(url="http://www.saturdayball.com/group/1/", permanent=False)),
         url(r'^ajax-standings/$',
             bviews.ajax_standings,
             name='ajax_standings'),

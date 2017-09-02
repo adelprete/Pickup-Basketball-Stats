@@ -118,6 +118,7 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
             game_record = form.save(commit=False)
             game_record.group = group
             game_record.save()
+            form.save_m2m()
             for player in game_record.team1.iterator():
                 if not bmodels.StatLine.objects.filter(game=game_record, player=player):
                     bmodels.StatLine.objects.create(game=game_record, player=player)
