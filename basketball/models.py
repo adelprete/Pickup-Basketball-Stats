@@ -122,6 +122,7 @@ class Player(models.Model):
     image_src = models.ImageField(upload_to='player_images/', blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     position = models.CharField(max_length=30, blank=True)
+    is_active = models.BooleanField(help_text="Determine if a player should be selectable when creating games", blank=True, default=True)
 
     objects = AllPlayerManager()
     player_objs = RealPlayerManager()
@@ -946,6 +947,7 @@ class TableMatrix(models.Model):
     """
     Used as a way for us to save tables that may take a long time to calculate.
     """
+    group = models.ForeignKey('base.Group', null=True)
     type = models.CharField(max_length=30,default='',choices=(('game_records','Game Records'),
                                                               ('day_records','Day Records'),
                                                               ('season_records', 'Season Records'),

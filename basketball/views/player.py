@@ -38,6 +38,7 @@ def players_home(request, group_id, template="players/home.html"):
 		players = bmodels.Player.player_objs.filter(group=group, statline__game__date__range=(season.start_date, season.end_date)).distinct()
 
 	context = {
+		'group': group,
 		'players': players,
 		'season': season,
 		'form': form,
@@ -46,30 +47,30 @@ def players_home(request, group_id, template="players/home.html"):
 	return render(request, template, context)
 
 def player_page(request, group_id, id, template="players/detail.html"):
-    """This generates an individual player's page"""
+	"""This generates an individual player's page"""
+	group = Group.objects.get(id=group_id)
+	player = get_object_or_404(bmodels.Player, id=id)
 
-    player = get_object_or_404(bmodels.Player, id=id)
+	has_top_plays = False
+	if bmodels.PlayByPlay.objects.filter(game__exhibition=False, top_play_players=player):
+		has_top_plays = True
 
-    has_top_plays = False
-    if bmodels.PlayByPlay.objects.filter(game__exhibition=False, top_play_players=player):
-        has_top_plays = True
+	seasons = bmodels.Season.objects.all().order_by('-start_date')
 
-    seasons = bmodels.Season.objects.all().order_by('-start_date')
-
-    game_log_form = bforms.PlayerGameLogForm()
-    context = {
-        'player': player,
-        'has_top_plays': has_top_plays,
-        'game_log_form': game_log_form
-    }
-    return render(request, template, context)
+	game_log_form = bforms.PlayerGameLogForm()
+	context = {
+		'group': group,
+		'player': player,
+		'has_top_plays': has_top_plays,
+		'game_log_form': game_log_form
+	}
+	return render(request, template, context)
 
 
 @login_required
 def player_basics(request, group_id, id=None, form_class=bforms.PlayerForm, template='players/form.html'):
 	"""The View handles editing and deleting play profiles"""
 	model = None
-
 	group = Group.objects.get(id=group_id)
 
 	if id:
@@ -93,7 +94,7 @@ def player_basics(request, group_id, id=None, form_class=bforms.PlayerForm, temp
 				messages.success(request, "Player Created")
 			return redirect(p_record.get_absolute_url())
 
-	return render(request, template, {'form': form})
+	return render(request, template, {'group': group, 'form': form})
 
 def ajax_game_log(request, group_id):
 	"""Filters a players game log by season"""

@@ -1,7 +1,10 @@
 'use strict';
 
-angular.module('saturdayBall').controller('AddPlaysController', function AddPlaysController($scope, $routeParams, GameService) {
+angular.module('saturdayBall').controller('AddPlaysController', function ($scope, $routeParams, GameService, User) {
     // CONSTANTS
+    $scope.user = User.currentUser();
+    console.log('$scope.user: ', $scope.user);
+
     $scope.OPTIONS = {
       PRIMARY_PLAY: [
           {'code': 'fgm', 'name': 'FGM'},
@@ -142,8 +145,8 @@ angular.module('saturdayBall').controller('AddPlaysController', function AddPlay
           $scope.plays.push(response);
           $scope.plays = _.reverse(_.sortBy($scope.plays, 'time'));
           calculateScore();
-          $scope.playform.$setUntouched();;
-          setTimeout(jumpToPlayerAnchor, 2000);
+          $scope.playform.$setUntouched();
+          //setTimeout(jumpToPlayerAnchor, 2000);
         }, function(response){
           $scope.message = "Failed to add play";
         });

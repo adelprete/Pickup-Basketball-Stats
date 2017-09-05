@@ -102,11 +102,12 @@ def leaderboard_home(request, group_id, template="leaderboard/home.html"):
 		}
     return render(request, template, context)
 
-def records_home(request, template="records/home.html"):
+def records_home(request, group_id, template="records/home.html"):
     """
     Generates the Records page
     This page uses tabs that loads various templatetags that display different record information
     """
+    group = Group.objects.get(id=group_id)
 
     points_to_win = 11
     season = None
@@ -122,6 +123,7 @@ def records_home(request, template="records/home.html"):
         form = bforms.RecordForm(initial={'points_to_win':'11','season':''})
 
     context = {
+        'group': group,
         'form': form,
         'points_to_win':points_to_win,
         'season':season

@@ -68,6 +68,7 @@ def games_home(request, group_id, template='games/home.html'):
         games_tuple_list = paginator.page(paginator.num_pages)
 
     context = {
+        'group': group,
         'prefix': prefix,
         'games_list': games_tuple_list,
     }
@@ -132,7 +133,7 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
                 messages.success(request, "Game Created")
             return redirect(game_record.get_absolute_url())
 
-    return render(request, template, {'form': form})
+    return render(request, template, {'group': group, 'form': form})
 
 
 def box_score(request, group_id, id, template="games/box_score.html"):
@@ -228,7 +229,7 @@ def delete_play(request, pk):
     return redirect(play.game.get_absolute_url())
 
 import csv
-def export_plays(request, game_id):
+def export_plays(request, group_id, game_id):
     """Called when a play is deleted from a game's page."""
     game = get_object_or_404(bmodels.Game, id=game_id)
     response = HttpResponse(content_type='text/csv')

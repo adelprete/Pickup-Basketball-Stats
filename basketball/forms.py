@@ -42,10 +42,14 @@ class GameForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(GameForm, self).__init__(*args, **kwargs)
+        if self.instance.id:
+            self.fields['team1'].queryset = bmodels.Player.player_objs.filter(Q(is_active=True) | Q(id__in=self.instance.team1.values_list('id',flat=True)))
+            self.fields['team2'].queryset = bmodels.Player.player_objs.filter(Q(is_active=True) | Q(id__in=self.instance.team2.values_list('id',flat=True)))
+        else:
+            self.fields['team1'].queryset = bmodels.Player.player_objs.filter(is_active=True)
+            self.fields['team2'].queryset = bmodels.Player.player_objs.filter(is_active=True)
         self.fields['team1'].widget.attrs = {"size": 15}
-        self.fields['team1'].queryset = bmodels.Player.player_objs.all()
         self.fields['team2'].widget.attrs = {"size": 15}
-        self.fields['team2'].queryset = bmodels.Player.player_objs.all()
 
     def clean_team1(self):
         team1_qs = self.cleaned_data.get('team1', None)

@@ -28,8 +28,10 @@
   <script type="text/javascript" src="{% static 'controllers/AddPlaysController.js' %}"></script>
   <script type="text/javascript" src="{% static 'controllers/GroupSettingsController.js' %}"></script>
   <script type="text/javascript" src="{% static 'controllers/RegisterController.js' %}"></script>
+  <script type="text/javascript" src="{% static 'controllers/NavigationController.js' %}"></script>
 
   <script type="text/javascript" src="{% static 'services/UserService.js' %}"></script>
+  <script type="text/javascript" src="{% static 'services/User.js' %}"></script>
   <script type="text/javascript" src="{% static 'services/GameService.js' %}"></script>
   <script type="text/javascript" src="{% static 'services/GroupService.js' %}"></script>
 
@@ -39,7 +41,7 @@
 
   <body>
 
-<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<nav ng-controller="NavigationController" class="navbar navbar-default navbar-fixed-top navbar-inverse">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
 
@@ -59,11 +61,28 @@
 			<li id="players_link"><a target="_self" href="{% url 'players_home' 1 %}">Players</a></li>
 			<li id="games_link"><a target="_self" href="{% url 'games_home' 1 %}">Games</a></li>
 			<li id="leaderboard_link"><a target="_self" href="{% url 'leaderboard_home' 1 %}">Leaderboard</a></li>
-			<li id="records_link"><a target="_self" href="{% url 'records_home' %}">Records</a></li>
-      {% comment %}
-      <li id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
-      {% endcomment %}
+			<li id="records_link"><a target="_self" href="{% url 'records_home' 1 %}">Records</a></li>
+      <li ng-if="user.username" id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
 		  </ul>
+      {% verbatim %}
+      <ul class="nav navbar-nav navbar-right">
+				<li ng-if="!user.username"><a target="_self" href="/login">Login</a></li>
+				<li ng-if="!user.username"><a href="/register">Signup</a></li>
+
+			  <li ng-if="user.username"><a target="_self" href="/logout">Log Out</a></li>
+        <li ng-if="user.username == 'master'"id="admin_link"><a href="/admin">Admin</a></li>
+        <li ng-if="user.username" class="dropdown">
+          <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li style="padding: 3px 20px;">Your Groups</li>
+            <li role="separator" class="divider"></li>
+              <li ng-repeat="group in user.groups"><a href="#" style="text-decoration: underline;">{{ group[1] }}</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Create a new Group</a></li>
+          </ul>
+        </li>
+  		</ul>
+      {% endverbatim %}
     </div>
 </div>
 </nav>

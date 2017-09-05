@@ -46,13 +46,15 @@
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-			<li id="home_link"><a href="{% url 'grouproot' 1 %}">Home <span class="sr-only">(current)</span></a></li>
-			<li id="players_link"><a href="{% url 'players_home' 1 %}">Players</a></li>
-			<li id="games_link"><a href="{% url 'games_home' 1 %}">Games</a></li>
-			<li id="leaderboard_link"><a href="{% url 'leaderboard_home' 1 %}">Leaderboard</a></li>
-			<li id="records_link"><a href="{% url 'records_home' %}">Records</a></li>
+        {% if request.path != '/accounts/login/' %}
+    			<li id="home_link"><a href="{% url 'grouproot' group.id %}">Home <span class="sr-only">(current)</span></a></li>
+    			<li id="players_link"><a href="{% url 'players_home' group.id %}">Players</a></li>
+    			<li id="games_link"><a href="{% url 'games_home' group.id %}">Games</a></li>
+    			<li id="leaderboard_link"><a href="{% url 'leaderboard_home' group.id %}">Leaderboard</a></li>
+    			<li id="records_link"><a href="{% url 'records_home' group.id %}">Records</a></li>
+        {% endif %}
       {% if request.user.is_superuser %}
-      <li id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
+      <li id="settings_link"><a href="/group/{{ group.id }}/settings" style="color: gold;">Settings</a></li>
       {% endif %}
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
