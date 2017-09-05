@@ -262,12 +262,36 @@ def export_plays(request, group_id, game_id):
         writer.writerow(row)
     return response
 
+"""
+@login_required
+def game_basics(request, group_id, game_id, play_id):
+    Our game form where we can create or edit a games details
+    group = Group.objects.get(id=group_id)
+    model = None
+    if game_id:
+        model = get_object_or_404(bmodels.Game, id=game_id)
+
+    form = form_class(instance=model)
+    if request.POST:
+        form = form_class(request.POST, instance=model)
+        if "delete" in request.POST:
+            model.delete()
+            messages.success(request, 'Game Deleted')
+            return redirect('/games/')
+        if form.is_valid():
+            game_record = form.save(commit=False)
+"""
 class PlayByPlayFormView(FormView):
     """Our PlaybyPlayform for editing or deleting plays"""
 
     template_name = "games/playbyplay_form.html"
     model = bmodels.PlayByPlay
     form_class = bforms.PlayByPlayForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PlayByPlayFormView, self).get_context_data(**kwargs)
+        context['group'] = Group.objects.get(id=self.kwargs['group_id'])
+        return context
 
     def post(self, request, *args, **kwargs):
         if 'delete' in request.POST:

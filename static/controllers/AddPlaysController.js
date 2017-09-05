@@ -112,6 +112,10 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
         play.assist_player = '';
         play.assist = "";
       }
+      if (play.hasOwnProperty('top_play_rank') && !play.top_play_rank){
+        play.top_play_rank = "";
+      }
+
       $scope.editplaymessage = "Saving Play...."
       GameService.updatePlay(play).then(function(response){
         $scope.editplaymessage = "Successfully saved";
