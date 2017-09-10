@@ -3,7 +3,6 @@
 angular.module('saturdayBall').controller('AddPlaysController', function ($scope, $routeParams, GameService, User) {
     // CONSTANTS
     $scope.user = User.currentUser();
-    console.log('$scope.user: ', $scope.user);
 
     $scope.OPTIONS = {
       PRIMARY_PLAY: [
@@ -121,6 +120,7 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
         $scope.editplaymessage = "Successfully saved";
         getPlays();
         calculateScore();
+        GameService.calculateStatlines($scope.game.id).then(function(response){});
       }, function(response){
         $scope.editplaymessage = "Failed to save play";
       });
@@ -149,6 +149,7 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
           $scope.plays.push(response);
           $scope.plays = _.reverse(_.sortBy($scope.plays, 'time'));
           calculateScore();
+          GameService.calculateStatlines($scope.game.id).then(function(response){});
           $scope.playform.$setUntouched();
           //setTimeout(jumpToPlayerAnchor, 2000);
         }, function(response){

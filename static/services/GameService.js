@@ -23,6 +23,16 @@ angular.module('saturdayBall').factory('GameService', function($q, $http){
 
       return deferred.promise;
     },
+    calculateStatlines: function(gameid){
+      var deferred = $q.defer();
+      $http.get(`/api/games/${gameid}/calculate-statlines`).then(function(response, status, config, headers){
+        deferred.resolve(response.data);
+      }, function(response){
+        deferred.reject(response);
+      });
+
+      return deferred.promise;
+    },
     createPlay: function(data){
       var deferred = $q.defer();
       $http.post(`/api/plays/`, data).then(function(response, status, config, headers){

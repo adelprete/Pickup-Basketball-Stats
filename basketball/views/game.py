@@ -144,10 +144,10 @@ def box_score(request, group_id, id, template="games/box_score.html"):
     """
     group = Group.objects.get(id=group_id)
     game = get_object_or_404(bmodels.Game, id=id)
-    if game.outdated:
-        game.calculate_statlines()
-        game.outdated = False
-        game.save()
+    #if game.outdated:
+    #    game.calculate_statlines()
+    #    game.outdated = False
+    #    game.save()
 
     # finding the previous and next game on the list for navigation purposes
     game_set = bmodels.Game.objects.filter(group=game.group, date=game.date).order_by('title')
@@ -325,6 +325,7 @@ from django.shortcuts import get_object_or_404
 from basketball.serializers import PlayCreateUpdateSerializer, PlayRetrieveListSerializer, GameSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 #from base.utils import JSONResponse
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -335,6 +336,15 @@ class GameViewSet(viewsets.ModelViewSet):
         game = get_object_or_404(bmodels.Game, pk=pk)
         serializer = GameSerializer(game)
         return Response(serializer.data)
+
+@api_view(['GET'])
+def calculate_statlines(request, pk):
+    game = bmodels.Game.objects.get(pk=pk)
+    try:
+        game.calculate_statlines()
+    except Exception as e:
+        Response({'errorMessage': e}, status=400)
+    return Response({'message': 'Done'})
 
 
 class PlaysViewSet(viewsets.ModelViewSet):

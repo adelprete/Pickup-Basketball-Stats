@@ -44,9 +44,9 @@
         </select>
       </div>
       <div class="form-group col-md-10">
-        <span ng-if="play.secondary_play">
+        <span ng-if="play.secondary_play || play.primary_play === 'sub_out' || play.primary_play === 'pf' || play.primary_play === 'blk'">
           <label>*Secondary Player</label>
-          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="secondary_player" ng-model="play.secondary_player" ng-required="play.secondary_play">
+          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="secondary_player" ng-model="play.secondary_player" ng-required="play.secondary_play || play.primary_play === 'sub_out' || play.primary_play === 'pf' || play.primary_play === 'blk'">
               <option value="">-------</option>
           </select>
           <div ng-show="playform.secondary_player.$invalid && playform.secondary_player.$touched">
