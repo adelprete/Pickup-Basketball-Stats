@@ -53,8 +53,8 @@
     			<li id="leaderboard_link"><a href="{% url 'leaderboard_home' group.id %}">Leaderboard</a></li>
     			<li id="records_link"><a href="{% url 'records_home' group.id %}">Records</a></li>
         {% endif %}
-      {% if request.user.is_superuser %}
-      <li id="settings_link"><a href="/group/{{ group.id }}/settings" style="color: gold;">Settings</a></li>
+      {% if group in request.user.admin_groups.all %}
+        <li id="settings_link"><a href="/group/{{ group.id }}/settings" style="color: gold;">Settings</a></li>
       {% endif %}
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
@@ -62,18 +62,23 @@
 				<li><a href="{% url 'login' %}">Login</a></li>
 				<li><a href="/register">Signup</a></li>
 			  {% else %}
-			  <li><a href="{% url 'logout' %}">Log Out</a></li>
-        <li id="admin_link"><a href="{% url 'admin:index' %}">Admin</a></li>
+        {% if request.user.is_superuser %}
+          <li id="admin_link"><a href="{% url 'admin:index' %}">Admin</a></li>
+        {% endif %}
         <li class="dropdown">
           <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user.username }} <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li style="padding: 3px 20px;">Your Groups</li>
             <li role="separator" class="divider"></li>
             {% for group in request.user.admin_groups.all %}
-              <li><a href="#" style="text-decoration: underline;">{{ group }}</a></li>
+              <li><a href="/group/{{ group.id }}/" style="text-decoration: underline;">{{ group }}</a></li>
+            {% endfor %}
+            {% for group in request.user.member_groups.all %}
+              <li><a href="/group/{{ group.id }}/" style="text-decoration: underline;">{{ group }}</a></li>
             {% endfor %}
             <li role="separator" class="divider"></li>
-            <li><a href="#">Create a new Group</a></li>
+            <li><a href="#">Create Group</a></li>
+            <li><a href="{% url 'logout' %}">Log Out</a></li>
           </ul>
         </li>
 			  {% endif %}

@@ -34,8 +34,18 @@ class GroupViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def current_user(request):
     user = request.user
-    groups = Group.objects.values_list('id', 'name')
+    admin_groups = Group.objects.filter(admin=request.user).values_list('id', 'name')
+    member_groups = Group.objects.filter(members=request.user).values_list('id', 'name')
     return Response({
         'username': user.username,
-        'groups': groups
+        'admin_groups': admin_groups,
+        'member_groups': member_groups
     })
+
+@api_view(['GET'])
+def verify_group_admin(request, pk):
+    group = Group.objects.get(pk=pk)
+    if group in request.user.admin_groups.all():
+        return Response({'message': True})
+    else:
+        return Response({'message': False})

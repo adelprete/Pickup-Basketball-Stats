@@ -62,7 +62,7 @@
 			<li id="games_link"><a target="_self" href="{% url 'games_home' 1 %}">Games</a></li>
 			<li id="leaderboard_link"><a target="_self" href="{% url 'leaderboard_home' 1 %}">Leaderboard</a></li>
 			<li id="records_link"><a target="_self" href="{% url 'records_home' 1 %}">Records</a></li>
-      <li ng-if="user.username" id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
+      <li ng-if="isGroupAdmin.length" id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
 		  </ul>
       {% verbatim %}
       <ul class="nav navbar-nav navbar-right">
@@ -76,7 +76,8 @@
           <ul class="dropdown-menu">
             <li style="padding: 3px 20px;">Your Groups</li>
             <li role="separator" class="divider"></li>
-              <li ng-repeat="group in user.groups"><a href="#" style="text-decoration: underline;">{{ group[1] }}</a></li>
+            <li ng-repeat="group in user.admin_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
+            <li ng-repeat="group in user.member_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#">Create a new Group</a></li>
           </ul>
