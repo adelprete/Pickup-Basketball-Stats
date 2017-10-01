@@ -28,7 +28,14 @@ def root(request, group_id, template="base.html"):
     """
     group = Group.objects.get(id=group_id)
     # latest_game will help us find the latest set of games.
-    latest_game = bmodels.Game.objects.filter(group=group, published=True).latest('date')
+    try:
+        latest_game = bmodels.Game.objects.filter(group=group, published=True).latest('date')
+    except:
+        context = {
+            'group': group,
+            'games': []
+        }
+        return render(request, template, context)
     game_set = bmodels.Game.objects.filter(group=group, date=latest_game.date, published=True).order_by('title')
 
     # top plays and not top plays

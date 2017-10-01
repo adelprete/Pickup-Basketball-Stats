@@ -10,6 +10,10 @@ angular.module('saturdayBall').config(function($locationProvider, $routeProvider
         templateUrl: 'static/views/settings.html',
         controller: 'GroupSettingsController'
       })
+      .when("/group/create/", {
+        templateUrl: 'static/views/creategroup.html',
+        controller: 'CreateGroupController'
+      })
       .when("/register", {
         templateUrl: 'static/views/register.html',
         controller: 'RegisterController'

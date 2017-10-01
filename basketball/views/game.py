@@ -21,10 +21,11 @@ from basketball import helpers
 def games_home(request, group_id, template='games/home.html'):
     """Currently only passes a list of all the games to the template"""
     group=Group.objects.get(id=group_id)
+    players = bmodels.Player.objects.filter(group=group)
     prefix = ""
 
     if 'create_game' in request.GET:
-        return redirect('create_game', group_id=1)
+        return redirect('create_game', group_id=group_id)
     elif 'unpublished_list' in request.GET:
         games = bmodels.Game.objects.filter(group=group, published=False)
         prefix = 'Unpublished '
@@ -33,6 +34,8 @@ def games_home(request, group_id, template='games/home.html'):
 
     if not games:
         context = {
+            'group': group,
+            'players': players,
             'prefix': prefix,
             'games_list': None,
         }
@@ -69,6 +72,7 @@ def games_home(request, group_id, template='games/home.html'):
 
     context = {
         'group': group,
+        'players': players,
         'prefix': prefix,
         'games_list': games_tuple_list,
     }
@@ -108,7 +112,7 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
     if game_id:
         model = get_object_or_404(bmodels.Game, id=game_id)
 
-    form = form_class(instance=model)
+    form = form_class(instance=model, group=group)
     if request.POST:
         form = form_class(request.POST, instance=model)
         if "delete" in request.POST:

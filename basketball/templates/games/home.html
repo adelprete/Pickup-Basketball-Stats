@@ -7,59 +7,64 @@
 	<div class="page-header">
 		<h3 class="accent">{{ prefix }}Games</h3>
 	</div>
-	<div class="row">
-			<form class="col-md-12" action="">
-				<div class="btn-toolbar">
-					<input class="btn btn-primary btn-sm" name="create_game" type="submit" value="Create New Game">
-					<input class="btn btn-primary btn-sm" name="unpublished_list" type="submit" value="View Unpublished Games">
-					<input class="btn btn-primary btn-sm" type="submit" value="View published Games">
+
+	{% if games_list or players %}
+		<div class="row">
+				<form class="col-md-12" action="">
+					<div class="btn-toolbar">
+						<input class="btn btn-primary btn-sm" name="create_game" type="submit" value="Create New Game">
+						<input class="btn btn-primary btn-sm" name="unpublished_list" type="submit" value="View Unpublished Games">
+						<input class="btn btn-primary btn-sm" type="submit" value="View published Games">
+					</div>
+				</form>
+		</div><br>
+		{% if games_list %}
+			<nav>
+				<ul class="pager">
+					{% if games_list.has_previous %}
+						<li><a href="?page={{ games_list.previous_page_number }}">Previous</a></li>
+					{% endif %}
+					<span class="current">
+						Page {{ games_list.number }} of {{ games_list.paginator.num_pages }}.
+					</span>
+					{% if games_list.has_next %}
+					<li><a href="?page={{ games_list.next_page_number }}">Next</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+			{% for value in games_list %}
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 style="display:inline;">{{ value.0 }}</h3>
+						<form method="get" action="{% url 'recap' 1 value.1.0.pk %}" style="display:inline;">
+							<button type="submit" class="btn btn-primary btn-xs" style="margin-bottom:10px;margin-left:5px;">Recap</button>
+						</form>
+					</div>
 				</div>
-			</form>
-	</div><br>
-	{% if games_list %}
-		<nav>
-			<ul class="pager">
-				{% if games_list.has_previous %}
-					<li><a href="?page={{ games_list.previous_page_number }}">Previous</a></li>
-				{% endif %}
-				<span class="current">
-					Page {{ games_list.number }} of {{ games_list.paginator.num_pages }}.
-				</span>
-				{% if games_list.has_next %}
-				<li><a href="?page={{ games_list.next_page_number }}">Next</a></li>
-				{% endif %}
-			</ul>
-		</nav>
-		{% for value in games_list %}
-			<div class="row">
-				<div class="col-sm-12">
-					<h3 style="display:inline;">{{ value.0 }}</h3>
-					<form method="get" action="{% url 'recap' 1 value.1.0.pk %}" style="display:inline;">
-						<button type="submit" class="btn btn-primary btn-xs" style="margin-bottom:10px;margin-left:5px;">Recap</button>
-					</form>
+				<div class="row">
+				{% for game in value.1 %}
+					{% game_snippet game %}
+				{% endfor %}
 				</div>
-			</div>
-			<div class="row">
-			{% for game in value.1 %}
-				{% game_snippet game %}
 			{% endfor %}
-			</div>
-		{% endfor %}
-		<nav>
-			<ul class="pager">
-				{% if games_list.has_previous %}
-					<li><a href="?page={{ games_list.previous_page_number }}">Previous</a></li>
-				{% endif %}
-				<span class="current">
-					Page {{ games_list.number }} of {{ games_list.paginator.num_pages }}.
-				</span>
-				{% if games_list.has_next %}
-				<li><a href="?page={{ games_list.next_page_number }}">Next</a></li>
-				{% endif %}
-			</ul>
-		</nav>
+			<nav>
+				<ul class="pager">
+					{% if games_list.has_previous %}
+						<li><a href="?page={{ games_list.previous_page_number }}">Previous</a></li>
+					{% endif %}
+					<span class="current">
+						Page {{ games_list.number }} of {{ games_list.paginator.num_pages }}.
+					</span>
+					{% if games_list.has_next %}
+					<li><a href="?page={{ games_list.next_page_number }}">Next</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+		{% else %}
+			<p style="font-size: 18px;">No Games To Show<p>
+		{% endif %}
 	{% else %}
-		No Games To Show
+		<p style="font-size: 18px;">Before you can create games, you have to create some players. <br><a href="/group/{{ group.id }}/players/">Players page</a><p>
 	{% endif %}
 {% endblock %}
 {% block active_tab %}

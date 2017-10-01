@@ -100,7 +100,7 @@ def lb_overview(context, game_type="5v5", player_pk=None):
         if player_pk:
                 players = bmodels.Player.objects.filter(pk=player_pk)
         else:
-                players = bmodels.Player.player_objs.all()
+                players = bmodels.Player.player_objs.filter(group=group)
 
                 # exclude players that dont meet the minimum 100 possessions requirement
                 for player in players:
@@ -136,7 +136,7 @@ def calculate_lb_possessions_dictionaries(context, headers, season_id=None, sort
 
     group = context.get('group', None)
 
-    players = bmodels.Player.player_objs.all().order_by('first_name')
+    players = bmodels.Player.player_objs.filter(group__id=group.id).order_by('first_name')
     season = None
     if season_id:
         season = bmodels.Season.objects.get(id=season_id)
@@ -166,6 +166,9 @@ def calculate_lb_possessions_dictionaries(context, headers, season_id=None, sort
 
         if sort_column:
             possessions_tables[game_type[1]].sort(key=lambda d: d[sort_column], reverse=True)
+
+        if not possessions_tables[game_type[1]]:
+            del possessions_tables[game_type[1]];
 
     return possessions_tables
 
@@ -215,7 +218,9 @@ def lb_possessions(context, season=None):
 
 def calculate_lb_totals_dictionaries(context, statistics, season_id=None, sort_column="",):
 
-        players = bmodels.Player.player_objs.all().order_by('first_name')
+        group = context.get('group', None)
+
+        players = bmodels.Player.player_objs.filter(group__id=group.id).order_by('first_name')
 
         season = None
         if season_id:
@@ -247,7 +252,8 @@ def calculate_lb_totals_dictionaries(context, statistics, season_id=None, sort_c
                                 totals[key] += value
                             else:
                                 totals[key] = value
-
+            if not totals_tables[game_type[1]]:
+                del totals_tables[game_type[1]];
             totals_footer[game_type[1]] = totals
 
             if sort_column:

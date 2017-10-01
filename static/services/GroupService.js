@@ -20,6 +20,15 @@ angular.module('saturdayBall').factory('GroupService', function($q, $http){
       });
       return deferred.promise;
     },
+    createGroup: function(data){
+      var deferred = $q.defer();
+      $http.post(`/api/groups/`, data).then(function(response, status, config, headers){
+        deferred.resolve(response.data);
+      }, function(response){
+        deferred.reject(response);
+      });
+      return deferred.promise;
+    },
     isGroupAdmin: function(groupid){
       var deferred = $q.defer();
       $http.get(`/api/groups/${groupid}/verify-group-admin/`).then(function(response, status, config, headers){

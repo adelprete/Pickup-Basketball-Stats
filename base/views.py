@@ -31,6 +31,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
+    def create(self, request):
+        request.data['admin'] = [request.user.id]
+        return super().create(request)
+
 @api_view(['GET'])
 def current_user(request):
     user = request.user

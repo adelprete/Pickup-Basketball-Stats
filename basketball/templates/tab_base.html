@@ -3,15 +3,19 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<ul class="nav nav-pills">
-				{% for key,value in tables.items %}
-					{% if value %}
-						{% block tab %}
-							<li role="presentation" {% if active_pill == key %}class="active"{% endif %}>
-								<a href="#tot-{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
-							</li>
-						{% endblock %}
-					{% endif %}
-				{% endfor %}
+				{% if tables %}
+					{% for key,value in tables.items %}
+						{% if value %}
+							{% block tab %}
+								<li role="presentation" {% if active_pill == key %}class="active"{% endif %}>
+									<a href="#tot-{{ key }}" role="tab" data-toggle="tab">{{ key }}</a>
+								</li>
+							{% endblock %}
+						{% endif %}
+					{% endfor %}
+				{% else %}
+					No Data Yet
+				{% endif %}
 			</ul>
 			<div class="tab-content">
 				{% for key,value in tables.items %}
