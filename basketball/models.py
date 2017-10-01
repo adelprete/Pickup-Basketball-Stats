@@ -39,6 +39,11 @@ GAME_TYPES = [
     ('1v1', '1on1'),
 ]
 
+SCORE_TYPES = [
+    ("1and2", "1's and 2's"),
+    ("2and3", "2's and 3's")
+]
+
 ALL_PLAY_TYPES = PRIMARY_PLAY + SECONDARY_PLAY + ASSIST_PLAY
 
 TOP_PLAY_RANKS = [
@@ -475,6 +480,7 @@ class Game(models.Model):
     winning_players = models.ManyToManyField('basketball.Player', related_name='winning_players_set', blank=True)
     youtube_id = models.CharField("Youtube Video ID", max_length=2000, blank=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, null=True)
+    score_type = models.CharField("Shot Values",max_length=30, choices=SCORE_TYPES, null=True)
     top_player = models.ForeignKey('basketball.Player', related_name='top_player_set', null=True, blank=True)
     published = models.BooleanField("Publish Game?", default=False)
     #advanced
@@ -557,6 +563,11 @@ class Game(models.Model):
             if play.secondary_player.pk not in been_in:
                 bench.append(play.secondary_player.pk)
         return bench
+    def get_shot_values(self):
+        if self.score_type == '1and2':
+            return [1, 2]
+        elif self.score_type == '2and3':
+            return [2, 3]
 
     def calculate_statlines(self):
         """
@@ -566,6 +577,7 @@ class Game(models.Model):
         :return: Nothing
         """
         self.reset_statlines()
+        inside_arc, outside_arc = self.get_shot_values()
         playbyplays = self.playbyplay_set.all().order_by('time')
         bench = self.get_bench()
         statlines = self.statline_set.all()
@@ -586,9 +598,9 @@ class Game(models.Model):
                             primary_line.pgm += 1
                             primary_line.pga += 1
                     primary_line.fga += 1
-                    primary_line.points += 1
+                    primary_line.points += inside_arc
                     if second_chance_window:
-                        primary_line.second_chance_points += 1
+                        primary_line.second_chance_points += inside_arc
                 elif play.primary_play == 'fga':
                     if prev_play and ((play.time - prev_play.time).seconds <= settings.PUTBACK_TIME) \
                         and prev_play.secondary_play == 'oreb' and prev_play.secondary_player == play.primary_player:
@@ -599,9 +611,9 @@ class Game(models.Model):
                     primary_line.threepa += 1
                     primary_line.fga += 1
                     primary_line.fgm += 1
-                    primary_line.points += 2
+                    primary_line.points += outside_arc
                     if second_chance_window:
-                        primary_line.second_chance_points += 2
+                        primary_line.second_chance_points += outside_arc
 
                 #Analyze fast breaks
                 #If the previous play ended on a DREB check if a goal is made in a certain amount of time seconds
@@ -611,9 +623,9 @@ class Game(models.Model):
                         if ((play.time - prev_play.time).seconds <= settings.FASTBREAK_TIME) and play.primary_play in ['fgm', 'threepm']:
                             primary_line.fastbreaks += 1
                             if play.primary_play == 'fgm':
-                                primary_line.fastbreak_points += 1
+                                primary_line.fastbreak_points += inside_arc
                             elif play.primary_play == 'threepm':
-                                primary_line.fastbreak_points += 2
+                                primary_line.fastbreak_points += outside_arc
 
                 primary_line.save()
 
@@ -649,9 +661,9 @@ class Game(models.Model):
                         StatLine.objects.filter(game=self, player=play.primary_player).update(ast_fgm=F('ast_fgm') + 1)
 
                         if play.primary_play == 'fgm':
-                            assist_line.ast_points += 1
+                            assist_line.ast_points += inside_arc
                         elif play.primary_play == 'threepm':
-                            assist_line.ast_points += 2
+                            assist_line.ast_points += outside_arc
 
                     assist_line.save()
 

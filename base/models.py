@@ -1,11 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
+from basketball.models import GAME_TYPES, SCORE_TYPES
 
 
 class Group(models.Model):
     name = models.CharField(max_length=60, blank=False)
     admin = models.ManyToManyField('auth.User', related_name='admin_groups', blank=True, null=True)
     members = models.ManyToManyField('auth.User', related_name='member_groups', blank=True, null=True)
+
+    # default game settings
+    game_type = models.CharField(max_length=30, choices=GAME_TYPES, null=True)
+    score_type = models.CharField(max_length=30, choices=SCORE_TYPES, null=True)
+    points_to_win = models.CharField(max_length=30, choices=(('11','11'), ('30','30'), ('other','Other')) ,null=True)
 
     #leaderboard settings
     possessions_min = models.PositiveIntegerField(default=100)

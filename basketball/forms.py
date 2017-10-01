@@ -1,5 +1,6 @@
 from django import forms
 from base import fields
+from base.models import Group
 from basketball import models as bmodels
 from django.db.models import Q
 import django_filters
@@ -38,11 +39,13 @@ class GameForm(forms.ModelForm):
     required_css_class = 'required'
     date = forms.DateField(widget=forms.DateInput(attrs={'class': 'datepicker'}))
     exhibition = fields.BooleanChoiceField(label="Exhibition Game?", required=True, initial=False, help_text="Stats for Exhibition games are NOT counted.")
-    published = fields.BooleanChoiceField(label="Publish Game?", required=True, initial=False, help_text="Publish games when they are ready to be view by others.")
+    published = fields.BooleanChoiceField(label="Publish Game?", required=True, initial=False, help_text="Publish games when they are ready to be viewed by others.")
 
-    def __init__(self, group=None, *args, **kwargs):
-        print(group)
+    def __init__(self, *args, **kwargs):
+        group_id = kwargs.pop('group_id', None)
         super(GameForm, self).__init__(*args, **kwargs)
+
+        group = Group.objects.get(id=group_id)
         if self.instance.id:
             self.fields['team1'].queryset = bmodels.Player.player_objs.filter(Q(is_active=True) | Q(id__in=self.instance.team1.values_list('id',flat=True)) & Q(group__id=group.id))
             self.fields['team2'].queryset = bmodels.Player.player_objs.filter(Q(is_active=True) | Q(id__in=self.instance.team2.values_list('id',flat=True)) & Q(group__id=group.id))

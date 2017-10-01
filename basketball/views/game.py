@@ -111,15 +111,24 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
     model = None
     if game_id:
         model = get_object_or_404(bmodels.Game, id=game_id)
+        form = form_class(instance=model, group_id=group_id)
+    else:
+        initial_data={
+            'score_type': group.score_type,
+            'game_type': group.game_type,
+            'points_to_win': group.points_to_win
+            }
 
-    form = form_class(instance=model, group=group)
+        form = form_class(initial=initial_data, group_id=group_id)
+
     if request.POST:
-        form = form_class(request.POST, instance=model)
+        form = form_class(request.POST, instance=model, group_id=group_id)
         if "delete" in request.POST:
             model.delete()
             messages.success(request, 'Game Deleted')
             return redirect('/games/')
         if form.is_valid():
+
             game_record = form.save(commit=False)
             game_record.group = group
             game_record.save()
@@ -135,6 +144,7 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
                 messages.success(request, "Game Saved")
             else:
                 messages.success(request, "Game Created")
+            game_record.calculate_statlines()
             return redirect(game_record.get_absolute_url())
 
     return render(request, template, {'group': group, 'form': form})

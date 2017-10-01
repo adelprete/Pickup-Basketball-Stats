@@ -2,6 +2,7 @@
   <h3 class="accent">
     Create Basketball Group
   </h3>
+  <p class="help-block">All Values can be changed later.</p>
 </div>
 
 <form name="settingsform" ng-submit="save()" novalidate>
@@ -15,6 +16,36 @@
       </div>
     </div>
   </div>
+  <h4>Game Defaults</h4>
+  <div class="row">
+    <div class="col-md-12">
+      <p class="help-block">Choose the settings that your games will use the most.</p>
+    </div>
+    <div class="form-group col-md-2">
+      <label>*Game Type</label>
+      <select class="form-control"
+              ng-options="o.code as o.name for o in OPTIONS.GAME_TYPES"
+              ng-model="settings.game_type"
+              required>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label>*Point Values</label>
+      <select class="form-control"
+              ng-model="settings.score_type"
+              ng-options="o.code as o.name for o in OPTIONS.SCORE_TYPES"
+              required>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
+      <label>*Points To Win By</label>
+      <select class="form-control"
+              ng-model="settings.points_to_win"
+              ng-options="o.code as o.name for o in OPTIONS.POINTS_TO_WIN"
+              required>
+      </select>
+    </div>
+  </div>
   <h4>Leaderboard Settings</h4>
   <div class="row">
     <div class="form-group col-md-3">
@@ -25,8 +56,6 @@
          Required!
       </div>
     </div>
-  </div>
-  <div class="row">
     <div class="form-group col-md-3">
       <label>*Field Goal Attempts Min</label>
       <input ng-model="settings.fga_min" type="number" style="width: 100%;" name="fga_min" class="form-control" required>
