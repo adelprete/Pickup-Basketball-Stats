@@ -21,7 +21,6 @@ angular.module('saturdayBall')
     }
 
     $scope.user = Session.currentUser();
-    console.log('In Session');
     GroupService.getGroup(1).then(function(response){
       $scope.settings = response
     }, function(response){

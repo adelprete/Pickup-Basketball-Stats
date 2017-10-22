@@ -340,7 +340,6 @@ from basketball.serializers import PlayCreateUpdateSerializer, PlayRetrieveListS
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-#from base.utils import JSONResponse
 
 class GameViewSet(viewsets.ModelViewSet):
     queryset = bmodels.Game.objects.all()

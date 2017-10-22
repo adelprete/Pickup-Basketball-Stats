@@ -88,10 +88,17 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
     var calculateScore = function(){
       $scope.team1_score = 0;
       $scope.team2_score = 0;
-      var scoring_plays = ['fgm', 'threepm'];
+      var scoring_plays = ['fgm', 'threepm'],
+          score_type = $scope.game.score_type,
+          score_to_add;
       _.forEach($scope.plays, function(play){
         if (scoring_plays.includes(play.primary_play)) {
-          var score_to_add = (play.primary_play == 'fgm') ? 1 : 2;
+          if (score_type === '2and3'){
+            score_to_add = (play.primary_play == 'fgm') ? 2 : 3;
+          }
+          else {
+            score_to_add = (play.primary_play == 'fgm') ? 1 : 2;
+          }
           if (_.find($scope.game.team1, player => play.primary_player.id === player.id)) {
             $scope.team1_score += score_to_add;
           } else {
