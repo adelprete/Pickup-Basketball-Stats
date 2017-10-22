@@ -1,6 +1,6 @@
 angular.module('saturdayBall')
 
-.controller('CreateGroupController', function CreateGroupController($scope, $location, $routeParams, GroupService, User){
+.controller('CreateGroupController', function CreateGroupController($scope, $location, $routeParams, GroupService, Session){
     $scope.OPTIONS = {
       SCORE_TYPES: [
         {'code': '1and2', 'name': '1\'s and 2\'s'},
@@ -20,7 +20,7 @@ angular.module('saturdayBall')
       ]
     }
 
-    $scope.user = User.currentUser();
+    $scope.user = Session.currentUser();
     $scope.settings = {
       score_type: $scope.OPTIONS.SCORE_TYPES[0].code,
       game_type: $scope.OPTIONS.GAME_TYPES[0].code,

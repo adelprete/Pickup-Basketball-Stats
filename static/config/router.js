@@ -1,22 +1,31 @@
 'use strict';
 
 angular.module('saturdayBall').config(function($locationProvider, $routeProvider) {
+  var routeResolver = {
+    preLoad: function (routeResolver){
+      return routeResolver();
+    }
+  };
     $routeProvider
       .when("/group/:groupid/games/:gameid/add-plays/", {
         templateUrl: "static/views/add_plays.html",
-        controller: 'AddPlaysController'
+        controller: 'AddPlaysController',
+        resolve: routeResolver
       })
       .when("/group/:groupid/settings", {
         templateUrl: 'static/views/settings.html',
-        controller: 'GroupSettingsController'
+        controller: 'GroupSettingsController',
+        resolve: routeResolver
       })
       .when("/group/create/", {
         templateUrl: 'static/views/creategroup.html',
-        controller: 'CreateGroupController'
+        controller: 'CreateGroupController',
+        resolve: routeResolver
       })
       .when("/register", {
         templateUrl: 'static/views/register.html',
-        controller: 'RegisterController'
+        controller: 'RegisterController',
+        resolve: routeResolver
       })
       .otherwise({
         resolve: {

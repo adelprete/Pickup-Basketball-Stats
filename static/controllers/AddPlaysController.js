@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('saturdayBall').controller('AddPlaysController', function ($scope, $routeParams, GameService, User) {
+angular.module('saturdayBall').controller('AddPlaysController', function ($scope, $rootScope, $routeParams, GameService, Session) {
     // CONSTANTS
-    $scope.user = User.currentUser();
+    $scope.user = Session.currentUser();
 
     $scope.OPTIONS = {
       PRIMARY_PLAY: [
@@ -53,7 +53,6 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
     }
     $scope.editplay = {};
     $scope.play = {};
-
     GameService.getGame($routeParams['gameid']).then(function (response){
       $scope.game = response;
       $scope.OPTIONS.players = []

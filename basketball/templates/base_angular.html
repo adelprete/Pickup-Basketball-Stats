@@ -25,6 +25,8 @@
   <script type="text/javascript"src="{% static 'bower_components/angular-youtube-mb/src/angular-youtube-embed.js'%}"></script>
   <script type="text/javascript" src="{% static 'modules/saturdayball.js' %}"></script>
   <script type="text/javascript" src="{% static 'config/router.js' %}"></script>
+  <script type="text/javascript" src="{% static 'config/routeResolver.js' %}"></script>
+  <script type="text/javascript" src="{% static 'config/rootScope.js' %}"></script>
 
   <!-- Controllers -->
   <script type="text/javascript" src="{% static 'controllers/AddPlaysController.js' %}"></script>
@@ -34,7 +36,7 @@
   <script type="text/javascript" src="{% static 'controllers/NavigationController.js' %}"></script>
   <!-- Services -->
   <script type="text/javascript" src="{% static 'services/UserService.js' %}"></script>
-  <script type="text/javascript" src="{% static 'services/User.js' %}"></script>
+  <script type="text/javascript" src="{% static 'services/Session.js' %}"></script>
   <script type="text/javascript" src="{% static 'services/GameService.js' %}"></script>
   <script type="text/javascript" src="{% static 'services/GroupService.js' %}"></script>
 
@@ -44,56 +46,60 @@
 
   <body>
 
-<nav ng-controller="NavigationController" class="navbar navbar-default navbar-fixed-top navbar-inverse">
-  <div class="container">
-    <!-- Brand and toggle get grouped for better mobile display -->
 
-    <div class="navbar-header">
-		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-			<span class="sr-only">Toggle navigation</span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		  </button>
-		  <div class="navbar-brand" style="color:white;">Saturday Ball</div>
-    </div>
+<div ng-controller="NavigationController">
+  <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
 
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		  <ul class="nav navbar-nav">
-			<li id="home_link"><a target="_self" href="{% url 'grouproot' 1 %}">Home <span class="sr-only">(current)</span></a></li>
-			<li id="players_link"><a target="_self" href="{% url 'players_home' 1 %}">Players</a></li>
-			<li id="games_link"><a target="_self" href="{% url 'games_home' 1 %}">Games</a></li>
-			<li id="leaderboard_link"><a target="_self" href="{% url 'leaderboard_home' 1 %}">Leaderboard</a></li>
-			<li id="records_link"><a target="_self" href="{% url 'records_home' 1 %}">Records</a></li>
-      <li ng-if="isGroupAdmin.length" id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
-		  </ul>
-      {% verbatim %}
-      <ul class="nav navbar-nav navbar-right">
-				<li ng-if="!user.username"><a target="_self" href="/login">Login</a></li>
-				<li ng-if="!user.username"><a href="/register">Signup</a></li>
+      <div class="navbar-header">
+  		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+  			<span class="sr-only">Toggle navigation</span>
+  			<span class="icon-bar"></span>
+  			<span class="icon-bar"></span>
+  			<span class="icon-bar"></span>
+  		  </button>
+  		  <div class="navbar-brand" style="color:white;">Saturday Ball</div>
+      </div>
 
-			  <li ng-if="user.username"><a target="_self" href="/logout">Log Out</a></li>
-        <li ng-if="user.username == 'master'"id="admin_link"><a href="/admin">Admin</a></li>
-        <li ng-if="user.username" class="dropdown">
-          <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li style="padding: 3px 20px;">Your Groups</li>
-            <li role="separator" class="divider"></li>
-            <li ng-repeat="group in user.admin_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
-            <li ng-repeat="group in user.member_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Create a new Group</a></li>
-          </ul>
-        </li>
-  		</ul>
-      {% endverbatim %}
-    </div>
-</div>
-</nav>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+  		  <ul class="nav navbar-nav">
+  			<li id="home_link"><a target="_self" href="{% url 'grouproot' 1 %}">Home <span class="sr-only">(current)</span></a></li>
+  			<li id="players_link"><a target="_self" href="{% url 'players_home' 1 %}">Players</a></li>
+  			<li id="games_link"><a target="_self" href="{% url 'games_home' 1 %}">Games</a></li>
+  			<li id="leaderboard_link"><a target="_self" href="{% url 'leaderboard_home' 1 %}">Leaderboard</a></li>
+  			<li id="records_link"><a target="_self" href="{% url 'records_home' 1 %}">Records</a></li>
+        <li ng-if="isGroupAdmin.length" id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
+  		  </ul>
+        {% verbatim %}
+        <ul class="nav navbar-nav navbar-right">
+  				<li ng-if="!user.username"><a target="_self" href="/login">Login</a></li>
+  				<li ng-if="!user.username"><a href="/register">Signup</a></li>
 
-	<div class="container" style="margin-bottom:100px;margin-top:80px;">
+  			  <li ng-if="user.username"><a target="_self" href="/logout">Log Out</a></li>
+          <li ng-if="user.username == 'master'"id="admin_link"><a href="/admin">Admin</a></li>
+          <li ng-if="user.username" class="dropdown">
+            <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li style="padding: 3px 20px;">Your Groups</li>
+              <li role="separator" class="divider"></li>
+              <li ng-repeat="group in user.admin_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
+              <li ng-repeat="group in user.member_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">Create a new Group</a></li>
+            </ul>
+          </li>
+    		</ul>
+        {% endverbatim %}
+      </div>
+  </div>
+  </nav>
+  <div class="container" style="margin-bottom:100px;margin-top:80px;">
     <div ng-view></div>
 	</div>
+</div>
+
+
 		<script>$('#games_link').addClass('active')</script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

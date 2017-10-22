@@ -1,6 +1,6 @@
 angular.module('saturdayBall')
 
-.controller('GroupSettingsController', function GroupSettingsController($scope, $routeParams, GroupService, User){
+.controller('GroupSettingsController', function GroupSettingsController($scope, $routeParams, GroupService, Session){
     $scope.OPTIONS = {
       SCORE_TYPES: [
         {'code': '1and2', 'name': '1\'s and 2\'s'},
@@ -20,9 +20,8 @@ angular.module('saturdayBall')
       ]
     }
 
-
-    $scope.user = User.currentUser();
-
+    $scope.user = Session.currentUser();
+    console.log('In Session');
     GroupService.getGroup(1).then(function(response){
       $scope.settings = response
     }, function(response){
