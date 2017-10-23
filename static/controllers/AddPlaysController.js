@@ -1,78 +1,49 @@
 'use strict';
 
-angular.module('saturdayBall').controller('AddPlaysController', function ($scope, $rootScope, $routeParams, GameService, Session) {
-    // CONSTANTS
+angular.module('saturdayBall').controller('AddPlaysController', AddPlaysController);
+
+AddPlaysController.$inject = ['$scope', '$routeParams', 'GameService', 'Session', 'playOptions'];
+
+function AddPlaysController($scope, $routeParams, GameService, Session, playOptions) {
+
+    $scope.createPlay = createPlay;
+    $scope.deletePlay = deletePlay;
+    $scope.editplay = {};
+    $scope.fillEditForm = fillEditForm;
+    $scope.game = {};
+    $scope.play = {};
+    $scope.playOptions = playOptions;
+    $scope.team1_score = 0;
+    $scope.team2_score = 0;
+    $scope.updatePlay = updatePlay;
     $scope.user = Session.currentUser();
 
-    $scope.OPTIONS = {
-      PRIMARY_PLAY: [
-          {'code': 'fgm', 'name': 'FGM'},
-          {'code': 'fga', 'name': 'FGA'},
-          {'code': 'threepm', 'name': '3PM'},
-          {'code': 'threepa', 'name': '3PA'},
-          {'code': 'blk', 'name': 'BLK'},
-          {'code': 'to', 'name': 'TO'},
-          {'code': 'pf', 'name': 'FOUL'},
-          {'code': 'sub_out', 'name': 'SUB OUT'},
-          {'code': 'misc', 'name': 'Misc'}
-      ],
-      SECONDARY_PLAY: [
-          {'code': 'dreb', 'name': 'DREB'},
-          {'code': 'oreb', 'name': 'OREB'},
-          {'code': 'stls', 'name': 'STL'},
-          {'code': 'ba', 'name': 'Block Against'},
-          {'code': 'fd', 'name': 'Foul Drawn'},
-          {'code': 'sub_in', 'name': 'SUB IN'},
-      ],
-      ASSIST_PLAY: [
-          {'code': 'pot_ast', 'name': 'Potential Assist'},
-          {'code': 'asts', 'name': 'Assist'}
-      ],
-      PLAY_RANKS: [
-          {'code': 't01', 'name': 'Top 1'},
-          {'code': 't02', 'name': 'Top 2'},
-          {'code': 't03', 'name': 'Top 3'},
-          {'code': 't04', 'name': 'Top 4'},
-          {'code': 't05', 'name': 'Top 5'},
-          {'code': 't06', 'name': 'Top 6'},
-          {'code': 't07', 'name': 'Top 7'},
-          {'code': 't08', 'name': 'Top 8'},
-          {'code': 't09', 'name': 'Top 9'},
-          {'code': 't10', 'name': 'Top 10'},
-          {'code': 'nt01', 'name': 'Not Top 1'},
-          {'code': 'nt02', 'name': 'Not Top 2'},
-          {'code': 'nt03', 'name': 'Not Top 3'},
-          {'code': 'nt04', 'name': 'Not Top 4'},
-          {'code': 'nt05', 'name': 'Not Top 5'},
-          {'code': 'nt06', 'name': 'Not Top 6'},
-          {'code': 'nt07', 'name': 'Not Top 7'},
-          {'code': 'nt08', 'name': 'Not Top 8'},
-          {'code': 'nt09', 'name': 'Not Top 9'},
-          {'code': 'nt10', 'name': 'Not Top 10'},
-      ]
-    }
-    $scope.editplay = {};
-    $scope.play = {};
-    GameService.getGame($routeParams['gameid']).then(function (response){
-      $scope.game = response;
-      $scope.OPTIONS.players = []
-      var player_objs = $scope.game.team1.concat($scope.game.team2);
-      angular.forEach(player_objs, function(value, key) {
-        this.push({'code':value.id, 'name': `${value.first_name} ${value.last_name}`});
-      }, $scope.OPTIONS.players);
-      getPlays();
-    }, function(response){
-    });
+    ///////////////////////
 
-    var getPlays = function(){
+    init();
+
+    function init() {
+
+      GameService.getGame($routeParams['gameid']).then(function (response){
+        $scope.game = response;
+        var player_objs = $scope.game.team1.concat($scope.game.team2);
+        angular.forEach(player_objs, function(value, key) {
+          this.push({'code':value.id, 'name': `${value.first_name} ${value.last_name}`});
+        }, $scope.playOptions.PLAYERS);
+        getPlays();
+      });
+
+    }
+
+    function getPlays(){
       GameService.getGamePlays($routeParams['gameid']).then(function (response){
         $scope.plays = _.reverse(_.sortBy(response, 'time'));
         calculateScore();
       }, function(response){
       });
-    };
+    }
 
-    $scope.fillEditForm = function(playid){
+    function fillEditForm(playid) {
       GameService.getPlay(playid).then(function (response){
         $scope.editplaymessage = "";
         $scope.editplay = response;
@@ -80,17 +51,15 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
         $scope.editplay.secondary_player = (response.secondary_player && response.secondary_player.id) ? response.secondary_player.id : '';
         $scope.editplay.assist_player = (response.assist_player && response.assist_player.id)? response.assist_player.id : '';
         $scope.editplay.top_play_players = response.top_play_players;
-      }, function(response){
-
-      })
+      });
     }
 
-    var calculateScore = function(){
+    function calculateScore() {
       $scope.team1_score = 0;
       $scope.team2_score = 0;
-      var scoring_plays = ['fgm', 'threepm'],
-          score_type = $scope.game.score_type,
-          score_to_add;
+      var scoring_plays = ['fgm', 'threepm'];
+      var score_type = $scope.game.score_type;
+      var score_to_add;
       _.forEach($scope.plays, function(play){
         if (scoring_plays.includes(play.primary_play)) {
           if (score_type === '2and3'){
@@ -108,7 +77,7 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
       });
     }
 
-    $scope.update = function(play) {
+    function updatePlay(play) {
       if (play.secondary_player && !play.secondary_play){
         play.secondary_player = "";
         play.secondary_play = "";
@@ -128,11 +97,12 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
         calculateScore();
         GameService.calculateStatlines($scope.game.id).then(function(response){});
       }, function(response){
+        console.log(response);
         $scope.editplaymessage = "Failed to save play";
       });
     }
 
-    $scope.create = function(play) {
+    function createPlay(play) {
         play.game = $scope.game.id
         if (play.secondary_player && !play.secondary_play){
           delete play.secondary_player;
@@ -161,22 +131,17 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
         }, function(response){
           $scope.message = "Failed to add play";
         });
-      };
+      }
 
-    $scope.edit = function(play){
-
-    }
-
-    $scope.delete = function(playid) {
+    function deletePlay(playid) {
         GameService.deletePlay(playid).then(function(response){
           _.remove($scope.plays, function(play) { return play.id === playid; });
           calculateScore();
-        }, function(response){
         });
-    };
+    }
 
 
-    // YouTube player logic
+    // YouTube player logic.  Should move to a directive.
     $scope.specifiedTime = null;
     $scope.player = null;
 
@@ -232,4 +197,4 @@ angular.module('saturdayBall').controller('AddPlaysController', function ($scope
       $scope.editplay['top_play_players'] = [];
     }
 
-});
+};

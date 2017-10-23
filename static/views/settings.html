@@ -11,21 +11,21 @@
       <label>*Game Type</label>
       <select class="form-control"
               ng-model="settings.game_type"
-              ng-options="o.code as o.name for o in OPTIONS.GAME_TYPES">
+              ng-options="o.code as o.name for o in settingOptions.GAME_TYPES">
       </select>
     </div>
     <div class="form-group col-md-2">
       <label>*Point Values</label>
       <select class="form-control"
               ng-model="settings.score_type"
-              ng-options="o.code as o.name for o in OPTIONS.SCORE_TYPES">
+              ng-options="o.code as o.name for o in settingOptions.SCORE_TYPES">
       </select>
     </div>
     <div class="form-group col-md-2">
       <label>*Points To Win By</label>
       <select class="form-control"
               ng-model="settings.points_to_win"
-              ng-options="o.code as o.name for o in OPTIONS.POINTS_TO_WIN">
+              ng-options="o.code as o.name for o in settingOptions.POINTS_TO_WIN">
       </select>
     </div>
   </div>

@@ -2,16 +2,24 @@
 
 angular.module('saturdayBall')
 
-.controller('RegisterController', function RegisterController($scope, $routeParams, UserService){
+.controller('RegisterController', RegisterController);
+
+RegisterController.$inject = ['$scope', 'UserService']
+
+function RegisterController($scope, UserService){
     $scope.betacode;
+    $scope.message = "";
+    $scope.submit = submit;
+    $scope.userModel = {};
     $scope.verifypassword;
 
-    $scope.submit = function(){
+    //////////////////
 
-      UserService.createUser($scope.user).then(function (response){
+    function submit() {
+      UserService.createUser($scope.userModel).then(function (response){
         console.log(response);
       }, function(response){
         $scope.message = response.data;
       })
     }
-});
+};

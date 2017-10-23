@@ -1,12 +1,28 @@
 'use strict';
 
-angular.module('saturdayBall').factory('Session', ['$q', '$http', 'UserService', 'GroupService', function($q, $http, UserService, GroupService){
-  var user, currentGroup;
+angular.module('saturdayBall').factory('Session', Session);
+
+Session.$inject = ['$q', '$http', 'UserService', 'GroupService']
+
+function Session($q, $http, UserService, GroupService) {
+  var user;
+  var currentGroup;
+  var service = {
+      init: init,
+      available: available,
+      currentUser: function() {
+        return user
+      },
+      currentGroup: function() {
+        return currentGroup
+      }
+    }
+  return service;
+
+  ////////////////////
 
   function init() {
-    console.log("Session init called");
     getCurrentUser().then(function(result){
-      console.log("got User");
       user = result;
     }, function(error){
       console.log(error);
@@ -20,7 +36,6 @@ angular.module('saturdayBall').factory('Session', ['$q', '$http', 'UserService',
     var deferred = $q.defer();
     UserService.currentUser().then(function(response){
       user = response;
-      console.log("Grabbed User: ", user);
       deferred.resolve(user);
     }, function(response){
       deferred.reject(response.data);
@@ -39,15 +54,4 @@ angular.module('saturdayBall').factory('Session', ['$q', '$http', 'UserService',
     return !!user && !!currentGroup;
   }
 
-  return {
-      init: init,
-      available: available,
-      currentUser: function() {
-        return user
-      },
-      currentGroup: function() {
-        return currentGroup
-      }
-    }
-
-}]);
+};

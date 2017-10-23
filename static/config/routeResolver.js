@@ -1,4 +1,10 @@
-angular.module('saturdayBall').factory('routeResolver', ['Session', '$route', '$q', function(Session, $route, $q){
+'use strict';
+
+angular.module('saturdayBall').factory('routeResolver', routeResolver);
+
+routeResolver.$inject = ['Session', '$route', '$q'];
+
+function routeResolver(Session, $route, $q) {
 
   return function() {
 
@@ -10,4 +16,4 @@ angular.module('saturdayBall').factory('routeResolver', ['Session', '$route', '$
     deferred.resolve(Session);
     return deferred.promise;
   };
-}]);
+};

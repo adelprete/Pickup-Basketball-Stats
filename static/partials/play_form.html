@@ -1,4 +1,4 @@
-<form name="playform" style="margin-bottom: 30px;" ng-submit="create(play)" novalidate>
+<form name="playform" style="margin-bottom: 30px;" ng-submit="createPlay(play)" novalidate>
   <div class="row">
     <div class="col-md-6 col-md-offset-1">
       <div class="form-group col-md-5">
@@ -19,7 +19,7 @@
     <div class="col-md-3 col-md-offset-1">
       <div class="form-group col-md-7">
           <label>*Primary Play</label>
-          <select required class="form-control" ng-options="o.code as o.name for o in OPTIONS.PRIMARY_PLAY" name='primary_play' ng-model="play.primary_play">
+          <select required class="form-control" ng-options="o.code as o.name for o in playOptions.PRIMARY_PLAY" name='primary_play' ng-model="play.primary_play">
               <option value="">-------</option>
           </select>
           <div ng-show="playform.primary_play.$invalid && playform.primary_play.$touched">
@@ -28,7 +28,7 @@
       </div>
       <div class="form-group col-md-10">
         <label>*Primary Player</label>
-        <select required class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="primary_player" ng-model="play.primary_player">
+        <select required class="form-control" ng-options="o.code as o.name for o in playOptions.PLAYERS" name="primary_player" ng-model="play.primary_player">
             <option value="">-------</option>
         </select>
         <div ng-show="playform.primary_player.$invalid && playform.primary_player.$touched">
@@ -39,14 +39,14 @@
     <div class="col-md-3">
       <div class="form-group col-md-7">
         <label>Secondary Play</label>
-        <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.SECONDARY_PLAY" ng-model="play.secondary_play">
+        <select class="form-control" ng-options="o.code as o.name for o in playOptions.SECONDARY_PLAY" ng-model="play.secondary_play">
             <option value="">-------</option>
         </select>
       </div>
       <div class="form-group col-md-10">
         <span ng-if="play.secondary_play || play.primary_play === 'sub_out' || play.primary_play === 'pf' || play.primary_play === 'blk'">
           <label>*Secondary Player</label>
-          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="secondary_player" ng-model="play.secondary_player" ng-required="play.secondary_play || play.primary_play === 'sub_out' || play.primary_play === 'pf' || play.primary_play === 'blk'">
+          <select class="form-control" ng-options="o.code as o.name for o in playOptions.PLAYERS" name="secondary_player" ng-model="play.secondary_player" ng-required="play.secondary_play || play.primary_play === 'sub_out' || play.primary_play === 'pf' || play.primary_play === 'blk'">
               <option value="">-------</option>
           </select>
           <div ng-show="playform.secondary_player.$invalid && playform.secondary_player.$touched">
@@ -58,14 +58,14 @@
     <div class="col-md-3">
       <div class="form-group col-md-7">
         <label>Assist Play</label>
-        <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.ASSIST_PLAY" ng-model="play.assist">
+        <select class="form-control" ng-options="o.code as o.name for o in playOptions.ASSIST_PLAY" ng-model="play.assist">
             <option value="">-------</option>
         </select>
       </div>
       <div class="form-group col-md-8">
         <span ng-if="play.assist">
           <label>*Assist Player</label>
-          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.players" name="assist_player" ng-model="play.assist_player" ng-required="play.assist">
+          <select class="form-control" ng-options="o.code as o.name for o in playOptions.PLAYERS" name="assist_player" ng-model="play.assist_player" ng-required="play.assist">
               <option value="">-------</option>
           </select>
           <div ng-show="playform.assist_player.$invalid && playform.assist_player.$touched">
@@ -80,7 +80,7 @@
       <div class="col-md-6" style="padding: 5px 0px 0px 0px">
         <div class="form-group col-md-10">
           <label>Play Rank</label>
-          <select class="form-control" ng-options="o.code as o.name for o in OPTIONS.PLAY_RANKS" ng-model="play.top_play_rank">
+          <select class="form-control" ng-options="o.code as o.name for o in playOptions.PLAY_RANKS" ng-model="play.top_play_rank">
               <option value="">-------</option>
           </select>
         </div>
@@ -92,7 +92,7 @@
       <div class="col-md-6">
         <div class="col-md-12" style="padding: 5px 0px 5px 0px">
           <label>Play Rank</label>
-          <select multiple class="form-control" style="height: 95px;" ng-options="o.code as o.name for o in OPTIONS.players" ng-model="play.top_play_players">
+          <select multiple class="form-control" style="height: 95px;" ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="play.top_play_players">
               <option value="">-------</option>
           </select>
         </div>

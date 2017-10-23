@@ -1,26 +1,37 @@
 'use strict';
 
-angular.module('saturdayBall').factory('UserService', function($q, $http){
-  return {
-    createUser: function(data){
-      var deferred = $q.defer();
-      $http.post(`/api/user/create`, data).then(function(response, status, config, headers){
-        deferred.resolve(response.data);
-      }, function(response){
-        deferred.reject(response);
-      });
+angular.module('saturdayBall').factory('UserService', UserService);
 
-      return deferred.promise;
-    },
-    currentUser: function(){
-      var deferred = $q.defer();
-      $http.get(`/api/user/current`).then(function(response, status, config, headers){
-        deferred.resolve(response.data);
-      }, function(response){
-        deferred.reject(response);
-      });
+UserService.$inject = ['$q', '$http'];
 
-      return deferred.promise;
-    },
+function UserService($q, $http) {
+  var service = {
+    createUser: createUser,
+    currentUser: currentUser
   };
-});
+  return service;
+
+  /////////////////////
+
+  function createUser(data) {
+    var deferred = $q.defer();
+    $http.post(`/api/user/create`, data).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
+
+  function currentUser() {
+    var deferred = $q.defer();
+    $http.get(`/api/user/current`).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
+};

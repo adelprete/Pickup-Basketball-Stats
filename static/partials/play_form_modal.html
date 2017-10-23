@@ -25,7 +25,7 @@
             <div class="col-md-4">
               <div class="form-group col-md-7">
                   <label>*Primary Play</label>
-                  <select ng-options="o.code as o.name for o in OPTIONS.PRIMARY_PLAY" ng-model="editplay.primary_play" required class="form-control" name='primary_play'>
+                  <select ng-options="o.code as o.name for o in playOptions.PRIMARY_PLAY" ng-model="editplay.primary_play" required class="form-control" name='primary_play'>
                       <option value="">-------</option>
                   </select>
                   <div ng-show="editplayform.primary_play.$invalid && editplayform.primary_play.$touched">
@@ -34,7 +34,7 @@
               </div>
               <div class="form-group col-md-10">
                 <label>*Primary Player</label>
-                <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.primary_player" required class="form-control" name="primary_player">
+                <select ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="editplay.primary_player" required class="form-control" name="primary_player">
                     <option value="">-------</option>
                 </select>
                 <div ng-show="editplayform.primary_player.$invalid && editplayform.primary_player.$touched">
@@ -45,14 +45,14 @@
             <div class="col-md-4">
               <div class="form-group col-md-7">
                 <label>Secondary Play</label>
-                <select ng-options="o.code as o.name for o in OPTIONS.SECONDARY_PLAY" ng-model="editplay.secondary_play" class="form-control">
+                <select ng-options="o.code as o.name for o in playOptions.SECONDARY_PLAY" ng-model="editplay.secondary_play" class="form-control">
                     <option value="">-------</option>
                 </select>
               </div>
               <div class="form-group col-md-10">
                 <span ng-if="editplay.secondary_play">
                   <label>*Secondary Player</label>
-                  <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.secondary_player" ng-required="editplay.secondary_play" class="form-control" name="secondary_player">
+                  <select ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="editplay.secondary_player" ng-required="editplay.secondary_play" class="form-control" name="secondary_player">
                       <option value="">-------</option>
                   </select>
                   <div ng-show="editplayform.secondary_player.$invalid && editplayform.secondary_player.$touched">
@@ -64,14 +64,14 @@
             <div class="col-md-4">
               <div class="form-group col-md-7">
                 <label>Assist Play</label>
-                <select ng-options="o.code as o.name for o in OPTIONS.ASSIST_PLAY" ng-model="editplay.assist" class="form-control">
+                <select ng-options="o.code as o.name for o in playOptions.ASSIST_PLAY" ng-model="editplay.assist" class="form-control">
                     <option value="">-------</option>
                 </select>
               </div>
               <div class="form-group col-md-10">
                 <span ng-if="editplay.assist">
                   <label>*Assist Player</label>
-                  <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.assist_player" ng-required="editplay.assist" class="form-control" name="assist_player">
+                  <select ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="editplay.assist_player" ng-required="editplay.assist" class="form-control" name="assist_player">
                       <option value="">-------</option>
                   </select>
                   <div ng-show="editplayform.assist_player.$invalid && editplayform.assist_player.$touched">
@@ -86,7 +86,7 @@
               <div class="col-md-6" style="padding: 5px 0px 0px 0px">
                 <div class="form-group col-md-10">
                   <label>Play Rank</label>
-                  <select ng-options="o.code as o.name for o in OPTIONS.PLAY_RANKS" ng-model="editplay.top_play_rank" class="form-control">
+                  <select ng-options="o.code as o.name for o in playOptions.PLAY_RANKS" ng-model="editplay.top_play_rank" class="form-control">
                       <option value="">-------</option>
                   </select>
                 </div>
@@ -98,7 +98,7 @@
               <div class="col-md-6">
                 <div class="col-md-12" style="padding: 5px 0px 5px 0px">
                   <label>Highlight Players</label>
-                  <select ng-options="o.code as o.name for o in OPTIONS.players" ng-model="editplay.top_play_players" multiple class="form-control" style="height: 95px;">
+                  <select ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="editplay.top_play_players" multiple class="form-control" style="height: 95px;">
                       <option value="">-------</option>
                   </select>
                   <div ng-click="clearRanks()" class="clickable">Clear Play Rank Data</div>
@@ -109,8 +109,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button ng-click="update(editplay)" ng-disabled="editplayform.$invalid" type="submit" class="btn btn-default btn-primary">Save</button>
-        <button ng-click="delete(editplay.id)" confirmed-click="delete(play.id)" ng-confirm-click="Delete the play?" class="btn btn-default btn-danger" data-dismiss="modal">Delete</button>
+        <button ng-click="updatePlay(editplay)" ng-disabled="editplayform.$invalid" type="submit" class="btn btn-default btn-primary">Save</button>
+        <button ng-click="deletePlay(editplay.id)" confirmed-click="deletePlay(play.id)" ng-confirm-click="Delete the play?" class="btn btn-default btn-danger" data-dismiss="modal">Delete</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <div ng-bind="editplaymessage"></div>
       </div>
