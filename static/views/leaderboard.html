@@ -1,0 +1,45 @@
+<div class="page-header">
+  <h3 class="accent">Leaderboard</h3>
+</div>
+
+<div>
+  <div class="row">
+    <div class="col-md-12">
+      <a ng-click="ShowHideForm()" id="toggle_filterform" style="cursor: pointer;">
+        <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+        Toggle Filter Options
+      </a>
+    </div>
+  </div>
+  <form ng-show="isFormVisible" name="filterForm" ng-submit="FilterTables(play)" novalidate>
+    <div class="row">
+      <div class="form-group col-md-2">
+        <label>Season</label>
+        <select required class="form-control" ng-options="o.id as o.title for o in filterOptions.seasons" name='season' ng-model="filterForm.season">
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <label>Minimum Possessions</label>
+        <input type="number" style="width: 100%;" name="timestamp" class="form-control" ng-model="filterForm.possessions_min" required>
+        <div ng-show="filterForm.possessions_min.$invalid && filterForm.possessions_min.$touched">
+           Required!
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<ul class="nav nav-tabs" role="tablist" style="margin-top:15px;">
+  <li role="presentation" class="active">
+    <a href="#overview" aria-controls="home" role="tab" data-toggle="tab">Overview</a>
+  </li>
+</ul>
+<div class="tab-content">
+  <div ng-controller="OverviewBoardController" role="tabpanel" class="tab-pane active" id="overview">
+    <div ng-include="'static/partials/overviewBoard.html'"></div>
+  </div>
+</div>
+<script type="text/javascript">
+  $("#toggle_filterform").click(function(){
+    $('#filter_form').toggle();
+  });
+</script>

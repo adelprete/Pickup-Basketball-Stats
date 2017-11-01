@@ -5,6 +5,7 @@ angular.module('saturdayBall').factory('GroupService', GroupService);
 function GroupService($q, $http){
   var service = {
       getGroup: getGroup,
+      getGroupSeasons: getGroupSeasons,
       updateGroup: updateGroup,
       createGroup: createGroup,
       isGroupAdmin: isGroupAdmin
@@ -47,6 +48,16 @@ function GroupService($q, $http){
     var deferred = $q.defer();
     $http.get(`/api/groups/${groupid}/verify-group-admin/`).then(function(response, status, config, headers){
       deferred.resolve(response.data.message);
+    }, function(response){
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  }
+
+  function getGroupSeasons(groupId) {
+    var deferred = $q.defer();
+    $http.get(`/api/group/${groupId}/seasons/`).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
     });

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from basketball.models import PlayByPlay, Game, Player, PRIMARY_PLAY
+from basketball.models import PlayByPlay, Game, Player, Season, PRIMARY_PLAY
 
 
 class ChoicesField(serializers.Field):
@@ -62,8 +62,12 @@ class PlayRetrieveListSerializer(PlayCreateUpdateSerializer):
 class GameSerializer(serializers.ModelSerializer):
     #team1 = PlayerSerializer(many=True, read_only=True)
     #team2 = PlayerSerializer(many=True, read_only=True)
-
     class Meta:
         model = Game
         depth = 1
+        fields = '__all__'
+
+class SeasonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Season
         fields = '__all__'

@@ -1,5 +1,5 @@
 from django.conf.urls import include, url
-from base.views import CreateUserView, GroupViewSet, current_user, verify_group_admin
+from base.views import CreateUserView, GroupViewSet, current_user, verify_group_admin, group_seasons
 from basketball.views import game as gviews
 from django.contrib.auth.decorators import login_required
 from basketball.views.game import PlaysViewSet, GameViewSet, calculate_statlines
@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^games/(?P<pk>[0-9]+)/$',  game_details),
     url(r'^games/(?P<pk>[0-9]+)/calculate-statlines/$',  calculate_statlines),
     url(r'^group/(?P<pk>[0-9]+)/verify-admin/$',  verify_group_admin),
+    url(r'^group/(?P<pk>[0-9]+)/seasons/$',  group_seasons),
 ]
 
 urlpatterns += router.urls

@@ -3,7 +3,7 @@
 angular.module('saturdayBall').config(function($locationProvider, $routeProvider) {
   var routeResolver = {
     preLoad: function (routeResolver){
-      return routeResolver();
+      return routeResolver()
     }
   };
     $routeProvider
@@ -25,6 +25,11 @@ angular.module('saturdayBall').config(function($locationProvider, $routeProvider
       .when("/register", {
         templateUrl: 'static/views/register.html',
         controller: 'RegisterController',
+        resolve: routeResolver
+      })
+      .when("/group/:groupId/leaderboard/", {
+        templateUrl: 'static/views/leaderboard.html',
+        controller: 'LeaderboardController',
         resolve: routeResolver
       })
       .otherwise({

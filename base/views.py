@@ -9,6 +9,8 @@ from django.contrib.auth import get_user_model # If used custom user model
 from .serializers import UserSerializer
 from base.models import Group
 from base.serializers import GroupSerializer
+from basketball.models import Season, Game
+from basketball.serializers import SeasonSerializer
 import json
 
 class CreateUserView(CreateAPIView):
@@ -53,3 +55,15 @@ def verify_group_admin(request, pk):
         return Response({'message': True})
     else:
         return Response({'message': False})
+
+@api_view(['GET'])
+def group_seasons(request, pk):
+    seasons = Season.objects.all().order_by('start_date');
+    group_season_ids = []
+    for season in seasons:
+        if Game.objects.filter(group__id=pk, date__gte=season.start_date, date__lte=season.end_date).count():
+            group_season_ids.append(season.id);
+
+    queryset = Season.objects.filter(id__in=group_season_ids)
+    serializer = SeasonSerializer(queryset, many=True)
+    return Response({'seasons': serializer.data})

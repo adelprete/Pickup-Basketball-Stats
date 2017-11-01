@@ -35,12 +35,16 @@
   <script type="text/javascript" src="{% static 'controllers/CreateGroupController.js' %}"></script>
   <script type="text/javascript" src="{% static 'controllers/RegisterController.js' %}"></script>
   <script type="text/javascript" src="{% static 'controllers/NavigationController.js' %}"></script>
+  <script type="text/javascript" src="{% static 'controllers/LeaderboardController.js' %}"></script>
+  <script type="text/javascript" src="{% static 'controllers/OverviewBoardController.js' %}"></script>
   <!-- Services -->
   <script type="text/javascript" src="{% static 'services/UserService.js' %}"></script>
   <script type="text/javascript" src="{% static 'services/Session.js' %}"></script>
   <script type="text/javascript" src="{% static 'services/GameService.js' %}"></script>
   <script type="text/javascript" src="{% static 'services/GroupService.js' %}"></script>
 
+  <!-- Directives -->
+  <script type="text/javascript" src="{% static 'directives/smallLeaderboard.js' %}"></script>
   <script type="text/javascript" src="{% static 'directives/NgConfirmClick.js' %}"></script>
   <base href="/">
   </head>
@@ -68,7 +72,7 @@
   			<li id="home_link"><a target="_self" href="{% url 'grouproot' 1 %}">Home <span class="sr-only">(current)</span></a></li>
   			<li id="players_link"><a target="_self" href="{% url 'players_home' 1 %}">Players</a></li>
   			<li id="games_link"><a target="_self" href="{% url 'games_home' 1 %}">Games</a></li>
-  			<li id="leaderboard_link"><a target="_self" href="{% url 'leaderboard_home' 1 %}">Leaderboard</a></li>
+  			<li id="leaderboard_link"><a href="/group/1/leaderboard/">Leaderboard</a></li>
   			<li id="records_link"><a target="_self" href="{% url 'records_home' 1 %}">Records</a></li>
         <li ng-if="isGroupAdmin.length" id="settings_link"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
   		  </ul>
