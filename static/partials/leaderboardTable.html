@@ -1,0 +1,36 @@
+<h3 class="accent">{{ title }}</h3>
+<div style="color: #777;font-size:17px;width:100%;">
+  Data from
+  <span ng-if="season.id !== 0">
+    {{ season.title }}
+  </span>
+  <span ng-if="season.id === 0">
+    all seasons
+  </span>
+</div>
+<div class="table-responsive">
+	<table class="table table-hover">
+		<tr style="background:#d9edf7">
+      <th ng-repeat="header in headers">
+        <a ng-click="sort(header[0])" data-toggle="tooltip" title="{{ statDescriptions[header[0]] }}">{{ header[1] }}</a>
+        <span ng-class="{'glyphicon glyphicon-triangle-bottom': arrowUp(header[0]), 'glyphicon glyphicon-triangle-top': arrowDown(header[0])}"></span>
+      </th>
+    </tr>
+    <tr ng-show="!loading" ng-repeat="statline in tableStatlines">
+      <td>
+        <a target="_self" href="group/{{ group.id }}/players/{{ statline.player.id }}/">{{ statline.player.first_name}} {{statline.player.last_name}}</a>
+      </td>
+      <td>
+        {{ statline.gp }}
+      </td>
+      <td ng-repeat="header in headers" ng-if="$index > 1">
+        {{ statline[header[0]] | number:decimals }}
+      </td>
+    </tr>
+    <tr>
+      <td ng-if="loading">
+        Loading...
+      </td>
+    </tr>
+  </table>
+</div>

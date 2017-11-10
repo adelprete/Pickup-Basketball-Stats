@@ -40,8 +40,13 @@ class GroupViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def current_user(request):
     user = request.user
-    admin_groups = Group.objects.filter(admin=request.user).values_list('id', 'name')
-    member_groups = Group.objects.filter(members=request.user).values_list('id', 'name')
+    if not request.user.is_anonymous():
+        admin_groups = Group.objects.filter(admin=request.user).values_list('id', 'name')
+        member_groups = Group.objects.filter(members=request.user).values_list('id', 'name')
+    else:
+        admin_groups = []
+        member_groups = []
+
     return Response({
         'username': user.username,
         'admin_groups': admin_groups,

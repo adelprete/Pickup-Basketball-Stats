@@ -227,6 +227,7 @@ def ajax_add_play(request, group_id, pk):
 def ajax_filter_plays(request, group_id, pk):
     """Called when an some wants to filter the play by plays of a game"""
     game = get_object_or_404(bmodels.Game, pk=pk)
+    import pdb;pdb.set_trace()
     pbp_filter = bforms.PlayByPlayFilter(request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
 
     return render(request, 'games/playbyplay_list.html', {'pbp_filter': pbp_filter})
@@ -336,19 +337,49 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-from basketball.serializers import PlayCreateUpdateSerializer, PlayRetrieveListSerializer, GameSerializer
+from basketball.serializers import (
+    PlayCreateUpdateSerializer, PlayRetrieveListSerializer,
+    DailyStatlineSerializer, GameSerializer, PlayerSerializer, SeasonStatlineSerializer
+)
+from basketball import filters
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django_filters import rest_framework as drf_filters
+import django_filters
 
 class GameViewSet(viewsets.ModelViewSet):
     queryset = bmodels.Game.objects.all()
     serializer_class = GameSerializer
+    filter_backend = (drf_filters.DjangoFilterBackend,)
 
     def retrieve(self, request, pk=None):
         game = get_object_or_404(bmodels.Game, pk=pk)
         serializer = GameSerializer(game)
         return Response(serializer.data)
+
+class PlayerViewSet(viewsets.ModelViewSet):
+    queryset = bmodels.Player.objects.all()
+    serializer_class = PlayerSerializer
+    filter_backend = (drf_filters.DjangoFilterBackend,)
+
+    def list(self, request, group_id):
+        players = bmodels.Player.objects.filter(group__id=group_id)
+        serializer = PlayerSerializer(players, many=True)
+        return Response(serializer.data)
+
+
+class DailyStatlineViewSet(viewsets.ModelViewSet):
+    queryset = bmodels.DailyStatline.objects.all()
+    serializer_class = DailyStatlineSerializer
+    filter_backend = (drf_filters.DjangoFilterBackend,)
+    filter_class = filters.DailyStatlineFilter
+
+class SeasonStatlineViewSet(viewsets.ModelViewSet):
+    queryset = bmodels.SeasonStatline.objects.all()
+    serializer_class = SeasonStatlineSerializer
+    filter_backend = (drf_filters.DjangoFilterBackend,)
+    filter_class = filters.SeasonStatlineFilter
 
 @api_view(['GET'])
 def calculate_statlines(request, pk):

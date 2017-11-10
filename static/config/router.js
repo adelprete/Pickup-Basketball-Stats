@@ -7,15 +7,17 @@ angular.module('saturdayBall').config(function($locationProvider, $routeProvider
     }
   };
     $routeProvider
-      .when("/group/:groupid/games/:gameid/add-plays/", {
+      .when("/group/:groupId/games/:gameid/add-plays/", {
         templateUrl: "static/views/add_plays.html",
         controller: 'AddPlaysController',
-        resolve: routeResolver
+        resolve: routeResolver,
+        activetab: 'games'
       })
-      .when("/group/:groupid/settings", {
+      .when("/group/:groupId/settings", {
         templateUrl: 'static/views/settings.html',
         controller: 'GroupSettingsController',
-        resolve: routeResolver
+        resolve: routeResolver,
+        activetab: 'settings'
       })
       .when("/group/create/", {
         templateUrl: 'static/views/creategroup.html',
@@ -30,7 +32,8 @@ angular.module('saturdayBall').config(function($locationProvider, $routeProvider
       .when("/group/:groupId/leaderboard/", {
         templateUrl: 'static/views/leaderboard.html',
         controller: 'LeaderboardController',
-        resolve: routeResolver
+        resolve: routeResolver,
+        activetab: 'leaderboard'
       })
       .otherwise({
         resolve: {

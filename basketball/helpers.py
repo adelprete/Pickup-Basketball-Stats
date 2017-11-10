@@ -184,7 +184,7 @@ def update_daily_statlines(game):
             player_data['gp'] = bmodels.StatLine.objects.filter(game__date=date,
                                                         player=statline.player,
                                                         game__game_type=game.game_type,
-                                                        game__points_to_win=game.points_to_win
+                                                        game__points_to_win=game.points_to_win,
                                                         ).count()
             player_data['player'] = statline.player
             player_data['date'] = date
@@ -220,12 +220,17 @@ def update_season_statlines(game):
 
                 stats = [stat[0] for stat in bmodels.STATS]
 
-                player_data = statline.player.get_totals(stats, game_type=game_type, season=season, points_to_win=game.points_to_win)
+                player_data = statline.player.get_totals(stats,
+                                                        game_type=game_type,
+                                                        season=season,
+                                                        points_to_win=game.points_to_win)
 
                 player_data['gp'] = bmodels.StatLine.objects.filter(game__date__range=(season.start_date, season.end_date),
                                                                  player=statline.player,
                                                                  game__game_type=game.game_type,
-                                                                 game__points_to_win=game.points_to_win
+                                                                 game__points_to_win=game.points_to_win,
+                                                                 game__exhibition=False,
+                                                                 game__published=True
                                                                  ).count()
 
                 player_data.pop('id', None)

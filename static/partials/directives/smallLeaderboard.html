@@ -1,0 +1,18 @@
+<div class="col-sm-3">
+	<table class="table table-hovered table-bordered top_5_table" data-toggle="tooltip" title="{{ tooltipDesc }}">
+		<tr style="background:{{ color }}">
+			<th>Name</th>
+			<th>{{ title }}</th>
+		</tr>
+		<tr ng-if="calculating">
+			<td colspan="2">Loading...</td>
+		</tr>
+    <tr ng-repeat="player in leaderboard">
+      <td>{{ player.player.first_name }}</td>
+      <td>{{ player[stat] | number:2}}</td>
+    </tr>
+		<tr ng-if="!calculating && leaderboard.length === 0">
+			<td colspan="2">No Data</td>
+		</tr>
+	</table>
+</div>

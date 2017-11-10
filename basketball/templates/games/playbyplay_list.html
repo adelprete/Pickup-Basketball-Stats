@@ -1,7 +1,7 @@
 {% load basketball_tags %}
 {% load bootstrap3 %}
 {% if pbp_filter %}
-	{% for play in pbp_filter %}
+	{% for play in pbp_filter.queryset %}
 		{% if not request.user.is_anonymous %}
 			<a href="{% url 'playbyplay_detail' 1 play.game.id play.id %}" style="block:inline;color:red;">[x]</a>
 		{% endif %}

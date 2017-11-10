@@ -19,7 +19,7 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session, se
     init();
 
     function init() {
-      GroupService.getGroup(1).then(function(response) {
+      GroupService.getGroup($routeParams.groupId).then(function(response) {
         $scope.settings = response;
       }, function(response) {
         console.log(response);

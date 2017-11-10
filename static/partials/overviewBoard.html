@@ -1,2 +1,150 @@
-<h3 class="accent">Per 100 Possessions</h3>
-<small-leaderboard></small-leaderboard>
+<h3 class="accent">Per 100 Overview</h3>
+<div style="color: #777;font-size:17px;width:100%;">
+  Data from
+  <span ng-if="season.id !== 0">
+    {{ season.title }}
+  </span>
+  <span ng-if="season.id === 0">
+    all seasons
+  </span>
+   with a minimum of {{ filterForm.possessions_min }} total possessions
+</div>
+
+
+<div class="row">
+  <small-leaderboard
+    title="DREB"
+    stat="dreb"
+    color="#80CBC4"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.dreb }}"></small-leaderboard>
+  <small-leaderboard
+    title="OREB"
+    stat="oreb"
+    color="#80CBC4"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.oreb }}"></small-leaderboard>
+  <small-leaderboard
+    title="TOTAL_REB"
+    stat="total_rebounds"
+    color="#80CBC4"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.total_rebounds }}"></small-leaderboard>
+  <small-leaderboard
+    title="ASSISTS"
+    stat="asts"
+    color="#90CAF9"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.asts }}"></small-leaderboard>
+</div>
+
+<div class="row">
+  <small-leaderboard
+    title="POT.ASSISTS"
+    stat="pot_ast"
+    color="#90CAF9"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.pot_ast }}"></small-leaderboard>
+  <small-leaderboard
+    title="STEALS"
+    stat="stls"
+    color="#EF9A9A"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.stls }}"></small-leaderboard>
+  <small-leaderboard
+    title="TURNOVERS"
+    stat="to"
+    color="#A5D6A7"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.to }}"></small-leaderboard>
+  <small-leaderboard
+    title="POINTS"
+    stat="points"
+    color="#CE93D8"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.points }}"></small-leaderboard>
+</div>
+<div class="row">
+  <small-leaderboard
+    title="DEF.REB %"
+    stat="dreb_percent"
+    color="#EF9A9A"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.dreb_percent }}"></small-leaderboard>
+  <small-leaderboard
+    title="OFF.REB %"
+    stat="oreb_percent"
+    color="#EF9A9A"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.oreb_percent }}"></small-leaderboard>
+  <small-leaderboard
+    title="TOT.REB %"
+    stat="treb_percent"
+    color="#EF9A9A"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.treb_percent }}"></small-leaderboard>
+  <small-leaderboard
+    title="OFF.RATING %"
+    stat="off_rating"
+    color="#90CAF9"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.off_rating }}"></small-leaderboard>
+</div>
+<div class="row">
+  <small-leaderboard
+    title="FG%"
+    stat="fgm_percent"
+    color="#A5D6A7"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.fgm_percent }}"></small-leaderboard>
+  <small-leaderboard
+    title="3PT%"
+    stat="threepm_percent"
+    color="#A5D6A7"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.threepm_percent }}"></small-leaderboard>
+  <small-leaderboard
+    title="TS%"
+    stat="ts_percent"
+    color="#A5D6A7"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.ts_percent }}"></small-leaderboard>
+  <small-leaderboard
+    title="DEF.RATING %"
+    stat="def_rating"
+    color="#90CAF9"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.def_rating }}"></small-leaderboard>
+</div>
+<div class="row">
+  <small-leaderboard
+    title="BLKS"
+    stat="blk"
+    color="#FFCC80"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.blk }}"></small-leaderboard>
+  <small-leaderboard
+    title="TP%"
+    stat="tp_percent"
+    color="#FFCC80"
+    per-100-statlines=per100Statlines
+    filter-form=filterForm
+    tooltip-desc="{{ statDescriptions.tp_percent }}"></small-leaderboard>
+</div>

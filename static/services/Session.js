@@ -22,14 +22,19 @@ function Session($q, $http, UserService, GroupService) {
   ////////////////////
 
   function init() {
+    var deferred = $q.defer();
     getCurrentUser().then(function(result){
       user = result;
+      getCurrentGroup().then(function(group){
+        currentGroup = group;
+        deferred.resolve(user);
+      });
     }, function(error){
       console.log(error);
+      deferred.reject(error);
     });
-    getCurrentGroup().then(function(group){
-      currentGroup = group;
-    });
+
+    return deferred.promise;
   }
 
   function getCurrentUser() {
@@ -46,7 +51,7 @@ function Session($q, $http, UserService, GroupService) {
 
   function getCurrentGroup() {
     var deferred = $q.defer();
-    deferred.resolve({'test': 'test'});
+    deferred.resolve({'test': 'TODO later'});
     return deferred.promise;
   }
 

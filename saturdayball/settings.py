@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'easy_thumbnails',
     'rest_framework',
+    'django_filters'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -82,6 +83,12 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
 
 LOGIN_REDIRECT_URL = '/'
 
