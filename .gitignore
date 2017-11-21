@@ -1,4 +1,6 @@
 private.py
+.idea
+node_modules
 *.pyc
 media/player_images/**
 basketball/__pycache__/**

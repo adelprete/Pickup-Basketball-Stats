@@ -20,7 +20,7 @@ function GameService($q, $http) {
 
   function getGamePlays(gameid) {
     var deferred = $q.defer();
-    $http.get(`/api/plays/?gameid=${gameid}`).then(function(response, status, config, headers){
+    $http.get('/api/plays/?gameid=' + gameid).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -31,7 +31,7 @@ function GameService($q, $http) {
 
   function getGame(gameid) {
     var deferred = $q.defer();
-    $http.get(`/api/games/${gameid}/`).then(function(response, status, config, headers){
+    $http.get('/api/games/' + gameid + '/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -42,7 +42,7 @@ function GameService($q, $http) {
 
   function calculateStatlines(gameid) {
     var deferred = $q.defer();
-    $http.get(`/api/games/${gameid}/calculate-statlines`).then(function(response, status, config, headers){
+    $http.get('/api/games/' + gameid + '/calculate-statlines').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -53,7 +53,7 @@ function GameService($q, $http) {
 
   function createPlay(data){
     var deferred = $q.defer();
-    $http.post(`/api/plays/`, data).then(function(response, status, config, headers){
+    $http.post('/api/plays/', data).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -64,7 +64,7 @@ function GameService($q, $http) {
 
   function updatePlay(play) {
     var deferred = $q.defer();
-    $http.post(`/api/plays/${play.id}/`, play).then(function(response, status, config, headers){
+    $http.post('/api/plays/' + play.id + '/', play).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -75,7 +75,7 @@ function GameService($q, $http) {
 
   function getPlay(playid) {
     var deferred = $q.defer();
-    $http.get(`/api/plays/${playid}/`).then(function(response, status, config, headers){
+    $http.get('/api/plays/' + playid + '/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -86,7 +86,7 @@ function GameService($q, $http) {
 
   function deletePlay(playid) {
     var deferred = $q.defer();
-    $http.delete(`/api/plays/${playid}/`).then(function(response, status, config, headers){
+    $http.delete('/api/plays/' + playid + '/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);

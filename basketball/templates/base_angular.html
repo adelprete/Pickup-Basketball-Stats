@@ -18,41 +18,12 @@
 	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
 	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
   <script type="text/javascript" src="{% static 'bower_components/lodash/lodash.js'%}"></script>
-  <script type="text/javascript"src="{% static 'bower_components/angular/angular.js'%}"></script>
-  <script type="text/javascript"src="{% static 'bower_components/angular-route/angular-route.js'%}"></script>
-  <script type="text/javascript"src="{% static 'bower_components/angular-animate/angular-animate.js'%}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/angular/angular.js'%}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/angular-route/angular-route.js'%}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/angular-animate/angular-animate.js'%}"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
-  <script type="text/javascript"src="{% static 'bower_components/angular-youtube-mb/src/angular-youtube-embed.js'%}"></script>
-  <script type="text/javascript" src="{% static 'modules/saturdayball.js' %}"></script>
-  <script type="text/javascript" src="{% static 'config/router.js' %}"></script>
-  <script type="text/javascript" src="{% static 'config/routeResolver.js' %}"></script>
-  <script type="text/javascript" src="{% static 'config/rootScope.js' %}"></script>
-  <script type="text/javascript" src="{% static 'config/constants.js' %}"></script>
-
-  <!-- Controllers -->
-  <script type="text/javascript" src="{% static 'controllers/AddPlaysController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/GroupSettingsController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/CreateGroupController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/RegisterController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/NavigationController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/LeaderboardController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/TotalsLeaderboardController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/AdvTotalsBoardController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/Per100BoardController.js' %}"></script>
-  <script type="text/javascript" src="{% static 'controllers/AdvPer100BoardController.js' %}"></script>
-
-  <!-- Services -->
-  <script type="text/javascript" src="{% static 'services/UserService.js' %}"></script>
-  <script type="text/javascript" src="{% static 'services/Session.js' %}"></script>
-  <script type="text/javascript" src="{% static 'services/GameService.js' %}"></script>
-  <script type="text/javascript" src="{% static 'services/GroupService.js' %}"></script>
-  <script type="text/javascript" src="{% static 'services/StatlineService.js' %}"></script>
-  <script type="text/javascript" src="{% static 'services/PlayerService.js' %}"></script>
-  <script type="text/javascript" src="{% static 'services/Per100Service.js' %}"></script>
-
-  <!-- Directives -->
-  <script type="text/javascript" src="{% static 'directives/smallLeaderboard.js' %}"></script>
-  <script type="text/javascript" src="{% static 'directives/NgConfirmClick.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/angular-youtube-mb/src/angular-youtube-embed.js'%}"></script>
+  <script type="text/javascript" src="{% static 'build/app.min.js' %}"></script>
   <base href="/">
   </head>
 
@@ -62,7 +33,6 @@
 <div ng-controller="NavigationController">
   <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
     <div class="container">
-      <!-- Brand and toggle get grouped for better mobile display -->
 
       <div class="navbar-header">
   		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -85,7 +55,7 @@
   		  </ul>
         {% verbatim %}
         <ul class="nav navbar-nav navbar-right">
-  				<li ng-if="!user.username"><a target="_self" href="/login">Login</a></li>
+  				<li ng-if="!user.username"><a target="_self" href="accounts/login">Login</a></li>
   				<li ng-if="!user.username"><a href="/register">Signup</a></li>
 
   			  <li ng-if="user.username"><a target="_self" href="/logout">Log Out</a></li>

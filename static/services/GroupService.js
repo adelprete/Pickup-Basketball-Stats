@@ -2,6 +2,8 @@
 
 angular.module('saturdayBall').factory('GroupService', GroupService);
 
+GroupService.$inject = ['$q', '$http'];
+
 function GroupService($q, $http){
   var service = {
       getGroup: getGroup,
@@ -16,7 +18,7 @@ function GroupService($q, $http){
 
   function getGroup(groupid) {
     var deferred = $q.defer();
-    $http.get(`/api/groups/${groupid}/`).then(function(response, status, config, headers){
+    $http.get('/api/groups/' + groupid + '/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -26,7 +28,7 @@ function GroupService($q, $http){
 
   function updateGroup(data) {
     var deferred = $q.defer();
-    $http.put(`/api/groups/${data.id}/`, data).then(function(response, status, config, headers){
+    $http.put('/api/groups/' + data.id + '/', data).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -36,7 +38,7 @@ function GroupService($q, $http){
 
   function createGroup(data) {
     var deferred = $q.defer();
-    $http.post(`/api/groups/`, data).then(function(response, status, config, headers){
+    $http.post('/api/groups/', data).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -46,7 +48,7 @@ function GroupService($q, $http){
 
   function isGroupAdmin(groupid) {
     var deferred = $q.defer();
-    $http.get(`/api/groups/${groupid}/verify-group-admin/`).then(function(response, status, config, headers){
+    $http.get('/api/groups/' + groupid + '/verify-group-admin/').then(function(response, status, config, headers){
       deferred.resolve(response.data.message);
     }, function(response){
       deferred.reject(response);
@@ -56,7 +58,7 @@ function GroupService($q, $http){
 
   function getGroupSeasons(groupId) {
     var deferred = $q.defer();
-    $http.get(`/api/group/${groupId}/seasons/`).then(function(response, status, config, headers){
+    $http.get('/api/group/' + groupId + '/seasons/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);

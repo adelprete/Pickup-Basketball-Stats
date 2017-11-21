@@ -28,7 +28,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
         $scope.game = response;
         var player_objs = $scope.game.team1.concat($scope.game.team2);
         angular.forEach(player_objs, function(value, key) {
-          this.push({'code':value.id, 'name': `${value.first_name} ${value.last_name}`});
+          this.push({'code':value.id, 'name': value.first_name + ' ' + value.last_name});
         }, $scope.playOptions.PLAYERS);
         getPlays();
       });
@@ -68,7 +68,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
           else {
             score_to_add = (play.primary_play == 'fgm') ? 1 : 2;
           }
-          if (_.find($scope.game.team1, player => play.primary_player.id === player.id)) {
+          if (_.find($scope.game.team1, function(player) {return play.primary_player.id === player.id;})) {
             $scope.team1_score += score_to_add;
           } else {
             $scope.team2_score += score_to_add;
@@ -151,8 +151,8 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     $scope.$on('youtube.player.playing', function ($event, player) {
       // If specifiedTime, convert to seconds and seek the player to it.
       if ($scope.specifiedTime) {
-        let split_time = $scope.specifiedTime.split(':');
-        let seconds = parseInt(split_time[0]) * 3600;
+        var split_time = $scope.specifiedTime.split(':');
+        var seconds = parseInt(split_time[0]) * 3600;
         seconds += parseInt(split_time[1]) * 60;
         seconds += parseInt(split_time[2]);
         player.seekTo(seconds);
@@ -166,7 +166,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
       window.location = String(window.location).replace(/\#.*$/, "") + "#playeranchor";
     }
 
-    $scope.grabTime = function(offset=null) {
+    $scope.grabTime = function(offset) {
       var formattedTime, seconds
       if (offset) {
         seconds = $scope.player.getCurrentTime() - offset

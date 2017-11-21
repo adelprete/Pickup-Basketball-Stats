@@ -14,7 +14,7 @@ function StatlineService($q, $http) {
 
   function getDailyStatlines(query) {
     var deferred = $q.defer();
-    $http.get(`/api/daily-statlines/${query}`).then(function(response){
+    $http.get('/api/daily-statlines/' + query).then(function(response){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -28,7 +28,7 @@ function StatlineService($q, $http) {
       query = "";
     }
     var deferred = $q.defer();
-    $http.get(`/api/season-statlines/${query}`).then(function(response){
+    $http.get('/api/season-statlines/' + query).then(function(response){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);

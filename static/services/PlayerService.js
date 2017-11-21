@@ -13,7 +13,7 @@ function PlayerService($q, $http) {
 
   function getPlayers(groupId) {
     var deferred = $q.defer();
-    $http.get(`/api/players/${groupId}`).then(function(response){
+    $http.get('/api/players/' + groupId).then(function(response){
       deferred.resolve(response.data);
     }, function(response) {
       deferred.reject(response);

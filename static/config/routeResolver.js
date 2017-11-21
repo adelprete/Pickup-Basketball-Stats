@@ -17,9 +17,6 @@ function routeResolver(Session, $route, $q) {
   }
 
   return function() {
-
-
-
     var deferred = $q.defer();
     initSession(deferred);
     return deferred.promise;

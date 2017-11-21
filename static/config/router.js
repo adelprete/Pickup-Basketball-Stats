@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('saturdayBall').config(function($locationProvider, $routeProvider) {
+angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   var routeResolver = {
     preLoad: function (routeResolver){
       return routeResolver()
@@ -42,7 +42,7 @@ angular.module('saturdayBall').config(function($locationProvider, $routeProvider
       });
 
     $locationProvider.html5Mode(true);
-});
+}]);
 
 angular.module('saturdayBall').config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';

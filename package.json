@@ -1,0 +1,26 @@
+{
+  "name": "saturdayball",
+  "version": "1.0.0",
+  "description": "A site used to track basketball statistics for local Saturday pickup games.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adelprete/Pickup-Basketball-Stats.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adelprete/Pickup-Basketball-Stats/issues"
+  },
+  "homepage": "https://github.com/adelprete/Pickup-Basketball-Stats#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-uglify": "^3.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-targethtml": "^0.2.6"
+  }
+}
