@@ -13,7 +13,7 @@ def deploy():
     with cd('/home/live/Pickup-Basketball-Stats'):
         run('git pull')
         with virtualenv('/home/live/bballenv/'):
-            run('pip install -R requirements.txt')
+            run('pip install -r requirements.txt')
             run('./manage.py migrate')
             restart()
 
