@@ -13,8 +13,12 @@ def deploy():
     with cd('/home/live/Pickup-Basketball-Stats'):
         run('git pull')
         with virtualenv('/home/live/bballenv/'):
+            run('pip install -R requirements.txt')
             run('./manage.py migrate')
-            run('supervisorctl restart saturdayballsite')
+            restart()
+
+def restart():
+    run('supervisorctl restart saturdayballsite')
 
 def refreshdb():
     """Copy the db tables from live to dev"""
