@@ -337,9 +337,10 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
 from basketball.serializers import (
     PlayCreateUpdateSerializer, PlayRetrieveListSerializer,
-    DailyStatlineSerializer, GameSerializer, PlayerSerializer, SeasonStatlineSerializer
+    DailyStatlineSerializer, GameSerializer, GameSnippetSerializer, PlayerSerializer, SeasonStatlineSerializer
 )
 from basketball import filters
 from rest_framework import viewsets
@@ -347,6 +348,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django_filters import rest_framework as drf_filters
 import django_filters
+
+@api_view()
+def games_pager(request, group_id):
+    import pdb;pdb.set_trace()
+    return Response({"message": "Hello, world!"})
 
 class GameViewSet(viewsets.ModelViewSet):
     queryset = bmodels.Game.objects.all()
@@ -356,6 +362,38 @@ class GameViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         game = get_object_or_404(bmodels.Game, pk=pk)
         serializer = GameSerializer(game)
+        return Response(serializer.data)
+
+    def list(self, request, group_id):
+        if "currentPage" in request.GET:
+            if 'true' == request.GET['published']:
+                published = True
+            else:
+                published = False
+            games = bmodels.Game.objects.filter(group__id=group_id, published=published).order_by('-date')
+            grouped_games = [{k: list(g)} for k, g in itertools.groupby(games, lambda game: game.date)]
+
+            pager = Paginator(grouped_games, request.GET['numPerPage'])
+            page_games = pager.page(request.GET['currentPage']).object_list
+
+            # Serialize games for each date
+            serialized_page = []
+            for dates_games in page_games:
+                date = list(dates_games.keys())[0]
+                serialized_page.append({
+                    "date": date.strftime("%b-%d-%Y"),
+                    "games": GameSnippetSerializer(sorted(dates_games[date], key=lambda game: game.title), many=True).data
+                })
+
+            results = {
+                "items": serialized_page,
+                "totalItems": len(grouped_games),
+                "currentPage": request.GET['currentPage']
+            }
+            return Response(results)
+
+
+        serializer = GameSnippetSerializer(games, many=True)
         return Response(serializer.data)
 
 class PlayerViewSet(viewsets.ModelViewSet):

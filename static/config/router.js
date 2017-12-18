@@ -7,6 +7,12 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
     }
   };
     $routeProvider
+      .when("/group/:groupId/games/", {
+        templateUrl: "static/views/games.html",
+        controller: 'GamesController',
+        resolve: routeResolver,
+        activetab: 'games'
+      })
       .when("/group/:groupId/games/:gameid/add-plays/", {
         templateUrl: "static/views/add_plays.html",
         controller: 'AddPlaysController',

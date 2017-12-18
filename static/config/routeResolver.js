@@ -1,6 +1,6 @@
-'use strict';
+angular.module('saturdayBall')
 
-angular.module('saturdayBall').factory('routeResolver', routeResolver);
+.factory('routeResolver', routeResolver);
 
 routeResolver.$inject = ['Session', '$route', '$q'];
 

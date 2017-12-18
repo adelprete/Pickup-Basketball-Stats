@@ -1,0 +1,56 @@
+<div class="col-xs-12 col-sm-5 col-md-3 panel panel-default" style="padding-top:5px;">
+	<div style="float:right; width: 50%; display: inline-block; overflow:hidden;">
+		<table class="game-nibblet" style="margin: 0px auto;">
+			<tr>
+				<td class="game-title" colspan=2>
+					<a target="_self" ng-href="/group/{{groupId}}/games/{{game.id}}/box-score/">
+						<u>{{ game.title }}</u>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td class="team-name">Good Guys:</td>
+				<td class="team-score">{{ game.team1_score }}</td>
+			</tr>
+			<tr>
+				<td class="team-name">Bad Guys:</td>
+				<td class="team-score">{{ game.team2_score }}</td>
+			</tr>
+		</table>
+	</div>
+	<div style="width:50%; display: inline-block;">
+		<table ng-if="game.top_player" style="margin: 5px auto 0px auto;">
+			<tr>
+				<td rowspan=3 style="padding-right:15px;">
+						<img ng-if="!!game.top_player.image_src" ng-src="{{ game.top_player.image_src }}" class="img-responsive img-rounded" style="margin: 0px auto; height: 45px; width: 45px;">
+						<img ng-if="!!!game.top_player.image_src" ng-src="/media/signup_male.png" class="img-responsive img-rounded" style="margin: 0px auto; height: 45px; width: 45px;">
+						<center>{{ game.top_player.first_name| limitTo : 8 }}</center>
+				</td>
+				<td>Pts - {{ game.top_statline.points }}</td>
+			</tr>
+			<tr>
+				<td>Reb - {{ game.top_statline.total_rebounds }}</td>
+			</tr>
+			<tr>
+				<td>Ast - {{ game.top_statline.asts }}</td>
+			</tr>
+		</table>
+
+    <table ng-if="!game.top_player" style="margin: 5px auto 0px auto;">
+			<tr>
+				<td rowspan=3 style="padding-right:15px;">
+          <img ng-if="!game.top_player" src="/media/signup_male.png" class="img-responsive img-rounded" style="margin:0px auto; height: 45px; width: 45px;">
+					<center>Unknown</center>
+				</td>
+				<td>Pts - </td>
+			</tr>
+			<tr>
+				<td>Reb - </td>
+			</tr>
+			<tr>
+				<td>Ast - </td>
+			</tr>
+		</table>
+	</div>
+
+</div>

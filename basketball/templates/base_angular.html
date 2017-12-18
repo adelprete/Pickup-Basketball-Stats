@@ -13,7 +13,8 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
 	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}" type="text/css">
-	<link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'bower_components/angular-bootstrap/ui-bootstrap-csp.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
 	<script type="text/javascript" src="{% static 'js/jquery-1.11.3.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
 	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
@@ -21,9 +22,11 @@
   <script type="text/javascript" src="{% static 'bower_components/angular/angular.js'%}"></script>
   <script type="text/javascript" src="{% static 'bower_components/angular-route/angular-route.js'%}"></script>
   <script type="text/javascript" src="{% static 'bower_components/angular-animate/angular-animate.js'%}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/angular-bootstrap/ui-bootstrap.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/angular-bootstrap/ui-bootstrap-tpls.js' %}"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
   <script type="text/javascript" src="{% static 'bower_components/angular-youtube-mb/src/angular-youtube-embed.js'%}"></script>
-  <script type="text/javascript" src="{% static 'build/app.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'build/app.concat.js' %}"></script>
   <base href="/">
   </head>
 
@@ -48,7 +51,7 @@
   		  <ul class="nav navbar-nav">
   			<li><a target="_self" href="{% url 'grouproot' 1 %}">Home <span class="sr-only">(current)</span></a></li>
   			<li><a target="_self" href="{% url 'players_home' 1 %}">Players</a></li>
-  			<li ng-class="{active: $route.current.activetab == 'games'}"><a target="_self" href="{% url 'games_home' 1 %}">Games</a></li>
+  			<li ng-class="{active: $route.current.activetab == 'games'}"><a href="/group/1/games/">Games</a></li>
   			<li ng-class="{active: $route.current.activetab == 'leaderboard'}"><a href="/group/1/leaderboard">Leaderboard</a></li>
   			<li><a target="_self" href="{% url 'records_home' 1 %}">Records</a></li>
         <li ng-if="isGroupAdmin.length" ng-class="{active: $route.current.activetab == 'settings'}"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
@@ -57,9 +60,9 @@
         <ul class="nav navbar-nav navbar-right">
   				<li ng-if="!user.username"><a target="_self" href="accounts/login">Login</a></li>
   				<li ng-if="!user.username"><a href="/register">Signup</a></li>
-
-  			  <li ng-if="user.username"><a target="_self" href="/logout">Log Out</a></li>
+t
           <li ng-if="user.username == 'master'" id="admin_link"><a target="_self" href="/admin">Admin</a></li>
+          <li ng-if="user.username"><a class="glyphicon glyphicon-bell" aria-hidden="true"></a></li>
           <li ng-if="user.username" class="dropdown">
             <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -69,6 +72,7 @@
               <li ng-repeat="group in user.member_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
               <li role="separator" class="divider"></li>
               <li><a href="#">Create a new Group</a></li>
+              <li><a target="_self" href="/logout">Log Out</a></li>
             </ul>
           </li>
     		</ul>

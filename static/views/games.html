@@ -1,0 +1,79 @@
+<div class="page-header">
+  <h3 class="accent">
+    Games
+  </h3>
+</div>
+
+<div ng-if="filteredDailyGames.length">
+
+
+  <div class="row">
+    <div class="col-md-1 col-xs-12 btn btn-primary" style="margin: 10px 5px;">New Game</div>
+    <div ng-bind="filterMessage" ng-click="changeFiltering()" class="col-md-2 col-md-offset-1 col-xs-12 btn btn-primary" style="margin: 10px 5px;"></div>
+    <div class="col-md-3 col-md-offset-5 col-xs-12">
+      <ul uib-pagination
+          style="margin: 10px auto;"
+          total-items="pagination.totalItems"
+          ng-model="pagination.currentPage"
+          max-size="pagination.maxSize"
+          items-per-page="pagination.numPerPage"
+          class="pagination-sm"
+          boundary-links="true"
+          num-pages="pagination.numPages"
+          ng-change="pageChanged()"
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          first-text="&laquo;"
+          last-text="&raquo;"></ul>
+      </div>
+  </div>
+
+  <div ng-if="!loadingPage">
+    <div ng-repeat="day in filteredDailyGames">
+      <div class="row">
+        <h3 style="display:inline;">{{ day.date }}</h3>
+        <a
+          target="_self"
+          ng-href="/group/{{groupId}}/games/recap/{{day.games[0].id}}/"
+          type="button"
+          class="btn btn-primary btn-xs"
+          style="margin-bottom:10px;margin-left:5px;">
+          Recap
+        </a>
+      </div>
+      <div class="row">
+        <span ng-repeat="game in day.games">
+          <game-snippet group-Id={{groupId}} game=game></game-snippet>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div ng-if="loadingPage" class="col-md-12" style="min-height: 1000px">
+    <img ng-src="/media/basketball.gif" style="height: 20px; width:20px; position: absolute; left: -10px; top: 6px;" />
+    <span style="font-size: 24px;">loading...</span>
+  </div>
+
+  <div ng-if="!loadingPage" class="row">
+    <div class="col-md-3 col-md-offset-9">
+      <ul uib-pagination
+          total-items="pagination.totalItems"
+          ng-model="pagination.currentPage"
+          max-size="pagination.maxSize"
+          items-per-page="pagination.numPerPage"
+          class="pagination-sm"
+          boundary-links="true"
+          num-pages="pagination.numPages"
+          ng-change="pageChanged()"
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          first-text="&laquo;"
+          last-text="&raquo;"></ul>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div ng-if="!filteredDailyGames.length" class="col-md-12">
+      <img ng-src="/media/basketball.gif" style="height: 20px; width:20px; position: absolute; left: 12px; top: 6px;" />
+      <span style="font-size: 24px;margin-left:25px;">loading...</span>
+  </div>
+</div>

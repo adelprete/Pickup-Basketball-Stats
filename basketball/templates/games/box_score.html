@@ -14,7 +14,7 @@
 {% block content %}
 	{% load basketball_tags %}
   <div class="breadcrumbs"> /
-    <a href="{% url 'games_home' 1 %}" style="cursor: pointer;">Games</a> /
+    <a href="/group/{{group.id}}/" style="cursor: pointer;">Games</a> /
     <a href="{% url 'recap' 1 game.pk %}" style="cursor: pointer;">Day recap</a> /
     {{ game.date }} - {{ game.get_full_title }}
   </div>

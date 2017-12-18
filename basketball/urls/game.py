@@ -10,7 +10,7 @@ plays_list = PlaysViewSet.as_view({
 
 
 urlpatterns = [
-	url(r'^$',                 gviews.games_home,       name='games_home'),
+	#url(r'^$',                 gviews.games_home,       name='games_home'),
 	url(r'^(?P<id>\d+)/box-score/$',        gviews.box_score,            name='box_score'),
 	url(r'^(?P<game_id>\d+)/play/(?P<play_id>[0-9]+)/$',  login_required(gviews.PlayByPlayFormView.as_view()), name='playbyplay_detail'),
 	url(r'^new-game/$',        gviews.game_basics,            name='create_game'),

@@ -19,7 +19,7 @@ class ChoicesField(serializers.Field):
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
-        fields = ('id', 'first_name', 'last_name')
+        fields = ('id', 'first_name', 'last_name', 'image_src')
 
 
 class PlayCreateUpdateSerializer(serializers.ModelSerializer):
@@ -69,6 +69,35 @@ class GameSerializer(serializers.ModelSerializer):
         model = Game
         depth = 1
         fields = '__all__'
+
+class StatlineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StatLine
+        depth = 1
+        fields = '__all__'
+
+class TopStatlineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StatLine
+        depth = 1
+        fields = ['id', 'points', 'asts', 'total_rebounds', 'player']
+
+class GameSnippetSerializer(serializers.ModelSerializer):
+    top_player = PlayerSerializer(read_only=True)
+    top_statline = serializers.SerializerMethodField()
+    #team2 = PlayerSerializer(many=True, read_only=True)
+
+    def get_top_statline(self, obj):
+
+        if obj.top_player:
+            statline = StatLine.objects.get(player__id=obj.top_player.id, game__id=obj.id)
+            return TopStatlineSerializer(statline).data
+        else:
+            return None
+
+    class Meta:
+        model = Game
+        fields = ['id', 'date', 'title', 'top_player', 'top_statline', 'team1_score', 'team2_score']
 
 class SeasonSerializer(serializers.ModelSerializer):
     class Meta:

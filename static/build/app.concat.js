@@ -3,6 +3,7 @@
 angular.module('saturdayBall', [
   'ngRoute',
   'ngAnimate',
+  'ui.bootstrap',
   'youtube-embed'
 ]);
 ;'use strict';
@@ -123,6 +124,12 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
     }
   };
     $routeProvider
+      .when("/group/:groupId/games/", {
+        templateUrl: "static/views/games.html",
+        controller: 'GamesController',
+        resolve: routeResolver,
+        activetab: 'games'
+      })
       .when("/group/:groupId/games/:gameid/add-plays/", {
         templateUrl: "static/views/add_plays.html",
         controller: 'AddPlaysController',
@@ -169,9 +176,9 @@ var checkRouting= function ($q, $rootScope, $location) {
   var path = $location.path();
   window.location = $location.host()+ ':8000' + path;
 }
-;'use strict';
+;angular.module('saturdayBall')
 
-angular.module('saturdayBall').factory('routeResolver', routeResolver);
+.factory('routeResolver', routeResolver);
 
 routeResolver.$inject = ['Session', '$route', '$q'];
 
@@ -193,6 +200,27 @@ function routeResolver(Session, $route, $q) {
     return deferred.promise;
   };
 };
+;'use strict';
+
+angular
+    .module('saturdayBall')
+    .directive('gameSnippet', gameSnippet);
+
+function gameSnippet() {
+    var directive = {
+        link: link,
+        scope: {
+          groupId: '@',
+          game: '='
+        },
+        templateUrl: 'static/partials/directives/gameSnippet.html',
+        restrict: 'EA'
+    };
+    return directive;
+
+    function link(scope, element, attrs) {
+    }
+  }
 ;'use strict';
 
 angular.module('saturdayBall').directive('ngConfirmClick', [
@@ -303,6 +331,7 @@ function GameService($q, $http) {
   var service = {
     getGamePlays: getGamePlays,
     getGame: getGame,
+    getGames: getGames,
     calculateStatlines: calculateStatlines,
     createPlay: createPlay,
     updatePlay: updatePlay,
@@ -326,7 +355,18 @@ function GameService($q, $http) {
 
   function getGame(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/games/' + gameid + '/').then(function(response, status, config, headers){
+    $http.get('/api/games/gameid/' + gameid + '/').then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
+
+  function getGames(groupId, params) {
+    var deferred = $q.defer();
+    $http.get('/api/games/groupid/' + groupId, {params: params}).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -1128,6 +1168,79 @@ function CreateGroupController($scope, $location, GroupService, Session, setting
 
 angular.module('saturdayBall')
 
+.controller('GamesController', GamesController);
+
+GamesController.$inject = ['$scope', '$routeParams', 'GameService']
+
+function GamesController($scope, $routeParams, GameService) {
+
+  $scope.changeFiltering = changeFiltering;
+  $scope.games = [];
+  $scope.groupId = $routeParams.groupId;
+  $scope.filteredDailyGames = [];
+  $scope.loadingPage = true;
+  $scope.filterMessage = "View Unpublished Games"
+  $scope.publishedGames = true;
+
+
+  $scope.pageChanged = pageChanged;
+  $scope.pagination = {
+    published: true,
+    currentPage: 1,
+    numPerPage: 12,
+    maxSize: 5
+  }
+
+  ///////////////////
+
+  init();
+
+  function init() {
+    pageChanged()
+  }
+
+  function changeFiltering() {
+    if ($scope.pagination.published) {
+      $scope.pagination.published = false;
+      $scope.pagination.currentPage = 1;
+      $scope.filterMessage = "View Published Games"
+    }
+    else {
+      $scope.pagination.published = true;
+      $scope.pagination.currentPage = 1;
+      $scope.filterMessage = "View Unpublished Games"
+    }
+
+    getGamesPage();
+  }
+
+  function getGamesPage(published) {
+    $scope.loadingPage = true;
+    GameService.getGames($routeParams.groupId, $scope.pagination).then(function(results){
+      $scope.pagination.currentPage = results.currentPage;
+      $scope.pagination.totalItems = results.totalItems;
+      $scope.filteredDailyGames = results.items;
+
+      $scope.loadingPage = false;
+
+    }, function(err){
+      console.log(err)
+    });
+  }
+
+  function pageChanged() {
+
+    if ($scope.pagination.currentPage) {
+      getGamesPage();
+    }
+    console.log('Page changed to: ' + $scope.pagination.currentPage);
+  };
+
+}
+;'use strict';
+
+angular.module('saturdayBall')
+
 .controller('GroupSettingsController', GroupSettingsController);
 
 GroupSettingsController.$inject = ['$scope', '$routeParams', 'GroupService', 'Session', 'settingOptions']
@@ -1145,6 +1258,7 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session, se
     init();
 
     function init() {
+      console.log('stuff2');
       GroupService.getGroup($routeParams.groupId).then(function(response) {
         $scope.settings = response;
       }, function(response) {

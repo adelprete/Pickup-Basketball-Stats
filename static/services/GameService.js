@@ -8,6 +8,7 @@ function GameService($q, $http) {
   var service = {
     getGamePlays: getGamePlays,
     getGame: getGame,
+    getGames: getGames,
     calculateStatlines: calculateStatlines,
     createPlay: createPlay,
     updatePlay: updatePlay,
@@ -31,7 +32,18 @@ function GameService($q, $http) {
 
   function getGame(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/games/' + gameid + '/').then(function(response, status, config, headers){
+    $http.get('/api/games/gameid/' + gameid + '/').then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
+
+  function getGames(groupId, params) {
+    var deferred = $q.defer();
+    $http.get('/api/games/groupid/' + groupId, {params: params}).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
