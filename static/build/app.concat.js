@@ -109,6 +109,13 @@ angular
       'pgm_percent': 'Putback Shooting %.  Percentage of putbacks that go in.',
       'pga_percent': 'Putback Field Goal %.  Percentage of shots that are considered putbacks.',
       'pf': 'Personal Fouls (Amount of fouls that you have been called on)'
+    })
+    .constant('inviteOptions', {
+      PERMISSIONS: [
+        {'code': 'read', 'name': 'READ'},
+        {'code': 'edit', 'name': 'EDIT'},
+        {'code': 'admin', 'name': 'ADMIN'}
+      ]
     });
 ;'use strict';
 
@@ -158,6 +165,9 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         resolve: routeResolver,
         activetab: 'leaderboard'
       })
+      .when("/accept-invite/:inviteCode/", {
+        resolve: routeResolver,
+      })
       .otherwise({
         resolve: {
           factory: checkRouting
@@ -180,19 +190,41 @@ var checkRouting= function ($q, $rootScope, $location) {
 
 .factory('routeResolver', routeResolver);
 
-routeResolver.$inject = ['Session', '$route', '$q'];
+routeResolver.$inject = ['Session', '$route', '$q', '$location', 'GroupService'];
 
-function routeResolver(Session, $route, $q) {
+function routeResolver(Session, $route, $q, $location, GroupService) {
 
   function initSession(deferred) {
     if (!Session.available()) {
       Session.init().then(function(response){
+        if (response.username === "" && $route.current.originalPath === '/accept-invite/:inviteCode/') {
+          redirectTo('/accounts/login/?next=' + $location.path(), deferred, response);
+          return;
+        }
+        else if (response.username !== "" && $route.current.originalPath === '/accept-invite/:inviteCode/'){
+          var data = {
+            code: $route.current.params.inviteCode,
+            active: false
+          }
+          GroupService.updateMemberInvite(data).then(function(response) {
+            redirectTo('/group/' + response.group + '/', deferred, response)
+          }, function(response) {
+
+          })
+        }
         deferred.resolve(response);
       });
     } else {
       deferred.resolve(Session);
     }
   }
+
+  function redirectTo(path, deferred, session) {
+        window.location.replace(path);
+        $location.path(path).search(params);
+        $location.replace();
+        deferred.resolve(session);
+    };
 
   return function() {
     var deferred = $q.defer();
@@ -442,7 +474,13 @@ function GroupService($q, $http){
       getGroupSeasons: getGroupSeasons,
       updateGroup: updateGroup,
       createGroup: createGroup,
-      isGroupAdmin: isGroupAdmin
+      isGroupAdmin: isGroupAdmin,
+      getMemberPermissions: getMemberPermissions,
+      updateMemberPermission: updateMemberPermission,
+      deleteMemberPermission: deleteMemberPermission,
+      createMemberInvite: createMemberInvite,
+      updateMemberInvite: updateMemberInvite
+
   };
   return service;
 
@@ -491,6 +529,57 @@ function GroupService($q, $http){
   function getGroupSeasons(groupId) {
     var deferred = $q.defer();
     $http.get('/api/group/' + groupId + '/seasons/').then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  }
+
+  function getMemberPermissions(params) {
+    var deferred = $q.defer();
+    $http.get('/api/member-permissions/', {params: params}).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
+
+  function updateMemberPermission(data) {
+    var deferred = $q.defer();
+    $http.put('/api/member-permissions/' + data.id, data).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  }
+
+  function deleteMemberPermission(data) {
+    var deferred = $q.defer();
+    $http.delete('/api/member-permissions/' + data.id, data).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  }
+
+  function createMemberInvite(data) {
+    var deferred = $q.defer();
+    $http.post('/api/member-invite/', data).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  }
+
+  function updateMemberInvite(data) {
+    var deferred = $q.defer();
+    $http.put('/api/member-invite/' + data.code, data).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -663,6 +752,43 @@ function PlayerService($q, $http) {
 };
 ;'use strict';
 
+angular.module('saturdayBall').factory('RoleHelper', RoleHelper);
+
+RoleHelper.$inject = ['$q', '$http'];
+
+function RoleHelper($q, $http) {
+  var service = {
+    canEdit: canEdit,
+    isAdmin: isAdmin
+  };
+  return service;
+
+  /////////////////////
+
+  function canEdit(user, groupId) {
+    if (user) {
+      for (var permission in user.group_permissions) {
+        if (permission[0] === parseInt(groupId, 10) && permission[2] === 'edit') {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function isAdmin(user, groupId) {
+    if (user) {
+      for (var i = 0; i < user.group_permissions.length; i++) {
+        if (user.group_permissions[i][0] === parseInt(groupId, 10) && user.group_permissions[i][2] === "admin") {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+}
+;'use strict';
+
 angular.module('saturdayBall').factory('Session', Session);
 
 Session.$inject = ['$q', '$http', 'UserService', 'GroupService']
@@ -676,22 +802,17 @@ function Session($q, $http, UserService, GroupService) {
       currentUser: function() {
         return user
       },
-      currentGroup: function() {
-        return currentGroup
-      }
     }
   return service;
 
   ////////////////////
 
   function init() {
+    console.log("Init called");
     var deferred = $q.defer();
     getCurrentUser().then(function(result){
       user = result;
-      getCurrentGroup().then(function(group){
-        currentGroup = group;
-        deferred.resolve(user);
-      });
+      deferred.resolve(user);
     }, function(error){
       console.log(error);
       deferred.reject(error);
@@ -712,14 +833,8 @@ function Session($q, $http, UserService, GroupService) {
     return deferred.promise;
   }
 
-  function getCurrentGroup() {
-    var deferred = $q.defer();
-    deferred.resolve({'test': 'TODO later'});
-    return deferred.promise;
-  }
-
   function available() {
-    return !!user && !!currentGroup;
+    return !!user;
   }
 
 };
@@ -1170,20 +1285,20 @@ angular.module('saturdayBall')
 
 .controller('GamesController', GamesController);
 
-GamesController.$inject = ['$scope', '$routeParams', 'GameService']
+GamesController.$inject = ['$scope', '$routeParams', 'GameService', 'Session', 'RoleHelper']
 
-function GamesController($scope, $routeParams, GameService) {
+function GamesController($scope, $routeParams, GameService, Session, RoleHelper) {
 
   $scope.changeFiltering = changeFiltering;
+  $scope.filteredDailyGames = [];
+  $scope.filterMessage = "View Unpublished Games"
   $scope.games = [];
   $scope.groupId = $routeParams.groupId;
-  $scope.filteredDailyGames = [];
   $scope.loadingPage = true;
-  $scope.filterMessage = "View Unpublished Games"
-  $scope.publishedGames = true;
-
-
   $scope.pageChanged = pageChanged;
+  $scope.publishedGames = true;
+  $scope.user = Session.currentUser();
+
   $scope.pagination = {
     published: true,
     currentPage: 1,
@@ -1229,11 +1344,9 @@ function GamesController($scope, $routeParams, GameService) {
   }
 
   function pageChanged() {
-
     if ($scope.pagination.currentPage) {
       getGamesPage();
     }
-    console.log('Page changed to: ' + $scope.pagination.currentPage);
   };
 
 }
@@ -1243,14 +1356,25 @@ angular.module('saturdayBall')
 
 .controller('GroupSettingsController', GroupSettingsController);
 
-GroupSettingsController.$inject = ['$scope', '$routeParams', 'GroupService', 'Session', 'settingOptions']
+GroupSettingsController.$inject = ['$scope', '$routeParams', 'GroupService', 'Session',
+    'settingOptions', '$uibModal', '$document', 'inviteOptions']
 
-function GroupSettingsController($scope, $routeParams, GroupService, Session, settingOptions) {
+function GroupSettingsController($scope, $routeParams, GroupService, Session,
+    settingOptions, $uibModal, $document, inviteOptions) {
 
+    $scope.close = close;
+    $scope.editingMembers = {};
+    $scope.invite = {};
+    $scope.inviteOptions = inviteOptions;
     $scope.message = "";
+    $scope.modify = modify;
+    $scope.open = open;
+    $scope.remove = remove;
     $scope.save = save;
+    $scope.send = send;
     $scope.settings = undefined;
     $scope.settingOptions = settingOptions;
+    $scope.update = update;
     $scope.user = Session.currentUser();
 
     ///////////////////////
@@ -1258,13 +1382,46 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session, se
     init();
 
     function init() {
-      console.log('stuff2');
       GroupService.getGroup($routeParams.groupId).then(function(response) {
         $scope.settings = response;
       }, function(response) {
-        console.log(response);
+        console.log('Getting group failed: ', response);
+      });
+
+      getMembers();
+    }
+
+    function getMembers() {
+      GroupService.getMemberPermissions({'group': $routeParams.groupId}).then(function(response) {
+        $scope.members = response;
+        for (var i = 0, length = $scope.members.length; i < length; i++) {
+          $scope.editingMembers[$scope.members[i].id] = false;
+        }
+      }, function(response) {
+        console.log("Getting members failed: ", response)
       });
     }
+
+    function modify(member){
+        $scope.editingMembers[member.id] = true;
+    };
+
+
+    function update(member){
+        $scope.editingMembers[member.id] = false;
+        GroupService.updateMemberPermission(member).then(function(response){
+        }, function(response){
+          console.log(response);
+        })
+    };
+
+    function remove(member){
+        GroupService.deleteMemberPermission(member).then(function(response){
+          getMembers();
+        }, function(response){
+          console.log(response);
+        })
+    };
 
     function save() {
       $scope.message = "Saving..."
@@ -1273,6 +1430,41 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session, se
       }, function(response){
         $scope.message = "Failed to save"
       });
+    }
+
+    var modalInstance;
+    function open(size, parentSelector) {
+      var parentElem = parentSelector ?
+        angular.element($document[0].querySelector('.modal-demo ' + parentSelector)) : undefined;
+      modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'static/partials/inviteModal.html',
+        size: size,
+        scope: $scope
+      });
+
+      modalInstance.result.then(function (selectedItem) {
+        $scope.selected = selectedItem;
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+    }
+
+    function close() {
+      modalInstance.close();
+    }
+
+    function send(form) {
+      if (form.$valid) {
+        $scope.inviteMessage = "Sending Invite...";
+        $scope.invite.group = $routeParams.groupId;
+        GroupService.createMemberInvite($scope.invite).then(function(response) {
+          $scope.inviteMessage = "Invite Sent";
+        }, function(response){
+          $scope.inviteMessage = response.data.message;
+        })
+      }
+      console.log("ok clicked");
     }
 };
 ;'use strict';
@@ -1392,21 +1584,19 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
 
 .controller('NavigationController', NavigationController);
 
-NavigationController.$inject = ['$scope', '$route', 'Session']
+NavigationController.$inject = ['$scope', '$route', 'Session', 'RoleHelper']
 
-function NavigationController($scope, $route, Session) {
+function NavigationController($scope, $route, Session, RoleHelper) {
 
+    $scope.groupId = "";
+    $scope.RoleHelper = RoleHelper;
     $scope.user = {};
-    $scope.isGroupAdmin = [];
     $scope.$route = $route;
 
     ////////////////
 
     $scope.$watch('session.currentUser().username', function () {
         $scope.user = Session.currentUser();
-        if ($scope.user) {
-          $scope.isGroupAdmin = $scope.user.admin_groups.filter(function(group) { return group[0] == $route.current.params.groupId});
-        }
     });
 
 };
@@ -1484,9 +1674,10 @@ angular.module('saturdayBall')
 
 .controller('RegisterController', RegisterController);
 
-RegisterController.$inject = ['$scope', 'UserService']
+RegisterController.$inject = ['$scope', '$route', 'UserService', '$timeout']
 
-function RegisterController($scope, UserService){
+function RegisterController($scope, $route, UserService, $timeout){
+  
     $scope.betacode;
     $scope.message = "";
     $scope.submit = submit;
@@ -1497,7 +1688,16 @@ function RegisterController($scope, UserService){
 
     function submit() {
       UserService.createUser($scope.userModel).then(function (response){
-        console.log(response);
+        $scope.message = "Success! Redirecting to log in."
+        $timeout(function() {
+          if ('next' in $route.current.params) {
+            window.location.replace('/accounts/login/?next=' + $route.current.params['next']);
+          }
+          else {
+            window.location.replace('/accounts/login/');
+          }
+        }, 3000);
+
       }, function(response){
         $scope.message = response.data;
       })

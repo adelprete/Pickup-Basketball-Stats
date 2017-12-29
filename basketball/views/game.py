@@ -419,6 +419,7 @@ class SeasonStatlineViewSet(viewsets.ModelViewSet):
     filter_backend = (drf_filters.DjangoFilterBackend,)
     filter_class = filters.SeasonStatlineFilter
 
+
 @api_view(['GET'])
 def calculate_statlines(request, pk):
     game = bmodels.Game.objects.get(pk=pk)

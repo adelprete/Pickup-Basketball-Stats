@@ -1,7 +1,13 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from basketball.models import GAME_TYPES, SCORE_TYPES
 
+PERMISSION_TYPES = [
+    ('read', 'Read'),
+    ('edit', 'Edit'),
+    ('admin', 'Admin')
+]
 
 class Group(models.Model):
     name = models.CharField(max_length=60, blank=False)
@@ -21,6 +27,18 @@ class Group(models.Model):
         return "%s" % (self.name)
 
 
+class MemberPermission(models.Model):
+    group = models.ForeignKey(Group, blank=True, null=True)
+    user = models.ForeignKey('auth.User', related_name='group_permissions')
+    permission = models.CharField(max_length=30, choices=PERMISSION_TYPES, null=True)
+
+    def __str__(self):
+        return "%s - %s" % (self.group.name, self.user.username)
+
+    class Meta():
+        unique_together = ("group", "user")
+
+
 class MemberProfile(models.Model):
     """Member profile is used to store some more information about the users"""
     user = models.OneToOneField('auth.User',editable=False)
@@ -34,3 +52,14 @@ class MemberProfile(models.Model):
 
     #def save(self,*args,**kwargs):
     #    super(MemberProfile,self).save(*args,**kwargs)
+
+class MemberInvite(models.Model):
+    group = models.ForeignKey('base.Group')
+    email = models.EmailField()
+    permission = models.CharField(max_length=30, choices=PERMISSION_TYPES, null=True)
+    code = models.UUIDField(default=uuid.uuid4, editable=False)
+    active = models.BooleanField(default=True)
+    creation_date = models.DateField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return "%s - %s" % (self.group.name, self.email)

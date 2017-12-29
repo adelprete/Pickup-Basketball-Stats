@@ -41,6 +41,9 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         resolve: routeResolver,
         activetab: 'leaderboard'
       })
+      .when("/accept-invite/:inviteCode/", {
+        resolve: routeResolver,
+      })
       .otherwise({
         resolve: {
           factory: checkRouting

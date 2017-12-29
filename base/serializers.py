@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User # If used custom user model
-from base.models import Group
+from base.models import Group, MemberPermission, MemberInvite, MemberProfile
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -9,7 +9,10 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         user = User.objects.create(
-            username=validated_data['username']
+            username=validated_data['username'],
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -18,10 +21,25 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
+        exclude = ('password',)
 
 class GroupSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Group
+        fields = '__all__'
+
+class MemberPermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 1
+        model = MemberPermission
+        fields = '__all__'
+
+class MemberInviteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MemberInvite
+        fields = '__all__'
+
+class MemberProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MemberProfile
         fields = '__all__'

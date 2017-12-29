@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 from base.views import (
     CreateUserView, GroupViewSet, current_user, verify_group_admin,
-    group_seasons
+    group_seasons, MemberPermissionViewSet, MemberInviteViewSet
 )
 from basketball.views import game as gviews
 from django.contrib.auth.decorators import login_required
@@ -39,8 +39,9 @@ player_list = PlayerViewSet.as_view({
 router = routers.SimpleRouter()
 router.register(r'groups', GroupViewSet)
 router.register(r'daily-statlines', DailyStatlineViewSet)
-router.register(r'season-statlines',SeasonStatlineViewSet)
-
+router.register(r'member-permissions', MemberPermissionViewSet)
+router.register(r'member-invite', MemberInviteViewSet)
+router.register(r'season-statlines', SeasonStatlineViewSet)
 
 urlpatterns = [
 	#API
@@ -53,7 +54,7 @@ urlpatterns = [
     url(r'^games/(?P<pk>[0-9]+)/$',  game_details),
     url(r'^games/(?P<pk>[0-9]+)/calculate-statlines/$',  calculate_statlines),
     url(r'^group/(?P<pk>[0-9]+)/verify-admin/$',  verify_group_admin),
-    url(r'^group/(?P<pk>[0-9]+)/seasons/$',  group_seasons),
+    url(r'^group/(?P<pk>[0-9]+)/seasons/$',  group_seasons)
 ]
 
 urlpatterns += router.urls

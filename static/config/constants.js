@@ -101,4 +101,11 @@ angular
       'pgm_percent': 'Putback Shooting %.  Percentage of putbacks that go in.',
       'pga_percent': 'Putback Field Goal %.  Percentage of shots that are considered putbacks.',
       'pf': 'Personal Fouls (Amount of fouls that you have been called on)'
+    })
+    .constant('inviteOptions', {
+      PERMISSIONS: [
+        {'code': 'read', 'name': 'READ'},
+        {'code': 'edit', 'name': 'EDIT'},
+        {'code': 'admin', 'name': 'ADMIN'}
+      ]
     });

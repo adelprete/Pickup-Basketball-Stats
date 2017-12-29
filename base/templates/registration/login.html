@@ -13,5 +13,5 @@
 	<input class="btn btn-primary" type="submit" value="Log in">
 </form>
 <p>Forgot your password? <a href="{% url 'auth_password_reset' %}">Reset it</a>.</p>
-<p>Not a member? <a href="{% url 'registration_register' %}">Register</a>.</p>
+<p>Not a member? <a href="/register/?next={{ request.GET.next }}">Sign Up</a>.</p>
 {% endblock %}

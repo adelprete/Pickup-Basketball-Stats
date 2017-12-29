@@ -4,9 +4,10 @@ angular.module('saturdayBall')
 
 .controller('RegisterController', RegisterController);
 
-RegisterController.$inject = ['$scope', 'UserService']
+RegisterController.$inject = ['$scope', '$route', 'UserService', '$timeout']
 
-function RegisterController($scope, UserService){
+function RegisterController($scope, $route, UserService, $timeout){
+  
     $scope.betacode;
     $scope.message = "";
     $scope.submit = submit;
@@ -17,7 +18,16 @@ function RegisterController($scope, UserService){
 
     function submit() {
       UserService.createUser($scope.userModel).then(function (response){
-        console.log(response);
+        $scope.message = "Success! Redirecting to log in."
+        $timeout(function() {
+          if ('next' in $route.current.params) {
+            window.location.replace('/accounts/login/?next=' + $route.current.params['next']);
+          }
+          else {
+            window.location.replace('/accounts/login/');
+          }
+        }, 3000);
+
       }, function(response){
         $scope.message = response.data;
       })

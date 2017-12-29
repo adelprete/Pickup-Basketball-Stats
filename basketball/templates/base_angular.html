@@ -54,7 +54,7 @@
   			<li ng-class="{active: $route.current.activetab == 'games'}"><a href="/group/1/games/">Games</a></li>
   			<li ng-class="{active: $route.current.activetab == 'leaderboard'}"><a href="/group/1/leaderboard">Leaderboard</a></li>
   			<li><a target="_self" href="{% url 'records_home' 1 %}">Records</a></li>
-        <li ng-if="isGroupAdmin.length" ng-class="{active: $route.current.activetab == 'settings'}"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
+        <li ng-if="RoleHelper.isAdmin(user, $route.current.params.groupId)" ng-class="{active: $route.current.activetab == 'settings'}"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
   		  </ul>
         {% verbatim %}
         <ul class="nav navbar-nav navbar-right">
@@ -68,8 +68,12 @@ t
             <ul class="dropdown-menu">
               <li style="padding: 3px 20px;">Your Groups</li>
               <li role="separator" class="divider"></li>
-              <li ng-repeat="group in user.admin_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
-              <li ng-repeat="group in user.member_groups"><a target="_self" href="/group/{{group[0]}}/" style="text-decoration: underline;">{{ group[1] }}</a></li>
+              <li ng-repeat="permission in user.group_permissions">
+                <a target="_self" href="/group/{{permission[0]}}/" style="text-decoration: underline;">
+                  {{ permission[1] }}
+                </a>
+
+              </li>
               <li role="separator" class="divider"></li>
               <li><a href="#">Create a new Group</a></li>
               <li><a target="_self" href="/logout">Log Out</a></li>

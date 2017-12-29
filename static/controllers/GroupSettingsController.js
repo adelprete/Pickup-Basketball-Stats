@@ -4,14 +4,25 @@ angular.module('saturdayBall')
 
 .controller('GroupSettingsController', GroupSettingsController);
 
-GroupSettingsController.$inject = ['$scope', '$routeParams', 'GroupService', 'Session', 'settingOptions']
+GroupSettingsController.$inject = ['$scope', '$routeParams', 'GroupService', 'Session',
+    'settingOptions', '$uibModal', '$document', 'inviteOptions']
 
-function GroupSettingsController($scope, $routeParams, GroupService, Session, settingOptions) {
+function GroupSettingsController($scope, $routeParams, GroupService, Session,
+    settingOptions, $uibModal, $document, inviteOptions) {
 
+    $scope.close = close;
+    $scope.editingMembers = {};
+    $scope.invite = {};
+    $scope.inviteOptions = inviteOptions;
     $scope.message = "";
+    $scope.modify = modify;
+    $scope.open = open;
+    $scope.remove = remove;
     $scope.save = save;
+    $scope.send = send;
     $scope.settings = undefined;
     $scope.settingOptions = settingOptions;
+    $scope.update = update;
     $scope.user = Session.currentUser();
 
     ///////////////////////
@@ -19,13 +30,46 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session, se
     init();
 
     function init() {
-      console.log('stuff2');
       GroupService.getGroup($routeParams.groupId).then(function(response) {
         $scope.settings = response;
       }, function(response) {
-        console.log(response);
+        console.log('Getting group failed: ', response);
+      });
+
+      getMembers();
+    }
+
+    function getMembers() {
+      GroupService.getMemberPermissions({'group': $routeParams.groupId}).then(function(response) {
+        $scope.members = response;
+        for (var i = 0, length = $scope.members.length; i < length; i++) {
+          $scope.editingMembers[$scope.members[i].id] = false;
+        }
+      }, function(response) {
+        console.log("Getting members failed: ", response)
       });
     }
+
+    function modify(member){
+        $scope.editingMembers[member.id] = true;
+    };
+
+
+    function update(member){
+        $scope.editingMembers[member.id] = false;
+        GroupService.updateMemberPermission(member).then(function(response){
+        }, function(response){
+          console.log(response);
+        })
+    };
+
+    function remove(member){
+        GroupService.deleteMemberPermission(member).then(function(response){
+          getMembers();
+        }, function(response){
+          console.log(response);
+        })
+    };
 
     function save() {
       $scope.message = "Saving..."
@@ -34,5 +78,40 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session, se
       }, function(response){
         $scope.message = "Failed to save"
       });
+    }
+
+    var modalInstance;
+    function open(size, parentSelector) {
+      var parentElem = parentSelector ?
+        angular.element($document[0].querySelector('.modal-demo ' + parentSelector)) : undefined;
+      modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'static/partials/inviteModal.html',
+        size: size,
+        scope: $scope
+      });
+
+      modalInstance.result.then(function (selectedItem) {
+        $scope.selected = selectedItem;
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+    }
+
+    function close() {
+      modalInstance.close();
+    }
+
+    function send(form) {
+      if (form.$valid) {
+        $scope.inviteMessage = "Sending Invite...";
+        $scope.invite.group = $routeParams.groupId;
+        GroupService.createMemberInvite($scope.invite).then(function(response) {
+          $scope.inviteMessage = "Invite Sent";
+        }, function(response){
+          $scope.inviteMessage = response.data.message;
+        })
+      }
+      console.log("ok clicked");
     }
 };

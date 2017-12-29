@@ -4,20 +4,20 @@ angular.module('saturdayBall')
 
 .controller('GamesController', GamesController);
 
-GamesController.$inject = ['$scope', '$routeParams', 'GameService']
+GamesController.$inject = ['$scope', '$routeParams', 'GameService', 'Session', 'RoleHelper']
 
-function GamesController($scope, $routeParams, GameService) {
+function GamesController($scope, $routeParams, GameService, Session, RoleHelper) {
 
   $scope.changeFiltering = changeFiltering;
+  $scope.filteredDailyGames = [];
+  $scope.filterMessage = "View Unpublished Games"
   $scope.games = [];
   $scope.groupId = $routeParams.groupId;
-  $scope.filteredDailyGames = [];
   $scope.loadingPage = true;
-  $scope.filterMessage = "View Unpublished Games"
-  $scope.publishedGames = true;
-
-
   $scope.pageChanged = pageChanged;
+  $scope.publishedGames = true;
+  $scope.user = Session.currentUser();
+
   $scope.pagination = {
     published: true,
     currentPage: 1,
@@ -63,11 +63,9 @@ function GamesController($scope, $routeParams, GameService) {
   }
 
   function pageChanged() {
-
     if ($scope.pagination.currentPage) {
       getGamesPage();
     }
-    console.log('Page changed to: ' + $scope.pagination.currentPage);
   };
 
 }

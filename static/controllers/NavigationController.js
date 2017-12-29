@@ -2,21 +2,19 @@ angular.module('saturdayBall')
 
 .controller('NavigationController', NavigationController);
 
-NavigationController.$inject = ['$scope', '$route', 'Session']
+NavigationController.$inject = ['$scope', '$route', 'Session', 'RoleHelper']
 
-function NavigationController($scope, $route, Session) {
+function NavigationController($scope, $route, Session, RoleHelper) {
 
+    $scope.groupId = "";
+    $scope.RoleHelper = RoleHelper;
     $scope.user = {};
-    $scope.isGroupAdmin = [];
     $scope.$route = $route;
 
     ////////////////
 
     $scope.$watch('session.currentUser().username', function () {
         $scope.user = Session.currentUser();
-        if ($scope.user) {
-          $scope.isGroupAdmin = $scope.user.admin_groups.filter(function(group) { return group[0] == $route.current.params.groupId});
-        }
     });
 
 };
