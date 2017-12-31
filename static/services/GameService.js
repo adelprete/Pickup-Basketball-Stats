@@ -2,7 +2,9 @@
 
 angular.module('saturdayBall').factory('GameService', GameService);
 
-function GameService($q, $http) {
+GameService.$inject = ['$q', '$http', '$routeParams'];
+
+function GameService($q, $http, $routeParams) {
   var apiurl;
   var myData;
   var service = {
@@ -32,7 +34,7 @@ function GameService($q, $http) {
 
   function getGame(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/games/gameid/' + gameid + '/').then(function(response, status, config, headers){
+    $http.get('/api/games/' + gameid + '/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);

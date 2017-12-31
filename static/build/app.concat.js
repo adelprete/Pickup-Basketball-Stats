@@ -4,7 +4,8 @@ angular.module('saturdayBall', [
   'ngRoute',
   'ngAnimate',
   'ui.bootstrap',
-  'youtube-embed'
+  'youtube-embed',
+  'ngImgCrop'
 ]);
 ;'use strict';
 
@@ -357,7 +358,9 @@ function smallLeaderboard(PlayerService, $q, Per100Service) {
 
 angular.module('saturdayBall').factory('GameService', GameService);
 
-function GameService($q, $http) {
+GameService.$inject = ['$q', '$http', '$routeParams'];
+
+function GameService($q, $http, $routeParams) {
   var apiurl;
   var myData;
   var service = {
@@ -387,7 +390,7 @@ function GameService($q, $http) {
 
   function getGame(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/games/gameid/' + gameid + '/').then(function(response, status, config, headers){
+    $http.get('/api/games/' + gameid + '/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -940,7 +943,6 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     init();
 
     function init() {
-
       GameService.getGame($routeParams['gameid']).then(function (response){
         $scope.game = response;
         var player_objs = $scope.game.team1.concat($scope.game.team2);
