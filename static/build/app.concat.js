@@ -4,8 +4,7 @@ angular.module('saturdayBall', [
   'ngRoute',
   'ngAnimate',
   'ui.bootstrap',
-  'youtube-embed',
-  'ngImgCrop'
+  'youtube-embed'
 ]);
 ;'use strict';
 
