@@ -86,27 +86,27 @@
           <form>
             <div class="form-group">
               <label>Primary Play</label>
-              <select ng-options="o.code as o.name for o in playOptions.PRIMARY_PLAY" ng-model="primary_play" class="form-control">
+              <select ng-options="o.code as o.name for o in playOptions.PRIMARY_PLAY" ng-model="filters.primary_play" class="form-control">
                   <option value="">-------</option>
               </select>
               <label>Primary Player</label>
-              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="primary_player_id" class="form-control">
+              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.primary_player.id" class="form-control">
                   <option value="">-------</option>
               </select>
               <label>Secondary Play</label>
-              <select ng-options="o.code as o.name for o in playOptions.SECONDARY_PLAY" ng-model="secondary_play" class="form-control">
+              <select ng-options="o.code as o.name for o in playOptions.SECONDARY_PLAY" ng-model="filters.secondary_play" class="form-control">
                   <option value="">-------</option>
               </select>
               <label>Secondary Player</label>
-              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="secondary_player_id" class="form-control">
+              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.secondary_player.id" class="form-control">
                   <option value="">-------</option>
               </select>
               <label>Assist Play</label>
-              <select ng-options="o.code as o.name for o in playOptions.ASSIST_PLAY" ng-model="assist" class="form-control">
+              <select ng-options="o.code as o.name for o in playOptions.ASSIST_PLAY" ng-model="filters.assist" class="form-control">
                   <option value="">-------</option>
               </select>
               <label>Assist Player</label>
-              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="assist_player_id" class="form-control">
+              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.assist_player.id" class="form-control">
                   <option value="">-------</option>
               </select>
             </div>
@@ -117,13 +117,7 @@
         <div id="play_title">
           <h4 class="accent">Plays</h4>
           <div style="overflow-y: scroll; overflow-x: hidden; height: 450px;">
-            <div ng-repeat="play in plays | filter:{
-                primary_play: primary_play || undefined,
-                secondary_play: secondary_play || undefined,
-                assist: assist || undefined,
-                primary_player: {id: primary_player_id || undefined},
-                secondary_player: {id: secondary_player_id || undefined},
-                assist_player: {id: assist_player_id || undefined}}">
+            <div ng-repeat="play in plays | filter:search:true">
               <div class="row">
                 <span class="col-sm-3">
                   <a ng-click="seekToTime(play.time)">

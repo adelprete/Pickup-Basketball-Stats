@@ -13,12 +13,21 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
   $scope.adv_box_scores = null;
   $scope.box_scores = null;
   $scope.exportPlays = exportPlays;
+  $scope.filters = {
+    primary_play: '',
+    secondary_play: '',
+    assist: '',
+    primary_player: {'id': ''},
+    secondary_player: {'id': ''},
+    assist_player: {'id': ''}
+  };
   $scope.filterFormVisible = false;
   $scope.game = null;
   $scope.groupId = $routeParams['groupId'];
   $scope.playOptions = playOptions;
   $scope.player = null;
   $scope.PLAYERS = [];
+  $scope.search = {};
   $scope.seekToTime = seekToTime;
   $scope.showHideFilter = showHideFilter;
   $scope.user = Session.currentUser();
@@ -38,7 +47,7 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
     })
 
     GameService.getGamePlays($routeParams['gameId']).then(function(response) {
-      $scope.plays = _.orderBy(response, ['time'], ['asc']);;
+      $scope.plays = _.orderBy(response, ['time'], ['asc']);
     })
 
     GameService.getGame($routeParams['gameId']).then(function(response) {
@@ -85,11 +94,31 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
     $scope.filterFormVisible = $scope.filterFormVisible ? false : true;
   };
 
-  function exportPlays() {
-    $http({method: 'GET', url: '/api/games/656/export'}).then(function(response) {
-      console.log('response: ', response);
-    }, function(response) {
-      console.log('failed: ', response)
-    })
-  }
+  $scope.$watch('filters', function () {
+    $scope.search = {};
+    if($scope.filters.primary_play) {
+      $scope.search.primary_play = $scope.filters.primary_play;
+    }
+    if($scope.filters.secondary_play) {
+      $scope.search.secondary_play = $scope.filters.secondary_play;
+    }
+    if($scope.filters.assist_play) {
+      $scope.search.assist_play = $scope.filters.assist_play;
+    }
+    if($scope.filters.primary_player.id) {
+      $scope.search.primary_player = {
+        id: $scope.filters.primary_player.id
+      }
+    }
+    if($scope.filters.secondary_player.id) {
+      $scope.search.secondary_player = {
+        id: $scope.filters.secondary_player.id
+      }
+    }
+    if($scope.filters.assist_player.id) {
+      $scope.search.assist_player = {
+        id: $scope.filters.assist_player.id
+      }
+    }
+  }, true);
 };
