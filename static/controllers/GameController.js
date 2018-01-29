@@ -5,14 +5,13 @@ angular.module('saturdayBall')
 .controller('GameController', GameController);
 
 GameController.$inject = ['$scope', '$routeParams', 'GameService', 'Session', 'RoleHelper',
-  '$anchorScroll', 'playOptions', '$http']
+  '$anchorScroll', 'playOptions']
 
 function GameController($scope, $routeParams, GameService, Session, RoleHelper,
-  $anchorScroll, playOptions, $http) {
+  $anchorScroll, playOptions) {
 
   $scope.adv_box_scores = null;
   $scope.box_scores = null;
-  $scope.exportPlays = exportPlays;
   $scope.filters = {
     primary_play: '',
     secondary_play: '',
