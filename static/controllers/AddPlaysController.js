@@ -2,9 +2,11 @@
 
 angular.module('saturdayBall').controller('AddPlaysController', AddPlaysController);
 
-AddPlaysController.$inject = ['$scope', '$routeParams', 'GameService', 'Session', 'playOptions'];
+AddPlaysController.$inject = ['$scope', '$routeParams', 'GameService', 'Session', 'playOptions',
+  '$anchorScroll'];
 
-function AddPlaysController($scope, $routeParams, GameService, Session, playOptions) {
+function AddPlaysController($scope, $routeParams, GameService, Session, playOptions,
+  $anchorScroll) {
 
     $scope.createPlay = createPlay;
     $scope.deletePlay = deletePlay;
@@ -13,6 +15,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     $scope.game = {};
     $scope.play = {};
     $scope.playOptions = playOptions;
+    $scope.seekToTime = seekToTime;
     $scope.team1_score = 0;
     $scope.team2_score = 0;
     $scope.updatePlay = updatePlay;
@@ -126,7 +129,6 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
           calculateScore();
           GameService.calculateStatlines($scope.game.id).then(function(response){});
           $scope.playform.$setUntouched();
-          //setTimeout(jumpToPlayerAnchor, 2000);
         }, function(response){
           $scope.message = "Failed to add play";
         });
@@ -147,23 +149,6 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     $scope.$on('youtube.player.ready', function($event, player) {
       $scope.player = player;
     })
-    $scope.$on('youtube.player.playing', function ($event, player) {
-      // If specifiedTime, convert to seconds and seek the player to it.
-      if ($scope.specifiedTime) {
-        var split_time = $scope.specifiedTime.split(':');
-        var seconds = parseInt(split_time[0]) * 3600;
-        seconds += parseInt(split_time[1]) * 60;
-        seconds += parseInt(split_time[2]);
-        player.seekTo(seconds);
-        jumpToPlayerAnchor();
-        player.playVideo();
-        $scope.specifiedTime = null;
-      }
-    });
-
-    var jumpToPlayerAnchor = function(){
-      window.location = String(window.location).replace(/\#.*$/, "") + "#playeranchor";
-    }
 
     $scope.grabTime = function(offset) {
       var formattedTime, seconds
@@ -195,5 +180,15 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
       $scope.editplay['description'] = "";
       $scope.editplay['top_play_players'] = [];
     }
+
+    function seekToTime(timestamp) {
+      var split_time = timestamp.split(':');
+      var seconds = parseInt(split_time[0]) * 3600;
+      seconds += parseInt(split_time[1]) * 60;
+      seconds += parseInt(split_time[2]);
+      $scope.player.playVideo();
+      $scope.player.seekTo(seconds);
+      $anchorScroll("playeranchor");
+    };
 
 };

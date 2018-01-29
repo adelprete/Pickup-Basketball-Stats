@@ -1,7 +1,7 @@
 <div class="breadcrumbs"> /
   <a target='_self' ng-href="group/1/games/">Games</a> /
   <a target='_self' ng-href="group/1/games/recap/{{ game.id }}">Day recap</a> /
-  <a target='_self' ng-href="group/1/games/{{ game.id }}/box-score/">{{ game.date }} - {{ game.title }}</a> /
+  <a target='_self' ng-href="group/1/games/{{ game.id }}/">{{ game.date | date:'MMM d, y'}} - {{ game.title }}</a> /
   Add Plays
 </div>
 
@@ -32,6 +32,13 @@
 
 <div ng-include src="'static/partials/play_form.html'"></div>
 
+<div class="row" ng-if="!plays">
+  <div ng-if="!plays" class="col-md-10 col-md-offset-1" style="min-height: 1000px">
+    <img ng-src="/media/basketball.gif" style="height: 20px; width:20px; position: absolute; left: -10px; top: 6px;" />
+    <span style="font-size: 24px;">Getting Plays...</span>
+  </div>
+</div>
+
 <div name="play" ng-repeat="play in plays" class="row play-item">
   <div class="col-md-10 col-md-offset-1" style="border-bottom: 1px solid black;">
     <div data-toggle="modal" data-target="#editPlayModal" ng-click="fillEditForm(play.id)" class="clickable" style="position: absolute; top: 2px; left: 0px; font-size:12px; padding: 0px; z-index: 2; color: red;">Edit</div>
@@ -39,7 +46,7 @@
     <button confirmed-click="delete(play.id)" ng-confirm-click="Delete the play?" style="position: absolute; top: 0px; left: 0px; color: white; background-color:red; border: 0px; z-index: 2;">X</button>
     -->
     <div class="col-md-3 col-xs-3">
-      <a href="#playeranchor" ng-click="$parent.specifiedTime = play.time; ytplayer.stopVideo(); ytplayer.playVideo();" style="cursor:pointer;">{{ play.time }}</a><br>
+      <a ng-click="seekToTime(play.time)" style="cursor:pointer;">{{ play.time }}</a><br>
       {{play.primary_play_display}}<br>
       {{play.primary_player.first_name }} {{play.primary_player.last_name }}
     </div>

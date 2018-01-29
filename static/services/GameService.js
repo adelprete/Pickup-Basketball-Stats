@@ -11,6 +11,8 @@ function GameService($q, $http, $routeParams) {
     getGamePlays: getGamePlays,
     getGame: getGame,
     getGames: getGames,
+    getGameBoxScore: getGameBoxScore,
+    getGameAdvBoxScore: getGameAdvBoxScore,
     calculateStatlines: calculateStatlines,
     createPlay: createPlay,
     updatePlay: updatePlay,
@@ -45,7 +47,29 @@ function GameService($q, $http, $routeParams) {
 
   function getGames(groupId, params) {
     var deferred = $q.defer();
-    $http.get('/api/games/groupid/' + groupId, {params: params}).then(function(response, status, config, headers){
+    $http.get('/api/games/groupid/' + groupId, {"params": params}).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
+
+  function getGameBoxScore(gameid) {
+    var deferred = $q.defer();
+    $http.get('/api/games/' + gameid + '/box-score').then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
+
+  function getGameAdvBoxScore(gameid) {
+    var deferred = $q.defer();
+    $http.get('/api/games/' + gameid + '/adv-box-score').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);

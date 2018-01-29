@@ -1,4 +1,5 @@
 import itertools
+import json
 import operator, datetime
 from collections import OrderedDict
 
@@ -13,6 +14,7 @@ from django.views.generic.edit import FormView
 from django.http import HttpResponse
 
 from base.models import Group
+from basketball.serializers import StatlineSerializer
 from basketball import models as bmodels
 from basketball import forms as bforms
 from basketball import helpers
@@ -244,9 +246,11 @@ def delete_play(request, pk):
     return redirect(play.game.get_absolute_url())
 
 import csv
-def export_plays(request, group_id, game_id):
+from rest_framework.decorators import api_view
+@api_view()
+def export_plays(request, pk):
     """Called when a play is deleted from a game's page."""
-    game = get_object_or_404(bmodels.Game, id=game_id)
+    game = get_object_or_404(bmodels.Game, id=pk)
     response = HttpResponse(content_type='text/csv')
     filename = "%s_%s" % (game.date.strftime('%m%d%Y'), game.title)
     response['Content-Disposition'] = 'attachment;filename=%s.csv' % (filename.replace(' ', ''))
@@ -334,7 +338,7 @@ class PlayByPlayFormView(FormView):
 
 # Angularjs view
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
@@ -345,32 +349,79 @@ from basketball.serializers import (
 from basketball import filters
 from rest_framework import viewsets
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, list_route
+from django.db.models import Sum
 from django_filters import rest_framework as drf_filters
 import django_filters
 
 @api_view()
-def games_pager(request, group_id):
-    import pdb;pdb.set_trace()
-    return Response({"message": "Hello, world!"})
+def game_box_score(request, pk):
+    game = bmodels.Game.objects.get(id=pk)
+
+    team_statlines = {
+        "team1_statlines": bmodels.StatLine.objects.filter(game=game, player__in=game.team1.all()).order_by('-points'),
+        "team2_statlines": bmodels.StatLine.objects.filter(game=game, player__in=game.team2.all()).order_by('-points')
+    }
+
+    data = {}
+    for key, statlines in team_statlines.items():
+        team_totals = {}
+        for play in bmodels.ALL_PLAY_TYPES:
+            if play[0] not in ['sub_out', 'sub_in', 'misc']:
+                x = statlines.all().aggregate(Sum(play[0]))
+                team_totals.update(x)
+        team_totals.update(statlines.aggregate(Sum('points'), Sum('total_rebounds')))
+        data[key] = {
+            'statlines': StatlineSerializer(statlines.exclude(player__first_name__contains='Team'), many=True).data,
+            'team': StatlineSerializer(statlines.get(player__first_name__contains='Team')).data,
+            'team_totals': team_totals
+        }
+
+    return Response(data)
+
+@api_view()
+def game_adv_box_score(request, pk):
+    game = bmodels.Game.objects.get(id=pk)
+
+    team_statlines = {
+        "team1_statlines": bmodels.StatLine.objects.filter(game=game, player__in=game.team1.all()).order_by('-points'),
+        "team2_statlines": bmodels.StatLine.objects.filter(game=game, player__in=game.team2.all()).order_by('-points')
+    }
+
+    data = {}
+    for key, statlines in team_statlines.items():
+        team_totals = {}
+        for stat in ['pga','pgm', 'fastbreak_points', 'ast_fgm', 'ast_fga',
+            'unast_fgm', 'unast_fga', 'ast_points', 'second_chance_points']:
+            x = statlines.all().aggregate(Sum(stat))
+            team_totals.update(x)
+
+        data[key] = {
+            'statlines': StatlineSerializer(statlines.exclude(player__first_name__contains='Team'), many=True).data,
+            'team': StatlineSerializer(statlines.get(player__first_name__contains='Team')).data,
+            'team_totals': team_totals,
+        }
+
+    return Response(data)
 
 class GameViewSet(viewsets.ModelViewSet):
     queryset = bmodels.Game.objects.all()
     serializer_class = GameSerializer
     filter_backend = (drf_filters.DjangoFilterBackend,)
+    filter_fields = ('date',)
 
     def retrieve(self, request, pk=None):
         game = get_object_or_404(bmodels.Game, pk=pk)
         serializer = GameSerializer(game)
         return Response(serializer.data)
 
-    def list(self, request, group_id):
+    def list(self, request, *args, **kwargs):
         if "currentPage" in request.GET:
             if 'true' == request.GET['published']:
                 published = True
             else:
                 published = False
-            games = bmodels.Game.objects.filter(group__id=group_id, published=published).order_by('-date')
+            games = bmodels.Game.objects.filter(group__id=kwargs['group_id'], published=published).order_by('-date')
             grouped_games = [{k: list(g)} for k, g in itertools.groupby(games, lambda game: game.date)]
 
             pager = Paginator(grouped_games, request.GET['numPerPage'])
@@ -392,9 +443,8 @@ class GameViewSet(viewsets.ModelViewSet):
             }
             return Response(results)
 
-
-        serializer = GameSnippetSerializer(games, many=True)
-        return Response(serializer.data)
+        response = super(GameViewSet, self).list(request, *args, **kwargs)
+        return response
 
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = bmodels.Player.objects.all()
@@ -432,7 +482,6 @@ def calculate_statlines(request, pk):
 
 class PlaysViewSet(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
-    permission_classes = (IsAuthenticated,)
     queryset = bmodels.PlayByPlay.objects.all()
     serializer_class = PlayCreateUpdateSerializer
 
@@ -440,6 +489,16 @@ class PlaysViewSet(viewsets.ModelViewSet):
         'retrieve': PlayRetrieveListSerializer,
         'list': PlayRetrieveListSerializer,
     }
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'list':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
         if hasattr(self, 'action_serializers'):
@@ -467,6 +526,10 @@ class PlaysViewSet(viewsets.ModelViewSet):
         response = super(PlaysViewSet, self).create(request, *args, **kwargs)
         serializer = PlayRetrieveListSerializer(bmodels.PlayByPlay.objects.get(id=response.data['id']))
         return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        response = super(PlaysViewSet, self).list(request, *args, **kwargs)
+        return response
     #def destroy(self, request, *args, **kwargs):
     #    super(PlaysViewSet, self).destroy(request, *args, **kwargs)
 

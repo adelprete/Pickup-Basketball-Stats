@@ -62,19 +62,25 @@ class PlayRetrieveListSerializer(PlayCreateUpdateSerializer):
     assist_player = PlayerSerializer()
 
 
-class GameSerializer(serializers.ModelSerializer):
-    #team1 = PlayerSerializer(many=True, read_only=True)
-    #team2 = PlayerSerializer(many=True, read_only=True)
-    class Meta:
-        model = Game
-        depth = 1
-        fields = '__all__'
-
 class StatlineSerializer(serializers.ModelSerializer):
     class Meta:
         model = StatLine
         depth = 1
         fields = '__all__'
+
+
+class GameSerializer(serializers.ModelSerializer):
+    #team1 = PlayerSerializer(many=True, read_only=True)
+    #team2 = PlayerSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Game
+        depth = 1
+        fields = ['id', 'group', 'date', 'title', 'exhibition', 'points_to_win', 'team1',
+        'team2', 'team1_score', 'team2_score', 'winning_players', 'youtube_id',
+        'game_type', 'score_type', 'top_player', 'published', 'putback_window',
+        'fastbreak_window', 'statline_set']
+
 
 class TopStatlineSerializer(serializers.ModelSerializer):
     class Meta:

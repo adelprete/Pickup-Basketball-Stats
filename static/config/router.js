@@ -13,6 +13,12 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         resolve: routeResolver,
         activetab: 'games'
       })
+      .when("/group/:groupId/games/:gameId/", {
+        templateUrl: "static/views/game.html",
+        controller: 'GameController',
+        resolve: routeResolver,
+        activetab: 'games'
+      })
       .when("/group/:groupId/games/:gameid/add-plays/", {
         templateUrl: "static/views/add_plays.html",
         controller: 'AddPlaysController',
