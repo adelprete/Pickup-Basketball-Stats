@@ -229,7 +229,6 @@ def ajax_add_play(request, group_id, pk):
 def ajax_filter_plays(request, group_id, pk):
     """Called when an some wants to filter the play by plays of a game"""
     game = get_object_or_404(bmodels.Game, pk=pk)
-    import pdb;pdb.set_trace()
     pbp_filter = bforms.PlayByPlayFilter(request.GET, queryset=bmodels.PlayByPlay.objects.filter(game=game).order_by('time'), game=game)
 
     return render(request, 'games/playbyplay_list.html', {'pbp_filter': pbp_filter})
@@ -527,9 +526,6 @@ class PlaysViewSet(viewsets.ModelViewSet):
         serializer = PlayRetrieveListSerializer(bmodels.PlayByPlay.objects.get(id=response.data['id']))
         return Response(serializer.data)
 
-    def list(self, request, *args, **kwargs):
-        response = super(PlaysViewSet, self).list(request, *args, **kwargs)
-        return response
     #def destroy(self, request, *args, **kwargs):
     #    super(PlaysViewSet, self).destroy(request, *args, **kwargs)
 

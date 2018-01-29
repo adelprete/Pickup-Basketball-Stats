@@ -32,7 +32,6 @@ class CreateUserView(CreateAPIView):
             return Response("Invalid Beta Code", 406)
         member_profile_data = request.data.pop('memberprofile', None)
         response = super(CreateUserView, self).post(request, *args, **kwargs)
-        import pdb;pdb.set_trace()
         member_profile_data['user'] = User.objects.get(id=response.data['id'])
         member_profie = MemberProfile.objects.create(**member_profile_data)
 
@@ -105,7 +104,6 @@ def current_user(request):
 
 @api_view(['POST'])
 def send_member_invite(request, pk):
-    import pdb;pdb.set_trace()
     return Response({'message': 'it worked'})
 
 @api_view(['GET'])

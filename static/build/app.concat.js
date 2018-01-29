@@ -1345,7 +1345,7 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
     })
 
     GameService.getGamePlays($routeParams['gameId']).then(function(response) {
-      $scope.plays = response;
+      $scope.plays = _.orderBy(response, ['time'], ['asc']);;
     })
 
     GameService.getGame($routeParams['gameId']).then(function(response) {
