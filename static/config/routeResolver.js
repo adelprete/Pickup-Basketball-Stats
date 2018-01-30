@@ -33,8 +33,8 @@ function routeResolver(Session, $route, $q, $location, GroupService) {
 
   function redirectTo(path, deferred, session) {
         window.location.replace(path);
-        $location.path(path).search(params);
-        $location.replace();
+        //$location.path(path).search(params);
+        //$location.replace();
         deferred.resolve(session);
     };
 

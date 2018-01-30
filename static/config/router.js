@@ -36,7 +36,7 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         controller: 'CreateGroupController',
         resolve: routeResolver
       })
-      .when("/register", {
+      .when("/register/", {
         templateUrl: 'static/views/register.html',
         controller: 'RegisterController',
         resolve: routeResolver

@@ -43,7 +43,10 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         request.data['admin'] = [request.user.id]
-        return super().create(request)
+        response = super().create(request)
+        group = Group.objects.get(id=response.data['id'])
+        MemberPermission.objects.create(group=group, user=request.user, permission='admin')
+        return response
 
 class MemberPermissionViewSet(viewsets.ModelViewSet):
     queryset = MemberPermission.objects.all()

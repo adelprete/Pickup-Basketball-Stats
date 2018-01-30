@@ -160,7 +160,7 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         controller: 'CreateGroupController',
         resolve: routeResolver
       })
-      .when("/register", {
+      .when("/register/", {
         templateUrl: 'static/views/register.html',
         controller: 'RegisterController',
         resolve: routeResolver
@@ -227,8 +227,8 @@ function routeResolver(Session, $route, $q, $location, GroupService) {
 
   function redirectTo(path, deferred, session) {
         window.location.replace(path);
-        $location.path(path).search(params);
-        $location.replace();
+        //$location.path(path).search(params);
+        //$location.replace();
         deferred.resolve(session);
     };
 
@@ -1298,8 +1298,7 @@ function CreateGroupController($scope, $location, GroupService, Session, setting
       $scope.message = "Saving..."
       GroupService.createGroup($scope.settings).then(function(response) {
         $scope.message = "Saved Successfully";
-        var path = $location.path('/group/' + response.id);
-        window.location = $location.host() + path;
+        window.location.replace('/group/' + response.id);
       }, function(response) {
         $scope.message = "Failed to save"
       });
@@ -1823,10 +1822,10 @@ angular.module('saturdayBall')
 
 .controller('RegisterController', RegisterController);
 
-RegisterController.$inject = ['$scope', '$route', 'UserService', '$timeout']
+RegisterController.$inject = ['$scope', '$route', 'UserService', '$timeout', '$location']
 
-function RegisterController($scope, $route, UserService, $timeout){
-  
+function RegisterController($scope, $route, UserService, $timeout, $location){
+
     $scope.betacode;
     $scope.message = "";
     $scope.submit = submit;

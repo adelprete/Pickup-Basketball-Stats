@@ -4,10 +4,10 @@ angular.module('saturdayBall')
 
 .controller('RegisterController', RegisterController);
 
-RegisterController.$inject = ['$scope', '$route', 'UserService', '$timeout']
+RegisterController.$inject = ['$scope', '$route', 'UserService', '$timeout', '$location']
 
-function RegisterController($scope, $route, UserService, $timeout){
-  
+function RegisterController($scope, $route, UserService, $timeout, $location){
+
     $scope.betacode;
     $scope.message = "";
     $scope.submit = submit;

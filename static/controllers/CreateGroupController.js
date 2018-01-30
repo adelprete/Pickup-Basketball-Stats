@@ -30,8 +30,7 @@ function CreateGroupController($scope, $location, GroupService, Session, setting
       $scope.message = "Saving..."
       GroupService.createGroup($scope.settings).then(function(response) {
         $scope.message = "Saved Successfully";
-        var path = $location.path('/group/' + response.id);
-        window.location = $location.host() + path;
+        window.location.replace('/group/' + response.id);
       }, function(response) {
         $scope.message = "Failed to save"
       });
