@@ -7,11 +7,10 @@
 	<div class="page-header">
 		<h3 class="accent">Players - {% if season %} {{ season }} {% else %} All {% endif %}</h3>
 	</div>
-
-	{% if not request.user.is_anonymous %}
+	{% if canEdit %}
 		<div class="row">
 			<div class="col-md-1">
-				<form action="{% url 'create_player' group_id=1 %}">
+				<form action="{% url 'create_player' group_id=group.id %}">
 					<input class="btn btn-primary btn-sm" type="submit" value="Create New Player">
 				</form>
 			</div>
@@ -50,7 +49,7 @@
 			</div>
 			<div class="col-sm-offset-1"></div>
 		{% empty %}
-			<div class="col-sm-6" style="font-size: 18px">No players have played in this season</div>
+			<div class="col-sm-12" style="font-size: 18px; margin-top:15px;">No players created yet</div>
 		{% endfor %}
 	</div>
 	<script type="text/javascript">

@@ -48,31 +48,43 @@
       </div>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-  		  <ul class="nav navbar-nav">
-  			<li><a target="_self" href="{% url 'grouproot' 1 %}">Home <span class="sr-only">(current)</span></a></li>
-  			<li><a target="_self" href="{% url 'players_home' 1 %}">Players</a></li>
-  			<li ng-class="{active: $route.current.activetab == 'games'}"><a href="/group/1/games/">Games</a></li>
-  			<li ng-class="{active: $route.current.activetab == 'leaderboard'}"><a href="/group/1/leaderboard">Leaderboard</a></li>
-  			<li><a target="_self" href="{% url 'records_home' 1 %}">Records</a></li>
-        <li ng-if="RoleHelper.isAdmin(user, $route.current.params.groupId)" ng-class="{active: $route.current.activetab == 'settings'}"><a href="/group/1/settings" style="color: gold;">Settings</a></li>
-  		  </ul>
         {% verbatim %}
+  		  <ul class="nav navbar-nav">
+  			<li>
+          <a target="_self" ng-href="/group/{{$route.current.params.groupId}}">Home <span class="sr-only">(current)</span></a>
+        </li>
+  			<li>
+          <a target="_self" ng-href="/group/{{$route.current.params.groupId}}/players/">Players</a>
+        </li>
+  			<li ng-class="{active: $route.current.activetab == 'games'}">
+          <a ng-href="/group/{{$route.current.params.groupId}}/games/">Games</a>
+        </li>
+  			<li ng-class="{active: $route.current.activetab == 'leaderboard'}">
+          <a href="/group/{{$route.current.params.groupId}}/leaderboard">Leaderboard</a>
+        </li>
+  			<li>
+          <a target="_self" ng-href="/group/{{$route.current.params.groupId}}/records">Records</a>
+        </li>
+        <li ng-if="RoleHelper.isAdmin(user, $route.current.params.groupId)" ng-class="{active: $route.current.activetab == 'settings'}">
+          <a ng-href="/group/{{$route.current.params.groupId}}/settings" style="color: gold;">Settings</a>
+        </li>
+  		  </ul>
+
         <ul class="nav navbar-nav navbar-right">
-  				<li ng-if="!user.username"><a target="_self" href="accounts/login">Login</a></li>
-  				<li ng-if="!user.username"><a href="/register">Signup</a></li>
-t
-          <li ng-if="user.username == 'master'" id="admin_link"><a target="_self" href="/admin">Admin</a></li>
-          <li ng-if="user.username"><a class="glyphicon glyphicon-bell" aria-hidden="true"></a></li>
-          <li ng-if="user.username" class="dropdown">
-            <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span ng-bind="user.username"></span><span class="caret"></span></a>
+  				<li ng-hide="user.username"><a target="_self" href="accounts/login">Login</a></li>
+  				<li ng-hide="user.username"><a href="/register">Signup</a></li>
+
+          <li ng-show="user.username == 'master'" id="admin_link"><a target="_self" href="/admin">Admin</a></li>
+          <li ng-show="user.username" class="dropdown">
+            <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <span ng-bind="user.username"></span>
+              <span class="caret"></span>
+            </a>
             <ul class="dropdown-menu">
-              <li style="padding: 3px 20px;">Your Groups</li>
-              <li role="separator" class="divider"></li>
               <li ng-repeat="permission in user.group_permissions">
                 <a target="_self" href="/group/{{permission[0]}}/" style="text-decoration: underline;">
                   {{ permission[1] }}
                 </a>
-
               </li>
               <li role="separator" class="divider"></li>
               <li><a href="#">Create a new Group</a></li>

@@ -15,8 +15,8 @@ function RoleHelper($q, $http) {
 
   function canEdit(user, groupId) {
     if (user) {
-      for (var permission in user.group_permissions) {
-        if (permission[0] === parseInt(groupId, 10) && permission[2] === 'edit') {
+      for (var i = 0; i < user.group_permissions.length; i++) {
+        if (user.group_permissions[i][0] === parseInt(groupId, 10) && user.group_permissions[i][2] === 'edit') {
           return true;
         }
       }

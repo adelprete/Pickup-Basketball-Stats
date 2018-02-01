@@ -19,22 +19,18 @@ def players_home(request, group_id, template="players/home.html"):
 
 	season=None
 	if 'submit' in request.GET:
-		form = bforms.PlayerFilterForm(request.GET)
+		form = bforms.PlayerFilterForm(request.GET, group=group)
 		if form.is_valid():
 			season_id = form.data.get('season', None)
 			if season_id:
 				season = bmodels.Season.objects.get(id=season_id)
 	else:
-		try:
-			#get current season if there is one
-			season = bmodels.Season.objects.get(start_date__lt=datetime.datetime.today(), end_date__gt=datetime.datetime.today())
-		except:
-			#if not in a current season, grab last season.
-			season = bmodels.Season.objects.filter(start_date__lt=datetime.datetime.today()).order_by('-start_date')[0]
-
-		form = bforms.PlayerFilterForm(initial={'season': season.id})
+		form = bforms.PlayerFilterForm(group=group)
 
 	if season:
+		players = bmodels.Player.player_objs.filter(group=group, statline__game__date__range=(season.start_date, season.end_date)).distinct()
+	else:
+		season = group.getSeasons()[0]
 		players = bmodels.Player.player_objs.filter(group=group, statline__game__date__range=(season.start_date, season.end_date)).distinct()
 
 	context = {
@@ -42,6 +38,7 @@ def players_home(request, group_id, template="players/home.html"):
 		'players': players,
 		'season': season,
 		'form': form,
+		'canEdit': (group.checkUserPermission(request.user, 'edit') or group.checkUserPermission(request.user, 'admin'))
 	}
 
 	return render(request, template, context)

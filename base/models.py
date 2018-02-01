@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
-from basketball.models import GAME_TYPES, SCORE_TYPES
+from basketball.models import GAME_TYPES, SCORE_TYPES, Season
 
 PERMISSION_TYPES = [
     ('read', 'Read'),
@@ -25,6 +25,20 @@ class Group(models.Model):
 
     def __str__(self):
         return "%s" % (self.name)
+
+    def checkUserPermission(self, user, permission):
+        for group_permission in user.group_permissions.all():
+            if group_permission.group_id == self.id and group_permission.permission == permission:
+                return True
+        return False
+
+    def getSeasons(self):
+        group_season_pks = []
+        for season in Season.objects.all():
+            if self.game_set.filter(date__range=(season.start_date, season.end_date)):
+                group_season_pks.append(season.id)
+        seasons = Season.objects.filter(pk__in=group_season_pks).order_by('-start_date')
+        return seasons
 
 
 class MemberPermission(models.Model):

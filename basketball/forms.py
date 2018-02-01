@@ -34,6 +34,16 @@ class PlayerGameLogForm(forms.Form):
 class PlayerFilterForm(forms.Form):
     season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
 
+    def __init__(self, *args, **kwargs):
+        self.group = kwargs.pop('group')
+        seasons = self.group.getSeasons()
+        kwargs.update(initial={
+            'season': seasons[0].pk
+        })
+        super(PlayerFilterForm, self).__init__(*args, **kwargs)
+        self.fields['season'].queryset = seasons
+
+
 
 class GameForm(forms.ModelForm):
     required_css_class = 'required'
