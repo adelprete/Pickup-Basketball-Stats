@@ -59,6 +59,9 @@ def root(request, group_id, template="base.html"):
     #if we are sorting a table we want to bring the relevant tab up after page reload.
     default_tab = request.GET.get('default_tab')
 
+    if not default_tab and (not top_plays or not top_plays[0].game.youtube_id):
+        default_tab = 'totals'
+
     context = {
         'group': group,
         'games': game_set,
@@ -67,7 +70,7 @@ def root(request, group_id, template="base.html"):
         'standings': player_standings,
         'default_season': season,
         'default_tab': default_tab,
-        'seasons': bmodels.Season.objects.all()
+        'seasons': group.getSeasons()
     }
     return render(request, template, context)
 
@@ -119,7 +122,7 @@ def records_home(request, group_id, template="records/home.html"):
     points_to_win = 11
     season = None
     if 'submit' in request.GET:
-        form = bforms.RecordForm(request.GET)
+        form = bforms.RecordForm(request.GET, group=group)
         if form.is_valid():
             points_to_win = form.data.get('points_to_win', 11)
             try:
@@ -127,7 +130,7 @@ def records_home(request, group_id, template="records/home.html"):
             except:
                 season = None
     else:
-        form = bforms.RecordForm(initial={'points_to_win':'11','season':''})
+        form = bforms.RecordForm(group=group, initial={'points_to_win':'11','season':''})
 
     context = {
         'group': group,

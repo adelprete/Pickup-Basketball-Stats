@@ -106,15 +106,18 @@
   			<div class="row">
   				<div class="col-md-9">
   					<ul class="nav nav-tabs" role="tablist" style="margin:5px 0px;">
+              {% if top_plays.0.game.youtube_id %}
   						<li role="presentation" {% if not default_tab %}class="active"{% endif %}>
   							<a href="#highlights" aria-controls="home" role="tab" data-toggle="tab" style="font-weight:bold;">Highlights</a>
   						</li>
+              {% endif %}
   						<li role="presentation" {% if default_tab == "totals" %}class='active'{% endif %}>
   							<a href="#totals" aria-controls="totals" role="tab" data-toggle="tab" style="font-weight:bold;">Totals</a>
   						</li>
   					</ul>
 
   					<div class="tab-content">
+              {% if top_plays.0.game.youtube_id %}
   						<div role="tabpanel" class="tab-pane {% if not default_tab %}active{% endif %}" id="highlights" style="padding-top:15px;">
   							<div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden;"></div>
   							<div class="embed-responsive embed-responsive-16by9" style="margin-top:15px;">
@@ -143,6 +146,7 @@
   								{% endfor %}
   							</div>
   						</div>
+              {% endif %}
   						<div role="tabpanel" class="tab-pane{% if default_tab == "totals" %}active{% endif %}" id="totals" style="padding-top:15px;">
   							{% recap_totals games %}
   						</div>
@@ -184,11 +188,11 @@
   		var timeout;
   		function onYouTubeIframeAPIReady() {
   			player = new YT.Player('player', {
-  			videoId: '{{ top_plays.0.game.youtube_id }}',
-  			events: {
-  				'onReady': onPlayerReady,
-  				'onStateChange': onPlayerStateChange
-  				}
+    			videoId: '{{ top_plays.0.game.youtube_id }}',
+    			events: {
+    				'onReady': onPlayerReady,
+    				'onStateChange': onPlayerStateChange
+    				}
   			});
   		}
   		function onPlayerReady(event) {

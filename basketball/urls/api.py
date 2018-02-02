@@ -43,7 +43,7 @@ router.register(r'groups', GroupViewSet)
 router.register(r'daily-statlines', DailyStatlineViewSet)
 router.register(r'member-permissions', MemberPermissionViewSet)
 router.register(r'member-invite', MemberInviteViewSet)
-router.register(r'season-statlines', SeasonStatlineViewSet)
+router.register(r'season-statlines', SeasonStatlineViewSet, 'SeasonStatline')
 
 urlpatterns = [
 	#API

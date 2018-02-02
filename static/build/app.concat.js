@@ -962,6 +962,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     $scope.editplay = {};
     $scope.fillEditForm = fillEditForm;
     $scope.game = {};
+    $scope.groupId = $routeParams['groupId']
     $scope.play = {};
     $scope.playOptions = playOptions;
     $scope.seekToTime = seekToTime;
@@ -1658,7 +1659,7 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
 
   function generateTotalStatlines() {
 
-    var query = "?game_type=5v5";
+    var query = "?game_type=5v5&group_id=" + $routeParams.groupId;
     query += $scope.filterForm.season === 0 ? "" : '&season=' + $scope.filterForm.season;
     StatlineService.getSeasonStatlines(query).then(function(response) {
       var grouped_lines = _.chain(response)

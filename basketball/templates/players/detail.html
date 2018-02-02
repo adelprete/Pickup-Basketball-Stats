@@ -148,7 +148,7 @@
 	function ajax_game_log_call(){
 		$.ajax({
 			type: "get",
-			url: "{% url 'ajax_player_game_log' 1 %}",
+			url: "{% url 'ajax_player_game_log' group.id %}",
 			data: {
 				season_id: $('#id_season').val(),
 				player_id: {{ player.id }}

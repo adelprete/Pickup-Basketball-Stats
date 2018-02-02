@@ -41,6 +41,10 @@
 			<td>{{ line.off_pos }}</td>
 			<td>{{ line.def_pos }}</td>
 		</tr>
+	{% empty %}
+		<tr>
+			<td>No Games</td>
+		</tr>
 	{% endfor %}
 </table>
 </div>

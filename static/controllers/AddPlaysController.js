@@ -13,6 +13,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     $scope.editplay = {};
     $scope.fillEditForm = fillEditForm;
     $scope.game = {};
+    $scope.groupId = $routeParams['groupId']
     $scope.play = {};
     $scope.playOptions = playOptions;
     $scope.seekToTime = seekToTime;

@@ -15,7 +15,6 @@ def players_home(request, group_id, template="players/home.html"):
 	"""Generates a list of all the players on the site"""
 
 	group = Group.objects.get(id=group_id)
-	players = bmodels.Player.player_objs.filter(group=group).order_by('first_name')
 
 	season=None
 	if 'submit' in request.GET:
@@ -29,9 +28,11 @@ def players_home(request, group_id, template="players/home.html"):
 
 	if season:
 		players = bmodels.Player.player_objs.filter(group=group, statline__game__date__range=(season.start_date, season.end_date)).distinct()
-	else:
+	elif group.getSeasons():
 		season = group.getSeasons()[0]
 		players = bmodels.Player.player_objs.filter(group=group, statline__game__date__range=(season.start_date, season.end_date)).distinct()
+	else:
+		players = bmodels.Player.player_objs.filter(group=group).order_by('first_name')
 
 	context = {
 		'group': group,
@@ -52,9 +53,7 @@ def player_page(request, group_id, id, template="players/detail.html"):
 	if bmodels.PlayByPlay.objects.filter(game__exhibition=False, top_play_players=player):
 		has_top_plays = True
 
-	seasons = bmodels.Season.objects.all().order_by('-start_date')
-
-	game_log_form = bforms.PlayerGameLogForm()
+	game_log_form = bforms.PlayerGameLogForm(group=group)
 	context = {
 		'group': group,
 		'player': player,
@@ -95,9 +94,10 @@ def player_basics(request, group_id, id=None, form_class=bforms.PlayerForm, temp
 
 def ajax_game_log(request, group_id):
 	"""Filters a players game log by season"""
-
-	season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
-
-	statlines = bmodels.StatLine.objects.filter(player__id=request.GET['player_id'], game__date__range=(season.start_date,season.end_date)).order_by('-game__date', 'game__title')
+	if request.GET['season_id']:
+		season = get_object_or_404(bmodels.Season,id=request.GET['season_id'])
+		statlines = bmodels.StatLine.objects.filter(player__id=request.GET['player_id'], game__date__range=(season.start_date,season.end_date)).order_by('-game__date', 'game__title')
+	else:
+		statlines = []
 
 	return render_to_response('players/game_log.html', {'statlines': statlines})

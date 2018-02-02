@@ -49,7 +49,7 @@ def game_records_table(points_to_win, group_id, season=None):
                 statlines = statlines.filter(
                     game__date__range=(season.start_date, season.end_date),
                 )
-
+                
             # Run through each stat and find the best statline for each one
             for stat in bmodels.STATS:
                 if stat not in IGNORED_STATS:

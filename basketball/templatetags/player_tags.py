@@ -8,8 +8,8 @@ register = template.Library()
 @register.inclusion_tag('players/highlights.html')
 def player_highlights(player_pk):
 
-    top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='t', top_play_players__pk=player_pk, game__exhibition=False, game__published=True)
-    not_top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='nt', top_play_players__pk=player_pk, game__exhibition=False, game__published=True)
+    top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='t', top_play_players__pk=player_pk, game__exhibition=False, game__published=True).order_by("-game__date")
+    not_top_plays = bmodels.PlayByPlay.objects.filter(top_play_rank__startswith='nt', top_play_players__pk=player_pk, game__exhibition=False, game__published=True).order_by("-game__date")
 
     context = {
         'top_plays': top_plays,
@@ -221,7 +221,11 @@ def player_game_log(statlines, bgcolor="white", game_type='5v5'):
     """
     Passes a single player's statlines to a template that will display them in a table like format.
     """
-    return {'statlines': statlines.filter(game__game_type=game_type, game__published=True), 'bgcolor': bgcolor}
+    if statlines:
+        statlines = statlines.filter(game__game_type=game_type, game__published=True)
+    else:
+        statlines = []
+    return {'statlines': statlines, 'bgcolor': bgcolor}
 
 @register.inclusion_tag('players/5on5_possessions.html', takes_context=True)
 def player_five_on_five_pos(context, player_pk=None):

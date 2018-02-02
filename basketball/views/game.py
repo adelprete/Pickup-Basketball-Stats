@@ -463,11 +463,12 @@ class DailyStatlineViewSet(viewsets.ModelViewSet):
     filter_class = filters.DailyStatlineFilter
 
 class SeasonStatlineViewSet(viewsets.ModelViewSet):
-    queryset = bmodels.SeasonStatline.objects.all()
     serializer_class = SeasonStatlineSerializer
     filter_backend = (drf_filters.DjangoFilterBackend,)
     filter_class = filters.SeasonStatlineFilter
 
+    def get_queryset(self):
+        return bmodels.SeasonStatline.objects.filter(player__group__id=self.request.GET['group_id'])
 
 @api_view(['GET'])
 def calculate_statlines(request, pk):

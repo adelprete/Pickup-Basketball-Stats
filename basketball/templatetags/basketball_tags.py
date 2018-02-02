@@ -297,9 +297,8 @@ def recap_totals(context, games):
     date = games[0].date
 
     player_ids = set(list(games.values_list('team1', flat=True)) + list(games.values_list('team2', flat=True)))
-    team_ids = bmodels.Player.objects.filter(group=group, first_name__in=["Team1", "Team2"]).values_list('id', flat=True)
+    team_ids = bmodels.Player.objects.filter(first_name__in=["Team1", "Team2"]).values_list('id', flat=True)
     player_ids = filter(lambda id: id not in team_ids, player_ids)
-
     totals_tables, totals_footer = helpers.recap_totals_dictionaries(headers.totals_statistics, player_ids,
                                                                           date=date, sort_column=sort_column, published=games[0].published)
 

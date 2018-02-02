@@ -28,8 +28,17 @@ class PlayerForm(forms.ModelForm):
 
 
 class PlayerGameLogForm(forms.Form):
-    season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), initial=bmodels.Season.objects.all()[0])
+    season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all())
 
+    def __init__(self, *args, **kwargs):
+        self.group = kwargs.pop('group')
+        seasons = self.group.getSeasons()
+        if seasons:
+            kwargs.update(initial={
+                'season': seasons[0].pk
+            })
+        super(PlayerGameLogForm, self).__init__(*args, **kwargs)
+        self.fields['season'].queryset = seasons
 
 class PlayerFilterForm(forms.Form):
     season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
@@ -37,9 +46,10 @@ class PlayerFilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.group = kwargs.pop('group')
         seasons = self.group.getSeasons()
-        kwargs.update(initial={
-            'season': seasons[0].pk
-        })
+        if seasons:
+            kwargs.update(initial={
+                'season': seasons[0].pk
+            })
         super(PlayerFilterForm, self).__init__(*args, **kwargs)
         self.fields['season'].queryset = seasons
 
@@ -57,8 +67,8 @@ class GameForm(forms.ModelForm):
 
         group = Group.objects.get(id=group_id)
         if self.instance.id:
-            self.fields['team1'].queryset = bmodels.Player.player_objs.filter(Q(is_active=True) | Q(id__in=self.instance.team1.values_list('id',flat=True)) & Q(group__id=group.id))
-            self.fields['team2'].queryset = bmodels.Player.player_objs.filter(Q(is_active=True) | Q(id__in=self.instance.team2.values_list('id',flat=True)) & Q(group__id=group.id))
+            self.fields['team1'].queryset = bmodels.Player.player_objs.filter((Q(is_active=True) | Q(id__in=self.instance.team1.values_list('id',flat=True))) & Q(group__id=group.id))
+            self.fields['team2'].queryset = bmodels.Player.player_objs.filter((Q(is_active=True) | Q(id__in=self.instance.team2.values_list('id',flat=True))) & Q(group__id=group.id))
         else:
             self.fields['team1'].queryset = bmodels.Player.player_objs.filter(is_active=True, group__id=group.id)
             self.fields['team2'].queryset = bmodels.Player.player_objs.filter(is_active=True, group__id=group.id)
@@ -143,6 +153,11 @@ class RecordForm(forms.Form):
     season = forms.ModelChoiceField(queryset=bmodels.Season.objects.all(), empty_label="All", required=False)
     points_to_win = forms.ChoiceField(label="Games played to",choices=(('11','11'), ('30','30'), ('other','Other')))
 
+    def __init__(self, *args, **kwargs):
+        self.group = kwargs.pop('group')
+        seasons = self.group.getSeasons()
+        super(RecordForm, self).__init__(*args, **kwargs)
+        self.fields['season'].queryset = seasons
 
 class SeasonForm(forms.ModelForm):
 

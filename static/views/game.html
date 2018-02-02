@@ -1,7 +1,7 @@
 <title>{{ game.date }} - {{ game.title }}</title>
 
 <div ng-if="game" class="breadcrumbs" style="margin-bottom: 15px;"> /
-  <a href="/group/{{group.id}}/" style="cursor: pointer;">Games</a> /
+  <a href="/group/{{groupId}}/games" style="cursor: pointer;">Games</a> /
   <a target="_self" ng-href="/group/{{groupId}}/games/recap/{{ game.id }}/" style="cursor: pointer;">Day recap</a> /
   {{ game.date | date:'MMM d, y'}} - {{ game.title }}
 </div>
@@ -27,7 +27,7 @@
     <div class="col-md-9">
       <div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
 
-      <div class="embed-responsive embed-responsive-16by9" style="margin:15px 0px;">
+      <div ng-if="game.youtube_id" class="embed-responsive embed-responsive-16by9" style="margin:15px 0px;">
         <youtube-video class="embed-responsive-item" video-id="game.youtube_id" player="ytplayer"></youtube-video>
       </div>
 
@@ -117,6 +117,9 @@
         <div id="play_title">
           <h4 class="accent">Plays</h4>
           <div style="overflow-y: scroll; overflow-x: hidden; height: 450px;">
+            <div ng-if="plays.length == 0">
+              No plays added yet
+            </div>
             <div ng-repeat="play in plays | filter:search:true">
               <div class="row">
                 <span class="col-sm-3">

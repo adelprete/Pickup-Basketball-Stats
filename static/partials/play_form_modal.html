@@ -97,7 +97,11 @@
               </div>
               <div class="col-md-6">
                 <div class="col-md-12" style="padding: 5px 0px 5px 0px">
-                  <label>Highlight Players</label>
+                  <label>
+                    Highlight Players
+                    <span data-toggle="tooltip" data-placement="right" title="Tag players to save the play to their profiles" class="glyphicon glyphicon-question-sign">
+                    </span>
+                  </label>
                   <select ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="editplay.top_play_players" multiple class="form-control" style="height: 95px;">
                       <option value="">-------</option>
                   </select>
