@@ -2,9 +2,12 @@ angular.module('saturdayBall')
 
 .factory('routeResolver', routeResolver);
 
-routeResolver.$inject = ['Session', '$route', '$q', '$location', 'GroupService'];
+routeResolver.$inject = ['Session', '$route', '$q', '$location', 'GroupService',
+  'RoleHelper'];
 
-function routeResolver(Session, $route, $q, $location, GroupService) {
+function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper) {
+  var groupId = $route.current.params.groupId;
+  var gameId = $route.current.params.gameid;
 
   function initSession(deferred) {
     if (!Session.available()) {
@@ -20,9 +23,18 @@ function routeResolver(Session, $route, $q, $location, GroupService) {
           }
           GroupService.updateMemberInvite(data).then(function(response) {
             redirectTo('/group/' + response.group + '/', deferred, response)
-          }, function(response) {
-
-          })
+          }, function(response) {})
+        }
+        else if ($route.current.originalPath === '/group/:groupId/games/:gameid/add-plays/') {
+          if (response.username === '' || !(RoleHelper.isAdmin(response, groupId) ||
+                RoleHelper.canEdit(response, groupId))) {
+                redirectTo('/group/' + groupId + '/games/' + gameId, deferred, response);
+          }
+        }
+        else if ($route.current.originalPath === '/group/:groupId/settings') {
+          if (response.username === '' || !RoleHelper.isAdmin(response, groupId)) {
+                redirectTo('/group/' + groupId, deferred, response);
+          }
         }
         deferred.resolve(response);
       });
@@ -33,9 +45,7 @@ function routeResolver(Session, $route, $q, $location, GroupService) {
 
   function redirectTo(path, deferred, session) {
         window.location.replace(path);
-        //$location.path(path).search(params);
-        //$location.replace();
-        deferred.resolve(session);
+        deferred.reject(session);
     };
 
   return function() {

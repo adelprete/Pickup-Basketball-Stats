@@ -14,11 +14,12 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     $scope.fillEditForm = fillEditForm;
     $scope.game = {};
     $scope.groupId = $routeParams['groupId']
+    $scope.loading = true;
     $scope.play = {};
     $scope.playOptions = playOptions;
     $scope.seekToTime = seekToTime;
-    $scope.team1_score = 0;
-    $scope.team2_score = 0;
+    $scope.team1_score = "-";
+    $scope.team2_score = "-";
     $scope.updatePlay = updatePlay;
     $scope.user = Session.currentUser();
 
@@ -33,6 +34,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
         angular.forEach(player_objs, function(value, key) {
           this.push({'code':value.id, 'name': value.first_name + ' ' + value.last_name});
         }, $scope.playOptions.PLAYERS);
+        $scope.loading = false;
         getPlays();
       });
 

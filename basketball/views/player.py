@@ -58,7 +58,8 @@ def player_page(request, group_id, id, template="players/detail.html"):
 		'group': group,
 		'player': player,
 		'has_top_plays': has_top_plays,
-		'game_log_form': game_log_form
+		'game_log_form': game_log_form,
+		'canEdit': (group.checkUserPermission(request.user, 'edit') or group.checkUserPermission(request.user, 'admin'))
 	}
 	return render(request, template, context)
 
@@ -68,6 +69,10 @@ def player_basics(request, group_id, id=None, form_class=bforms.PlayerForm, temp
 	"""The View handles editing and deleting play profiles"""
 	model = None
 	group = Group.objects.get(id=group_id)
+
+	if group.checkUserPermission(request.user, 'edit') == False and \
+		group.checkUserPermission(request.user, 'admin') == False:
+		return redirect('/group/%s/players/' % (group.id))
 
 	if id:
 		model = get_object_or_404(bmodels.Player, id=id)

@@ -2,7 +2,7 @@
   <h3 class="accent">
     Create Basketball Group
   </h3>
-  <p class="help-block">All Values can be changed later.</p>
+  <p class="help-block">All values can be changed later.</p>
 </div>
 
 <form name="settingsform" ng-submit="save()" novalidate>
@@ -63,6 +63,12 @@
       <div ng-show="settingsform.fga_min.$invalid && settingsform.fga_min.$touched">
          Required!
       </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label>*Beta Code</label>
+      <input type="text" name="betacode" ng-model="settings.betacode" class="form-control" required></input>
     </div>
   </div>
   <button ng-disabled="settingsform.$invalid" type="submit" class="btn btn-default btn-primary" style="margin-top:10px;">Save</button>

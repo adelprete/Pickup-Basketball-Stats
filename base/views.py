@@ -27,9 +27,6 @@ class CreateUserView(CreateAPIView):
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
-        betacode = request.data.pop('betacode', None)
-        if betacode != settings.BETACODE:
-            return Response("Invalid Beta Code", 406)
         member_profile_data = request.data.pop('memberprofile', None)
         response = super(CreateUserView, self).post(request, *args, **kwargs)
         member_profile_data['user'] = User.objects.get(id=response.data['id'])
@@ -42,6 +39,9 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
     def create(self, request):
+        betacode = request.data.pop('betacode', None)
+        if betacode != settings.BETACODE:
+            return Response("Invalid Beta Code", 406)
         request.data['admin'] = [request.user.id]
         response = super().create(request)
         group = Group.objects.get(id=response.data['id'])

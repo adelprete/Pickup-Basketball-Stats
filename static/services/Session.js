@@ -19,7 +19,6 @@ function Session($q, $http, UserService, GroupService) {
   ////////////////////
 
   function init() {
-    console.log("Init called");
     var deferred = $q.defer();
     getCurrentUser().then(function(result){
       user = result;

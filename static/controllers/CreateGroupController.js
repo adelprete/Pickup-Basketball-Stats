@@ -32,7 +32,12 @@ function CreateGroupController($scope, $location, GroupService, Session, setting
         $scope.message = "Saved Successfully";
         window.location.replace('/group/' + response.id);
       }, function(response) {
-        $scope.message = "Failed to save"
+        if (response.status == 406) {
+          $scope.message = "Invalid Beta Code";
+        }
+        else {
+          $scope.message = "Failed"
+        }
       });
     }
 };

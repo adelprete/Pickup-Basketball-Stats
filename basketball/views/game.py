@@ -111,6 +111,10 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
     """Our game form where we can create or edit a games details"""
     group = Group.objects.get(id=group_id)
     model = None
+    if group.checkUserPermission(request.user, 'edit') == False and \
+        group.checkUserPermission(request.user, 'admin') == False:
+        return redirect('/group/%s/games/' % (group.id))
+
     if game_id:
         model = get_object_or_404(bmodels.Game, id=game_id)
         form = form_class(instance=model, group_id=group_id)

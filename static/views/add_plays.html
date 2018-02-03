@@ -14,15 +14,15 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2 score-board">
     <div class="sb-top-team">Good Guys</div>
-    <div class="sb-top-team-score">{{ team1_score }}</div>
+    <div ng-bind="team1_score" class="sb-top-team-score"></div>
     <div></div>
     <div class="sb-bottom-team">Bad Guys</div>
-    <div class="sb-bottom-team-score">{{ team2_score }}</div>
+    <div ng-bind="team2_score" class="sb-bottom-team-score"></div>
   </div>
 </div>
 
 <div class="row">
-  <div ng-if="!game.youtube_id" class="col-md-12" style="text-align: center; color: red;">
+  <div ng-if="!loading && !game.youtube_id" class="col-md-12" style="text-align: center; color: red;">
     There isn't a Youtube ID tied to game.  Go back to the 'Game Details' page of this game and add a Youtube ID.
   </div>
   <div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>

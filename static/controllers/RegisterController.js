@@ -18,7 +18,7 @@ function RegisterController($scope, $route, UserService, $timeout, $location){
 
     function submit() {
       UserService.createUser($scope.userModel).then(function (response){
-        $scope.message = "Success! Redirecting to log in."
+        $scope.message = "Success! You may now log in. Redirecting to log in page."
         $timeout(function() {
           if ('next' in $route.current.params) {
             window.location.replace('/accounts/login/?next=' + $route.current.params['next']);
