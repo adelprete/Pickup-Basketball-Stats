@@ -27,6 +27,9 @@ class Group(models.Model):
         return "%s" % (self.name)
 
     def checkUserPermission(self, user, permission):
+        if user.is_anonymous:
+            return False
+            
         for group_permission in user.group_permissions.all():
             if group_permission.group_id == self.id and group_permission.permission == permission:
                 return True
