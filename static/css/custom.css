@@ -1,15 +1,13 @@
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-  display: none !important;
-}
-
-a:hover {
- cursor:pointer;
-}
-
 @media (min-width: 1200px) {
 	.container {
 		width: 1170px;
 	}
+}
+
+@media screen and (max-width: 768px) {
+    .breadcrumbs {
+       font-size: 10px;
+    }
 }
 
 .required label:after {
@@ -69,10 +67,6 @@ ul.messages li {
 	border-left:4px solid #F44336;
 }
 
-.page-breadcrumbs {
-	font-size:10px;
-}
-
 .btn-primary {
   color: #fff;
   /*
@@ -80,74 +74,4 @@ ul.messages li {
   background-color: #2196F3;
   border-color: #2196F3;
   */
-}
-
-.score-board {
-	padding:0px;
-	font-size:25px;
-	border:1px solid grey;
-	border-radius:4px;
-}
-
-.sb-top-team {
-	padding-left:10px;
-	background-color:white;
-	text-align:left;
-	border-top-left-radius:4px;
-	display:inline;
-}
-
-.sb-top-team-score {
-	background-color:#BBDEFB;
-	text-align:center;
-	border-top-right-radius:4px;
-	display:inline;
-	width:80px;
-	float:right;
-}
-
-.sb-bottom-team{
-	padding-left:10px;
-	background-color:white;
-	text-align:left;
-	border-bottom-left-radius:4px;
-	display:inline;
-}
-
-.sb-bottom-team-score {
-	background-color:#FFCDD2;
-	text-align:center;
-	border-bottom-right-radius:4px;
-	display:inline;
-	width:80px;
-	float:right;
-}
-
-.clickable {
-	color: blue;
-}
-.clickable:hover {
-	text-decoration: underline;
-	cursor: pointer;
-}
-
-/* Editing plays */
-.play-item {
-	transition:0.5s linear all;
-	margin: 5px 0px;
-	padding: 0px 0px 5px 10px;
-	position: relative;
-}
-.play-item.ng-leave {
-	opacity: 1;
-}
-.play-item.ng-leave.ng-leave-active {
-	opacity: 0;
-}
-
-.play-item.ng-enter {
-	opacity: 0;
-}
-.play-item.ng-enter.ng-enter-active {
-	opacity: 1;
 }

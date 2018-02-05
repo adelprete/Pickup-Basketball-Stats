@@ -8,7 +8,7 @@
 
 <div ng-if="game" class="container">
   <div class="row">
-    <div class="col-md-9" style="font-size:25px;">
+    <div class="col-md-9 game-title" style="font-size:25px;">
       <div class="col-md-12" style="text-align:center;">
         <a ng-if="prev_game" href="/group/{{groupId}}/games/{{prev_game.id}}/" class="glyphicon glyphicon-chevron-left"></a>
         <a ng-href="/group/{{groupId}}/games/recap/{{ game.id }}/" target="_self">{{ game.date | date:'MMM d, y'}}</a> - {{ game.title }}

@@ -4,6 +4,12 @@
 	}
 }
 
+@media screen and (max-width: 768px) {
+    .breadcrumbs {
+       font-size: 10px;
+    }
+}
+
 .required label:after {
 	content:"*";
 }
@@ -58,7 +64,7 @@ ul.messages li {
 }
 .accent {
 	padding-left:10px;
-	border-left:4px solid #F44336;	
+	border-left:4px solid #F44336;
 }
 
 .btn-primary {
@@ -69,46 +75,3 @@ ul.messages li {
   border-color: #2196F3;
   */
 }
-
-.score-board {
-	padding:0px;
-	font-size:25px;
-	border:1px solid grey;
-	border-radius:4px;
-}
-
-.sb-top-team {
-	padding-left:10px;
-	background-color:white;
-	text-align:left;
-	border-top-left-radius:4px;
-	display:inline;
-}
-
-.sb-top-team-score {
-	background-color:#BBDEFB;
-	text-align:center;
-	border-top-right-radius:4px;
-	display:inline;
-	width:80px;
-	float:right;
-}
-
-.sb-bottom-team{
-	padding-left:10px;
-	background-color:white;
-	text-align:left;
-	border-bottom-left-radius:4px;
-	display:inline;
-}
-
-.sb-bottom-team-score {
-	background-color:#FFCDD2;
-	text-align:center;
-	border-bottom-right-radius:4px;
-	display:inline;
-	width:80px;
-	float:right;
-}
-
-
