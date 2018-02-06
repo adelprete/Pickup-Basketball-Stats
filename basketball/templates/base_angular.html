@@ -109,6 +109,12 @@
 	   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 		ga('create', 'UA-66942273-1', 'auto');
 		ga('send', 'pageview');
+
+    $(document).ready(function () {
+      $(".navbar-nav li a").click(function(event) {
+        $(".navbar-collapse").collapse('hide');
+      });
+    });
 	</script>
   </body>
 </html>

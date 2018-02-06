@@ -122,25 +122,25 @@
             </div>
             <div ng-repeat="play in plays | filter:search:true">
               <div class="row">
-                <span class="col-sm-3">
+                <span class="col-xs-3">
                   <a ng-click="seekToTime(play.time)">
                     {{ play.time }}:
                   </a>
                 </span>
-                <span class="col-sm-9">
+                <span class="col-xs-9">
                   {{ play.primary_play_display }}
                   {{ play.primary_player.first_name }} {{ play.primary_player.last_name[0] }}.
                 </span>
               </div>
               <div ng-if="play.secondary_play_display" class="row">
-                <span class="col-sm-9 col-sm-offset-3">
+                <span class="col-xs-9 col-xs-offset-3">
                   {{ play.secondary_play_display }}
                   {{ play.secondary_player.first_name }} {{ play.secondary_player.last_name[0]}}
                   <span ng-if="play.secondary_player.first_name.indexOf(Team) > -1" >.
                 </span>
               </div>
               <div ng-if="play.assist_display" class="row">
-                <span class="col-sm-9 col-sm-offset-3">
+                <span class="col-xs-9 col-xs-offset-3">
                   {{ play.assist_display }}
                   {{ play.assist_player.first_name }} {{ play.assist_player.last_name[0]}}.
                 </span>
