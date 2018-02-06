@@ -36,6 +36,11 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
                 redirectTo('/group/' + groupId, deferred, response);
           }
         }
+        else if ($route.current.originalPath === '/group/create/') {
+          if (response.username === '') {
+                redirectTo('/group/1', deferred, response);
+          }
+        }
         deferred.resolve(response);
       });
     } else {

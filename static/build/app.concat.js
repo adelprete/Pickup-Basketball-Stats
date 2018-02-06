@@ -230,6 +230,11 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
                 redirectTo('/group/' + groupId, deferred, response);
           }
         }
+        else if ($route.current.originalPath === '/group/create/') {
+          if (response.username === '') {
+                redirectTo('/group/1', deferred, response);
+          }
+        }
         deferred.resolve(response);
       });
     } else {
@@ -1759,6 +1764,8 @@ function NavigationController($scope, $route, Session, RoleHelper) {
     $scope.$route = $route;
 
     ////////////////
+
+    console.log("$scope.$route: ", $scope.$route);
 
     $scope.$watch('session.currentUser().username', function () {
         $scope.user = Session.currentUser();

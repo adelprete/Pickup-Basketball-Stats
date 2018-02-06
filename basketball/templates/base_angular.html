@@ -51,7 +51,7 @@
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         {% verbatim %}
-  		  <ul class="nav navbar-nav">
+  		  <ul ng-if="$route.current.params.groupId" class="nav navbar-nav">
   			<li>
           <a target="_self" ng-href="/group/{{$route.current.params.groupId}}">Home <span class="sr-only">(current)</span></a>
         </li>
@@ -111,7 +111,7 @@
 		ga('send', 'pageview');
 
     $(document).ready(function () {
-      $(".navbar-nav li a").click(function(event) {
+      $(".navbar-nav li a:not(.dropdown-toggle)").click(function(event) {
         $(".navbar-collapse").collapse('hide');
       });
     });

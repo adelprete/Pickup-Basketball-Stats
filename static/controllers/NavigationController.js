@@ -13,6 +13,8 @@ function NavigationController($scope, $route, Session, RoleHelper) {
 
     ////////////////
 
+    console.log("$scope.$route: ", $scope.$route);
+
     $scope.$watch('session.currentUser().username', function () {
         $scope.user = Session.currentUser();
     });
