@@ -10,6 +10,10 @@
     }
 }
 
+a:hover {
+ cursor:pointer;
+}
+
 .required label:after {
 	content:"*";
 }
@@ -74,4 +78,33 @@ ul.messages li {
   background-color: #2196F3;
   border-color: #2196F3;
   */
+}
+
+.clickable {
+	color: blue;
+}
+.clickable:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+/* Editing plays */
+.play-item {
+	transition:0.5s linear all;
+	margin: 5px 0px;
+	padding: 0px 0px 5px 10px;
+	position: relative;
+}
+.play-item.ng-leave {
+	opacity: 1;
+}
+.play-item.ng-leave.ng-leave-active {
+	opacity: 0;
+}
+
+.play-item.ng-enter {
+	opacity: 0;
+}
+.play-item.ng-enter.ng-enter-active {
+	opacity: 1;
 }
