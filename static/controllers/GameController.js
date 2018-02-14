@@ -47,6 +47,8 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
 
     GameService.getGamePlays($routeParams['gameId']).then(function(response) {
       $scope.plays = _.orderBy(response, ['time'], ['asc']);
+    }, function(response) {
+      console.log('Plays failed: ', response);
     })
 
     GameService.getGame($routeParams['gameId']).then(function(response) {
