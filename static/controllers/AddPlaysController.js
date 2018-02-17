@@ -29,6 +29,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     init();
 
     function init() {
+      $anchorScroll("breadcrumbs");
       GameService.getGame($routeParams['gameid']).then(function (response){
         $scope.game = response;
         var player_objs = $scope.game.team1.concat($scope.game.team2);

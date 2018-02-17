@@ -23,6 +23,31 @@
       <div class="sb-bottom-team-score">{{ game.team2_score }}</div>
     </div>
   </div>
+  <div class="row visible-xs-block" style="margin-top: 10px;">
+    <div class="col-md-12 col-xs-12">
+      <div ng-if="RoleHelper.isAdmin(user, groupId) || RoleHelper.canEdit(user, groupId)">
+        <a ng-href="/group/{{ groupId }}/games/{{ game.id }}/edit-game/"
+           target="_self"
+           class="btn btn-primary col-xs-12">
+          Edit Game Details
+        </a>
+        <br>
+        <a href="/group/{{ groupId }}/games/{{ game.id }}/add-plays/"
+           class="btn btn-primary col-xs-12"
+           role="button"
+           style="margin-top:10px;">
+          Add/Edit Plays
+        </a>
+      </div>
+      <a href="/api/games/{{ game.id }}/export"
+         target="_self"
+         class="btn btn-primary col-xs-12"
+         role="button"
+         style="margin-top:10px;">
+        Export Plays
+      </a>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-9">
       <div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
@@ -49,7 +74,7 @@
       </div>
     </div>
     <div class="col-md-3" style="padding:0px;">
-      <div class="col-md-12">
+      <div class="col-md-12 hidden-xs">
         <div ng-if="RoleHelper.isAdmin(user, groupId) || RoleHelper.canEdit(user, groupId)">
           <a ng-href="/group/{{ groupId }}/games/{{ game.id }}/edit-game/"
              target="_self"
