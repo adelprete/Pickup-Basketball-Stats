@@ -21,20 +21,40 @@
   </div>
 </div>
 
-<div class="row">
-  <div ng-if="!loading && !game.youtube_id" class="col-md-12" style="text-align: center; color: red;">
-    There isn't a Youtube ID tied to game.  Go back to the 'Game Details' page of this game and add a Youtube ID.
-  </div>
-  <div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
-  <div class="col-md-10 col-md-offset-1">
-    <div class="embed-responsive embed-responsive-16by9" style="margin:15px 0px;">
-      <youtube-video ng-if="game.youtube_id" class="embed-responsive-item" video-id="game.youtube_id" player="ytplayer"></youtube-video>
-      <youtube-video ng-if="!game.youtube_id" class="embed-responsive-item" video-id="010" player="ytplayer"></youtube-video>
-    </div>
-  </div>
-</div>
 
-<div ng-include src="'static/partials/play_form.html'"></div>
+<uib-tabset active="active">
+  <uib-tab index="0" heading="w/ Video">
+    <div class="row">
+      <div ng-if="!loading && !game.youtube_id" class="col-md-12" style="text-align: center; color: red;">
+        There isn't a Youtube ID tied to game.  Go back to the 'Game Details' page of this game and add a Youtube ID.
+      </div>
+      <div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
+      <div class="col-md-10 col-md-offset-1">
+        <div class="embed-responsive embed-responsive-16by9" style="margin:15px 0px;">
+          <youtube-video ng-if="game.youtube_id" class="embed-responsive-item" video-id="game.youtube_id" player="ytplayer"></youtube-video>
+          <youtube-video ng-if="!game.youtube_id" class="embed-responsive-item" video-id="010" player="ytplayer"></youtube-video>
+        </div>
+      </div>
+    </div>
+
+  <div ng-include src="'static/partials/play_form.html'"></div>
+
+  </uib-tab>
+  <uib-tab index="1" heading="w/ Mobile">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <p style="margin: 10px 0px;">
+          Use this form to record plays on your mobile device.<br>
+          Time is automatically assigned to a play depending on what play is made.<br>
+          Use the other form if you'd like the plays to be synced with a youtube video.
+        </p>
+      </div>
+    </div>
+    <div ng-controller="PlayWizardController as pwc">
+      <div ng-include="pwc.currentTemplate"></div>
+    </div>
+  </uib-tab>
+</uib-tabset>
 
 <div class="row" ng-if="!plays">
   <div ng-if="!plays" class="col-md-10 col-md-offset-1" style="min-height: 1000px">

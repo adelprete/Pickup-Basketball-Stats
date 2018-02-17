@@ -10,6 +10,13 @@
     }
 }
 
+.icon-flipped {
+    transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
+}
+
 a:hover {
  cursor:pointer;
 }
@@ -107,4 +114,9 @@ ul.messages li {
 }
 .play-item.ng-enter.ng-enter-active {
 	opacity: 1;
+}
+
+.play-wizard-button {
+	margin-top: 5px;
+	margin-bottom: 5px
 }

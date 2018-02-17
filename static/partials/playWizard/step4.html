@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-md-12">
+    <div id="step-header-anchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
+    <h3>5. Details
+      <span ng-click="pwc.startOver()" style="color:red; font-size: 10px; padding-left: 5px;">
+        <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+        start over
+      </span>
+    </h3>
+  </div>
+</div>
+
+<div name="play" class="row play-item">
+  <div class="col-md-12" style="border-bottom: 1px solid black;">
+    <div class="col-md-3 col-xs-4">
+      <span ng-if="pwc.play.primary_play !== 'threepa'">{{pwc.play.primary_play}}</span>
+      <span ng-if="pwc.play.primary_play === 'threepa'">3pa</span><br>
+      {{pwc.play.primary_player_display}}
+    </div>
+    <div class="col-md-3 col-xs-4">
+      {{pwc.play.secondary_play}}<br>
+      {{pwc.play.secondary_player_display}}
+    </div>
+    <div class="col-md-3 col-xs-4">
+      {{pwc.play.assist}}<br>
+      {{pwc.play.assist_player_display}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-xs-12">
+    <div ng-click="pwc.step4()" class="col-xs-6 col-xs-offset-3 btn btn-primary play-wizard-button">
+        Submit
+    </div>
+  </div>
+</div>

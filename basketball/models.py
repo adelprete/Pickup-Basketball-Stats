@@ -1,5 +1,6 @@
 import _thread
 from django.db import models
+from django.http import HttpResponseRedirect
 from django.db.models import F, Sum, Q, Avg, signals
 from django.core.urlresolvers import reverse
 from django.core.exceptions import FieldError
@@ -497,7 +498,7 @@ class Game(models.Model):
         return title
 
     def get_absolute_url(self):
-        return reverse("box_score", kwargs={'group_id': self.group.id, 'id': self.id})
+        return '/group/%s/games/%s/' % (self.group.id, self.id)
 
     def calculate_game_score(self):
         """
@@ -920,7 +921,7 @@ class PlayByPlay(models.Model):
     Represents a single play within a game.
     """
     game = models.ForeignKey('basketball.Game')
-    time = models.DurationField()
+    time = models.DurationField(blank=True, null=True)
     primary_play = models.CharField(max_length=30, choices=PRIMARY_PLAY)
     primary_player = models.ForeignKey('basketball.Player', related_name='primary_plays')
     secondary_play = models.CharField(max_length=30, choices=SECONDARY_PLAY, blank=True)

@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-md-12">
+    <div id="step-header-anchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
+    <h3 ng-if="['fgm','threepm'].indexOf(pwc.play.primary_play) > -1">
+      4. Who made the Assist?
+      <span ng-click="pwc.startOver()" style="color:red; font-size: 10px; padding-left: 5px;">
+        <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+        start over
+      </span>
+    </h3>
+    <h3 ng-if="['fga','threepa'].indexOf(pwc.play.primary_play) > -1">
+      4.Who had the Potential Assist?
+      <span ng-click="pwc.startOver()" style="color:red; font-size: 10px; padding-left: 5px;">
+        <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+        start over
+      </span>
+    </h3>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-xs-12">
+    <div class="col-xs-6 col-xs-offset-3">
+      <h4 style="text-align: center;">
+        <u ng-if="pwc.checkTeam(game.team1, pwc.play.primary_player)">Team 1</u>
+        <u ng-if="pwc.checkTeam(game.team2, pwc.play.primary_player)">Team 2</u>
+      </h4>
+    </div>
+    <div ng-click="pwc.step3()"
+         class="col-xs-6 col-xs-offset-3 btn btn-danger play-wizard-button">
+      No Assist
+    </div>
+    <div ng-if="pwc.checkTeam(game.team1, pwc.play.primary_player)"
+         ng-click="pwc.step3(player.id, player.first_name, player.last_name)"
+         ng-repeat="player in game.team1 | filter:pwc.nonPlayerFilter"
+         class="col-xs-6 col-xs-offset-3 btn btn-primary play-wizard-button">
+      {{ player.first_name }} {{ player.last_name | limitTo : 1 }}.
+    </div>
+    <div ng-if="pwc.checkTeam(game.team2, pwc.play.primary_player)"
+         ng-click="pwc.step3(player.id, player.first_name, player.last_name)"
+         ng-repeat="player in game.team2 | filter:pwc.nonPlayerFilter"
+         class="col-xs-6 col-xs-offset-3 btn btn-primary play-wizard-button">
+      {{ player.first_name }} {{ player.last_name | limitTo : 1 }}.
+    </div>
+  </div>
+</div>
