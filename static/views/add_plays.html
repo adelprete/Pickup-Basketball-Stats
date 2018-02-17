@@ -45,13 +45,18 @@
       <div class="col-md-8 col-md-offset-2">
         <p style="margin: 10px 0px;">
           Use this form to record plays on your mobile device.<br>
-          Time is automatically assigned to a play depending on what play is made.<br>
+          Time is automatically assigned to a play depending on what play is enter.<br>
           Use the other form if you'd like the plays to be synced with a youtube video.
         </p>
       </div>
     </div>
-    <div ng-controller="PlayWizardController as pwc">
+    <div ng-controller="PlayWizardController as pwc" class="visible-xs-block">
       <div ng-include="pwc.currentTemplate"></div>
+    </div>
+    <div class="hidden-xs row">
+      <div class="col-md-8 col-md-offset-2">
+        <h4>Come back on a mobile device to add plays here</h4>
+      </div>
     </div>
   </uib-tab>
 </uib-tabset>

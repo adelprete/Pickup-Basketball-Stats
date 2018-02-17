@@ -921,7 +921,7 @@ class PlayByPlay(models.Model):
     Represents a single play within a game.
     """
     game = models.ForeignKey('basketball.Game')
-    time = models.DurationField(blank=True, null=True)
+    time = models.DurationField()
     primary_play = models.CharField(max_length=30, choices=PRIMARY_PLAY)
     primary_player = models.ForeignKey('basketball.Player', related_name='primary_plays')
     secondary_play = models.CharField(max_length=30, choices=SECONDARY_PLAY, blank=True)
