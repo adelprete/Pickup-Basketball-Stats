@@ -111,7 +111,7 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
     """Our game form where we can create or edit a games details"""
     group = Group.objects.get(id=group_id)
     model = None
-    
+
     if group.checkUserPermission(request.user, 'edit') == False and \
         group.checkUserPermission(request.user, 'admin') == False:
         return redirect('/group/%s/games/' % (group.id))
@@ -132,8 +132,7 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
         form = form_class(request.POST, instance=model, group_id=group_id)
         if "delete" in request.POST:
             model.delete()
-            messages.success(request, 'Game Deleted')
-            return redirect('/games/')
+            return redirect('/group/%s/games/' % (group.id))
         if form.is_valid():
 
             game_record = form.save(commit=False)
@@ -147,10 +146,6 @@ def game_basics(request, group_id=None, game_id=None, form_class=bforms.GameForm
             for player in game_record.team2.iterator():
                 if not bmodels.StatLine.objects.filter(game=game_record, player=player):
                     bmodels.StatLine.objects.create(game=game_record, player=player)
-            if model:
-                messages.success(request, "Game Saved")
-            else:
-                messages.success(request, "Game Created")
             game_record.calculate_statlines()
             return redirect(game_record.get_absolute_url())
 

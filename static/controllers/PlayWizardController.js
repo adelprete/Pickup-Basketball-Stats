@@ -136,6 +136,9 @@ function PlayWizardController($scope, $routeParams, GameService, Session, playOp
     }
 
     function calculateTime(plays) {
+      if (plays.length === 0) {
+        return 10;
+      }
       var previous_play = plays[0];
       var previous_play_seconds = parseInt(plays[0].time.split(":")[0] * 3600) +
                               parseInt(plays[0].time.split(":")[1] * 60) +
