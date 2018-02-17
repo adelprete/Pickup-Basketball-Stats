@@ -8,6 +8,7 @@ AddPlaysController.$inject = ['$scope', '$routeParams', 'GameService', 'Session'
 function AddPlaysController($scope, $routeParams, GameService, Session, playOptions,
   $anchorScroll) {
 
+    $scope.calculateScore = calculateScore;
     $scope.createPlay = createPlay;
     $scope.deletePlay = deletePlay;
     $scope.editplay = {};
@@ -34,6 +35,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
         angular.forEach(player_objs, function(value, key) {
           this.push({'code':value.id, 'name': value.first_name + ' ' + value.last_name});
         }, $scope.playOptions.PLAYERS);
+
         $scope.loading = false;
         getPlays();
       });
@@ -140,6 +142,8 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     function deletePlay(playid) {
         GameService.deletePlay(playid).then(function(response){
           _.remove($scope.plays, function(play) { return play.id === playid; });
+          calculateScore();
+          GameService.calculateStatlines($scope.game.id).then(function(response){});
           calculateScore();
         });
     }
