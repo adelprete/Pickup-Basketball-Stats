@@ -788,6 +788,11 @@ class Game(models.Model):
             helpers.update_season_statlines(self)
             helpers.update_season_per100_statlines(self)
 
+    def delete(self, *args, **kwargs):
+        self.statline_set.all().delete()
+        self.calculate_meta_statlines()
+        super(Game, self).delete(*args, **kwargs)
+
     class Meta():
         ordering = ['-date', 'title']
 
