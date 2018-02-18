@@ -6,6 +6,10 @@
 </div>
 
 <div class="page-header">
+  <span data-toggle="modal"
+         data-target="#playHelpModal"
+         class="glyphicon glyphicon-info-sign"
+         style="margin-top: 3px; color: #337ab7; float: right; font-size:18px;"></span>
   <h3 class="accent">
     Add Plays
   </h3>
@@ -71,9 +75,6 @@
 <div name="play" ng-repeat="play in plays" class="row play-item">
   <div class="col-md-10 col-md-offset-1" style="border-bottom: 1px solid black;">
     <div data-toggle="modal" data-target="#editPlayModal" ng-click="fillEditForm(play.id)" class="clickable" style="position: absolute; top: 2px; left: 0px; font-size:12px; padding: 0px; z-index: 2; color: red;">Edit</div>
-    <!--
-    <button confirmed-click="delete(play.id)" ng-confirm-click="Delete the play?" style="position: absolute; top: 0px; left: 0px; color: white; background-color:red; border: 0px; z-index: 2;">X</button>
-    -->
     <div class="col-md-3 col-xs-3">
       <a ng-click="seekToTime(play.time)" style="cursor:pointer;">{{ play.time }}</a><br>
       {{play.primary_play_display}}<br>
@@ -100,3 +101,5 @@
 </div>
 
 <div ng-include src="'static/partials/play_form_modal.html'"></div>
+
+<div ng-include src="'static/partials/play_help_modal.html'"></div>

@@ -8,7 +8,7 @@
 			<td colspan="2">Loading...</td>
 		</tr>
     <tr ng-repeat="player in leaderboard">
-      <td>{{ player.player.first_name }}</td>
+      <td>{{ player.player.first_name }} {{ player.player.last_name | limitTo: 1 }}.</td>
       <td>{{ player[stat] | number:2}}</td>
     </tr>
 		<tr ng-if="!calculating && leaderboard.length === 0">
