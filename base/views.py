@@ -106,6 +106,11 @@ class ContactViewSet(viewsets.ModelViewSet):
         if not request.user.is_anonymous():
             request.data['user'] = request.user.id
         response = super().create(request)
+        send_mail(
+            "New Contact",
+            "Someone left a new contact message on saturdayball.",
+            "no-reply@saturdayball.com",
+            ["adelprete87@gmail.com"])
         return response
 
 

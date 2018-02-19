@@ -14,6 +14,7 @@ function ContactController($scope, $route, $anchorScroll, ContactService){
   ////////////////////
 
   function submit() {
+    $scope.message = "Sending..."
     ContactService.createContact($scope.contactModel).then(function (response){
       $scope.message = "Message Received!"
       $scope.contactform.$setPristine();
