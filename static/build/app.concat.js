@@ -146,6 +146,11 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
     }
   };
     $routeProvider
+      .when("/contact/", {
+        templateUrl: "static/views/contact.html",
+        controller: "ContactController",
+        resolve: routeResolver,
+      })
       .when("/group/:groupId/games/", {
         templateUrl: "static/views/games.html",
         controller: 'GamesController',
@@ -388,6 +393,31 @@ function smallLeaderboard(PlayerService, $q, Per100Service) {
       }, true);
 
     }
+}
+;'use strict';
+
+angular.module('saturdayBall').factory('ContactService', ContactService);
+
+ContactService.$inject = ['$q', '$http'];
+
+function ContactService($q, $http) {
+  var service = {
+    createContact: createContact
+  };
+  return service;
+
+  /////////////////////
+
+  function createContact(data) {
+    var deferred = $q.defer();
+    $http.post('/api/contacts/', data).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
 }
 ;'use strict';
 
@@ -1007,7 +1037,6 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     init();
 
     function init() {
-      $anchorScroll("breadcrumbs");
       GameService.getGame($routeParams['gameid']).then(function (response){
         $scope.game = response;
         var player_objs = $scope.game.team1.concat($scope.game.team2);
@@ -1301,6 +1330,34 @@ function AdvTotalsBoardController($scope, $controller, StatlineService, PlayerSe
       $scope.statSorted = "";
     }, true);
 
+
+};
+;'use strict'
+
+angular.module('saturdayBall')
+
+.controller('ContactController', ContactController);
+
+ContactController.$inject = ['$scope', '$route', '$anchorScroll', 'ContactService']
+
+function ContactController($scope, $route, $anchorScroll, ContactService){
+
+  $scope.contactModel = {};
+  $scope.submit = submit;
+
+  ////////////////////
+
+  function submit() {
+    ContactService.createContact($scope.contactModel).then(function (response){
+      $scope.message = "Message Received!"
+      $scope.contactform.$setPristine();
+      $scope.contactform.$setUntouched();
+      $scope.contactModel = {};
+    }, function(response){
+      $scope.message = "Message failed to send.";
+    })
+
+  }
 
 };
 ;angular.module('saturdayBall')
@@ -1787,8 +1844,6 @@ function NavigationController($scope, $route, Session, RoleHelper) {
 
     ////////////////
 
-    console.log("$scope.$route: ", $scope.$route);
-
     $scope.$watch('session.currentUser().username', function () {
         $scope.user = Session.currentUser();
     });
@@ -1892,11 +1947,6 @@ function PlayWizardController($scope, $routeParams, GameService, Session, playOp
     vm.step4 = step4;
 
     ////////////////////
-
-    init()
-
-    function init() {
-    }
 
     function nonPlayerFilter(player) {
       return player.first_name != "Team1" && player.first_name != "Team2";
@@ -2059,7 +2109,7 @@ function RegisterController($scope, $route, UserService, $timeout, $location){
         }, 3000);
 
       }, function(response){
-        $scope.message = response.data;
+        $scope.message = "Registration Failed.";
       })
     }
 };

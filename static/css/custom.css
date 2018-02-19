@@ -17,6 +17,11 @@
     -ms-transform: scaleX(-1);
 }
 
+.navbar-fixed-top
+.navbar-collapse {
+	max-height: 300px;
+}
+
 a:hover {
  cursor:pointer;
 }

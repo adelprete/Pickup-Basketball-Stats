@@ -1,7 +1,8 @@
 from django.conf.urls import include, url
 from base.views import (
     CreateUserView, GroupViewSet, current_user, verify_group_admin,
-    group_seasons, MemberPermissionViewSet, MemberInviteViewSet
+    group_seasons, MemberPermissionViewSet, MemberInviteViewSet,
+    ContactViewSet
 )
 from basketball.views import game as gviews
 from django.contrib.auth.decorators import login_required
@@ -39,7 +40,7 @@ player_list = PlayerViewSet.as_view({
 
 router = routers.SimpleRouter()
 router.register(r'groups', GroupViewSet)
-#router.register(r'statlines', StatlineViewSet)
+router.register(r'contacts', ContactViewSet)
 router.register(r'daily-statlines', DailyStatlineViewSet)
 router.register(r'member-permissions', MemberPermissionViewSet)
 router.register(r'member-invite', MemberInviteViewSet)

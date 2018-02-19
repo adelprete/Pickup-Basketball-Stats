@@ -29,7 +29,7 @@ function RegisterController($scope, $route, UserService, $timeout, $location){
         }, 3000);
 
       }, function(response){
-        $scope.message = response.data;
+        $scope.message = "Registration Failed.";
       })
     }
 };

@@ -80,3 +80,13 @@ class MemberInvite(models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.group.name, self.email)
+
+class Contact(models.Model):
+    creation_date = models.DateField(auto_now_add=True, null=True, blank=True)
+    user = models.ForeignKey('auth.User', null=True, blank=True)
+    email = models.EmailField()
+    subject = models.CharField(max_length=120)
+    message = models.TextField()
+
+    def __str__(self):
+        return "%s - %s" % (self.creation_date, self.email)

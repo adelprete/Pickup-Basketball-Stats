@@ -78,9 +78,11 @@
   		  </ul>
 
         <ul class="nav navbar-nav navbar-right">
+          <li ng-hide="user.username"><a href="/contact">Contact</a></li>
   				<li ng-hide="user.username"><a target="_self" href="accounts/login">Login</a></li>
   				<li ng-hide="user.username"><a href="/register">Signup</a></li>
 
+          <li ng-show="user.username"><a href="/contact">Contact</a></li>
           <li ng-show="user.username == 'master'" id="admin_link"><a target="_self" href="/admin">Admin</a></li>
           <li ng-show="user.username" class="dropdown">
             <a href="#" style="color: white;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -104,7 +106,7 @@
   </div>
   </nav>
   <div class="container" style="margin-bottom:100px;margin-top:80px;">
-    <div ng-view></div>
+    <div ng-view autoscroll></div>
 	</div>
 </div>
 	<script>

@@ -29,11 +29,6 @@ function PlayWizardController($scope, $routeParams, GameService, Session, playOp
 
     ////////////////////
 
-    init()
-
-    function init() {
-    }
-
     function nonPlayerFilter(player) {
       return player.first_name != "Team1" && player.first_name != "Team2";
     }

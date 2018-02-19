@@ -11,9 +11,14 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model # If used custom user model
 from .serializers import UserSerializer
-from base.models import Group, MemberPermission, MemberInvite, MemberProfile
+from base.models import Group, MemberPermission, MemberInvite, MemberProfile, Contact
 from base.filters import MemberPermissionFilter
-from base.serializers import GroupSerializer, MemberPermissionSerializer, MemberInviteSerializer
+from base.serializers import (
+    GroupSerializer,
+    MemberPermissionSerializer,
+    MemberInviteSerializer,
+    ContactSerializer
+)
 from basketball.models import Season, Game
 from basketball.serializers import SeasonSerializer
 import json
@@ -90,6 +95,18 @@ class MemberInviteViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
             #response = super(MemberInviteViewSet, self).update(request, *args, **kwargs)
         return Response(member_invite)
+
+
+class ContactViewSet(viewsets.ModelViewSet):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request):
+        if not request.user.is_anonymous():
+            request.data['user'] = request.user.id
+        response = super().create(request)
+        return response
 
 
 @api_view(['GET'])
