@@ -1,0 +1,34 @@
+<div class="page-header">
+  <h3 class="accent">
+    Contact
+  </h3>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <p>Have any questions or want to send some feedback?</p>
+  </div>
+</div>
+
+<form name="contactform" ng-submit="submit()" novalidate>
+  <div class="row">
+    <div class="form-group col-md-3">
+      <label>*Email</label>
+      <input type="text" name="email" ng-model="contactModel.email" class="form-control" ng-pattern="/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/" required></input>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-4">
+      <label>*Subject</label>
+      <input type="text" name="subject" ng-model="contactModel.subject" class="form-control" required></input>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-md-8">
+      <label>*Message</label>
+      <textarea name="message" ng-model="contactModel.message" class="form-control" style="height:200px" required></textarea>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-default btn-primary" ng-disabled="contactform.$invalid">Send</button>
+  {{ message }}
+</form>
