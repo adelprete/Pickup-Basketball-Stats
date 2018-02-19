@@ -38,7 +38,7 @@
 
 	<div class="row">
 		{% for player in players %}
-			<div class="col-xs-4 col-sm-2" style="margin-top:15px;text-align:center;">
+			<div class="col-xs-4 col-sm-2 col-equal" style="margin-top:15px;text-align:center;">
 				<a href="{{ player.get_absolute_url }}">
 				{% if player.image_src %}
 					<img src="{% thumbnail player.image_src 200x200 crop %}" class="img-responsive img-circle">
