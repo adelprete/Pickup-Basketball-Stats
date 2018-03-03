@@ -407,7 +407,7 @@ class GameViewSet(viewsets.ModelViewSet):
     queryset = bmodels.Game.objects.all()
     serializer_class = GameSerializer
     filter_backend = (drf_filters.DjangoFilterBackend,)
-    filter_fields = ('date',)
+    filter_fields = ('date', 'group')
 
     def retrieve(self, request, pk=None):
         game = get_object_or_404(bmodels.Game, pk=pk)

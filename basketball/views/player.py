@@ -47,7 +47,7 @@ def players_home(request, group_id, template="players/home.html"):
 def player_page(request, group_id, id, template="players/detail.html"):
 	"""This generates an individual player's page"""
 	group = Group.objects.get(id=group_id)
-	player = get_object_or_404(bmodels.Player, id=id)
+	player = get_object_or_404(bmodels.Player, id=id, group=group)
 
 	has_top_plays = False
 	if bmodels.PlayByPlay.objects.filter(game__exhibition=False, top_play_players=player):

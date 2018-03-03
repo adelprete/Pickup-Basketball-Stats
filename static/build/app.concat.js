@@ -1489,7 +1489,12 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
 
     GameService.getGame($routeParams['gameId']).then(function(response) {
       $scope.game = response;
-      var params = {date: $scope.game.date}
+      //check if this game is a aprt of the group, if not redirect.
+      if ($scope.game.group.id.toString() !== $routeParams['groupId']){
+        window.location.replace('/group/' + $routeParams['groupId'] + '/games');
+        return;
+      }
+      var params = {date: $scope.game.date, group: $routeParams['groupId']}
       GameService.getGames($routeParams['groupId'], params).then(function(response) {
         var games = response;
         for (var i = 0; i < games.length; i++) {
