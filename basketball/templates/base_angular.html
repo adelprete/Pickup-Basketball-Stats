@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}" type="text/css">
   <link rel="stylesheet" href="{% static 'bower_components/angular-bootstrap/ui-bootstrap-csp.css' %}" type="text/css">
   <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/splash.css' %}" type="text/css">
   <link rel="stylesheet" href="{% static 'css/styles/game.css' %}" type="text/css">
 
 	<script type="text/javascript" src="{% static 'js/jquery-1.11.3.js' %}"></script>
@@ -42,7 +43,7 @@
   <body>
 
 
-<div ng-controller="NavigationController">
+<div ng-controller="NavigationController" style="height:100%; width: 100%;">
   <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
     <div class="container">
 
@@ -107,8 +108,8 @@
       </div>
   </div>
   </nav>
-  <div class="container" style="margin-bottom:100px;margin-top:80px;">
-    <div ng-view autoscroll></div>
+  <div style="height:100%; width: 100%; margin-top:50px;">
+    <div ng-view autoscroll style="height:100%; width: 100%;"></div>
 	</div>
 </div>
 	<script>

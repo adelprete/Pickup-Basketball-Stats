@@ -7,6 +7,11 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
     }
   };
     $routeProvider
+    .when("/", {
+      templateUrl: "static/views/home.html",
+      controller: "HomeController",
+      resolve: routeResolver,
+    })
       .when("/contact/", {
         templateUrl: "static/views/contact.html",
         controller: "ContactController",
