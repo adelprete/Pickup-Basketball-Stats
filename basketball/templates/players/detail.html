@@ -21,7 +21,7 @@
 	<div class="row">
 		<div class="col-xs-7 col-sm-6 col-md-3">
 			{% if player.image_src %}
-			<img src="{% thumbnail player.image_src 200x200 crop %}" class="img-responsive img-rounded" style="margin:0px auto;">
+			<img src="{{ player.image_src.url }}" class="img-responsive img-rounded" style="margin:0px auto; width: 200px; height: 200px;">
 			{% else %}
 				<img src="{% thumbnail object.image|default:'signup_male.png' 200x200 %}" class="img-responsive img-rounded" style="margin:0px auto;">
 			{% endif %}

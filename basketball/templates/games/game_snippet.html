@@ -20,7 +20,7 @@
 			<tr>
 				<td rowspan=3 style="padding-right:15px;">
 					{% if game.top_player.image_src %}
-						<img src="{% thumbnail game.top_player.image_src 45x45 crop %}" class="img-responsive img-rounded" style="margin: 0px auto;">
+						<img src="{{ game.top_player.image_src.url }}" class="img-responsive img-rounded" style="margin: 0px auto;height: 45px; width: 45px;">
 					{% else %}
 						<img src="{% thumbnail object.image|default:'signup_male.png' 45x45 crop %}" class="img-responsive img-rounded" style="margin:0px auto;">
 					{% endif %}

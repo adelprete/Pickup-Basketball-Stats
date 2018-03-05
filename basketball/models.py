@@ -1,4 +1,5 @@
 import _thread
+import os
 from django.db import models
 from django.http import HttpResponseRedirect
 from django.db.models import F, Sum, Q, Avg, signals
@@ -119,13 +120,17 @@ class RealPlayerManager(models.Manager):
 class AllPlayerManager(models.Manager):
     use_for_related_field = True
 
+def get_upload_path(instance, filename):
+    return os.path.join(
+      "player_images/%d/" % instance.id, filename)
+
 class Player(models.Model):
     group = models.ForeignKey('base.Group', blank=True, null=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30, blank=True)
     height = models.CharField(max_length=30, blank=True)
     weight = models.CharField(max_length=30, blank=True)
-    image_src = models.ImageField(upload_to='player_images/', blank=True, null=True)
+    image_src = models.ImageField(upload_to=get_upload_path, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     position = models.CharField(max_length=30, blank=True)
     is_active = models.BooleanField(help_text="Determine if a player should be selectable when creating games", blank=True, default=True)
