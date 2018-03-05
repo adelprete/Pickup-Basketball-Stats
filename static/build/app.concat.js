@@ -476,7 +476,7 @@ function GameService($q, $http, $routeParams) {
 
   function getGamePlays(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/plays/?gameid=' + gameid).then(function(response, status, config, headers){
+    $http.get('/api/plays/?gameid=' + gameid + '/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -498,7 +498,7 @@ function GameService($q, $http, $routeParams) {
 
   function getGames(groupId, params) {
     var deferred = $q.defer();
-    $http.get('/api/games/groupid/' + groupId, {"params": params}).then(function(response, status, config, headers){
+    $http.get('/api/games/groupid/' + groupId + '/', {"params": params}).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -509,7 +509,7 @@ function GameService($q, $http, $routeParams) {
 
   function getGameBoxScore(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/games/' + gameid + '/box-score').then(function(response, status, config, headers){
+    $http.get('/api/games/' + gameid + '/box-score/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -520,7 +520,7 @@ function GameService($q, $http, $routeParams) {
 
   function getGameAdvBoxScore(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/games/' + gameid + '/adv-box-score').then(function(response, status, config, headers){
+    $http.get('/api/games/' + gameid + '/adv-box-score/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -531,7 +531,7 @@ function GameService($q, $http, $routeParams) {
 
   function calculateStatlines(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/games/' + gameid + '/calculate-statlines').then(function(response, status, config, headers){
+    $http.get('/api/games/' + gameid + '/calculate-statlines/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
