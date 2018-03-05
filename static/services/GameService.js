@@ -25,7 +25,7 @@ function GameService($q, $http, $routeParams) {
 
   function getGamePlays(gameid) {
     var deferred = $q.defer();
-    $http.get('/api/plays/?gameid=' + gameid + '/').then(function(response, status, config, headers){
+    $http.get('/api/plays/?gameid=' + gameid).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);

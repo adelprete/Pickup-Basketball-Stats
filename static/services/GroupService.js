@@ -85,7 +85,7 @@ function GroupService($q, $http){
 
   function updateMemberPermission(data) {
     var deferred = $q.defer();
-    $http.put('/api/member-permissions/' + data.id, data).then(function(response, status, config, headers){
+    $http.put('/api/member-permissions/' + data.id + '/', data).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -95,7 +95,7 @@ function GroupService($q, $http){
 
   function deleteMemberPermission(data) {
     var deferred = $q.defer();
-    $http.delete('/api/member-permissions/' + data.id, data).then(function(response, status, config, headers){
+    $http.delete('/api/member-permissions/' + data.id + '/', data).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
