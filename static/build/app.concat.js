@@ -1016,7 +1016,7 @@ function UserService($q, $http) {
 
   function createUser(data) {
     var deferred = $q.defer();
-    $http.post('/api/user/create', data).then(function(response, status, config, headers){
+    $http.post('/api/user/create/', data).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
@@ -1027,7 +1027,7 @@ function UserService($q, $http) {
 
   function currentUser() {
     var deferred = $q.defer();
-    $http.get('/api/user/current').then(function(response, status, config, headers){
+    $http.get('/api/user/current/').then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
