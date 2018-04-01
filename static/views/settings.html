@@ -1,111 +1,114 @@
-<div class="page-header">
-  <h3 class="accent">
-    Settings
-  </h3>
-</div>
+<div class="container" style="margin-bottom:100px;margin-top:80px;">
 
-<div class="row">
-  <div class="col-md-12">
-    <uib-tabset active="active">
-      <uib-tab index="0" heading="Game Defaults">
-        <uib-tab-heading>
-          <strong>Game Defaults</strong>
-        </uib-tab-heading>
-        <form name="settingsform" ng-submit="save()" novalidate style="margin-top: 10px;">
-          <div class="row">
-            <div class="form-group col-md-2">
-              <label>*Game Type</label>
-              <select class="form-control"
-                      ng-model="settings.game_type"
-                      ng-options="o.code as o.name for o in settingOptions.GAME_TYPES">
-              </select>
-            </div>
-            <div class="form-group col-md-2">
-              <label>*Point Values</label>
-              <select class="form-control"
-                      ng-model="settings.score_type"
-                      ng-options="o.code as o.name for o in settingOptions.SCORE_TYPES">
-              </select>
-            </div>
-            <div class="form-group col-md-2">
-              <label>*Points To Win By</label>
-              <select class="form-control"
-                      ng-model="settings.points_to_win"
-                      ng-options="o.code as o.name for o in settingOptions.POINTS_TO_WIN">
-              </select>
-            </div>
-          </div>
-          <h4>Leaderboard Settings</h4>
-          <div class="row">
-            <div class="form-group col-md-3">
-              <label>*Possessions Min</label>
-              <input ng-model="settings.possessions_min" type="number" style="width: 100%;" name="possessions_min" class="form-control" required>
-              <p class="help-block">Number of possessions needed for a player to appear on leaderboards</p>
-              <div ng-show="settingsform.possessions_min.$invalid && settingsform.possessions_min.$touched">
-                 Required!
+  <div class="page-header">
+    <h3 class="accent">
+      Settings
+    </h3>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <uib-tabset active="active">
+        <uib-tab index="0" heading="Game Defaults">
+          <uib-tab-heading>
+            <strong>Game Defaults</strong>
+          </uib-tab-heading>
+          <form name="settingsform" ng-submit="save()" novalidate style="margin-top: 10px;">
+            <div class="row">
+              <div class="form-group col-md-2">
+                <label>*Game Type</label>
+                <select class="form-control"
+                        ng-model="settings.game_type"
+                        ng-options="o.code as o.name for o in settingOptions.GAME_TYPES">
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label>*Point Values</label>
+                <select class="form-control"
+                        ng-model="settings.score_type"
+                        ng-options="o.code as o.name for o in settingOptions.SCORE_TYPES">
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label>*Points To Win By</label>
+                <select class="form-control"
+                        ng-model="settings.points_to_win"
+                        ng-options="o.code as o.name for o in settingOptions.POINTS_TO_WIN">
+                </select>
               </div>
             </div>
-            <div class="form-group col-md-3">
-              <label>*Field Goal Attempts Min</label>
-              <input ng-model="settings.fga_min" type="number" style="width: 100%;" name="fga_min" class="form-control" required>
-              <p class="help-block">Field goal attempts needed for a player to appear on leaderboards</p>
-              <div ng-show="settingsform.fga_min.$invalid && settingsform.fga_min.$touched">
-                 Required!
+            <h4>Leaderboard Settings</h4>
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label>*Possessions Min</label>
+                <input ng-model="settings.possessions_min" type="number" style="width: 100%;" name="possessions_min" class="form-control" required>
+                <p class="help-block">Number of possessions needed for a player to appear on leaderboards</p>
+                <div ng-show="settingsform.possessions_min.$invalid && settingsform.possessions_min.$touched">
+                   Required!
+                </div>
+              </div>
+              <div class="form-group col-md-3">
+                <label>*Field Goal Attempts Min</label>
+                <input ng-model="settings.fga_min" type="number" style="width: 100%;" name="fga_min" class="form-control" required>
+                <p class="help-block">Field goal attempts needed for a player to appear on leaderboards</p>
+                <div ng-show="settingsform.fga_min.$invalid && settingsform.fga_min.$touched">
+                   Required!
+                </div>
               </div>
             </div>
+            <button ng-disabled="settingsform.$invalid" type="submit" class="btn btn-default btn-primary" style="margin-top:10px;">Save</button>
+            {{ message }}
+          </form>
+        </uib-tab>
+        <uib-tab index="1">
+          <uib-tab-heading>
+            <strong>Members</strong>
+          </uib-tab-heading>
+          <div style="margin-top: 10px;">
+            <p>Invite other users to your group.</p>
+            <p>You can give users different permissions such as Read, Edit and Admin</p>
+            <ul style="list-style-type:disc">
+             <li><strong>Read</strong> - User will only be able to look at stats in this group and won't be able to make any changes.</li>
+             <li><strong>Edit</strong> - User will be able to create players, games and do stats.</li>
+             <li><strong>Admin</strong> - User can make changes to anything. They can do stats, invite members and change group settings.</li>
+            </ul>
           </div>
-          <button ng-disabled="settingsform.$invalid" type="submit" class="btn btn-default btn-primary" style="margin-top:10px;">Save</button>
-          {{ message }}
-        </form>
-      </uib-tab>
-      <uib-tab index="1">
-        <uib-tab-heading>
-          <strong>Members</strong>
-        </uib-tab-heading>
-        <div style="margin-top: 10px;">
-          <p>Invite other users to your group.</p>
-          <p>You can give users different permissions such as Read, Edit and Admin</p>
-          <ul style="list-style-type:disc">
-           <li><strong>Read</strong> - User will only be able to look at stats in this group and won't be able to make any changes.</li>
-           <li><strong>Edit</strong> - User will be able to create players, games and do stats.</li>
-           <li><strong>Admin</strong> - User can make changes to anything. They can do stats, invite members and change group settings.</li>
-          </ul>
-        </div>
-        <div style="margin-top:25px;" name="members">
-          <button type="button" class="btn btn-primary" ng-click="open()" style="margin-bottom: 10px">+ Invite Members</button>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <tr>
-                <th>First Name</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Permission</th>
-                <th col-span=2>Actions</th>
-                <th></th>
-              </tr>
-              <tr ng-repeat="member in members">
-                <td>{{ member.user.first_name }}</td>
-                <td>{{ member.user.username }}</td>
-                <td>{{ member.user.email }}</td>
-                <td ng-hide="editingMembers[member.id]">{{ member.permission | uppercase}}</td>
-                <td ng-show="editingMembers[member.id]">
-                  <select class="form-control" ng-options="o.code as o.name for o in inviteOptions.PERMISSIONS" ng-model="member.permission" required>
-                  </select>
-                </td>
-                <td ng-if="member.user.username != user.username">
-                  <button ng-hide="editingMembers[member.id]" ng-click="modify(member)" class="btn btn-primary">Modify</button>
-                  <button ng-show="editingMembers[member.id]" ng-click="update(member)" class="btn btn-primary">Update</button>
-                </td>
-                <td ng-if="member.user.username != user.username">
-                  <button confirmed-click="remove(member)" ng-confirm-click="Remove member from group?" class="btn btn-danger">Remove</button>
-                </td>
-                <td ng-if="member.user.username == user.username"></td>
-                <td ng-if="member.user.username == user.username"></td>
-              </tr>
-            </table>
+          <div style="margin-top:25px;" name="members">
+            <button type="button" class="btn btn-primary" ng-click="open()" style="margin-bottom: 10px">+ Invite Members</button>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <tr>
+                  <th>First Name</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Permission</th>
+                  <th col-span=2>Actions</th>
+                  <th></th>
+                </tr>
+                <tr ng-repeat="member in members">
+                  <td>{{ member.user.first_name }}</td>
+                  <td>{{ member.user.username }}</td>
+                  <td>{{ member.user.email }}</td>
+                  <td ng-hide="editingMembers[member.id]">{{ member.permission | uppercase}}</td>
+                  <td ng-show="editingMembers[member.id]">
+                    <select class="form-control" ng-options="o.code as o.name for o in inviteOptions.PERMISSIONS" ng-model="member.permission" required>
+                    </select>
+                  </td>
+                  <td ng-if="member.user.username != user.username">
+                    <button ng-hide="editingMembers[member.id]" ng-click="modify(member)" class="btn btn-primary">Modify</button>
+                    <button ng-show="editingMembers[member.id]" ng-click="update(member)" class="btn btn-primary">Update</button>
+                  </td>
+                  <td ng-if="member.user.username != user.username">
+                    <button confirmed-click="remove(member)" ng-confirm-click="Remove member from group?" class="btn btn-danger">Remove</button>
+                  </td>
+                  <td ng-if="member.user.username == user.username"></td>
+                  <td ng-if="member.user.username == user.username"></td>
+                </tr>
+              </table>
+            </div>
           </div>
-        </div>
-      </uib-tab>
-    </uib-tabset>
+        </uib-tab>
+      </uib-tabset>
+    </div>
   </div>
 </div>

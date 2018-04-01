@@ -1,46 +1,49 @@
-<div class="page-header">
-  <h3 class="accent">
-    Register
-  </h3>
-</div>
+<div class="container" style="margin-bottom:100px;margin-top:80px;">
 
-<form name="registerform" ng-submit="submit()" novalidate>
-  <div class="row">
-    <div class="form-group col-md-3">
-      <label>*Username</label>
-      <input type="text" name="username" ng-model="userModel.username" class="form-control" required></input>
-    </div>
-    <div class="form-group col-md-3">
-      <label>*Email</label>
-      <input type="text" name="email" ng-model="userModel.email" class="form-control" ng-pattern="/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/" required></input>
-    </div>
+  <div class="page-header">
+    <h3 class="accent">
+      Register
+    </h3>
   </div>
-  <div class="row">
-    <div class="form-group col-md-3">
-      <label>*First Name</label>
-      <input type="text" name="firstname" ng-model="userModel.first_name" class="form-control" required></input>
+
+  <form name="registerform" ng-submit="submit()" novalidate>
+    <div class="row">
+      <div class="form-group col-md-3">
+        <label>*Username</label>
+        <input type="text" name="username" ng-model="userModel.username" class="form-control" required></input>
+      </div>
+      <div class="form-group col-md-3">
+        <label>*Email</label>
+        <input type="text" name="email" ng-model="userModel.email" class="form-control" ng-pattern="/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/" required></input>
+      </div>
     </div>
-    <div class="form-group col-md-3">
-      <label>*Last Name</label>
-      <input type="text" name="lastname" ng-model="userModel.last_name" class="form-control" required></input>
+    <div class="row">
+      <div class="form-group col-md-3">
+        <label>*First Name</label>
+        <input type="text" name="firstname" ng-model="userModel.first_name" class="form-control" required></input>
+      </div>
+      <div class="form-group col-md-3">
+        <label>*Last Name</label>
+        <input type="text" name="lastname" ng-model="userModel.last_name" class="form-control" required></input>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="form-group col-md-2">
-      <label>*Zip Code</label>
-      <input type="text" name="zip" ng-model="userModel.memberprofile.zip" class="form-control" required></input>
+    <div class="row">
+      <div class="form-group col-md-2">
+        <label>*Zip Code</label>
+        <input type="text" name="zip" ng-model="userModel.memberprofile.zip" class="form-control" required></input>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="form-group col-md-3">
-      <label>*Password</label>
-      <input type="password" name="password" ng-model="userModel.password" class="form-control" required></input>
+    <div class="row">
+      <div class="form-group col-md-3">
+        <label>*Password</label>
+        <input type="password" name="password" ng-model="userModel.password" class="form-control" required></input>
+      </div>
+      <div class="form-group col-md-3">
+        <label>*Re-type Password</label>
+        <input type="password" name="verifypassword" ng-model="verifiy_password" class="form-control" required></input>
+      </div>
     </div>
-    <div class="form-group col-md-3">
-      <label>*Re-type Password</label>
-      <input type="password" name="verifypassword" ng-model="verifiy_password" class="form-control" required></input>
-    </div>
-  </div>
-  <button type="submit" class="btn btn-default btn-primary" ng-disabled="registerform.$invalid">Register</button>
-  {{ message }}
-</form>
+    <button type="submit" class="btn btn-default btn-primary" ng-disabled="registerform.$invalid">Register</button>
+    {{ message }}
+  </form>
+</div>    

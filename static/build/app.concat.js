@@ -146,6 +146,11 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
     }
   };
     $routeProvider
+    .when("/", {
+      templateUrl: "static/views/home.html",
+      controller: "HomeController",
+      resolve: routeResolver,
+    })
       .when("/contact/", {
         templateUrl: "static/views/contact.html",
         controller: "ContactController",
@@ -1752,6 +1757,14 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
       console.log("ok clicked");
     }
 };
+;'use strict';
+
+angular.module('saturdayBall').controller('HomeController', HomeController);
+
+HomeController.$inject = ['$scope', '$routeParams'];
+
+function HomeController($scope, $routeParams) {
+}
 ;'use strict';
 
 angular.module('saturdayBall').controller('LeaderboardController', LeaderboardController);

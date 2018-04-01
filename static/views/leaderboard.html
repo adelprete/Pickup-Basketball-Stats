@@ -1,72 +1,75 @@
-<div class="page-header">
-  <h3 class="accent">Leaderboard</h3>
-</div>
+<div class="container" style="margin-bottom:100px;margin-top:80px;">
 
-<div>
-  <div class="row">
-    <div class="col-md-12">
-      <a ng-click="ShowHideForm()" id="toggle_filterform" style="cursor: pointer;">
-        <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
-        Toggle Filter Options
-      </a>
-    </div>
+  <div class="page-header">
+    <h3 class="accent">Leaderboard</h3>
   </div>
-  <form ng-show="isFormVisible" name="filterForm" ng-submit="FilterTables(play)" novalidate>
+
+  <div>
     <div class="row">
-      <div class="form-group col-md-2">
-        <label>Season</label>
-        <select required class="form-control" ng-options="o.id as o.title for o in filterOptions.seasons" name='season' ng-model="filterForm.season">
-        </select>
-      </div>
-      <div class="form-group col-md-2">
-        <label>Minimum Possessions</label>
-        <input type="number" style="width: 100%;" name="timestamp" class="form-control" ng-model="filterForm.possessions_min" ng-model-options="{debounce: 500}" required>
-        <div ng-show="filterForm.possessions_min.$invalid && filterForm.possessions_min.$touched">
-           Required!
-        </div>
-      </div>
-      <div class="form-group col-md-2">
-        <label>Minimum Shots</label>
-        <input type="number" style="width: 100%;" name="timestamp" class="form-control" ng-model="filterForm.fga_min" ng-model-options="{debounce: 500}" required>
-        <p class="help-block">Affects shooting related leaderboards</p>
-        <div ng-show="filterForm.fga_min.$invalid && filterForm.fga_min.$touched">
-           Required!
-        </div>
+      <div class="col-md-12">
+        <a ng-click="ShowHideForm()" id="toggle_filterform" style="cursor: pointer;">
+          <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
+          Toggle Filter Options
+        </a>
       </div>
     </div>
-  </form>
-</div>
-<ul class="nav nav-tabs" role="tablist" style="margin-top:15px;">
-  <li role="presentation" class="active">
-    <a href="#" data-target="#overview" aria-controls="overview" role="tab" data-toggle="tab">Overview</a>
-  </li>
-  <li role="presentation">
-    <a href="#" data-target="#totals" aria-controls="totals" role="tab" data-toggle="tab">Totals</a>
-  </li>
-  <li role="presentation">
-    <a href="#" data-target="#advtotals" aria-controls="advtotals" role="tab" data-toggle="tab">Adv. Totals</a>
-  </li>
-  <li role="presentation">
-    <a href="#" data-target="#per100" aria-controls="profile" role="tab" data-toggle="tab">Per 100</a>
-  </li>
-  <li role="presentation">
-    <a href="#" data-target="#advPer100" aria-controls="profile" role="tab" data-toggle="tab">Adv. Per 100</a>
-  </li>
-</ul>
-<div class="tab-content">
-  <div role="tabpanel" class="tab-pane active" id="overview">
-    <div ng-include="'static/partials/overviewBoard.html'"></div>
+    <form ng-show="isFormVisible" name="filterForm" ng-submit="FilterTables(play)" novalidate>
+      <div class="row">
+        <div class="form-group col-md-2">
+          <label>Season</label>
+          <select required class="form-control" ng-options="o.id as o.title for o in filterOptions.seasons" name='season' ng-model="filterForm.season">
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label>Minimum Possessions</label>
+          <input type="number" style="width: 100%;" name="timestamp" class="form-control" ng-model="filterForm.possessions_min" ng-model-options="{debounce: 500}" required>
+          <div ng-show="filterForm.possessions_min.$invalid && filterForm.possessions_min.$touched">
+             Required!
+          </div>
+        </div>
+        <div class="form-group col-md-2">
+          <label>Minimum Shots</label>
+          <input type="number" style="width: 100%;" name="timestamp" class="form-control" ng-model="filterForm.fga_min" ng-model-options="{debounce: 500}" required>
+          <p class="help-block">Affects shooting related leaderboards</p>
+          <div ng-show="filterForm.fga_min.$invalid && filterForm.fga_min.$touched">
+             Required!
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
-  <div ng-controller="TotalsLeaderboardController" role="tabpanel" class="tab-pane" id="totals">
-    <div ng-include="'static/partials/leaderboardTable.html'"></div>
-  </div>
-  <div ng-controller="AdvTotalsBoardController" role="tabpanel" class="tab-pane" id="advtotals">
-    <div ng-include="'static/partials/leaderboardTable.html'"></div>
-  </div>
-  <div ng-controller="Per100BoardController" role="tabpanel" class="tab-pane" id="per100">
-    <div ng-include="'static/partials/leaderboardTable.html'"></div>
-  </div>
-  <div ng-controller="AdvPer100BoardController" role="tabpanel" class="tab-pane" id="advPer100">
-    <div ng-include="'static/partials/leaderboardTable.html'"></div>
+  <ul class="nav nav-tabs" role="tablist" style="margin-top:15px;">
+    <li role="presentation" class="active">
+      <a href="#" data-target="#overview" aria-controls="overview" role="tab" data-toggle="tab">Overview</a>
+    </li>
+    <li role="presentation">
+      <a href="#" data-target="#totals" aria-controls="totals" role="tab" data-toggle="tab">Totals</a>
+    </li>
+    <li role="presentation">
+      <a href="#" data-target="#advtotals" aria-controls="advtotals" role="tab" data-toggle="tab">Adv. Totals</a>
+    </li>
+    <li role="presentation">
+      <a href="#" data-target="#per100" aria-controls="profile" role="tab" data-toggle="tab">Per 100</a>
+    </li>
+    <li role="presentation">
+      <a href="#" data-target="#advPer100" aria-controls="profile" role="tab" data-toggle="tab">Adv. Per 100</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="overview">
+      <div ng-include="'static/partials/overviewBoard.html'"></div>
+    </div>
+    <div ng-controller="TotalsLeaderboardController" role="tabpanel" class="tab-pane" id="totals">
+      <div ng-include="'static/partials/leaderboardTable.html'"></div>
+    </div>
+    <div ng-controller="AdvTotalsBoardController" role="tabpanel" class="tab-pane" id="advtotals">
+      <div ng-include="'static/partials/leaderboardTable.html'"></div>
+    </div>
+    <div ng-controller="Per100BoardController" role="tabpanel" class="tab-pane" id="per100">
+      <div ng-include="'static/partials/leaderboardTable.html'"></div>
+    </div>
+    <div ng-controller="AdvPer100BoardController" role="tabpanel" class="tab-pane" id="advPer100">
+      <div ng-include="'static/partials/leaderboardTable.html'"></div>
+    </div>
   </div>
 </div>

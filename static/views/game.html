@@ -1,89 +1,40 @@
 <title>{{ game.date }} - {{ game.title }}</title>
 
-<div ng-if="game" class="breadcrumbs" style="margin-bottom: 15px;"> /
-  <a href="/group/{{groupId}}/games" style="cursor: pointer;">Games</a> /
-  <a target="_self" ng-href="/group/{{groupId}}/games/recap/{{ game.id }}/" style="cursor: pointer;">Day recap</a> /
-  {{ game.date | date:'MMM d, y'}} - {{ game.title }}
-</div>
-
-<div ng-if="game" class="container">
-  <div class="row">
-    <div class="col-md-9 game-title" style="font-size:25px;">
-      <div class="col-md-12" style="text-align:center;">
-        <a ng-if="prev_game" href="/group/{{groupId}}/games/{{prev_game.id}}/" class="glyphicon glyphicon-chevron-left"></a>
-        <a ng-href="/group/{{groupId}}/games/recap/{{ game.id }}/" target="_self">{{ game.date | date:'MMM d, y'}}</a> - {{ game.title }}
-        <a ng-if="next_game" href="/group/{{groupId}}/games/{{next_game.id}}/" class="glyphicon glyphicon-chevron-right"></a>
-      </div>
-    </div>
-    <div class="col-md-7 col-md-offset-1 score-board">
-      <div class="sb-top-team">Good Guys</div>
-      <div class="sb-top-team-score">{{ game.team1_score }}</div>
-      <div></div>
-      <div class="sb-bottom-team">Bad Guys</div>
-      <div class="sb-bottom-team-score">{{ game.team2_score }}</div>
-    </div>
+<div class="container" style="margin-bottom:100px;margin-top:80px;">
+  <div ng-if="game" class="breadcrumbs" style="margin-bottom: 15px;"> /
+    <a href="/group/{{groupId}}/games" style="cursor: pointer;">Games</a> /
+    <a target="_self" ng-href="/group/{{groupId}}/games/recap/{{ game.id }}/" style="cursor: pointer;">Day recap</a> /
+    {{ game.date | date:'MMM d, y'}} - {{ game.title }}
   </div>
-  <div class="row visible-xs-block" style="margin-top: 10px;">
-    <div class="col-md-12 col-xs-12">
-      <div ng-if="RoleHelper.isAdmin(user, groupId) || RoleHelper.canEdit(user, groupId)">
-        <a ng-href="/group/{{ groupId }}/games/{{ game.id }}/edit-game/"
-           target="_self"
-           class="btn btn-primary col-xs-12">
-          Edit Game Details
-        </a>
-        <br>
-        <a href="/group/{{ groupId }}/games/{{ game.id }}/add-plays/"
-           class="btn btn-primary col-xs-12"
-           role="button"
-           style="margin-top:10px;">
-          Add/Edit Plays
-        </a>
-      </div>
-      <a href="/api/games/{{ game.id }}/export"
-         target="_self"
-         class="btn btn-primary col-xs-12"
-         role="button"
-         style="margin-top:10px;">
-        Export Plays
-      </a>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-9">
-      <div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
 
-      <div ng-if="game.youtube_id" class="embed-responsive embed-responsive-16by9" style="margin:15px 0px;">
-        <youtube-video class="embed-responsive-item" video-id="game.youtube_id" player="ytplayer"></youtube-video>
-      </div>
-
-      <ul class="nav nav-tabs" role="tablist" style="margin-top:15px;">
-        <li role="presentation" class="active">
-          <a href="#" data-target="#boxscore" aria-controls="boxscore" role="tab" data-toggle="tab">Box Score</a>
-        </li>
-        <li role="presentation">
-          <a href="#" data-target="#advanced" aria-controls="advanced" role="tab" data-toggle="tab">Adv Stats</a>
-        </li>
-      </ul>
-      <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="boxscore">
-          <div ng-include="'static/partials/boxscoreTables.html'"></div>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="advanced">
-          <div ng-include="'static/partials/advBoxscoreTables.html'"></div>
+  <div ng-if="game" class="container">
+    <div class="row">
+      <div class="col-md-9 game-title" style="font-size:25px;">
+        <div class="col-md-12" style="text-align:center;">
+          <a ng-if="prev_game" href="/group/{{groupId}}/games/{{prev_game.id}}/" class="glyphicon glyphicon-chevron-left"></a>
+          <a ng-href="/group/{{groupId}}/games/recap/{{ game.id }}/" target="_self">{{ game.date | date:'MMM d, y'}}</a> - {{ game.title }}
+          <a ng-if="next_game" href="/group/{{groupId}}/games/{{next_game.id}}/" class="glyphicon glyphicon-chevron-right"></a>
         </div>
       </div>
+      <div class="col-md-7 col-md-offset-1 score-board">
+        <div class="sb-top-team">Good Guys</div>
+        <div class="sb-top-team-score">{{ game.team1_score }}</div>
+        <div></div>
+        <div class="sb-bottom-team">Bad Guys</div>
+        <div class="sb-bottom-team-score">{{ game.team2_score }}</div>
+      </div>
     </div>
-    <div class="col-md-3" style="padding:0px;">
-      <div class="col-md-12 hidden-xs">
+    <div class="row visible-xs-block" style="margin-top: 10px;">
+      <div class="col-md-12 col-xs-12">
         <div ng-if="RoleHelper.isAdmin(user, groupId) || RoleHelper.canEdit(user, groupId)">
           <a ng-href="/group/{{ groupId }}/games/{{ game.id }}/edit-game/"
              target="_self"
-             class="btn btn-primary btn-sm">
+             class="btn btn-primary col-xs-12">
             Edit Game Details
           </a>
           <br>
           <a href="/group/{{ groupId }}/games/{{ game.id }}/add-plays/"
-             class="btn btn-primary btn-sm"
+             class="btn btn-primary col-xs-12"
              role="button"
              style="margin-top:10px;">
             Add/Edit Plays
@@ -91,93 +42,144 @@
         </div>
         <a href="/api/games/{{ game.id }}/export"
            target="_self"
-           class="btn btn-primary btn-sm"
+           class="btn btn-primary col-xs-12"
            role="button"
            style="margin-top:10px;">
           Export Plays
         </a>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-md-9">
+        <div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
 
-      <div class="col-md-12" style="margin-top: 15px;">
-        <div>
-          <a ng-click="showHideFilter()">
-            <span ng-hide="!!filterFormVisible" class="glyphicon glyphicon-chevron-right" style="color: #337ab7;"></span>
-            <span ng-show="filterFormVisible" class="glyphicon glyphicon-chevron-down" style="color: #337ab7;"></span>
-            Show Filters
-          </a>
+        <div ng-if="game.youtube_id" class="embed-responsive embed-responsive-16by9" style="margin:15px 0px;">
+          <youtube-video class="embed-responsive-item" video-id="game.youtube_id" player="ytplayer"></youtube-video>
         </div>
-        <div ng-show="filterFormVisible">
-          <h4 class="accent">Filters</h4>
-          <form>
-            <div class="form-group">
-              <label>Primary Play</label>
-              <select ng-options="o.code as o.name for o in playOptions.PRIMARY_PLAY" ng-model="filters.primary_play" class="form-control">
-                  <option value="">-------</option>
-              </select>
-              <label>Primary Player</label>
-              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.primary_player.id" class="form-control">
-                  <option value="">-------</option>
-              </select>
-              <label>Secondary Play</label>
-              <select ng-options="o.code as o.name for o in playOptions.SECONDARY_PLAY" ng-model="filters.secondary_play" class="form-control">
-                  <option value="">-------</option>
-              </select>
-              <label>Secondary Player</label>
-              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.secondary_player.id" class="form-control">
-                  <option value="">-------</option>
-              </select>
-              <label>Assist Play</label>
-              <select ng-options="o.code as o.name for o in playOptions.ASSIST_PLAY" ng-model="filters.assist" class="form-control">
-                  <option value="">-------</option>
-              </select>
-              <label>Assist Player</label>
-              <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.assist_player.id" class="form-control">
-                  <option value="">-------</option>
-              </select>
-            </div>
-          <form>
+
+        <ul class="nav nav-tabs" role="tablist" style="margin-top:15px;">
+          <li role="presentation" class="active">
+            <a href="#" data-target="#boxscore" aria-controls="boxscore" role="tab" data-toggle="tab">Box Score</a>
+          </li>
+          <li role="presentation">
+            <a href="#" data-target="#advanced" aria-controls="advanced" role="tab" data-toggle="tab">Adv Stats</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="boxscore">
+            <div ng-include="'static/partials/boxscoreTables.html'"></div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="advanced">
+            <div ng-include="'static/partials/advBoxscoreTables.html'"></div>
+          </div>
         </div>
       </div>
-      <div class="col-md-12">
-        <div id="play_title">
-          <h4 class="accent">Plays</h4>
-          <div style="overflow-y: scroll; overflow-x: hidden; height: 450px;">
-            <div ng-if="plays.length == 0">
-              No plays added yet
-            </div>
-            <div ng-repeat="play in plays | filter:search:true">
-              <div class="row">
-                <span class="col-xs-3">
-                  <a ng-click="seekToTime(play.time)">
-                    {{ play.time }}:
-                  </a>
-                </span>
-                <span class="col-xs-9">
-                  {{ play.primary_play_display }}
-                  {{ play.primary_player.first_name }} {{ play.primary_player.last_name[0] }}.
-                </span>
+      <div class="col-md-3" style="padding:0px;">
+        <div class="col-md-12 hidden-xs">
+          <div ng-if="RoleHelper.isAdmin(user, groupId) || RoleHelper.canEdit(user, groupId)">
+            <a ng-href="/group/{{ groupId }}/games/{{ game.id }}/edit-game/"
+               target="_self"
+               class="btn btn-primary btn-sm">
+              Edit Game Details
+            </a>
+            <br>
+            <a href="/group/{{ groupId }}/games/{{ game.id }}/add-plays/"
+               class="btn btn-primary btn-sm"
+               role="button"
+               style="margin-top:10px;">
+              Add/Edit Plays
+            </a>
+          </div>
+          <a href="/api/games/{{ game.id }}/export"
+             target="_self"
+             class="btn btn-primary btn-sm"
+             role="button"
+             style="margin-top:10px;">
+            Export Plays
+          </a>
+        </div>
+
+        <div class="col-md-12" style="margin-top: 15px;">
+          <div>
+            <a ng-click="showHideFilter()">
+              <span ng-hide="!!filterFormVisible" class="glyphicon glyphicon-chevron-right" style="color: #337ab7;"></span>
+              <span ng-show="filterFormVisible" class="glyphicon glyphicon-chevron-down" style="color: #337ab7;"></span>
+              Show Filters
+            </a>
+          </div>
+          <div ng-show="filterFormVisible">
+            <h4 class="accent">Filters</h4>
+            <form>
+              <div class="form-group">
+                <label>Primary Play</label>
+                <select ng-options="o.code as o.name for o in playOptions.PRIMARY_PLAY" ng-model="filters.primary_play" class="form-control">
+                    <option value="">-------</option>
+                </select>
+                <label>Primary Player</label>
+                <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.primary_player.id" class="form-control">
+                    <option value="">-------</option>
+                </select>
+                <label>Secondary Play</label>
+                <select ng-options="o.code as o.name for o in playOptions.SECONDARY_PLAY" ng-model="filters.secondary_play" class="form-control">
+                    <option value="">-------</option>
+                </select>
+                <label>Secondary Player</label>
+                <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.secondary_player.id" class="form-control">
+                    <option value="">-------</option>
+                </select>
+                <label>Assist Play</label>
+                <select ng-options="o.code as o.name for o in playOptions.ASSIST_PLAY" ng-model="filters.assist" class="form-control">
+                    <option value="">-------</option>
+                </select>
+                <label>Assist Player</label>
+                <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.assist_player.id" class="form-control">
+                    <option value="">-------</option>
+                </select>
               </div>
-              <div ng-if="play.secondary_play_display" class="row">
-                <span class="col-xs-9 col-xs-offset-3">
-                  {{ play.secondary_play_display }}
-                  {{ play.secondary_player.first_name }} {{ play.secondary_player.last_name[0]}}
-                  <span ng-if="play.secondary_player.first_name.indexOf(Team) > -1" >.
-                </span>
+            <form>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div id="play_title">
+            <h4 class="accent">Plays</h4>
+            <div style="overflow-y: scroll; overflow-x: hidden; height: 450px;">
+              <div ng-if="plays.length == 0">
+                No plays added yet
               </div>
-              <div ng-if="play.assist_display" class="row">
-                <span class="col-xs-9 col-xs-offset-3">
-                  {{ play.assist_display }}
-                  {{ play.assist_player.first_name }} {{ play.assist_player.last_name[0]}}.
-                </span>
+              <div ng-repeat="play in plays | filter:search:true">
+                <div class="row">
+                  <span class="col-xs-3">
+                    <a ng-click="seekToTime(play.time)">
+                      {{ play.time }}:
+                    </a>
+                  </span>
+                  <span class="col-xs-9">
+                    {{ play.primary_play_display }}
+                    {{ play.primary_player.first_name }} {{ play.primary_player.last_name[0] }}.
+                  </span>
+                </div>
+                <div ng-if="play.secondary_play_display" class="row">
+                  <span class="col-xs-9 col-xs-offset-3">
+                    {{ play.secondary_play_display }}
+                    {{ play.secondary_player.first_name }} {{ play.secondary_player.last_name[0]}}
+                    <span ng-if="play.secondary_player.first_name.indexOf(Team) > -1" >.
+                  </span>
+                </div>
+                <div ng-if="play.assist_display" class="row">
+                  <span class="col-xs-9 col-xs-offset-3">
+                    {{ play.assist_display }}
+                    {{ play.assist_player.first_name }} {{ play.assist_player.last_name[0]}}.
+                  </span>
+                </div>
+                <div ng-if="play.top_play_rank" class="row">
+                  <span class="col-sm-9 col-sm-offset-3">
+                    <span ng-show="{{play.top_play_rank.length}} === 3" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    <span ng-show="{{play.top_play_rank.length}} === 4" class="glyphicon glyphicon-cloud" aria-hidden="true"></span>
+                     {{ play.description }}
+                  </span>
+                </div>
+                <br>
               </div>
-              <div ng-if="play.top_play_rank" class="row">
-                <span class="col-sm-9 col-sm-offset-3">
-                  <span ng-show="{{play.top_play_rank.length}} === 3" class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                  <span ng-show="{{play.top_play_rank.length}} === 4" class="glyphicon glyphicon-cloud" aria-hidden="true"></span>
-                   {{ play.description }}
-                </span>
-              </div>
-              <br>
             </div>
           </div>
         </div>

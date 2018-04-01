@@ -1,0 +1,171 @@
+.splash-header {
+		width: 100%;
+    height: 100%;
+		margin: 0;
+    background: url(../../media/basketball_sky.jpg) center center no-repeat;
+    background-size: cover;
+}
+
+.splash-header-box {
+  color: white;
+  padding-left: 10px;
+  margin-top: 10%;
+}
+
+.splash-header-text {
+  border: 10px solid white;
+  padding:15px;
+}
+
+.splash-header-text span {
+  font-size:100px;
+  line-height: 80px;
+}
+
+.splash-header-subtext {
+  font-size: 20px;
+  text-align:center;
+}
+
+div.splash-about {
+  width: 100%;
+  margin: 0;
+  margin-bottom: 70px;
+  background-color: white;
+  text-align: center;
+}
+
+div.splash-about div {
+  padding:50px 0px;
+}
+
+div.splash-about h2 {
+  font-weight: bold;
+}
+
+div.splash-about p {
+  font-size:18px;
+}
+
+div.splash-about img {
+  display: block;
+  width: 70%;
+  border: 1px solid black;
+  margin: 0 auto;
+}
+
+div.splash-feature {
+  width: 100%;
+  margin: 0;
+  background-color: #090f0f;
+  color: white;
+  padding-bottom: 20px;
+}
+
+.first-feature {
+  padding: 50px 0px 20px 0px;
+}
+
+div.splash-feature h2 {
+  text-align: center;
+  margin-top: 0px;
+  text-decoration: underline;
+}
+
+div.splash-feature-text {
+  text-align: center;
+  font-size: 18px;
+  padding: 80px 50px 100px 50px;
+}
+
+div.splash-feature img {
+  display: block;
+  width: 80%;
+  border: 1px solid black;
+  margin: 0 auto;
+}
+
+div.splash-get-started {
+  width: 100%;
+  margin: 0;
+  background-color: white;
+  text-align: center;
+  padding:50px 0px 200px 0px;
+}
+
+div.splash-get-started h2 {
+  font-weight: bold;
+}
+
+/*
+@media screen and (max-width: 325px) {
+  .splash-header {
+      height: 300px;
+  }
+
+  .splash-header-text {
+    border: 2px solid white !important;
+    padding: 5px !important;
+    margin-top: 5%;
+  }
+
+  .splash-header-text span {
+    font-size: 35px !important;
+    line-height: 35px !important;
+  }
+
+  .splash-header-subtext {
+    font-size: 10px !important;
+  }
+}
+*/
+@media screen and (max-width: 768px) {
+  .splash-header {
+      height: 300px;
+  }
+
+  .splash-header-box {
+    margin-top: 70px;
+  }
+
+  .splash-header-text {
+    border: 3px solid white !important;
+    padding: 5px !important;
+  }
+
+  .splash-header-text span {
+    font-size: 35px !important;
+    line-height: 35px !important;
+  }
+
+  .splash-header-subtext {
+    font-size: 11px !important;
+  }
+
+  .splash-about {
+    margin-bottom: 50px !important;
+  }
+
+  .splash-about div {
+    padding: 20px 10px !important;
+  }
+
+  .splash-img img {
+    width: 100% !important;
+  }
+
+  .first-feature {
+    padding: 20px 0px 20px 0px !important;
+  }
+
+  div.splash-feature-text {
+    padding: 20px 10px 20px 10px;
+  }
+}
+
+@media screen and (min-width: 375px) and (max-width: 768px) {
+  .splash-header-text span {
+    font-size: 40px !important;
+    line-height: 40px !important;
+  }
+}

@@ -13,7 +13,7 @@ urlpatterns = [
         url(r'^group/(?P<group_id>\d+)/$',
             bviews.root,
             name='grouproot'),
-        url(r'^$',RedirectView.as_view(url='/group/1/', permanent=False), name='go-to-group'),
+        url(r'^$',TemplateView.as_view(template_name='base_angular.html'), name='go-to-group'),
         url(r'^ajax-standings/$',
             bviews.ajax_standings,
             name='ajax_standings'),
