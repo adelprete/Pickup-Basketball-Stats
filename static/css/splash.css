@@ -97,28 +97,6 @@ div.splash-get-started h2 {
   font-weight: bold;
 }
 
-/*
-@media screen and (max-width: 325px) {
-  .splash-header {
-      height: 300px;
-  }
-
-  .splash-header-text {
-    border: 2px solid white !important;
-    padding: 5px !important;
-    margin-top: 5%;
-  }
-
-  .splash-header-text span {
-    font-size: 35px !important;
-    line-height: 35px !important;
-  }
-
-  .splash-header-subtext {
-    font-size: 10px !important;
-  }
-}
-*/
 @media screen and (max-width: 768px) {
   .splash-header {
       height: 300px;
@@ -168,4 +146,63 @@ div.splash-get-started h2 {
     font-size: 40px !important;
     line-height: 40px !important;
   }
+}
+
+@media screen and (min-width: 2000px) and (max-width: 4000px) {
+
+  .splash-header-box {
+    margin-top: 300px;
+  }
+
+  .splash-header-text {
+    //border: 3px solid white !important;
+    //padding: 5px !important;
+  }
+
+  .splash-header-text span {
+    font-size: 200px !important;
+    line-height: 160px !important;
+  }
+
+  .splash-header-subtext {
+    font-size: 50px !important;
+  }
+
+  .splash-about {
+    margin-bottom: 50px !important;
+  }
+
+  .splash-about div {
+    padding: 60px 10px !important;
+  }
+
+	div.splash-about p {
+		font-size: 35px;
+  }
+
+  .splash-img img {
+    width: 70% !important;
+  }
+
+  .first-feature {
+    padding: 20px 0px 20px 0px !important;
+  }
+
+  div.splash-feature-text {
+    padding: 150px 10px 40px 120px;
+  }
+	div.splash-feature-text h2{
+    font-size: 50px;
+  }
+	div.splash-feature-text p{
+    font-size: 30px;
+  }
+
+	div.splash-get-started h2 {
+		font-size: 50px;
+	}
+
+	div.splash-get-started .btn {
+		font-size: 30px;
+	}
 }

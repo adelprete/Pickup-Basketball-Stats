@@ -71,7 +71,7 @@ class MemberInviteViewSet(viewsets.ModelViewSet):
             }
             return Response(response, status=403)
         response = super(MemberInviteViewSet, self).create(request, *args, **kwargs)
-        url = "http://127.0.0.1:8000/accept-invite/" + response.data['code']
+        url = settings.APP_URL + "accept-invite/" + response.data['code']
         text_content = "You've been invited to a group on SaturdayBall.com:\n\n%s" % (url)
         html_content = "You've been invited to a group on SaturdayBall.com:<br><br><a href={0}>{0}</a>".format(url)
         send_mail(
