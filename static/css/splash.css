@@ -93,8 +93,17 @@ div.splash-get-started {
   padding:50px 0px 200px 0px;
 }
 
-div.splash-get-started h2 {
+div.splash-get-started h2, .splash-example h2 {
   font-weight: bold;
+}
+
+div.splash-example {
+	width: 100%;
+  margin: 0;
+	color: white;
+  background-color: #002B54;
+  text-align: center;
+  padding:50px 0px 100px 0px;
 }
 
 @media screen and (max-width: 768px) {
@@ -203,6 +212,14 @@ div.splash-get-started h2 {
 	}
 
 	div.splash-get-started .btn {
+		font-size: 30px;
+	}
+
+	div.splash-example h2 {
+		font-size: 50px;
+	}
+
+	div.splash-example .btn {
 		font-size: 30px;
 	}
 }
