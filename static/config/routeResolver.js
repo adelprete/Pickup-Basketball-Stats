@@ -38,7 +38,7 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
         }
         else if ($route.current.originalPath === '/group/create/') {
           if (response.username === '') {
-                redirectTo('/group/1', deferred, response);
+            redirectTo('/accounts/login/?next=' + $location.path(), deferred, response);
           }
         }
         deferred.resolve(response);

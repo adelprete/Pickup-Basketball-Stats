@@ -257,7 +257,7 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
         }
         else if ($route.current.originalPath === '/group/create/') {
           if (response.username === '') {
-                redirectTo('/group/1', deferred, response);
+            redirectTo('/accounts/login/?next=' + $location.path(), deferred, response);
           }
         }
         deferred.resolve(response);
@@ -921,7 +921,9 @@ angular.module('saturdayBall').factory('Session', Session);
 Session.$inject = ['$q', '$http', 'UserService', 'GroupService']
 
 function Session($q, $http, UserService, GroupService) {
-  var user;
+  var user = {
+    username: ""
+  };
   var currentGroup;
   var service = {
       init: init,
@@ -940,7 +942,6 @@ function Session($q, $http, UserService, GroupService) {
       user = result;
       deferred.resolve(user);
     }, function(error){
-      console.log(error);
       deferred.reject(error);
     });
 
@@ -960,7 +961,7 @@ function Session($q, $http, UserService, GroupService) {
   }
 
   function available() {
-    return !!user;
+    return user.username !== "";
   }
 
 };

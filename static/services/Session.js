@@ -5,7 +5,9 @@ angular.module('saturdayBall').factory('Session', Session);
 Session.$inject = ['$q', '$http', 'UserService', 'GroupService']
 
 function Session($q, $http, UserService, GroupService) {
-  var user;
+  var user = {
+    username: ""
+  };
   var currentGroup;
   var service = {
       init: init,
@@ -24,7 +26,6 @@ function Session($q, $http, UserService, GroupService) {
       user = result;
       deferred.resolve(user);
     }, function(error){
-      console.log(error);
       deferred.reject(error);
     });
 
@@ -44,7 +45,7 @@ function Session($q, $http, UserService, GroupService) {
   }
 
   function available() {
-    return !!user;
+    return user.username !== "";
   }
 
 };
