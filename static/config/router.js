@@ -11,6 +11,7 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
       templateUrl: "static/views/home.html",
       controller: "HomeController",
       resolve: routeResolver,
+      title: "Custom Title"
     })
       .when("/contact/", {
         templateUrl: "static/views/contact.html",

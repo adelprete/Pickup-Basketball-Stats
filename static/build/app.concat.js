@@ -4,7 +4,8 @@ angular.module('saturdayBall', [
   'ngRoute',
   'ngAnimate',
   'ui.bootstrap',
-  'youtube-embed'
+  'youtube-embed',
+  'updateMeta'
 ]);
 ;'use strict';
 
@@ -150,6 +151,7 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
       templateUrl: "static/views/home.html",
       controller: "HomeController",
       resolve: routeResolver,
+      title: "Custom Title"
     })
       .when("/contact/", {
         templateUrl: "static/views/contact.html",

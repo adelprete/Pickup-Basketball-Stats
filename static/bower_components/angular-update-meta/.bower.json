@@ -1,0 +1,48 @@
+{
+  "name": "angular-update-meta",
+  "version": "2.0.1",
+  "authors": [
+    {
+      "name": "Jurgen Van de Moere",
+      "email": "jurgen.van.de.moere@gmail.com"
+    }
+  ],
+  "keywords": [
+    "angular",
+    "angularjs",
+    "seo",
+    "prerender",
+    "prerender.io",
+    "meta",
+    "head"
+  ],
+  "main": [
+    "dist/update-meta.js"
+  ],
+  "ignore": [
+    "src",
+    "test",
+    "gulpfile.js",
+    "karma-dist-concatenated.conf.js",
+    "karma-dist-minified.conf.js",
+    "**/.*"
+  ],
+  "dependencies": {
+    "angular": "^1.2.x"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.2.x",
+    "angular-scenario": "^1.2.x"
+  },
+  "homepage": "https://github.com/jvandemo/angular-update-meta",
+  "_release": "2.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.1",
+    "commit": "aaaed88b34ca005f8bf6904a9c047f2d8dab3c99"
+  },
+  "_source": "https://github.com/jvandemo/angular-update-meta.git",
+  "_target": "^2.0.1",
+  "_originalSource": "angular-update-meta",
+  "_direct": true
+}
