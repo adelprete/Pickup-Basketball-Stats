@@ -149,13 +149,13 @@ div.splash-example {
     padding: 20px 10px 20px 10px;
   }
 }
-/*
+
 @media screen and (min-width: 1023px) and (max-width: 1025px) {
 	.splash-header {
-	    max-height:800px !important;
+	    max-height:200px;
 	}
 }
-*/
+
 
 @media screen and (min-width: 375px) and (max-width: 768px) {
   .splash-header-text span {
