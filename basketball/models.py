@@ -379,36 +379,17 @@ class Player(models.Model):
 
             #Offensive Rating = (Total Team Points / Offensive Possessions) x 100
             #Defensive Rating = (Total Team Points / Defensive Possessions) x 100
-            elif stat == 'off_rating' or stat == 'def_rating':
+            elif stat == 'off_rating' or stat == 'def_rating' or stat == 'plus_minus_rating':
                 result = statlines.aggregate(Sum('off_pos'), Sum('def_pos'), Sum('off_team_pts'),Sum('def_team_pts'))
-
-                """
-                if stat == 'off_rating':
-                    team1_games = Game.objects.filter(team1=self)
-                    team2_games = Game.objects.filter(team2=self)
-                else:
-                    team1_games = Game.objects.filter(team2=self)
-                    team2_games = Game.objects.filter(team1=self)
-
-                if season:
-                    team1_games = team1_games.filter(date__range=(season.start_date, season.end_date))
-                    team2_games = team2_games.filter(date__range=(season.start_date, season.end_date))
-
-                team1_result = team1_games.aggregate(Sum("team1_score"))
-                team2_result = team2_games.aggregate(Sum("team2_score"))
-
-                if team1_result['team1_score__sum'] == None:
-                    team1_result['team1_score__sum'] = 0
-                if team2_result['team2_score__sum'] == None:
-                    team2_result['team2_score__sum'] = 0
-
-                total_team_points = team1_result['team1_score__sum'] + team2_result['team2_score__sum']
-                """
 
                 if stat == 'off_rating' and result['off_pos__sum']:
                     percentage = result['off_team_pts__sum'] / result['off_pos__sum'] * 100
                 elif stat == 'def_rating' and result['def_pos__sum']:
                     percentage = result['def_team_pts__sum'] / result['def_pos__sum'] * 100
+                elif stat == 'plus_minus_rating' and result['off_pos__sum'] and result['def_pos__sum']:
+                    off_percentage = result['off_team_pts__sum'] / result['off_pos__sum'] * 100
+                    def_percentage = result['def_team_pts__sum'] / result['def_pos__sum'] * 100
+                    percentage = off_percentage - def_percentage
 
             data_dict[stat] = round(percentage, 1)
         return data_dict
@@ -901,6 +882,7 @@ class SeasonPer100Statline(models.Model):
     to = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
     off_rating = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
     def_rating = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
+    plus_minus_rating = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
     unast_fgm_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
     unast_fga_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)
     ts_percent = models.DecimalField(max_digits=6, decimal_places=1, default=0.0)

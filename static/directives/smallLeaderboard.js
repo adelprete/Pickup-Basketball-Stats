@@ -70,7 +70,6 @@ function smallLeaderboard(PlayerService, $q, Per100Service) {
 
       scope.$watch('per100Statlines', function() {
         if (scope.per100Statlines) {
-          console.log('per100Statlines');
           updateSmallLeaderboard();
         }
       });

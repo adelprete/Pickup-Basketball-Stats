@@ -101,6 +101,7 @@ angular
       'ba': "Block Against (Whenver your shot gets blocked)",
       'off_rating': 'Points scored per 100 possessions while you\'re on the floor',
       'def_rating': 'Points scored against your per 100 possessions while you\'re on the floor',
+      'plus_minus_rating': 'Plus/Minus. Offensive Rating subtracted by Defensive Rating',
       'ts_percent': 'True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA',
       'tp_percent': 'True Passing Percentage. Percentage of points made following your assists and potential assists',
       'ast_fgm_percent': 'Assisted Shooting %.  Shooting percentage of shots that were assisted by another player.',
@@ -419,7 +420,6 @@ function smallLeaderboard(PlayerService, $q, Per100Service) {
 
       scope.$watch('per100Statlines', function() {
         if (scope.per100Statlines) {
-          console.log('per100Statlines');
           updateSmallLeaderboard();
         }
       });
@@ -744,6 +744,7 @@ function Per100Service($q, $http) {
     'treb_percent',
     'off_rating',
     'def_rating',
+    'plus_minus_rating',
     'fgm_percent',
     'threepm_percent',
     'ts_percent',
@@ -817,6 +818,11 @@ function Per100Service($q, $http) {
         break;
       case 'def_rating':
         result = statline['def_team_pts'] / statline['def_pos'] * 100;
+        break;
+      case 'plus_minus_rating':
+        var off_rating = statline['off_team_pts'] / statline['off_pos'] * 100;
+        var def_rating = statline['def_team_pts'] / statline['def_pos'] * 100;
+        result = off_rating - def_rating;
         break;
       case 'fgm_percent':
         result = statline['fgm'] / statline['fga'] * 100;
@@ -924,7 +930,8 @@ Session.$inject = ['$q', '$http', 'UserService', 'GroupService']
 
 function Session($q, $http, UserService, GroupService) {
   var user = {
-    username: ""
+    username: "",
+    group_permissions: []
   };
   var currentGroup;
   var service = {

@@ -92,6 +92,7 @@ angular
       'ba': "Block Against (Whenver your shot gets blocked)",
       'off_rating': 'Points scored per 100 possessions while you\'re on the floor',
       'def_rating': 'Points scored against your per 100 possessions while you\'re on the floor',
+      'plus_minus_rating': 'Plus/Minus. Offensive Rating subtracted by Defensive Rating',
       'ts_percent': 'True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA',
       'tp_percent': 'True Passing Percentage. Percentage of points made following your assists and potential assists',
       'ast_fgm_percent': 'Assisted Shooting %.  Shooting percentage of shots that were assisted by another player.',

@@ -6,7 +6,7 @@ totals_statistics = [
         {'stat':'threepm', 'header':'3PM', 'title':'Three Pointers Made (Any shot made behind te 3point line)'},
         {'stat':'threepa', 'header':'3PA', 'title':'Three Pointers Attempted (Any shot attempted behind the 3point line)'},
         {'stat':'oreb', 'header':'OFF', 'title':'Offensive Rebounds (A rebound after a teammate/self misses)'},
-        {'stat':'dreb', 'header':'DEF', 'title':'defensive Rebounds (A rebound after an opponent misses)'},
+        {'stat':'dreb', 'header':'DEF', 'title':'Defensive Rebounds (A rebound after an opponent misses)'},
         {'stat':'total_rebounds', 'header':'REB', 'title':'Total Rebounds (A rebound after any miss)'},
         {'stat':'asts', 'header':'AST', 'title':'Assists (A pass that leads to a score)'},
         {'stat':'pot_ast', 'header':'P.AST', 'title':"Potential Assists (A pass that would've lead to a score if the receiver made the shot)"},
@@ -147,6 +147,12 @@ adv_per_100_statistics = [
             'header':'GP',
             'full_name': 'Games Played',
             'title':'Games Played'
+        },
+        {
+            'stat':'plus_minus_rating',
+            'header':'+/-',
+            'full_name': 'Plus/Minus',
+            'title':'Plus/Minus.  This is your Offensive Rating subtracted by your Defensive Rating'
         },
         {
             'stat':'ts_percent',

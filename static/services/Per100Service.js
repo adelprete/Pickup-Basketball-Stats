@@ -26,6 +26,7 @@ function Per100Service($q, $http) {
     'treb_percent',
     'off_rating',
     'def_rating',
+    'plus_minus_rating',
     'fgm_percent',
     'threepm_percent',
     'ts_percent',
@@ -99,6 +100,11 @@ function Per100Service($q, $http) {
         break;
       case 'def_rating':
         result = statline['def_team_pts'] / statline['def_pos'] * 100;
+        break;
+      case 'plus_minus_rating':
+        var off_rating = statline['off_team_pts'] / statline['off_pos'] * 100;
+        var def_rating = statline['def_team_pts'] / statline['def_pos'] * 100;
+        result = off_rating - def_rating;
         break;
       case 'fgm_percent':
         result = statline['fgm'] / statline['fga'] * 100;

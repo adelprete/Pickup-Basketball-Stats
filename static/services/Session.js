@@ -6,7 +6,8 @@ Session.$inject = ['$q', '$http', 'UserService', 'GroupService']
 
 function Session($q, $http, UserService, GroupService) {
   var user = {
-    username: ""
+    username: "",
+    group_permissions: []
   };
   var currentGroup;
   var service = {
