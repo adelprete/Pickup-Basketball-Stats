@@ -19,6 +19,7 @@ function AdvPer100BoardController($scope, $controller, StatlineService, PlayerSe
     $scope.headers = [
       ['player.first_name', 'Name'],
       ['gp', 'GP'],
+      ['plus_minus_rating', '+/-'],
       ['ts_percent', 'TS%'],
       ['tp_percent', 'TP%'],
       ['ast_fgm_percent', 'AST.FGM%'],
