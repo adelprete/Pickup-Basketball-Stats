@@ -48,7 +48,7 @@
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-        {% if request.path != '/accounts/login/' %}
+        {% if '/accounts/' not in request.path %}
     			<li id="home_link"><a href="{% url 'grouproot' group.id %}">Home <span class="sr-only">(current)</span></a></li>
     			<li id="players_link"><a href="{% url 'players_home' group.id %}">Players</a></li>
     			<li id="games_link"><a href="/group/{{ group.id }}/games/">Games</a></li>

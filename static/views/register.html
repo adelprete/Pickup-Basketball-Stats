@@ -11,10 +11,12 @@
       <div class="form-group col-md-3">
         <label>*Username</label>
         <input type="text" name="username" ng-model="userModel.username" class="form-control" required></input>
+        <span ng-bind="formErrors.username[0]" style="color: red"></span>
       </div>
       <div class="form-group col-md-3">
         <label>*Email</label>
         <input type="text" name="email" ng-model="userModel.email" class="form-control" ng-pattern="/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/" required></input>
+        <span ng-bind="formErrors.email" style="color: red"></span>
       </div>
     </div>
     <div class="row">
@@ -46,4 +48,4 @@
     <button type="submit" class="btn btn-default btn-primary" ng-disabled="registerform.$invalid">Register</button>
     {{ message }}
   </form>
-</div>    
+</div>

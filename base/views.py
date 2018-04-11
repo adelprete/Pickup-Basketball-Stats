@@ -1,4 +1,4 @@
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -33,9 +33,17 @@ class CreateUserView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         member_profile_data = request.data.pop('memberprofile', None)
+        if User.objects.filter(email=request.data['email']):
+            return Response({'email': 'Email is already in use'}, status=status.HTTP_400_BAD_REQUEST)
         response = super(CreateUserView, self).post(request, *args, **kwargs)
         member_profile_data['user'] = User.objects.get(id=response.data['id'])
         member_profie = MemberProfile.objects.create(**member_profile_data)
+
+        send_mail(
+            "New user",
+            "New user created %s." % (User.objects.get(id=response.data['id']).username),
+            "no-reply@saturdayball.com",
+            ["adelprete87@gmail.com"])
 
         return Response(response.data)
 

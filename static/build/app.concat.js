@@ -2152,6 +2152,7 @@ function RegisterController($scope, $route, UserService, $timeout, $location){
     $scope.message = "";
     $scope.submit = submit;
     $scope.userModel = {};
+    $scope.formErrors = {};
     $scope.verifypassword;
 
     //////////////////
@@ -2169,6 +2170,7 @@ function RegisterController($scope, $route, UserService, $timeout, $location){
         }, 3000);
 
       }, function(response){
+        $scope.formErrors = response.data;
         $scope.message = "Registration Failed.";
       })
     }
