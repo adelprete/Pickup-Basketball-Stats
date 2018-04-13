@@ -22,6 +22,25 @@ html, body {
 	text-decoration: None;
 }
 
+.custom-responsive-img {
+	height: 170px;
+	width: 200px;
+}
+
+@media screen and (max-width: 768px) {
+	.custom-responsive-img {
+	    height: 76px !important;
+			width: 76px !important;
+	}
+}
+
+@media screen and (min-width: 768px) and (max-width: 1200px) {
+	.custom-responsive-img {
+	    height: 95px !important;
+			width: 95px !important;
+	}
+}
+
 .icon-flipped {
     transform: scaleX(-1);
     -moz-transform: scaleX(-1);

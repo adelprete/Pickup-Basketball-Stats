@@ -41,7 +41,7 @@
 			<div class="col-xs-4 col-sm-2 col-equal" style="margin-top:15px;text-align:center;">
 				<a href="{{ player.get_absolute_url }}">
 				{% if player.image_src %}
-					<img src="{{ player.image_src.url }}" class="img-responsive img-circle" style="height: 170px; width: 200px;">
+					<img src="{{ player.image_src.url }}" class="img-responsive img-circle custom-responsive-img">
 				{% else %}
 					<img src="{% thumbnail object.image|default:'signup_male.png' 200x200 %}" class="img-responsive img-circle">
 				{% endif %}
