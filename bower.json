@@ -22,6 +22,7 @@
     "angular-youtube-mb": "^1.3.1",
     "angular-bootstrap": "^2.5.0",
     "matchHeight": "matchheight#^0.7.2",
-    "angular-update-meta": "^2.0.1"
+    "angular-update-meta": "^2.0.1",
+    "ui-cropper": "^1.0.6"
   }
 }

@@ -11,7 +11,7 @@
 		<div class="row">
 			<div class="col-md-1">
 				<form action="{% url 'create_player' group_id=group.id %}">
-					<input class="btn btn-primary btn-sm" type="submit" value="Create New Player">
+					<a href="/group/{{ group.id }}/players/create" target="_self" class="btn btn-primary btn-sm">Create New Player</a>
 				</form>
 			</div>
 		</div><br>

@@ -449,6 +449,16 @@ class Player(models.Model):
 
         return data_dict
 
+    def save(self, *args, **kwargs):
+        if self.id is None:
+            saved_image = self.image_src
+            self.image_src = None
+            super(Player, self).save(*args, **kwargs)
+            self.image_src = saved_image
+            kwargs.pop('force_insert')
+
+        super(Player, self).save(*args, **kwargs)
+
     class Meta():
         ordering = ['first_name']
 

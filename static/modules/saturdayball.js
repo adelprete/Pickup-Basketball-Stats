@@ -5,5 +5,6 @@ angular.module('saturdayBall', [
   'ngAnimate',
   'ui.bootstrap',
   'youtube-embed',
-  'updateMeta'
+  'updateMeta',
+  'uiCropper'
 ]);

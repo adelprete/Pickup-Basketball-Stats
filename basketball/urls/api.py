@@ -33,6 +33,11 @@ game_list = GameViewSet.as_view({
     'get': 'list'
 })
 
+player_details = PlayerViewSet.as_view({
+    'get': 'retrieve',
+    'post': 'update'
+})
+
 player_list = PlayerViewSet.as_view({
     'get': 'list'
 })
@@ -44,6 +49,8 @@ router.register(r'contacts', ContactViewSet)
 router.register(r'daily-statlines', DailyStatlineViewSet)
 router.register(r'member-permissions', MemberPermissionViewSet)
 router.register(r'member-invite', MemberInviteViewSet)
+router.register(r'players', PlayerViewSet)
+
 router.register(r'season-statlines', SeasonStatlineViewSet, 'SeasonStatline')
 
 urlpatterns = [
@@ -52,7 +59,6 @@ urlpatterns = [
     url(r'^user/create/', CreateUserView.as_view()),
 	url(r'^plays/$',  plays_list),
     url(r'^plays/(?P<pk>[0-9]+)/$',  plays_details),
-    url(r'^players/(?P<group_id>[0-9]+)/$',  player_list),
     url(r'^games/groupid/(?P<group_id>[0-9]+)/$',  game_list),
     url(r'^games/(?P<pk>[0-9]+)/$',  game_details),
     url(r'^games/(?P<pk>[0-9]+)/export/$', export_plays),
@@ -60,7 +66,10 @@ urlpatterns = [
     url(r'^games/(?P<pk>[0-9]+)/adv-box-score/$',  game_adv_box_score),
     url(r'^games/(?P<pk>[0-9]+)/calculate-statlines/$',  calculate_statlines),
     url(r'^group/(?P<pk>[0-9]+)/verify-admin/$',  verify_group_admin),
-    url(r'^group/(?P<pk>[0-9]+)/seasons/$',  group_seasons)
+    url(r'^group/(?P<pk>[0-9]+)/seasons/$',  group_seasons),
+    url(r'^group/(?P<group_id>[0-9]+)/players/$',  group_seasons),
+
+
 ]
 
 urlpatterns += router.urls

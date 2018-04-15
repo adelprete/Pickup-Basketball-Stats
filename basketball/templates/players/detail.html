@@ -12,9 +12,13 @@
 		<div class="page-header">
 			<h2 class="accent" style="{% if not request.user.is_anonymous %}display:inline;{% endif %}">{{ player.get_full_name }}</h2>
 			{% if canEdit %}
-				<form style="display:inline;" action="{% url 'edit_player' group_id=group.id id=player.id %}">
-					<button type="submit" class="btn btn-primary btn-sm" style="margin:-10px 0px 0px 10px;">Edit Player Details</button>
-				</form>
+				<a
+						href="/group/{{ group.id }}/players/{{ player.id }}/edit"
+						target="_self"
+						class="col-md-1 col-xs-12 btn btn-primary"
+						style="float: right;">
+						Edit Player
+				</a>
 			{% endif %}
 		</div>
 	</div>

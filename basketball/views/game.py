@@ -343,7 +343,8 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from basketball.serializers import (
     PlayCreateUpdateSerializer, PlayRetrieveListSerializer,
-    DailyStatlineSerializer, GameSerializer, GameSnippetSerializer, PlayerSerializer, SeasonStatlineSerializer
+    DailyStatlineSerializer, GameSerializer, GameSnippetSerializer, PlayerSerializer,
+    SeasonStatlineSerializer, PlayerCreateUpdateSerializer
 )
 from basketball import filters
 from rest_framework import viewsets
@@ -445,15 +446,30 @@ class GameViewSet(viewsets.ModelViewSet):
         response = super(GameViewSet, self).list(request, *args, **kwargs)
         return response
 
+from rest_framework.parsers import FormParser, MultiPartParser
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = bmodels.Player.objects.all()
-    serializer_class = PlayerSerializer
+    serializer_class = PlayerCreateUpdateSerializer
     filter_backend = (drf_filters.DjangoFilterBackend,)
+    filter_fields = ('group', 'first_name')
 
-    def list(self, request, group_id):
-        players = bmodels.Player.objects.filter(group__id=group_id)
-        serializer = PlayerSerializer(players, many=True)
-        return Response(serializer.data)
+    action_serializers = {
+        'list': PlayRetrieveListSerializer,
+    }
+
+    def get_serializer_class(self):
+        if hasattr(self, 'action_serializers'):
+            if self.action in self.action_serializers:
+                return self.action_serializers[self.action]
+        return super(PlayerViewSet, self).get_serializer_class()
+
+    def list(self, request, group_id=None):
+        if group_id:
+            players = bmodels.Player.objects.filter(group__id=group_id)
+            serializer = PlayerSerializer(players, many=True)
+            return Response(serializer.data)
+        return super().list(request)
+
 
 
 class DailyStatlineViewSet(viewsets.ModelViewSet):

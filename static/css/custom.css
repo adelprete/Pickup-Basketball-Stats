@@ -156,3 +156,10 @@ ul.messages li {
 	margin-top: 5px;
 	margin-bottom: 5px
 }
+
+.cropArea {
+  background: #E4E4E4;
+  overflow: hidden;
+  width:500px;
+  height:350px;
+}

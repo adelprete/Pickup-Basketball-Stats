@@ -16,6 +16,8 @@
 	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
 	<link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}" type="text/css">
   <link rel="stylesheet" href="{% static 'bower_components/angular-bootstrap/ui-bootstrap-csp.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'bower_components/ui-cropper/compile/minified/ui-cropper.css' %}" type="text/css">
+
   <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
   <link rel="stylesheet" href="{% static 'css/splash.css' %}" type="text/css">
   <link rel="stylesheet" href="{% static 'css/styles/game.css' %}" type="text/css">
@@ -34,6 +36,7 @@
   <script type="text/javascript" src="{% static 'build/app.concat.js' %}"></script>
   <script type="text/javascript" src="{% static 'bower_components/matchHeight/dist/jquery.matchHeight-min.js' %}"></script>
   <script type="text/javascript" src="{% static 'bower_components/angular-update-meta/dist/update-meta.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/ui-cropper/compile/minified/ui-cropper.js' %}"></script>
 
   <base href="/">
   <script>
@@ -68,7 +71,7 @@
   			<li>
           <a target="_self" ng-href="/group/{{$route.current.params.groupId}}">Home <span class="sr-only">(current)</span></a>
         </li>
-  			<li>
+  			<li ng-class="{active: $route.current.activetab == 'players'}">
           <a target="_self" ng-href="/group/{{$route.current.params.groupId}}/players/">Players</a>
         </li>
   			<li ng-class="{active: $route.current.activetab == 'games'}">

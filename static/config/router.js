@@ -58,6 +58,18 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         resolve: routeResolver,
         activetab: 'leaderboard'
       })
+      .when("/group/:groupId/players/create", {
+        templateUrl: 'static/views/playerform.html',
+        controller: 'PlayerFormController',
+        resolve: routeResolver,
+        activetab: 'players'
+      })
+      .when("/group/:groupId/players/:playerId/edit", {
+        templateUrl: 'static/views/playerform.html',
+        controller: 'PlayerFormController',
+        resolve: routeResolver,
+        activetab: 'players'
+      })
       .when("/accept-invite/:inviteCode/", {
         resolve: routeResolver,
       })

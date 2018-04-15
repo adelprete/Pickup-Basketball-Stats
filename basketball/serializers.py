@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_extra_fields.fields import Base64ImageField
 from basketball.models import (
     PlayByPlay, Game, Player, Season, StatLine, DailyStatline, SeasonStatline,
     PRIMARY_PLAY
@@ -16,7 +17,16 @@ class ChoicesField(serializers.Field):
     def to_internal_value(self, data):
         return getattr(self._choices, data)
 
+class PlayerCreateUpdateSerializer(serializers.ModelSerializer):
+    image_src = Base64ImageField(required=False)
+
+    class Meta:
+        model = Player
+        fields = '__all__'
+
 class PlayerSerializer(serializers.ModelSerializer):
+    image_src = Base64ImageField(required=False)
+
     class Meta:
         model = Player
         fields = ('id', 'first_name', 'last_name', 'image_src')
