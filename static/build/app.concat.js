@@ -914,7 +914,7 @@ function PlayerService($q, $http) {
 
   function getPlayer(playerId) {
     var deferred = $q.defer();
-    $http.get('/api/players/' + playerId).then(function(response){
+    $http.get('/api/players/' + playerId + '/').then(function(response){
       deferred.resolve(response.data);
     }, function(response) {
       deferred.reject(response);
