@@ -446,7 +446,7 @@ class GameViewSet(viewsets.ModelViewSet):
         response = super(GameViewSet, self).list(request, *args, **kwargs)
         return response
 
-from rest_framework.parsers import FormParser, MultiPartParser
+
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = bmodels.Player.objects.all()
     serializer_class = PlayerCreateUpdateSerializer
@@ -454,7 +454,7 @@ class PlayerViewSet(viewsets.ModelViewSet):
     filter_fields = ('group', 'first_name')
 
     action_serializers = {
-        'list': PlayRetrieveListSerializer,
+        'list': PlayerSerializer,
     }
 
     def get_serializer_class(self):

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.conf import settings
 from drf_extra_fields.fields import Base64ImageField
 from basketball.models import (
     PlayByPlay, Game, Player, Season, StatLine, DailyStatline, SeasonStatline,
@@ -20,12 +21,18 @@ class ChoicesField(serializers.Field):
 class PlayerCreateUpdateSerializer(serializers.ModelSerializer):
     image_src = Base64ImageField(required=False)
 
+    def to_representation(self, instance):
+        """Convert image_src to path only when in production."""
+        ret = super().to_representation(instance)
+        if not settings.DEBUG:
+            ret['image_src'] = ret['image_src'].split('.com')[1]
+        return ret
+
     class Meta:
         model = Player
         fields = '__all__'
 
 class PlayerSerializer(serializers.ModelSerializer):
-    image_src = Base64ImageField(required=False)
 
     class Meta:
         model = Player
