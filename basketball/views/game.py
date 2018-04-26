@@ -484,7 +484,12 @@ class SeasonStatlineViewSet(viewsets.ModelViewSet):
     filter_class = filters.SeasonStatlineFilter
 
     def get_queryset(self):
-        return bmodels.SeasonStatline.objects.filter(player__group__id=self.request.GET['group_id'])
+        query = {
+            'player__group__id': self.request.GET['group_id']
+        }
+        if self.request.GET.get('player_id'):
+            query['player__id'] = self.request.GET['player_id']
+        return bmodels.SeasonStatline.objects.filter(**query)
 
 @api_view(['GET'])
 def calculate_statlines(request, pk):
@@ -500,6 +505,7 @@ class PlaysViewSet(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     queryset = bmodels.PlayByPlay.objects.all()
     serializer_class = PlayCreateUpdateSerializer
+    filter_fields = ('top_play_players', 'top_play_rank')
 
     action_serializers = {
         'retrieve': PlayRetrieveListSerializer,
@@ -522,17 +528,21 @@ class PlaysViewSet(viewsets.ModelViewSet):
                 return self.action_serializers[self.action]
         return super(PlaysViewSet, self).get_serializer_class()
 
-    def get_queryset(self):
+    def get_queryset(self, *args, **kwargs):
         """
         Optionally restricts the returned purchases to a given user,
         by filtering against a `username` query parameter in the URL.
         """
+        queryset = super(PlaysViewSet, self).get_queryset(*args, **kwargs)
         #if self.action == 'list':
         #    self.request.get['gameid']
         if 'gameid' in self.request.GET:
-            queryset = bmodels.PlayByPlay.objects.filter(game__id=self.request.GET['gameid'])
-        else:
-            queryset = bmodels.PlayByPlay.objects.all()
+            queryset = queryset.filter(game__id=self.request.GET['gameid'])
+        if 'top_play_rank__startswith' in self.request.GET:
+            queryset = queryset.filter(
+                top_play_rank__startswith=self.request.GET['top_play_rank__startswith'],
+                game__exhibition=False,
+                game__published=True)
         #username = self.request.query_params.get('username', None)
         #if username is not None:
         #    queryset = queryset.filter(purchaser__username=username)

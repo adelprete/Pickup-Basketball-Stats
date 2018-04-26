@@ -1,0 +1,96 @@
+
+<div class="container" style="margin-bottom:100px;margin-top:80px;">
+
+  <div class="breadcrumbs" style="margin-bottom: 15px;"> /
+    <a href="/group/{{groupId}}/players" target="_self" style="cursor: pointer;">players</a> /
+    {{ player.first_name }} {{ player.last_name }}
+  </div>
+
+  <div class="page-header">
+    <h3 class="accent" style="display:inline;">
+      {{ player.first_name }} {{ player.last_name }}
+    </h3>
+    <a
+        ng-href="/group/{{ group.id }}/players/{{ player.id }}/edit"
+        target="_self"
+        class="col-md-1 col-xs-12 btn btn-primary"
+        style="float: right;">
+        Edit Player
+    </a>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-7 col-sm-6 col-md-3">
+      <img ng-if="player.image_src" ng-src="{{ player.image_src }}" class="img-responsive img-rounded" style="margin:0px auto; width: 200px; height: 200px;">
+      <img ng-if="!player.image_src" ng-src="/media/signup_male.png" class="img-responsive img-rounded" style="margin:0px auto; width: 200px; height: 200px;">
+    </div>
+    <div class="col-xs-5 col-sm-6 col-md-3">
+      <table style="min-height: 10em; vertical-align: middle; margin-left:-15px;">
+        <tr>
+          <td style="font-weight:bold;">DOB: </td>
+          <td ng-if="player.birth_date" style="padding-left:5px;">{{ player.birth_date }}</td>
+          <td ng-if="!player.birth_date" style="padding-left:5px;">TBD</td>
+        </tr>
+        <tr>
+          <td style="font-weight:bold;">Height: </td>
+          <td ng-if="player.height" style="padding-left:5px;">{{ player.height }}</td>
+          <td ng-if="!player.height" style="padding-left:5px;">TBD</td>
+        </tr>
+        <tr>
+          <td style="font-weight:bold;">Position: </td>
+          <td ng-if="player.position" style="padding-left:5px;">{{ player.position }}</td>
+          <td ng-if="!player.position" style="padding-left:5px;">TBD</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-6 padding:0px auto;">
+      <div class="visible-xs-block visible-sm-block">
+        <hr>
+      </div>
+      <h4 class="accent">Per 100 averages</h4>
+      <dl style="display:inline-block;	margin:20px;">
+      	<dt style="font-size:20px">Points</dt>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].points | number:decimals }}</dd>
+      </dl>
+      <dl class="hidden-xs hidden-lg" style="display:inline-block;	margin:20px;">
+      	<dt style="font-size:20px">FGM %</dt>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].fgm_percent | number:decimals }}</dd>
+      </dl>
+      <dl class="hidden-xs" style="display:inline-block;	margin:20px;">
+      	<dt style="font-size:20px">Assists</dt>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].asts | number:decimals }}</dd>
+      </dl>
+      <dl style="display:inline-block;	margin:20px;">
+      	<dt style="font-size:20px">Rebounds</dt>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].total_rebounds | number:decimals }}</dd>
+      </dl>
+      <dl class="hidden-xs hidden-lg" style="display:inline-block;	margin:20px;">
+      	<dt style="font-size:20px">Steals</dt>
+      	<dd>{{ snapshot_per100_statline[0].stls | number:decimal }}</dd>
+      </dl>
+      <dl class="hidden-xs" style="display:inline-block; 	margin:20px;">
+      	<dt style="font-size:20px">Turnovers</dt>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].to | number:decimal }}</dd>
+      </dl>
+    </div>
+  </div>
+
+  <uib-tabset active="active" style="margin-top:15px;">
+    <uib-tab index="0" heading="Highlights" style="font-weight: bold;">
+      <div ng-controller="PlayerHighlightsController">
+        <div ng-include="'static/partials/player/highlights.html'"></div>
+      </div>
+    </uib-tab>
+    <uib-tab index="1" heading="Averages" style="font-weight: bold;">
+      <div class="row">
+        Averages
+      </div>
+    </uib-tab>
+    <uib-tab index="2" heading="Totals" style="font-weight: bold;">
+      <div class="row">
+        Totals
+      </div>
+    </uib-tab>
+  </uib-tabset>
+
+</div>

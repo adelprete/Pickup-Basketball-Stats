@@ -70,6 +70,12 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         resolve: routeResolver,
         activetab: 'players'
       })
+      .when("/group/:groupId/players/:playerId", {
+        templateUrl: 'static/views/player.html',
+        controller: 'PlayerController',
+        resolve: routeResolver,
+        activetab: 'players'
+      })
       .when("/accept-invite/:inviteCode/", {
         resolve: routeResolver,
       })

@@ -1,0 +1,19 @@
+<div class='col-md-10 col-md-offset-1'>
+  <div id="playeranchor" style="display:block;height:50px;margin-top:-50px;visibility:hidden; col-md-12"></div>
+  <div class="embed-responsive embed-responsive-16by9" style="margin:15px 0px;">
+    <youtube-video class="embed-responsive-item" video-id="youtube_id" player="ytplayer"></youtube-video>
+  </div>
+
+  <uib-tabset type="pills">
+    <uib-tab heading="Top Plays" classes="btn-sm">
+      <div ng-repeat="play in topPlays" class="col-md-6">
+        <a class="glyphicon glyphicon-play" ng-click="initYoutubePlayer(play.game, play.time, 'play')"></a> - {{ play.description }}
+      </div>
+    </uib-tab>
+    <uib-tab heading="Not Top Plays" classes="btn-sm">
+      <div ng-repeat="play in notTopPlays" class="col-md-6">
+        <a class="glyphicon glyphicon-play" ng-click="initYoutubePlayer(play.game, play.time, 'play')"></a> - {{ play.description }}
+      </div>
+    </uib-tab>
+  </uib-tabset>
+</div>

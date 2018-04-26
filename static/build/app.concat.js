@@ -212,6 +212,12 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         resolve: routeResolver,
         activetab: 'players'
       })
+      .when("/group/:groupId/players/:playerId", {
+        templateUrl: 'static/views/player.html',
+        controller: 'PlayerController',
+        resolve: routeResolver,
+        activetab: 'players'
+      })
       .when("/accept-invite/:inviteCode/", {
         resolve: routeResolver,
       })
@@ -948,6 +954,30 @@ function PlayerService($q, $http) {
 };
 ;'use strict';
 
+angular.module('saturdayBall').factory('PlayService', PlayService);
+
+function PlayService($q, $http) {
+
+  var service = {
+    getPlays: getPlays,
+  };
+  return service;
+
+  /////////////////
+
+  function getPlays(params) {
+    var deferred = $q.defer();
+    $http.get('/api/plays/', {params: params}).then(function(response){
+      deferred.resolve(response.data);
+    }, function(response) {
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  };
+};
+;'use strict';
+
 angular.module('saturdayBall').factory('RoleHelper', RoleHelper);
 
 RoleHelper.$inject = ['$q', '$http'];
@@ -1043,11 +1073,32 @@ function StatlineService($q, $http) {
 
   var service = {
     getDailyStatlines: getDailyStatlines,
-    getSeasonStatlines: getSeasonStatlines
+    getSeasonStatlines: getSeasonStatlines,
+    sumStatlines: sumStatlines
   };
   return service;
 
   /////////////////
+
+  function sumStatlines(statlines, id) {
+    var stats = ['gp', 'dreb', 'oreb', 'total_rebounds', 'asts', 'pot_ast', 'stls',
+    'to', 'points', 'blk', 'ast_fga', 'ast_fgm', 'off_pos', 'def_pos', 'dreb_opp', 'oreb_opp',
+    'off_team_pts', 'def_team_pts', 'fgm', 'fga', 'threepm', 'threepa', 'ast_points', 'ba',
+    'fd', 'pf', 'unast_fgm', 'unast_fga', 'pgm', 'pga', 'fastbreak_points', 'second_chance_points',
+    'ast_points'];
+    var statline_aggregate = {};
+    for (var i = 0; i < statlines.length; i++) {
+      var statline = statlines[i];
+      for (var j = 0; j < stats.length; j++) {
+        var stat = stats[j];
+        if (!(stat in statline_aggregate)) {
+          statline_aggregate[stat] = 0;
+        }
+        statline_aggregate[stat] += statline[stat];
+      }
+    }
+    return statline_aggregate;
+  }
 
   function getDailyStatlines(query) {
     var deferred = $q.defer();
@@ -1893,7 +1944,7 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
                               id: key,
                               player: statlines[0].player
                             };
-                            _.assign(player, sumStatline(statlines, key));
+                            _.assign(player, StatlineService.sumStatline(statlines, key));
                             return player;
                           })
                           .filter(function(statline) {
@@ -1902,6 +1953,7 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
                           .orderBy(['player.first_name'], ['asc'])
                           .value()
       $scope.statlines = grouped_lines;
+      console.log("statlines: ", grouped_lines);
       $scope.per100Statlines = createPer100Statlines();
     });
   }
@@ -1912,26 +1964,6 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
 
   function ShowHideForm() {
       $scope.isFormVisible = $scope.isFormVisible ? false : true;
-  }
-
-  function sumStatline(statlines, id) {
-    var stats = ['gp', 'dreb', 'oreb', 'total_rebounds', 'asts', 'pot_ast', 'stls',
-    'to', 'points', 'blk', 'ast_fga', 'ast_fgm', 'off_pos', 'def_pos', 'dreb_opp', 'oreb_opp',
-    'off_team_pts', 'def_team_pts', 'fgm', 'fga', 'threepm', 'threepa', 'ast_points', 'ba',
-    'fd', 'pf', 'unast_fgm', 'unast_fga', 'pgm', 'pga', 'fastbreak_points', 'second_chance_points',
-    'ast_points'];
-    var statline_aggregate = {};
-    for (var i = 0; i < statlines.length; i++) {
-      var statline = statlines[i];
-      for (var j = 0; j < stats.length; j++) {
-        var stat = stats[j];
-        if (!(stat in statline_aggregate)) {
-          statline_aggregate[stat] = 0;
-        }
-        statline_aggregate[stat] += statline[stat];
-      }
-    }
-    return statline_aggregate;
   }
 
   function sortTotalsBoard(stat) {
@@ -2040,6 +2072,43 @@ function Per100BoardController($scope, $controller, StatlineService, PlayerServi
 };
 ;'use strict';
 
+angular.module('saturdayBall').controller('PlayerController', PlayerController);
+
+PlayerController.$inject = ['$scope', '$routeParams', 'PlayerService', 'StatlineService',
+  '$anchorScroll', '$window', 'Per100Service'];
+
+function PlayerController($scope, $routeParams, PlayerService, StatlineService,
+  $anchorScroll, $window, Per100Service) {
+
+    $scope.player = {};
+
+    ///////////////////////
+
+    init();
+
+    function init() {
+      PlayerService.getPlayer($routeParams.playerId).then(function(response){
+        $scope.player = response;
+        var query = '?group_id='+$routeParams.groupId+'&player_id='+$scope.player.id;
+        StatlineService.getSeasonStatlines(query).then(function(response){
+          $scope.season_total_statlines = response;
+          calculateSnapshotStats();
+        }, function(response) {
+          console.log("StatlineService Error: ", response);
+        })
+      }, function(response){
+        console.log("Error: ", response)
+      })
+    }
+
+    function calculateSnapshotStats() {
+      var total_statline = StatlineService.sumStatlines($scope.season_total_statlines);
+      $scope.snapshot_per100_statline = Per100Service.calculatePer100Statlines([total_statline]);
+      console.log('snapshot_per100_statline: ', $scope.snapshot_per100_statline);
+    }
+}
+;'use strict';
+
 angular.module('saturdayBall').controller('PlayerFormController', PlayerFormController);
 
 PlayerFormController.$inject = ['$scope', '$routeParams', 'PlayerService',
@@ -2121,6 +2190,83 @@ function PlayerFormController($scope, $routeParams, PlayerService,
     angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
 
   }
+;'use strict';
+
+angular.module('saturdayBall').controller('PlayerHighlightsController', PlayerHighlightsController);
+
+PlayerHighlightsController.$inject = ['$scope', '$routeParams', 'PlayService', 'GameService',
+  '$anchorScroll', '$window', 'Per100Service'];
+
+function PlayerHighlightsController($scope, $routeParams, PlayService, GameService,
+  $anchorScroll, $window, Per100Service) {
+
+    $scope.topPlays = [];
+    $scope.notTopPlays = [];
+    $scope.initYoutubePlayer = initYoutubePlayer;
+    $scope.specifiedTime = null;
+    $scope.youtube_id = null;
+    $scope.youtubePlayer = null;
+
+    ///////////////////////
+
+    init();
+
+    function init() {
+      var query = {
+        'top_play_players': $routeParams.playerId,
+        'top_play_rank__startswith': 't'
+      }
+      PlayService.getPlays(query).then(function(response){
+        $scope.topPlays = response;
+        $scope.initYoutubePlayer($scope.topPlays[0].game, $scope.topPlays[0].time, 'paused')
+        console.log('Top plays: ', response)
+      }, function(response){
+        console.log("Error: ", response)
+      })
+
+      var query = {
+        'top_play_players': $routeParams.playerId,
+        'top_play_rank__startswith': 'nt'
+      }
+      PlayService.getPlays(query).then(function(response){
+        $scope.notTopPlays = response;
+        console.log('Not Top plays: ', response)
+      }, function(response){
+        console.log("Error: ", response)
+      })
+    }
+
+    function initYoutubePlayer(game_id, timestamp, action) {
+        // YouTube player logic
+
+      GameService.getGame(game_id).then(function(response){
+        $scope.youtube_id = response.youtube_id;
+        console.log('youtube_id: ', $scope.youtube_id);
+
+        $scope.$on('youtube.player.ready', function($event, player) {
+          $scope.youtubeplayer = player;
+          seekToTime(timestamp);
+          if (action === 'play') {
+            $scope.youtubeplayer.playVideo();
+            $anchorScroll("playeranchor");
+          }
+          else if (action === 'paused') {
+            $scope.youtubeplayer.stopVideo();
+          }
+        })
+      }, function(response){
+        console.log("Error: ", response);
+      })
+    }
+
+    function seekToTime(timestamp) {
+      var split_time = timestamp.split(':');
+      var seconds = parseInt(split_time[0]) * 3600;
+      seconds += parseInt(split_time[1]) * 60;
+      seconds += parseInt(split_time[2]);
+      $scope.youtubeplayer.seekTo(seconds);
+    };
+}
 ;'use strict';
 
 angular.module('saturdayBall').controller('PlayWizardController', PlayWizardController);

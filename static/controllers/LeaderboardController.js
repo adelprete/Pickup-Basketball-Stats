@@ -54,7 +54,7 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
                               id: key,
                               player: statlines[0].player
                             };
-                            _.assign(player, sumStatline(statlines, key));
+                            _.assign(player, StatlineService.sumStatline(statlines, key));
                             return player;
                           })
                           .filter(function(statline) {
@@ -63,6 +63,7 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
                           .orderBy(['player.first_name'], ['asc'])
                           .value()
       $scope.statlines = grouped_lines;
+      console.log("statlines: ", grouped_lines);
       $scope.per100Statlines = createPer100Statlines();
     });
   }
@@ -73,26 +74,6 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
 
   function ShowHideForm() {
       $scope.isFormVisible = $scope.isFormVisible ? false : true;
-  }
-
-  function sumStatline(statlines, id) {
-    var stats = ['gp', 'dreb', 'oreb', 'total_rebounds', 'asts', 'pot_ast', 'stls',
-    'to', 'points', 'blk', 'ast_fga', 'ast_fgm', 'off_pos', 'def_pos', 'dreb_opp', 'oreb_opp',
-    'off_team_pts', 'def_team_pts', 'fgm', 'fga', 'threepm', 'threepa', 'ast_points', 'ba',
-    'fd', 'pf', 'unast_fgm', 'unast_fga', 'pgm', 'pga', 'fastbreak_points', 'second_chance_points',
-    'ast_points'];
-    var statline_aggregate = {};
-    for (var i = 0; i < statlines.length; i++) {
-      var statline = statlines[i];
-      for (var j = 0; j < stats.length; j++) {
-        var stat = stats[j];
-        if (!(stat in statline_aggregate)) {
-          statline_aggregate[stat] = 0;
-        }
-        statline_aggregate[stat] += statline[stat];
-      }
-    }
-    return statline_aggregate;
   }
 
   function sortTotalsBoard(stat) {
