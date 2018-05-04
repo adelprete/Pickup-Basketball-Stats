@@ -891,6 +891,7 @@ function PlayerService($q, $http) {
     getPlayer: getPlayer,
     deletePlayer: deletePlayer,
     getPlayers: getPlayers,
+    getPlayerAverages: getPlayerAverages
   };
   return service;
 
@@ -943,6 +944,17 @@ function PlayerService($q, $http) {
   function getPlayers(params) {
     var deferred = $q.defer();
     $http.get('/api/players/', {params: params}).then(function(response){
+      deferred.resolve(response.data);
+    }, function(response) {
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  };
+
+  function getPlayerAverages(playerId) {
+    var deferred = $q.defer();
+    $http.get('/api/players/' + playerId + '/overall_averages').then(function(response){
       deferred.resolve(response.data);
     }, function(response) {
       deferred.reject(response);
@@ -2080,7 +2092,11 @@ PlayerController.$inject = ['$scope', '$routeParams', 'PlayerService', 'Statline
 function PlayerController($scope, $routeParams, PlayerService, StatlineService,
   $anchorScroll, $window, Per100Service) {
 
+    $scope.averages_statlines = {};
+    $scope.averages_overall = {};
+    $scope.game_types = [];
     $scope.player = {};
+    $scope.total_game_counts = {};
 
     ///////////////////////
 
@@ -2097,14 +2113,35 @@ function PlayerController($scope, $routeParams, PlayerService, StatlineService,
           console.log("StatlineService Error: ", response);
         })
       }, function(response){
-        console.log("Error: ", response)
+        console.log("Error: ", response);
+      })
+
+      PlayerService.getPlayerAverages($routeParams.playerId).then(function(response){
+        $scope.averages_statlines = response.averages;
+        $scope.averages_overall = response.overall;
+
+        // Figure out which game_type buttons should be shown
+        for (var game_type in $scope.averages_overall) {
+          if (!_.isEmpty($scope.averages_overall[game_type])) {
+            $scope.game_types.unshift(game_type);
+
+            // while we're here, count the player's total games for each game_type
+            var total_games = 0;
+            for (var statline in $scope.averages_statlines[game_type]) {
+              total_games += $scope.averages_statlines[game_type][statline]['gp'];
+            }
+            $scope.total_game_counts[game_type] = total_games;
+          }
+        }
+
+      }, function(response){
+        console.log("Error: ", response);
       })
     }
 
     function calculateSnapshotStats() {
       var total_statline = StatlineService.sumStatlines($scope.season_total_statlines);
       $scope.snapshot_per100_statline = Per100Service.calculatePer100Statlines([total_statline]);
-      console.log('snapshot_per100_statline: ', $scope.snapshot_per100_statline);
     }
 }
 ;'use strict';
@@ -2219,7 +2256,6 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
       PlayService.getPlays(query).then(function(response){
         $scope.topPlays = response;
         $scope.initYoutubePlayer($scope.topPlays[0].game, $scope.topPlays[0].time, 'paused')
-        console.log('Top plays: ', response)
       }, function(response){
         console.log("Error: ", response)
       })
@@ -2230,7 +2266,6 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
       }
       PlayService.getPlays(query).then(function(response){
         $scope.notTopPlays = response;
-        console.log('Not Top plays: ', response)
       }, function(response){
         console.log("Error: ", response)
       })
@@ -2241,7 +2276,6 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
 
       GameService.getGame(game_id).then(function(response){
         $scope.youtube_id = response.youtube_id;
-        console.log('youtube_id: ', $scope.youtube_id);
 
         $scope.$on('youtube.player.ready', function($event, player) {
           $scope.youtubeplayer = player;

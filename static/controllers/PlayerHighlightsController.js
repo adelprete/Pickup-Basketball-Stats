@@ -27,7 +27,6 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
       PlayService.getPlays(query).then(function(response){
         $scope.topPlays = response;
         $scope.initYoutubePlayer($scope.topPlays[0].game, $scope.topPlays[0].time, 'paused')
-        console.log('Top plays: ', response)
       }, function(response){
         console.log("Error: ", response)
       })
@@ -38,7 +37,6 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
       }
       PlayService.getPlays(query).then(function(response){
         $scope.notTopPlays = response;
-        console.log('Not Top plays: ', response)
       }, function(response){
         console.log("Error: ", response)
       })
@@ -49,7 +47,6 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
 
       GameService.getGame(game_id).then(function(response){
         $scope.youtube_id = response.youtube_id;
-        console.log('youtube_id: ', $scope.youtube_id);
 
         $scope.$on('youtube.player.ready', function($event, player) {
           $scope.youtubeplayer = player;

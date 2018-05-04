@@ -10,6 +10,7 @@ function PlayerService($q, $http) {
     getPlayer: getPlayer,
     deletePlayer: deletePlayer,
     getPlayers: getPlayers,
+    getPlayerAverages: getPlayerAverages
   };
   return service;
 
@@ -62,6 +63,17 @@ function PlayerService($q, $http) {
   function getPlayers(params) {
     var deferred = $q.defer();
     $http.get('/api/players/', {params: params}).then(function(response){
+      deferred.resolve(response.data);
+    }, function(response) {
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  };
+
+  function getPlayerAverages(playerId) {
+    var deferred = $q.defer();
+    $http.get('/api/players/' + playerId + '/overall_averages').then(function(response){
       deferred.resolve(response.data);
     }, function(response) {
       deferred.reject(response);

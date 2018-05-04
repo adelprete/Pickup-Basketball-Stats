@@ -106,3 +106,37 @@ def ajax_game_log(request, group_id):
 		statlines = []
 
 	return render_to_response('players/game_log.html', {'statlines': statlines})
+
+###################
+###### API ########
+###################
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from basketball.templatetags.player_tags import calculate_player_overall_dictionaries
+from basketball import headers
+
+
+@api_view(['GET'])
+def player_overall_averages(request, player_id):
+
+	averages_tables, overall_footer = calculate_player_overall_dictionaries('','averages',headers.totals_statistics[1:],player_id=player_id)
+
+	data = {
+		'averages': averages_tables,
+		'overall': overall_footer
+	}
+
+	return Response(data)
+
+@api_view(['GET'])
+def player_overall_totals(request, player_id):
+
+	averages_tables, overall_footer = calculate_player_overall_dictionaries('','totals',headers.totals_statistics[1:],player_id=player_id)
+
+	data = {
+		'averages': averages_tables,
+		'overall': overall_footer
+	}
+
+	return Response(data)

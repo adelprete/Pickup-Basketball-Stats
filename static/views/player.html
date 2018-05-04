@@ -13,7 +13,7 @@
     <a
         ng-href="/group/{{ group.id }}/players/{{ player.id }}/edit"
         target="_self"
-        class="col-md-1 col-xs-12 btn btn-primary"
+        class="col-md-1 col-sm-2 col-xs-12 btn btn-primary"
         style="float: right;">
         Edit Player
     </a>
@@ -21,8 +21,8 @@
 
   <div class="row">
     <div class="col-xs-7 col-sm-6 col-md-3">
-      <img ng-if="player.image_src" ng-src="{{ player.image_src }}" class="img-responsive img-rounded" style="margin:0px auto; width: 200px; height: 200px;">
-      <img ng-if="!player.image_src" ng-src="/media/signup_male.png" class="img-responsive img-rounded" style="margin:0px auto; width: 200px; height: 200px;">
+      <img id="profile_picture" ng-if="player.image_src" ng-src="{{ player.image_src }}" class="img-responsive img-rounded" style="margin:0px auto; width: 200px; height: 200px;">
+      <img id="signup_male" ng-if="!player.image_src" ng-src="/media/signup_male.png" class="img-responsive img-rounded" style="margin:0px auto; width: 200px; height: 200px;">
     </div>
     <div class="col-xs-5 col-sm-6 col-md-3">
       <table style="min-height: 10em; vertical-align: middle; margin-left:-15px;">
@@ -50,27 +50,27 @@
       <h4 class="accent">Per 100 averages</h4>
       <dl style="display:inline-block;	margin:20px;">
       	<dt style="font-size:20px">Points</dt>
-      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].points | number:decimals }}</dd>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].points | number:1 }}</dd>
       </dl>
       <dl class="hidden-xs hidden-lg" style="display:inline-block;	margin:20px;">
       	<dt style="font-size:20px">FGM %</dt>
-      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].fgm_percent | number:decimals }}</dd>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].fgm_percent | number:1 }}</dd>
       </dl>
       <dl class="hidden-xs" style="display:inline-block;	margin:20px;">
       	<dt style="font-size:20px">Assists</dt>
-      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].asts | number:decimals }}</dd>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].asts | number:1 }}</dd>
       </dl>
       <dl style="display:inline-block;	margin:20px;">
       	<dt style="font-size:20px">Rebounds</dt>
-      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].total_rebounds | number:decimals }}</dd>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].total_rebounds | number:1 }}</dd>
       </dl>
       <dl class="hidden-xs hidden-lg" style="display:inline-block;	margin:20px;">
       	<dt style="font-size:20px">Steals</dt>
-      	<dd>{{ snapshot_per100_statline[0].stls | number:decimal }}</dd>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].stls | number:1 }}</dd>
       </dl>
       <dl class="hidden-xs" style="display:inline-block; 	margin:20px;">
       	<dt style="font-size:20px">Turnovers</dt>
-      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].to | number:decimal }}</dd>
+      	<dd style="font-size:25px;">{{ snapshot_per100_statline[0].to | number:1 }}</dd>
       </dl>
     </div>
   </div>
@@ -82,9 +82,7 @@
       </div>
     </uib-tab>
     <uib-tab index="1" heading="Averages" style="font-weight: bold;">
-      <div class="row">
-        Averages
-      </div>
+        <div ng-include="'static/partials/player/averagesTable.html'"></div>
     </uib-tab>
     <uib-tab index="2" heading="Totals" style="font-weight: bold;">
       <div class="row">

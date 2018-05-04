@@ -1,0 +1,26 @@
+@media screen and (max-width: 800px) {
+    .page-header .accent {
+       display: block !important;
+    }
+
+    #profile_picture {
+      margin: 15px auto !important;
+    }
+
+    #signup_male {
+      margin: 15px auto !important;
+    }
+}
+
+@media screen and (max-width: 450px) {
+
+    #profile_picture {
+      width: 80% !important;
+      height: 100% !important;
+    }
+
+    #signup_male {
+      width: 80% !important;
+      height: 100% !important;
+    }
+}

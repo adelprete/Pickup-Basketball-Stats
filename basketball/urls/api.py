@@ -4,7 +4,7 @@ from base.views import (
     group_seasons, MemberPermissionViewSet, MemberInviteViewSet,
     ContactViewSet
 )
-from basketball.views import game as gviews
+from basketball.views import game as gviews, player as pviews
 from django.contrib.auth.decorators import login_required
 from basketball.views.game import (
     PlaysViewSet, GameViewSet,DailyStatlineViewSet, PlayerViewSet,
@@ -57,6 +57,7 @@ urlpatterns = [
 	#API
     url(r'^user/current/', current_user),
     url(r'^user/create/', CreateUserView.as_view()),
+    url(r'^players/(?P<player_id>[0-9]+)/overall_averages$',  pviews.player_overall_averages),
 	url(r'^plays/$',  plays_list),
     url(r'^plays/(?P<pk>[0-9]+)/$',  plays_details),
     url(r'^games/groupid/(?P<group_id>[0-9]+)/$',  game_list),

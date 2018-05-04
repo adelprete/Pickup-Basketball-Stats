@@ -1,0 +1,106 @@
+<h4 class="accent" style="margin: 30px 0px">Per Game Averages</h4>
+
+<uib-tabset type="pills">
+  <uib-tab ng-repeat="game_type in game_types" heading="{{ game_type }}">
+    <div class="table-responsive">
+    	<table class="table table-hover">
+    		<tr style="background:#d9edf7">
+          <td data-toggle="tooltip" title="Season">
+        		Season
+        	</td>
+          <td data-toggle="tooltip" title="Games Played" ng-click="sort('gp')">
+        		GP
+        	</td>
+          <td data-toggle="tooltip" title="Field Goals Made (Any made basket)" ng-click="sort('fgm')">
+            FGM
+          </td>
+          <td data-toggle="tooltip" title="Field Goals Attempted (Any basket attempted)" ng-click="sort('fga')">
+            FGA
+          </td>
+          <td data-toggle="tooltip" title="Three Pointers Made (Any shot made behind the 3 point line)" ng-click="sort('threepm')">
+            3PM
+          </td>
+          <td data-toggle="tooltip" title="Three Pointers Attempted (Any shot attempted behind the 3 point line)" ng-click="sort('threepa')">
+            3PA
+          </td>
+          <td data-toggle="tooltip" title="Offensive Rebounds (A rebound after a teammate/self misses)" ng-click="sort('oreb')">
+            OFF
+          </td>
+          <td data-toggle="tooltip" title="Defensive Rebounds (A rebound after an opponent misses)" ng-click="sort('dreb')">
+            DEF
+          </td>
+          <td data-toggle="tooltip" title="Total Rebounds (A rebound after any miss)" ng-click="sort('total_rebounds')">
+            REB
+          </td>
+          <td data-toggle="tooltip" title="Assists (A pass that leads to a score)" ng-click="sort('asts')">
+            AST
+          </td>
+          <td data-toggle="tooltip" title="Potential Assists (A pass that would've lead to a score if the receiver made the shot)" ng-click="sort('pot_ast')">
+            P.AST
+          </td>
+          <td data-toggle="tooltip" title="Turnover (Anytime you give the ball to the other team)" ng-click="sort('to')">
+            TO
+          </td>
+          <td data-toggle="tooltip" title="Steals (Anytime you cause a turnover from the other team)" ng-click="sort('stls')">
+            STL
+          </td>
+          <td data-toggle="tooltip" title="Blocks (Whenver you deflect a shot attempt)" ng-click="sort('blk')">
+            BLK
+          </td>
+          <td data-toggle="tooltip" title="Blocks Allowed (How many shot attempts have been deflected)" ng-click="sort('ba')">
+            BA
+          </td>
+          <td data-toggle="tooltip" title="Fouls Drawn (Whenever you are fouled)" ng-click="sort(header[0])" ng-click="sort('fd')">
+            FD
+          </td>
+          <td data-toggle="tooltip" title="Personal Fouls (Amount of fouls that you have been called on)" ng-click="sort('pf')">
+            PF
+          </td>
+          <td data-toggle="tooltip" title="Points (Amount of points scored)" ng-click="sort('points')">
+            PTS
+          </td>
+    		</tr>
+  			<tr ng-repeat="statline in averages_statlines[game_type]">
+          <td>{{ statline.title }}</td>
+          <td>{{ statline.gp }}</td>
+          <td>{{ statline.fgm | number:1 }}</td>
+          <td>{{ statline.fga | number:1 }}</td>
+          <td>{{ statline.threepm | number:1 }}</td>
+          <td>{{ statline.threepa | number:1 }}</td>
+          <td>{{ statline.oreb | number:1 }}</td>
+          <td>{{ statline.dreb | number:1 }}</td>
+          <td>{{ statline.total_rebounds | number:1 }}</td>
+          <td>{{ statline.asts | number:1 }}</td>
+          <td>{{ statline.pot_ast | number:1 }}</td>
+          <td>{{ statline.to | number:1 }}</td>
+          <td>{{ statline.stls | number:1 }}</td>
+          <td>{{ statline.blk | number:1 }}</td>
+          <td>{{ statline.ba | number:1 }}</td>
+          <td>{{ statline.fd | number:1 }}</td>
+          <td>{{ statline.pf | number:1 }}</td>
+          <td>{{ statline.points | number:1 }}</td>
+  			</tr>
+        <tr>
+          <td>Overall</td>
+          <td>{{ total_game_counts[game_type] }}</td>
+          <td>{{ averages_overall[game_type].fgm | number:1 }}</td>
+          <td>{{ averages_overall[game_type].fga | number:1 }}</td>
+          <td>{{ averages_overall[game_type].threepm | number:1 }}</td>
+          <td>{{ averages_overall[game_type].threepa | number:1 }}</td>
+          <td>{{ averages_overall[game_type].oreb | number:1 }}</td>
+          <td>{{ averages_overall[game_type].dreb | number:1 }}</td>
+          <td>{{ averages_overall[game_type].total_rebounds | number:1 }}</td>
+          <td>{{ averages_overall[game_type].asts | number:1 }}</td>
+          <td>{{ averages_overall[game_type].pot_ast | number:1 }}</td>
+          <td>{{ averages_overall[game_type].to | number:1 }}</td>
+          <td>{{ averages_overall[game_type].stls | number:1 }}</td>
+          <td>{{ averages_overall[game_type].blk | number:1 }}</td>
+          <td>{{ averages_overall[game_type].ba | number:1 }}</td>
+          <td>{{ averages_overall[game_type].fd | number:1 }}</td>
+          <td>{{ averages_overall[game_type].pf | number:1 }}</td>
+          <td>{{ averages_overall[game_type].points | number:1 }}</td>
+        </tr>
+    	</table>
+    </div>
+  </uib-tab>
+</uib-tabset>
