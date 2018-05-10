@@ -68,6 +68,6 @@ function StatlineService($q, $http) {
     });
 
     return deferred.promise;
-  }
+  };
 
 };

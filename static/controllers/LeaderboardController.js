@@ -54,7 +54,7 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
                               id: key,
                               player: statlines[0].player
                             };
-                            _.assign(player, StatlineService.sumStatline(statlines, key));
+                            _.assign(player, StatlineService.sumStatlines(statlines, key));
                             return player;
                           })
                           .filter(function(statline) {
@@ -63,7 +63,6 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
                           .orderBy(['player.first_name'], ['asc'])
                           .value()
       $scope.statlines = grouped_lines;
-      console.log("statlines: ", grouped_lines);
       $scope.per100Statlines = createPer100Statlines();
     });
   }
