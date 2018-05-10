@@ -113,30 +113,56 @@ def ajax_game_log(request, group_id):
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from basketball.templatetags.player_tags import calculate_player_overall_dictionaries
+from basketball.templatetags.player_tags import (
+	calculate_player_overall_dictionaries,
+	calculate_player_possessions_dictionaries
+)
 from basketball import headers
 
 
 @api_view(['GET'])
 def player_overall_averages(request, player_id):
-
 	averages_tables, overall_footer = calculate_player_overall_dictionaries('','averages',headers.totals_statistics[1:],player_id=player_id)
-
 	data = {
 		'averages': averages_tables,
 		'overall': overall_footer
 	}
-
 	return Response(data)
 
 @api_view(['GET'])
 def player_overall_totals(request, player_id):
-
-	averages_tables, overall_footer = calculate_player_overall_dictionaries('','totals',headers.totals_statistics[1:],player_id=player_id)
-
+	totals_tables, overall_footer = calculate_player_overall_dictionaries('','totals',headers.totals_statistics[1:],player_id=player_id)
 	data = {
-		'averages': averages_tables,
+		'totals': totals_tables,
 		'overall': overall_footer
 	}
-
 	return Response(data)
+
+@api_view(['GET'])
+def player_overall_adv_totals(request, player_id):
+	totals_tables, overall_footer = calculate_player_overall_dictionaries('','totals',headers.adv_totals_statistics[1:],player_id=player_id)
+	data = {
+		'totals': totals_tables,
+		'overall': overall_footer
+	}
+	return Response(data)
+
+@api_view(['GET'])
+def player_overall_per100(context, player_id):
+    """Return a player's per 100 stats for each season"""
+    possessions_tables, overall_footer = calculate_player_possessions_dictionaries(context,headers.per_100_statistics, player_id=player_id)
+    data = {
+        'per100': possessions_tables,
+        'overall': overall_footer,
+    }
+    return Response(data)
+
+@api_view(['GET'])
+def player_overall_adv_per100(context, player_id):
+    """Return a player's per 100 stats for each season"""
+    possessions_tables, overall_footer = calculate_player_possessions_dictionaries(context,headers.adv_per_100_statistics, player_id=player_id)
+    data = {
+        'per100': possessions_tables,
+        'overall': overall_footer,
+    }
+    return Response(data)

@@ -11,7 +11,7 @@
       {{ player.first_name }} {{ player.last_name }}
     </h3>
     <a
-        ng-href="/group/{{ group.id }}/players/{{ player.id }}/edit"
+        ng-href="/group/{{ group_id }}/players/{{ player.id }}/edit"
         target="_self"
         class="col-md-1 col-sm-2 col-xs-12 btn btn-primary"
         style="float: right;">
@@ -82,12 +82,22 @@
       </div>
     </uib-tab>
     <uib-tab index="1" heading="Averages" style="font-weight: bold;">
-        <div ng-include="'static/partials/player/averagesTable.html'"></div>
+      <div ng-include="'static/partials/player/averagesTable.html'"></div>
     </uib-tab>
     <uib-tab index="2" heading="Totals" style="font-weight: bold;">
-      <div class="row">
-        Totals
-      </div>
+      <div ng-include="'static/partials/player/totalsTable.html'"></div>
+    </uib-tab>
+    <uib-tab index="3" heading="Adv Totals" style="font-weight: bold;">
+      <div ng-include="'static/partials/player/advTotalsTable.html'"></div>
+    </uib-tab>
+    <uib-tab index="4" heading="Per 100" style="font-weight: bold;">
+      <div ng-include="'static/partials/player/per100Table.html'"></div>
+    </uib-tab>
+    <uib-tab index="5" heading="Adv Per 100" style="font-weight: bold;">
+      <div ng-include="'static/partials/player/advPer100Table.html'"></div>
+    </uib-tab>
+    <uib-tab index="6" heading="Game Log" style="font-weight: bold;">
+      <div ng-include="'static/partials/player/gameLog.html'"></div>
     </uib-tab>
   </uib-tabset>
 

@@ -1,0 +1,109 @@
+<h4 class="accent" style="margin: 30px 0px">Per 100</h4>
+
+<uib-tabset type="pills">
+  <uib-tab ng-repeat="game_type in game_types" heading="{{ game_type }}">
+    <div class="table-responsive">
+    	<table class="table table-hover">
+    		<tr style="background:#d9edf7">
+          <td data-toggle="tooltip" title="Season">
+        		Season
+        	</td>
+          <td data-toggle="tooltip" title="Games Played" ng-click="sort('gp')">
+        		GP
+        	</td>
+          <td data-toggle="tooltip" title="Points" ng-click="sort('fgm')">
+            Points
+          </td>
+          <td data-toggle="tooltip" title="Field Goal Percentage. Percentage of Field Goals Made" ng-click="sort('fga')">
+            FGM%
+          </td>
+          <td data-toggle="tooltip" title="3 Point Percentage. Percentage of 3 pointers made" ng-click="sort('threepm')">
+            3PM%
+          </td>
+          <td data-toggle="tooltip" title="Assists" ng-click="sort('threepa')">
+            Asts
+          </td>
+          <td data-toggle="tooltip" title="Potential Assists. A pass that would’ve lead to a score if the receiver made the shot." ng-click="sort('oreb')">
+            P.ASTS
+          </td>
+          <td data-toggle="tooltip" title="Defensive Rebounds" ng-click="sort('dreb')">
+            DREB
+          </td>
+          <td data-toggle="tooltip" title="Offensive Rebounds" ng-click="sort('total_rebounds')">
+            OREB
+          </td>
+          <td data-toggle="tooltip" title="Percentage of defensive rebounds grabbed against total defensive rebounds available" ng-click="sort('asts')">
+            DREB%
+          </td>
+          <td data-toggle="tooltip" title="Percentage of offensive rebounds grabbed against total offensive rebounds available" ng-click="sort('pot_ast')">
+            OREB%
+          </td>
+          <td data-toggle="tooltip" title="Total Rebounds" ng-click="sort('to')">
+            REB
+          </td>
+          <td data-toggle="tooltip" title="Percentage of possessions that result in a rebound" ng-click="sort('stls')">
+            REB%
+          </td>
+          <td data-toggle="tooltip" title="Steals (Anytime you cause a turnover from the other team)" ng-click="sort('blk')">
+            STLS
+          </td>
+          <td data-toggle="tooltip" title="Turnovers" ng-click="sort('blk')">
+            TO
+          </td>
+          <td data-toggle="tooltip" title="Blocks (Whenever you deflect a shot attempt)" ng-click="sort('ba')">
+            BLK
+          </td>
+          <td data-toggle="tooltip" title="Points scord per 100 possessions while you're on the floor" ng-click="sort('ba')">
+            OFF.RATING
+          </td>
+          <td data-toggle="tooltip" title="Points scored against your per 100 possessions while you're on the floor" ng-click="sort('ba')">
+            DEF.RATING
+          </td>
+    		</tr>
+        <tr ng-show="!per100_statlines[game_type].length">
+          <td colspan=18>Player hasn't recorded atleast 100 possessions in this game type for any season</td>
+        </tr>
+  			<tr ng-repeat="statline in per100_statlines[game_type]">
+          <td>{{ statline.title }}</td>
+          <td>{{ statline.gp }}</td>
+          <td>{{ statline.points }}</td>
+          <td>{{ statline.fgm_percent }}</td>
+          <td>{{ statline.threepm_percent }}</td>
+          <td>{{ statline.asts }}</td>
+          <td>{{ statline.pot_ast }}</td>
+          <td>{{ statline.dreb }}</td>
+          <td>{{ statline.oreb }}</td>
+          <td>{{ statline.dreb_percent }}</td>
+          <td>{{ statline.oreb_percent }}</td>
+          <td>{{ statline.total_rebounds }}</td>
+          <td>{{ statline.treb_percent }}</td>
+          <td>{{ statline.stls }}</td>
+          <td>{{ statline.to }}</td>
+          <td>{{ statline.blk }}</td>
+          <td>{{ statline.off_rating }}</td>
+          <td>{{ statline.def_rating }}</td>
+  			</tr>
+        <tr ng-show="per100_statlines[game_type].length" style="background:#d9edf7">
+          <td>Overall</td>
+          <td>{{ total_game_counts[game_type] }}</td>
+          <td>{{ per100_overall[game_type].points }}</td>
+          <td>{{ per100_overall[game_type].fgm_percent }}</td>
+          <td>{{ per100_overall[game_type].threepm_percent }}</td>
+          <td>{{ per100_overall[game_type].asts }}</td>
+          <td>{{ per100_overall[game_type].pot_ast }}</td>
+          <td>{{ per100_overall[game_type].dreb }}</td>
+          <td>{{ per100_overall[game_type].oreb }}</td>
+          <td>{{ per100_overall[game_type].dreb_percent }}</td>
+          <td>{{ per100_overall[game_type].oreb_percent }}</td>
+          <td>{{ per100_overall[game_type].total_rebounds }}</td>
+          <td>{{ per100_overall[game_type].treb_percent }}</td>
+          <td>{{ per100_overall[game_type].stls }}</td>
+          <td>{{ per100_overall[game_type].to }}</td>
+          <td>{{ per100_overall[game_type].blk }}</td>
+          <td>{{ per100_overall[game_type].off_rating }}</td>
+          <td>{{ per100_overall[game_type].def_rating }}</td>
+        </tr>
+    	</table>
+    </div>
+  </uib-tab>
+</uib-tabset>

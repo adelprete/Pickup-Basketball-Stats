@@ -1,0 +1,94 @@
+<h4 class="accent" style="margin: 30px 0px">Adv Totals</h4>
+
+<uib-tabset type="pills">
+  <uib-tab ng-repeat="game_type in game_types" heading="{{ game_type }}">
+    <div class="table-responsive">
+    	<table class="table table-hover">
+    		<tr style="background:#d9edf7">
+          <td data-toggle="tooltip" title="Season">
+        		Season
+        	</td>
+          <td data-toggle="tooltip" title="Games Played" ng-click="sort('gp')">
+        		GP
+        	</td>
+          <td data-toggle="tooltip" title="Assisted Field Goals Made" ng-click="sort('fgm')">
+            AST FGM
+          </td>
+          <td data-toggle="tooltip" title="Assisted Field Goal Attempts" ng-click="sort('fga')">
+            AST FGA
+          </td>
+          <td data-toggle="tooltip" title="Unassisted Field Goals Made" ng-click="sort('threepm')">
+            UNAST FGM
+          </td>
+          <td data-toggle="tooltip" title="Unassisted Field Goal Attempts" ng-click="sort('threepa')">
+            UNAST FGA
+          </td>
+          <td data-toggle="tooltip" title="Assisted Points (Points scored off your assists)" ng-click="sort('oreb')">
+            AST PTS
+          </td>
+          <td data-toggle="tooltip" title="Putbacks Made" ng-click="sort('dreb')">
+            PGM
+          </td>
+          <td data-toggle="tooltip" title="Putbacks Attempted" ng-click="sort('total_rebounds')">
+            PGA
+          </td>
+          <td data-toggle="tooltip" title="FastBreak Points" ng-click="sort('asts')">
+            FB PTS
+          </td>
+          <td data-toggle="tooltip" title="Second Chance Points" ng-click="sort('pot_ast')">
+            SC PTS
+          </td>
+          <td data-toggle="tooltip" title="Defensive Possessions" ng-click="sort('to')">
+            DEF.POS
+          </td>
+          <td data-toggle="tooltip" title="Offensive Possessions" ng-click="sort('stls')">
+            OFF.POS
+          </td>
+          <td data-toggle="tooltip" title="Defensive Rebound Opportunities" ng-click="sort('blk')">
+            DREB.OPP
+          </td>
+          <td data-toggle="tooltip" title="Offensive Rebound Opportunities" ng-click="sort('ba')">
+            OREB.OPP
+          </td>
+    		</tr>
+        <tr ng-show="!adv_totals_statlines[game_type].length">
+          <td colspan=15>No Data Yet</td>
+        </tr>
+  			<tr ng-repeat="statline in adv_totals_statlines[game_type]">
+          <td>{{ statline.title }}</td>
+          <td>{{ statline.gp }}</td>
+          <td>{{ statline.ast_fgm }}</td>
+          <td>{{ statline.ast_fga }}</td>
+          <td>{{ statline.unast_fgm }}</td>
+          <td>{{ statline.unast_fga }}</td>
+          <td>{{ statline.ast_points }}</td>
+          <td>{{ statline.pgm }}</td>
+          <td>{{ statline.pga }}</td>
+          <td>{{ statline.fastbreak_points }}</td>
+          <td>{{ statline.second_chance_points }}</td>
+          <td>{{ statline.def_pos }}</td>
+          <td>{{ statline.off_pos }}</td>
+          <td>{{ statline.dreb_opp }}</td>
+          <td>{{ statline.oreb_opp }}</td>
+  			</tr>
+        <tr ng-show="adv_totals_statlines[game_type].length" style="background:#d9edf7">
+          <td>Overall</td>
+          <td>{{ total_game_counts[game_type] }}</td>
+          <td>{{ adv_totals_overall[game_type].ast_fgm }}</td>
+          <td>{{ adv_totals_overall[game_type].ast_fga }}</td>
+          <td>{{ adv_totals_overall[game_type].unast_fgm }}</td>
+          <td>{{ adv_totals_overall[game_type].unast_fga }}</td>
+          <td>{{ adv_totals_overall[game_type].ast_points }}</td>
+          <td>{{ adv_totals_overall[game_type].pgm }}</td>
+          <td>{{ adv_totals_overall[game_type].pga }}</td>
+          <td>{{ adv_totals_overall[game_type].fastbreak_points }}</td>
+          <td>{{ adv_totals_overall[game_type].second_chance_points }}</td>
+          <td>{{ adv_totals_overall[game_type].def_pos }}</td>
+          <td>{{ adv_totals_overall[game_type].off_pos }}</td>
+          <td>{{ adv_totals_overall[game_type].dreb_opp }}</td>
+          <td>{{ adv_totals_overall[game_type].oreb_opp }}</td>
+        </tr>
+    	</table>
+    </div>
+  </uib-tab>
+</uib-tabset>

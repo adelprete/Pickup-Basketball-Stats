@@ -1,0 +1,74 @@
+<h4 class="accent" style="margin: 30px 0px">Adv Per 100</h4>
+
+<uib-tabset type="pills">
+  <uib-tab ng-repeat="game_type in game_types" heading="{{ game_type }}">
+    <div class="table-responsive">
+    	<table class="table table-hover">
+    		<tr style="background:#d9edf7">
+          <td data-toggle="tooltip" title="Season">
+        		Season
+        	</td>
+          <td data-toggle="tooltip" title="Games Played" ng-click="sort('gp')">
+        		GP
+        	</td>
+          <td data-toggle="tooltip" title="Plus/Minus.  This is your Offensive Rating subtracted by your Defensive Rating" ng-click="sort('fgm')">
+            +/-
+          </td>
+          <td data-toggle="tooltip" title="True Shooting Percentage. Percentage of Field Goals made with the 3 pointers weighed higher.  Formula is Points / FGA" ng-click="sort('fga')">
+            TS%
+          </td>
+          <td data-toggle="tooltip" title="True Passing Percentage. Percentage of points made following your assists and potential assists" ng-click="sort('threepm')">
+            TP%
+          </td>
+          <td data-toggle="tooltip" title="Assisted Shooting %.  Shooting percentage of shots that were assisted by another player." ng-click="sort('threepa')">
+            AST.FGM%
+          </td>
+          <td data-toggle="tooltip" title="Assisted Field Goal %. Percentage of shots attempted that were assisted by another player." ng-click="sort('oreb')">
+            AST.FGA%
+          </td>
+          <td data-toggle="tooltip" title="Unassisted Shooting %. Shooting percentage of shots that were not assisted by another player." ng-click="sort('dreb')">
+            UNAST.FGM%
+          </td>
+          <td data-toggle="tooltip" title="Unassisted Field Goal %. Percentage of shots attempted that were not assisted by another player." ng-click="sort('total_rebounds')">
+            UNAST.FGA%
+          </td>
+          <td data-toggle="tooltip" title="Putback Shooting %.  Percentage of putbacks that go in." ng-click="sort('asts')">
+            PGM%
+          </td>
+          <td data-toggle="tooltip" title="Putback Field Goal %.  Percentage of shots that are considered putbacks." ng-click="sort('pot_ast')">
+            PGA%
+          </td>
+    		</tr>
+        <tr ng-show="!per100_statlines[game_type].length">
+          <td colspan=11>Player hasn't recorded atleast 100 possessions in this game type for any season</td>
+        </tr>
+  			<tr ng-repeat="statline in adv_per100_statlines[game_type]">
+          <td>{{ statline.title }}</td>
+          <td>{{ statline.gp }}</td>
+          <td>{{ statline.plus_minus_rating | number:1 }}</td>
+          <td>{{ statline.ts_percent | number:1 }}</td>
+          <td>{{ statline.tp_percent | number:1 }}</td>
+          <td>{{ statline.ast_fgm_percent | number:1 }}</td>
+          <td>{{ statline.ast_fga_percent | number:1 }}</td>
+          <td>{{ statline.unast_fgm_percent | number:1 }}</td>
+          <td>{{ statline.unast_fga_percent | number:1 }}</td>
+          <td>{{ statline.pgm_percent | number:1 }}</td>
+          <td>{{ statline.pga_percent | number:1 }}</td>
+  			</tr>
+        <tr ng-show="per100_statlines[game_type].length" style="background:#d9edf7">
+          <td>Overall</td>
+          <td>{{ total_game_counts[game_type] }}</td>
+          <td>{{ adv_per100_overall[game_type].plus_minus_rating | number:1 }}</td>
+          <td>{{ adv_per100_overall[game_type].ts_percent | number:1 }}</td>
+          <td>{{ adv_per100_overall[game_type].tp_percent | number:1 }}</td>
+          <td>{{ adv_per100_overall[game_type].ast_fgm_percent | number:1 }}</td>
+          <td>{{ adv_per100_overall[game_type].ast_fga_percent | number:1 }}</td>
+          <td>{{ adv_per100_overall[game_type].unast_fgm_percent | number:1 }}</td>
+          <td>{{ adv_per100_overall[game_type].unast_fga_percent | number:1 }}</td>
+          <td>{{ adv_per100_overall[game_type].pgm_percent | number:1 }}</td>
+          <td>{{ adv_per100_overall[game_type].pga_percent | number:1 }}</td>
+        </tr>
+    	</table>
+    </div>
+  </uib-tab>
+</uib-tabset>

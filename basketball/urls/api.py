@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from basketball.views.game import (
     PlaysViewSet, GameViewSet,DailyStatlineViewSet, PlayerViewSet,
     SeasonStatlineViewSet, calculate_statlines, game_box_score,
-    game_adv_box_score, export_plays
+    game_adv_box_score, export_plays, StatlineViewSet
     )
 from rest_framework import renderers, routers
 
@@ -50,7 +50,7 @@ router.register(r'daily-statlines', DailyStatlineViewSet)
 router.register(r'member-permissions', MemberPermissionViewSet)
 router.register(r'member-invite', MemberInviteViewSet)
 router.register(r'players', PlayerViewSet)
-
+router.register(r'statlines', StatlineViewSet)
 router.register(r'season-statlines', SeasonStatlineViewSet, 'SeasonStatline')
 
 urlpatterns = [
@@ -58,6 +58,10 @@ urlpatterns = [
     url(r'^user/current/', current_user),
     url(r'^user/create/', CreateUserView.as_view()),
     url(r'^players/(?P<player_id>[0-9]+)/overall_averages$',  pviews.player_overall_averages),
+    url(r'^players/(?P<player_id>[0-9]+)/overall_totals$',  pviews.player_overall_totals),
+    url(r'^players/(?P<player_id>[0-9]+)/overall_adv_totals$',  pviews.player_overall_adv_totals),
+    url(r'^players/(?P<player_id>[0-9]+)/overall_per100$',  pviews.player_overall_per100),
+    url(r'^players/(?P<player_id>[0-9]+)/overall_adv_per100$',  pviews.player_overall_adv_per100),
 	url(r'^plays/$',  plays_list),
     url(r'^plays/(?P<pk>[0-9]+)/$',  plays_details),
     url(r'^games/groupid/(?P<group_id>[0-9]+)/$',  game_list),

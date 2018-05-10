@@ -7,7 +7,8 @@ function StatlineService($q, $http) {
   var service = {
     getDailyStatlines: getDailyStatlines,
     getSeasonStatlines: getSeasonStatlines,
-    sumStatlines: sumStatlines
+    sumStatlines: sumStatlines,
+    getStatlines: getStatlines
   };
   return service;
 
@@ -57,5 +58,16 @@ function StatlineService($q, $http) {
 
     return deferred.promise;
   };
+
+  function getStatlines(params) {
+    var deferred = $q.defer();
+    $http.get('/api/statlines/', {params: params}).then(function(response, status, config, headers){
+      deferred.resolve(response.data);
+    }, function(response){
+      deferred.reject(response);
+    });
+
+    return deferred.promise;
+  }
 
 };

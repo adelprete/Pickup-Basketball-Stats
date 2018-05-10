@@ -1,4 +1,4 @@
-<h4 class="accent" style="margin: 30px 0px">Per Game Averages</h4>
+<h4 class="accent" style="margin: 30px 0px">Totals</h4>
 
 <uib-tabset type="pills">
   <uib-tab ng-repeat="game_type in game_types" heading="{{ game_type }}">
@@ -60,48 +60,48 @@
             PTS
           </td>
     		</tr>
-        <tr ng-show="!averages_statlines[game_type].length">
+        <tr ng-show="!totals_statlines[game_type].length">
           <td colspan=18>No Data Yet</td>
         </tr>
-  			<tr ng-repeat="statline in averages_statlines[game_type]">
+  			<tr ng-repeat="statline in totals_statlines[game_type]">
           <td>{{ statline.title }}</td>
           <td>{{ statline.gp }}</td>
-          <td>{{ statline.fgm | number:1 }}</td>
-          <td>{{ statline.fga | number:1 }}</td>
-          <td>{{ statline.threepm | number:1 }}</td>
-          <td>{{ statline.threepa | number:1 }}</td>
-          <td>{{ statline.oreb | number:1 }}</td>
-          <td>{{ statline.dreb | number:1 }}</td>
-          <td>{{ statline.total_rebounds | number:1 }}</td>
-          <td>{{ statline.asts | number:1 }}</td>
-          <td>{{ statline.pot_ast | number:1 }}</td>
-          <td>{{ statline.to | number:1 }}</td>
-          <td>{{ statline.stls | number:1 }}</td>
-          <td>{{ statline.blk | number:1 }}</td>
-          <td>{{ statline.ba | number:1 }}</td>
-          <td>{{ statline.fd | number:1 }}</td>
-          <td>{{ statline.pf | number:1 }}</td>
-          <td>{{ statline.points | number:1 }}</td>
+          <td>{{ statline.fgm }}</td>
+          <td>{{ statline.fga }}</td>
+          <td>{{ statline.threepm }}</td>
+          <td>{{ statline.threepa }}</td>
+          <td>{{ statline.oreb }}</td>
+          <td>{{ statline.dreb }}</td>
+          <td>{{ statline.total_rebounds }}</td>
+          <td>{{ statline.asts }}</td>
+          <td>{{ statline.pot_ast }}</td>
+          <td>{{ statline.to }}</td>
+          <td>{{ statline.stls }}</td>
+          <td>{{ statline.blk }}</td>
+          <td>{{ statline.ba }}</td>
+          <td>{{ statline.fd }}</td>
+          <td>{{ statline.pf }}</td>
+          <td>{{ statline.points }}</td>
   			</tr>
-        <tr ng-show="averages_statlines[game_type].length" style="background:#d9edf7">
+        <tr ng-show="totals_statlines[game_type].length" style="background:#d9edf7">
           <td>Overall</td>
           <td>{{ total_game_counts[game_type] }}</td>
-          <td>{{ averages_overall[game_type].fgm | number:1 }}</td>
-          <td>{{ averages_overall[game_type].fga | number:1 }}</td>
-          <td>{{ averages_overall[game_type].threepm | number:1 }}</td>
-          <td>{{ averages_overall[game_type].threepa | number:1 }}</td>
-          <td>{{ averages_overall[game_type].oreb | number:1 }}</td>
-          <td>{{ averages_overall[game_type].dreb | number:1 }}</td>
-          <td>{{ averages_overall[game_type].total_rebounds | number:1 }}</td>
-          <td>{{ averages_overall[game_type].asts | number:1 }}</td>
-          <td>{{ averages_overall[game_type].pot_ast | number:1 }}</td>
-          <td>{{ averages_overall[game_type].to | number:1 }}</td>
-          <td>{{ averages_overall[game_type].stls | number:1 }}</td>
-          <td>{{ averages_overall[game_type].blk | number:1 }}</td>
-          <td>{{ averages_overall[game_type].ba | number:1 }}</td>
-          <td>{{ averages_overall[game_type].fd | number:1 }}</td>
-          <td>{{ averages_overall[game_type].pf | number:1 }}</td>
-          <td>{{ averages_overall[game_type].points | number:1 }}</td>
+          <td>{{ totals_overall[game_type].fgm }}</td>
+          <td>{{ totals_overall[game_type].fga }}</td>
+          <td>{{ totals_overall[game_type].threepm }}</td>
+          <td>{{ totals_overall[game_type].threepa }}</td>
+          <td>{{ totals_overall[game_type].oreb }}</td>
+          <td>{{ totals_overall[game_type].dreb }}</td>
+          <td>{{ totals_overall[game_type].total_rebounds }}</td>
+          <td>{{ totals_overall[game_type].asts }}</td>
+          <td>{{ totals_overall[game_type].pot_ast }}</td>
+          <td>{{ totals_overall[game_type].to }}</td>
+          <td>{{ totals_overall[game_type].stls }}</td>
+          <td>{{ totals_overall[game_type].blk }}</td>
+          <td>{{ totals_overall[game_type].ba }}</td>
+          <td>{{ totals_overall[game_type].fd }}</td>
+          <td>{{ totals_overall[game_type].pf }}</td>
+          <td>{{ totals_overall[game_type].points }}</td>
         </tr>
     	</table>
     </div>

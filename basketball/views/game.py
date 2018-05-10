@@ -471,12 +471,34 @@ class PlayerViewSet(viewsets.ModelViewSet):
         return super().list(request)
 
 
+class StatlineViewSet(viewsets.ModelViewSet):
+    queryset = bmodels.StatLine.objects.all()
+    serializer_class = StatlineSerializer
+    filter_backend = (drf_filters.DjangoFilterBackend,)
+    filter_class = filters.StatlineFilter
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases for
+        the user as determined by the username portion of the URL.
+        """
+        queryset = bmodels.StatLine.objects.all()
+        player_id = self.request.query_params.get('player_id', None)
+        if player_id:
+            queryset = queryset.filter(player__id=player_id)
+        start_date = self.request.query_params.get('start_date', None)
+        end_date = self.request.query_params.get('end_date', None)
+        if start_date and end_date:
+            queryset = queryset.filter(game__date__gte=start_date, game__date__lte=end_date)
+        return queryset
+
 
 class DailyStatlineViewSet(viewsets.ModelViewSet):
     queryset = bmodels.DailyStatline.objects.all()
     serializer_class = DailyStatlineSerializer
     filter_backend = (drf_filters.DjangoFilterBackend,)
     filter_class = filters.DailyStatlineFilter
+
 
 class SeasonStatlineViewSet(viewsets.ModelViewSet):
     serializer_class = SeasonStatlineSerializer

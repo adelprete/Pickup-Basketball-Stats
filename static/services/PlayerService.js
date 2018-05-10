@@ -10,7 +10,12 @@ function PlayerService($q, $http) {
     getPlayer: getPlayer,
     deletePlayer: deletePlayer,
     getPlayers: getPlayers,
-    getPlayerAverages: getPlayerAverages
+    getPlayerAverages: getPlayerAverages,
+    getPlayerTotals: getPlayerTotals,
+    getPlayerAdvTotals: getPlayerAdvTotals,
+    getPlayerPer100: getPlayerPer100,
+    getPlayerAdvPer100: getPlayerAdvPer100
+
   };
   return service;
 
@@ -23,7 +28,6 @@ function PlayerService($q, $http) {
     }, function(response) {
       deferred.reject(response);
     });
-
     return deferred.promise;
   };
 
@@ -34,7 +38,6 @@ function PlayerService($q, $http) {
     }, function(response) {
       deferred.reject(response);
     });
-
     return deferred.promise;
   };
 
@@ -45,7 +48,6 @@ function PlayerService($q, $http) {
     }, function(response) {
       deferred.reject(response);
     });
-
     return deferred.promise;
   };
 
@@ -56,7 +58,6 @@ function PlayerService($q, $http) {
     }, function(response) {
       deferred.reject(response);
     });
-
     return deferred.promise;
   };
 
@@ -67,7 +68,6 @@ function PlayerService($q, $http) {
     }, function(response) {
       deferred.reject(response);
     });
-
     return deferred.promise;
   };
 
@@ -78,7 +78,46 @@ function PlayerService($q, $http) {
     }, function(response) {
       deferred.reject(response);
     });
+    return deferred.promise;
+  };
 
+  function getPlayerTotals(playerId) {
+    var deferred = $q.defer();
+    $http.get('/api/players/' + playerId + '/overall_totals').then(function(response){
+      deferred.resolve(response.data);
+    }, function(response) {
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  };
+
+  function getPlayerAdvTotals(playerId) {
+    var deferred = $q.defer();
+    $http.get('/api/players/' + playerId + '/overall_adv_totals').then(function(response){
+      deferred.resolve(response.data);
+    }, function(response) {
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  };
+
+  function getPlayerPer100(playerId) {
+    var deferred = $q.defer();
+    $http.get('/api/players/' + playerId + '/overall_per100').then(function(response){
+      deferred.resolve(response.data);
+    }, function(response) {
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  };
+
+  function getPlayerAdvPer100(playerId) {
+    var deferred = $q.defer();
+    $http.get('/api/players/' + playerId + '/overall_adv_per100').then(function(response){
+      deferred.resolve(response.data);
+    }, function(response) {
+      deferred.reject(response);
+    });
     return deferred.promise;
   };
 

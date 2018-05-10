@@ -1,0 +1,103 @@
+<h4 class="accent" style="margin: 30px 0px">Game Log</h4>
+
+<div class="row">
+<form>
+  <div class="form-group col-md-2 col-sm-4">
+    <label for="season">Season</label>
+    <select
+      id="season"
+      class="form-control"
+      ng-model="selected_season.id"
+      ng-options="o.id as o.title for o in seasons"
+      ng-change="getSeasonGames()">
+    </select>
+  </div>
+</form>
+</div>
+<uib-tabset type="pills">
+  <uib-tab ng-repeat="(game_type, val) in game_statlines" heading="{{ game_type }}">
+    <div class="table-responsive">
+    	<table class="table table-hover">
+    		<tr style="background:#d9edf7">
+          <td data-toggle="tooltip" title="Date">
+        		Date
+        	</td>
+          <td data-toggle="tooltip" title="Name of game" ng-click="sort('gp')">
+        		Title
+        	</td>
+          <td data-toggle="tooltip" title="Field Goal Makes - Field Goal Attempts" ng-click="sort('gp')">
+            FG
+          </td>
+          <td data-toggle="tooltip" title="3 Pointers Made / 3 Pointers Attempted" ng-click="sort('gp')">
+            3pt
+          </td>
+          <td data-toggle="tooltip" title="Offensive Rebounds" ng-click="sort('gp')">
+            Off
+          </td>
+          <td data-toggle="tooltip" title="Defensive Rebounds" ng-click="sort('gp')">
+            Def
+          </td>
+          <td data-toggle="tooltip" title="Total Rebounds" ng-click="sort('gp')">
+            Reb
+          </td>
+          <td data-toggle="tooltip" title="Assists" ng-click="sort('gp')">
+            Ast
+          </td>
+          <td data-toggle="tooltip" title="Potential Assists" ng-click="sort('gp')">
+            P.Ast
+          </td>
+          <td data-toggle="tooltip" title="Turnovers" ng-click="sort('gp')">
+            To
+          </td>
+          <td data-toggle="tooltip" title="Steals" ng-click="sort('gp')">
+            Stls
+          </td>
+          <td data-toggle="tooltip" title="Blocks" ng-click="sort('gp')">
+            Blk
+          </td>
+          <td data-toggle="tooltip" title="Blocks Against. # of times player got blocked." ng-click="sort('gp')">
+            Ba
+          </td>
+          <td data-toggle="tooltip" title="Fouls Drawn.  # of times player was fouled." ng-click="sort('gp')">
+            Fd
+          </td>
+          <td data-toggle="tooltip" title="Personal Fouls" ng-click="sort('gp')">
+            Pf
+          </td>
+          <td data-toggle="tooltip" title="Points" ng-click="sort('gp')">
+            Pts
+          </td>
+          <td data-toggle="tooltip" title="Offensive Possesions" ng-click="sort('gp')">
+            Off.Pos
+          </td>
+          <td data-toggle="tooltip" title="Defensive Possessions" ng-click="sort('gp')">
+            Def.Pos
+          </td>
+        </tr>
+        <tr ng-show="!game_statlines[game_type].length">
+          <td colspan=18>No Data Yet</td>
+        </tr>
+  			<tr ng-repeat="statline in game_statlines[game_type]">
+          <td>{{ statline.game.date }}</td>
+          <td><a ng-href="/group/{{ group_id }}/games/{{ statline.game.id }}">{{ statline.game.title }}</a></td>
+          <td>{{ statline.fgm }}-{{ statline.fga }}</td>
+          <td>{{ statline.threepm }}-{{ statline.threepa }}</td>
+          <td>{{ statline.oreb }}</td>
+          <td>{{ statline.dreb }}</td>
+          <td>{{ statline.total_rebounds }}</td>
+          <td>{{ statline.asts }}</td>
+          <td>{{ statline.pot_ast }}</td>
+          <td>{{ statline.to }}</td>
+          <td>{{ statline.stls }}</td>
+          <td>{{ statline.blk }}</td>
+          <td>{{ statline.ba }}</td>
+          <td>{{ statline.fd }}</td>
+          <td>{{ statline.pf }}</td>
+          <td>{{ statline.points }}</td>
+          <td>{{ statline.off_pos }}</td>
+          <td>{{ statline.def_pos }}</td>
+  			</tr>
+      </table>
+    </div>
+  </uib-tab>
+</uib-tabset>
