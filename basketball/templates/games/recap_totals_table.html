@@ -8,13 +8,13 @@
 	</td>
 {% endblock %}
 {% block rows %}
-	<td><a href="{{ value.player_obj.get_absolute_url }}">{{ value.player_obj.get_abbr_name }}</a></td>
+	<td><a href="/group/{{ value.player_obj.group.id }}/players/{{ value.player_obj.id }}">{{ value.player_obj.get_abbr_name }}</a></td>
 	{% for header in headers %}
 		<td>{{ value|access:header.stat }}</td>
 	{% endfor %}
 {% endblock %}
 {% block footer %}
-	<tr style="background:#d9edf7">	
+	<tr style="background:#d9edf7">
 		<td>Total</td>
 		{% for header in headers %}
 			<td>{{ totals|access:header.stat}}</td>
