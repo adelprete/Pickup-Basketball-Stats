@@ -4,7 +4,7 @@
 			<tr>
 				<td class="game-title" colspan=2>
 					<a ng-href="/group/{{groupId}}/games/{{game.id}}/">
-						<u>{{ game.title }}</u>
+						<u>{{ game.title }} <span ng-if="game.exhibition">(E)</span></u>
 					</a>
 				</td>
 			</tr>

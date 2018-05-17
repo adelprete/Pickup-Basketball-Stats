@@ -120,7 +120,8 @@ class GameSnippetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Game
-        fields = ['id', 'date', 'title', 'top_player', 'top_statline', 'team1_score', 'team2_score']
+        fields = ['id', 'date', 'title', 'top_player', 'top_statline', 'team1_score',
+                    'team2_score', 'exhibition']
 
 class SeasonSerializer(serializers.ModelSerializer):
     class Meta:
