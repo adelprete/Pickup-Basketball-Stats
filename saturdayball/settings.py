@@ -27,9 +27,6 @@ if DEBUG:
 else:
     APP_URL = 'https://www.saturdayball.com/'
 
-ADMINS = (
-    ('Anthony','adelprete87@gmail.com')
-)
 
 # Application definition
 
