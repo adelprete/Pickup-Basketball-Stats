@@ -27,5 +27,6 @@ urlpatterns = [
         url(r'^admin/', include(admin.site.urls)),
         url(r'^accounts/login/$', auth_views.login, {'template_name': 'login.html'},name="login"),
         url(r'^logout/$', 'django.contrib.auth.views.logout',{'next_page': '/'},   name="logout"),
+        url(r'^robots\.txt$', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
         url(r'^.*/$', TemplateView.as_view(template_name='base_angular.html')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
