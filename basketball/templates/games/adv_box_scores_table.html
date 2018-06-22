@@ -19,7 +19,7 @@ $(function () {
 	</tr>
 	{% for line in statlines %}
 		<tr>
-			<td><a href="{{ line.player.get_absolute_url }}">{{ line.player.get_abbr_name }}</a></td>
+			<td>{{ line.player.get_abbr_name }}</td>
 			<td>{{ line.pgm }}-{{ line.pga }}</td>
 			{% comment %}<td>{{ line.fastbreaks }}</td>{% endcomment %}
 			<td>{{ line.fastbreak_points }}</td>
@@ -30,7 +30,7 @@ $(function () {
 		</tr>
 	{% endfor %}
 		<tr>
-			<td><a href="{{ line.player.get_absolute_url }}">{{ team.player.get_full_name }}</a></td>
+			<td>{{ team.player.get_full_name }}</td>
 			<td>{{ team.pgm }}-{{ team.pga }}</td>
 			{% comment %}<td>{{ team.fastbreaks }}</td>{% endcomment %}
 			<td>{{ team.fastbreak_points }}</td>
