@@ -23,6 +23,7 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
   $scope.filterFormVisible = false;
   $scope.game = null;
   $scope.groupId = $routeParams['groupId'];
+  $scope.reloadMessage = "";
   $scope.playOptions = playOptions;
   $scope.player = null;
   $scope.PLAYERS = [];
@@ -30,6 +31,13 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
   $scope.seekToTime = seekToTime;
   $scope.showHideFilter = showHideFilter;
   $scope.user = Session.currentUser();
+
+  /* Update play scope variables */
+  $scope.editplay = {};
+  $scope.editplaymessage = "";
+  $scope.fillEditForm = fillEditForm;
+  $scope.updatePlay = updatePlay;
+  /* end of update play variables */
 
   ///////////////////
 
@@ -45,11 +53,7 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
       $scope.adv_box_scores = response;
     })
 
-    GameService.getGamePlays($routeParams['gameId']).then(function(response) {
-      $scope.plays = _.orderBy(response, ['time'], ['asc']);
-    }, function(response) {
-      console.log('Plays failed: ', response);
-    })
+    getPlays();
 
     GameService.getGame($routeParams['gameId']).then(function(response) {
       $scope.game = response;
@@ -70,7 +74,7 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
       })
 
       var all_players = $scope.game.team1.concat($scope.game.team2);
-      $scope.PLAYERS = _.map(all_players, function(obj) {
+      $scope.playOptions.PLAYERS = _.map(all_players, function(obj) {
         return {code: obj.id, name: obj.first_name + " " + obj.last_name}
       });
 
@@ -81,6 +85,14 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
     }, function() {});
 
   };
+
+  function getPlays() {
+    GameService.getGamePlays($routeParams['gameId']).then(function(response) {
+      $scope.plays = _.orderBy(response, ['time'], ['asc']);
+    }, function(response) {
+      console.log('Plays failed: ', response);
+    })
+  }
 
   var jumpToPlayerAnchor = function() {
     $anchorScroll("playeranchor");
@@ -127,4 +139,41 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
       }
     }
   }, true);
+
+  /* Update Play logic */
+  function fillEditForm(playid) {
+    GameService.getPlay(playid).then(function (response){
+      $scope.editplaymessage = "";
+      $scope.editplay = response;
+      $scope.editplay.primary_player = response.primary_player.id;
+      $scope.editplay.secondary_player = (response.secondary_player && response.secondary_player.id) ? response.secondary_player.id : '';
+      $scope.editplay.assist_player = (response.assist_player && response.assist_player.id)? response.assist_player.id : '';
+      $scope.editplay.top_play_players = response.top_play_players;
+    });
+  }
+
+  function updatePlay(play) {
+    if (play.secondary_player && !play.secondary_play){
+      play.secondary_player = "";
+      play.secondary_play = "";
+    }
+    if (play.assist_player && !play.assist){
+      play.assist_player = '';
+      play.assist = "";
+    }
+    if (play.hasOwnProperty('top_play_rank') && !play.top_play_rank){
+      play.top_play_rank = "";
+    }
+
+    $scope.editplaymessage = "Saving Play...."
+    GameService.updatePlay(play).then(function(response){
+      $scope.editplaymessage = "Successfully saved.  Game stats are being recalculated.  Refresh the page in a bit to see your changes.";
+      getPlays();
+      GameService.calculateStatlines($scope.game.id).then(function(response){});
+    }, function(response){
+      console.log(response);
+      $scope.editplaymessage = "Failed to save play";
+    });
+  }
+  /* end of update play logic */
 };

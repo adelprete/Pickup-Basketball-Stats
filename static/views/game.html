@@ -116,7 +116,7 @@
                     <option value="">-------</option>
                 </select>
                 <label>Primary Player</label>
-                <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.primary_player.id" class="form-control">
+                <select ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="filters.primary_player.id" class="form-control">
                     <option value="">-------</option>
                 </select>
                 <label>Secondary Play</label>
@@ -124,7 +124,7 @@
                     <option value="">-------</option>
                 </select>
                 <label>Secondary Player</label>
-                <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.secondary_player.id" class="form-control">
+                <select ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="filters.secondary_player.id" class="form-control">
                     <option value="">-------</option>
                 </select>
                 <label>Assist Play</label>
@@ -132,7 +132,7 @@
                     <option value="">-------</option>
                 </select>
                 <label>Assist Player</label>
-                <select ng-options="o.code as o.name for o in PLAYERS" ng-model="filters.assist_player.id" class="form-control">
+                <select ng-options="o.code as o.name for o in playOptions.PLAYERS" ng-model="filters.assist_player.id" class="form-control">
                     <option value="">-------</option>
                 </select>
               </div>
@@ -152,6 +152,15 @@
                     <a ng-click="seekToTime(play.time)">
                       {{ play.time }}:
                     </a>
+                    <div
+                      ng-if="RoleHelper.isAdmin(user, groupId) || RoleHelper.canEdit(user, groupId)"
+                      data-toggle="modal"
+                      data-target="#editPlayModal"
+                      ng-click="fillEditForm(play.id)"
+                      class="clickable"
+                      style="position: absolute; top: 18px; left: 15px; font-size:12px; padding: 0px; z-index: 2; color: red;">
+                      Edit
+                    </div>
                   </span>
                   <span class="col-xs-9">
                     {{ play.primary_play_display }}
@@ -186,4 +195,7 @@
       </div>
     </div>
   </div>
+
+  <div ng-include src="'static/partials/play_form_modal.html'"></div>
+
 </div>
