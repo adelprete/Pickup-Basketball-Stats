@@ -78,7 +78,7 @@ div.splash-feature-text {
   padding: 80px 50px 100px 50px;
 }
 
-div.splash-feature img {
+div.splash-feature .splash-img img {
   display: block;
   width: 80%;
   border: 1px solid black;
