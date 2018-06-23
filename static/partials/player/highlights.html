@@ -7,12 +7,12 @@
   <uib-tabset type="pills">
     <uib-tab heading="Top Plays" classes="btn-sm">
       <div ng-repeat="play in topPlays" class="col-md-6">
-        <a class="glyphicon glyphicon-play" ng-click="initYoutubePlayer(play.game, play.time, 'play')"></a> - {{ play.description }}
+        <a class="glyphicon glyphicon-play" ng-click="initYoutubePlayer(play.game, play.time)"></a> - {{ play.description }}
       </div>
     </uib-tab>
     <uib-tab heading="Not Top Plays" classes="btn-sm">
       <div ng-repeat="play in notTopPlays" class="col-md-6">
-        <a class="glyphicon glyphicon-play" ng-click="initYoutubePlayer(play.game, play.time, 'play')"></a> - {{ play.description }}
+        <a class="glyphicon glyphicon-play" ng-click="initYoutubePlayer(play.game, play.time)"></a> - {{ play.description }}
       </div>
     </uib-tab>
   </uib-tabset>

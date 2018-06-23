@@ -2446,7 +2446,7 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
       })
     }
 
-    function initYoutubePlayer(game_id, timestamp, action) {
+    function initYoutubePlayer(game_id, timestamp) {
         // YouTube player logic
 
       GameService.getGame(game_id).then(function(response){
@@ -2455,13 +2455,8 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
         $scope.$on('youtube.player.ready', function($event, player) {
           $scope.youtubeplayer = player;
           seekToTime(timestamp);
-          if (action === 'play') {
-            $scope.youtubeplayer.playVideo();
-            $anchorScroll("playeranchor");
-          }
-          else if (action === 'paused') {
-            $scope.youtubeplayer.stopVideo();
-          }
+          $scope.youtubeplayer.playVideo();
+          $anchorScroll("playeranchor");
         })
       }, function(response){
         console.log("Error: ", response);
