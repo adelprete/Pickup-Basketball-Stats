@@ -1660,6 +1660,7 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
   $scope.user = Session.currentUser();
 
   /* Update play scope variables */
+  $scope.deletePlay = deletePlay;
   $scope.editplay = {};
   $scope.editplaymessage = "";
   $scope.fillEditForm = fillEditForm;
@@ -1801,6 +1802,14 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
       console.log(response);
       $scope.editplaymessage = "Failed to save play";
     });
+  }
+
+  function deletePlay(playid) {
+      GameService.deletePlay(playid).then(function(response){
+        _.remove($scope.plays, function(play) {
+          return play.id === playid;
+        });
+      });
   }
   /* end of update play logic */
 };
