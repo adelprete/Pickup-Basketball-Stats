@@ -3,10 +3,10 @@
 angular.module('saturdayBall').controller('AddPlaysController', AddPlaysController);
 
 AddPlaysController.$inject = ['$scope', '$routeParams', 'GameService', 'Session', 'playOptions',
-  '$anchorScroll'];
+  '$anchorScroll', '$timeout'];
 
 function AddPlaysController($scope, $routeParams, GameService, Session, playOptions,
-  $anchorScroll) {
+  $anchorScroll, $timeout) {
 
     $scope.calculateScore = calculateScore;
     $scope.createPlay = createPlay;
@@ -17,6 +17,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     $scope.groupId = $routeParams['groupId']
     $scope.loading = true;
     $scope.play = {};
+    $scope.playform = {};
     $scope.playOptions = playOptions;
     $scope.seekToTime = seekToTime;
     $scope.team1_score = "-";
@@ -133,7 +134,10 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
           $scope.plays = _.reverse(_.sortBy($scope.plays, 'time'));
           calculateScore();
           GameService.calculateStatlines($scope.game.id).then(function(response){});
-          $scope.playform.$setUntouched();
+          $scope.playform.play.$setUntouched();
+          $timeout(function() {
+            $anchorScroll("playeranchor");
+          }, 1000);
         }, function(response){
           $scope.message = "Failed to add play";
         });
