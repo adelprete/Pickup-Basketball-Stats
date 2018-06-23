@@ -2416,10 +2416,10 @@ function PlayerFormController($scope, $routeParams, PlayerService,
 angular.module('saturdayBall').controller('PlayerHighlightsController', PlayerHighlightsController);
 
 PlayerHighlightsController.$inject = ['$scope', '$routeParams', 'PlayService', 'GameService',
-  '$anchorScroll', '$window', 'Per100Service'];
+  '$anchorScroll', '$window', 'Per100Service', '$timeout'];
 
 function PlayerHighlightsController($scope, $routeParams, PlayService, GameService,
-  $anchorScroll, $window, Per100Service) {
+  $anchorScroll, $window, Per100Service, $timeout) {
 
     $scope.topPlays = [];
     $scope.notTopPlays = [];
@@ -2455,7 +2455,7 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
       })
     }
 
-    function initYoutubePlayer(game_id, timestamp) {
+    function initYoutubePlayer(game_id, timestamp, action) {
         // YouTube player logic
 
       GameService.getGame(game_id).then(function(response){
@@ -2464,8 +2464,17 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
         $scope.$on('youtube.player.ready', function($event, player) {
           $scope.youtubeplayer = player;
           seekToTime(timestamp);
-          $scope.youtubeplayer.playVideo();
-          $anchorScroll("playeranchor");
+          if (action == 'play') {
+            $anchorScroll("playeranchor");
+            $timeout(function() {
+              $scope.youtubeplayer.playVideo();
+              seekToTime(timestamp);
+            }, 1000);
+          }
+          else {
+            $scope.youtubeplayer.pauseVideo();
+          }
+
         })
       }, function(response){
         console.log("Error: ", response);
