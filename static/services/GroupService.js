@@ -115,7 +115,7 @@ function GroupService($q, $http){
 
   function updateMemberInvite(data) {
     var deferred = $q.defer();
-    $http.put('/api/member-invite/' + data.code, data).then(function(response, status, config, headers){
+    $http.put('/api/member-invite/' + data.code + '/', data).then(function(response, status, config, headers){
       deferred.resolve(response.data);
     }, function(response){
       deferred.reject(response);
