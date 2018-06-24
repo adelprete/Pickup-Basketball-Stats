@@ -82,6 +82,7 @@
                   <th>Username</th>
                   <th>Email</th>
                   <th>Permission</th>
+                  <th>Player</th>
                   <th col-span=2>Actions</th>
                   <th></th>
                 </tr>
@@ -92,6 +93,11 @@
                   <td ng-hide="editingMembers[member.id]">{{ member.permission | uppercase}}</td>
                   <td ng-show="editingMembers[member.id]">
                     <select class="form-control" ng-options="o.code as o.name for o in inviteOptions.PERMISSIONS" ng-model="member.permission" required>
+                    </select>
+                  </td>
+                  <td ng-hide="editingMembers[member.id]">{{ playerDisplay(member.player) }}</td>
+                  <td ng-show="editingMembers[member.id]" style="width: 210px;">
+                    <select class="form-control" ng-options="o.id as (o.first_name+' '+o.last_name) for o in players" ng-model="member.player" required>
                     </select>
                   </td>
                   <td ng-if="member.user.username != user.username">

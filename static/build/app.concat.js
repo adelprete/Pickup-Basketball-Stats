@@ -249,6 +249,7 @@ routeResolver.$inject = ['Session', '$route', '$q', '$location', 'GroupService',
 function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper) {
   var groupId = $route.current.params.groupId;
   var gameId = $route.current.params.gameid;
+  var playerId = $route.current.params.playerId;
 
   function initSession(deferred) {
     if (!Session.available()) {
@@ -270,6 +271,12 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
           if (response.username === '' || !(RoleHelper.isAdmin(response, groupId) ||
                 RoleHelper.canEdit(response, groupId))) {
                 redirectTo('/group/' + groupId + '/games/' + gameId, deferred, response);
+          }
+        }
+        else if ($route.current.originalPath === '/group/:groupId/players/:playerId/edit') {
+          if (response.username === '' || !(RoleHelper.isAdmin(response, groupId) ||
+                RoleHelper.canEditPlayer(response, groupId, playerId))) {
+                redirectTo('/group/' + groupId + '/players/', deferred, response);
           }
         }
         else if ($route.current.originalPath === '/group/:groupId/settings') {
@@ -1036,7 +1043,9 @@ RoleHelper.$inject = ['$q', '$http'];
 function RoleHelper($q, $http) {
   var service = {
     canEdit: canEdit,
+    canEditPlayer: canEditPlayer,
     isAdmin: isAdmin
+
   };
   return service;
 
@@ -1057,6 +1066,18 @@ function RoleHelper($q, $http) {
     if (user) {
       for (var i = 0; i < user.group_permissions.length; i++) {
         if (user.group_permissions[i][0] === parseInt(groupId, 10) && user.group_permissions[i][2] === "admin") {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function canEditPlayer(user, groupId, playerId) {
+    if (user) {
+      for (var i = 0; i < user.group_permissions.length; i++) {
+        if (user.group_permissions[i][0] === parseInt(groupId, 10) &&
+            (user.group_permissions[i][3] === parseInt(playerId, 10))) {
           return true;
         }
       }
@@ -1895,10 +1916,10 @@ angular.module('saturdayBall')
 .controller('GroupSettingsController', GroupSettingsController);
 
 GroupSettingsController.$inject = ['$scope', '$routeParams', 'GroupService', 'Session',
-    'settingOptions', '$uibModal', '$document', 'inviteOptions']
+    'settingOptions', '$uibModal', '$document', 'inviteOptions', 'PlayerService']
 
 function GroupSettingsController($scope, $routeParams, GroupService, Session,
-    settingOptions, $uibModal, $document, inviteOptions) {
+    settingOptions, $uibModal, $document, inviteOptions, PlayerService) {
 
     $scope.close = close;
     $scope.editingMembers = {};
@@ -1907,6 +1928,8 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
     $scope.message = "";
     $scope.modify = modify;
     $scope.open = open;
+    $scope.playerDisplay = playerDisplay;
+    $scope.players = {};
     $scope.remove = remove;
     $scope.save = save;
     $scope.send = send;
@@ -1925,8 +1948,18 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
       }, function(response) {
         console.log('Getting group failed: ', response);
       });
-
+      getPlayers();
       getMembers();
+    }
+
+    function getPlayers() {
+      PlayerService.getPlayers({'group': $routeParams.groupId}).then(function(response) {
+        $scope.players = _.filter(response, function(player){
+          return (player.first_name !== 'Team1' && player.first_name !== 'Team2');
+        });
+      }, function(response) {
+        console.log("Getting players failed: ", response)
+      });
     }
 
     function getMembers() {
@@ -2003,6 +2036,18 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
         })
       }
       console.log("ok clicked");
+    }
+
+    function playerDisplay(id) {
+      let player = _.filter($scope.players, function(player){
+        return player.id === id;
+      })
+      if (player.length) {
+        return player[0].first_name + ' ' + player[0].last_name
+      }
+      else {
+        return "None"
+      }
     }
 };
 ;'use strict';

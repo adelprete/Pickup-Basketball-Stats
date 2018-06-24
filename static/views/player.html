@@ -11,6 +11,7 @@
       {{ player.first_name }} {{ player.last_name }}
     </h3>
     <a
+        ng-if="RoleHelper.isAdmin(user, group_id) || RoleHelper.canEditPlayer(user, group_id, player.id)"
         ng-href="/group/{{ group_id }}/players/{{ player.id }}/edit"
         target="_self"
         class="col-md-1 col-sm-2 col-xs-12 btn btn-primary"

@@ -65,7 +65,7 @@ class MemberPermissionViewSet(viewsets.ModelViewSet):
     queryset = MemberPermission.objects.all()
     serializer_class = MemberPermissionSerializer
     filter_backend = (drf_filters.DjangoFilterBackend,)
-    filter_fields = ['group', 'permission', 'user']
+    filter_fields = ['group', 'permission', 'user', 'player']
 
 class MemberInviteViewSet(viewsets.ModelViewSet):
     queryset = MemberInvite.objects.all()
@@ -126,7 +126,7 @@ class ContactViewSet(viewsets.ModelViewSet):
 def current_user(request):
     user = request.user
     if not request.user.is_anonymous():
-        group_permissions = request.user.group_permissions.all().values_list('group__id', 'group__name', 'permission')
+        group_permissions = request.user.group_permissions.all().values_list('group__id', 'group__name', 'permission', 'player')
     else:
         group_permissions = []
 

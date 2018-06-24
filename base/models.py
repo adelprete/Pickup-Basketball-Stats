@@ -48,6 +48,7 @@ class MemberPermission(models.Model):
     group = models.ForeignKey(Group, blank=True, null=True)
     user = models.ForeignKey('auth.User', related_name='group_permissions')
     permission = models.CharField(max_length=30, choices=PERMISSION_TYPES, null=True)
+    player = models.ForeignKey('basketball.Player', blank=True, null=True)
 
     def __str__(self):
         return "%s - %s" % (self.group.name, self.user.username)

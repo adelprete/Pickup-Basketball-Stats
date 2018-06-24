@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User # If used custom user model
 from base.models import Group, MemberPermission, MemberInvite, MemberProfile, Contact
+from basketball.models import Player
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -29,6 +30,8 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class MemberPermissionSerializer(serializers.ModelSerializer):
+    player = serializers.PrimaryKeyRelatedField(queryset=Player.objects.all(), allow_null=True)
+
     class Meta:
         depth = 1
         model = MemberPermission

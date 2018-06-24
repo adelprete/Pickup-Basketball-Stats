@@ -5,10 +5,10 @@ angular.module('saturdayBall')
 .controller('GroupSettingsController', GroupSettingsController);
 
 GroupSettingsController.$inject = ['$scope', '$routeParams', 'GroupService', 'Session',
-    'settingOptions', '$uibModal', '$document', 'inviteOptions']
+    'settingOptions', '$uibModal', '$document', 'inviteOptions', 'PlayerService']
 
 function GroupSettingsController($scope, $routeParams, GroupService, Session,
-    settingOptions, $uibModal, $document, inviteOptions) {
+    settingOptions, $uibModal, $document, inviteOptions, PlayerService) {
 
     $scope.close = close;
     $scope.editingMembers = {};
@@ -17,6 +17,8 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
     $scope.message = "";
     $scope.modify = modify;
     $scope.open = open;
+    $scope.playerDisplay = playerDisplay;
+    $scope.players = {};
     $scope.remove = remove;
     $scope.save = save;
     $scope.send = send;
@@ -35,8 +37,18 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
       }, function(response) {
         console.log('Getting group failed: ', response);
       });
-
+      getPlayers();
       getMembers();
+    }
+
+    function getPlayers() {
+      PlayerService.getPlayers({'group': $routeParams.groupId}).then(function(response) {
+        $scope.players = _.filter(response, function(player){
+          return (player.first_name !== 'Team1' && player.first_name !== 'Team2');
+        });
+      }, function(response) {
+        console.log("Getting players failed: ", response)
+      });
     }
 
     function getMembers() {
@@ -113,5 +125,17 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
         })
       }
       console.log("ok clicked");
+    }
+
+    function playerDisplay(id) {
+      let player = _.filter($scope.players, function(player){
+        return player.id === id;
+      })
+      if (player.length) {
+        return player[0].first_name + ' ' + player[0].last_name
+      }
+      else {
+        return "None"
+      }
     }
 };

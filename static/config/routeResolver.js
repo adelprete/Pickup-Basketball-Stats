@@ -8,6 +8,7 @@ routeResolver.$inject = ['Session', '$route', '$q', '$location', 'GroupService',
 function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper) {
   var groupId = $route.current.params.groupId;
   var gameId = $route.current.params.gameid;
+  var playerId = $route.current.params.playerId;
 
   function initSession(deferred) {
     if (!Session.available()) {
@@ -29,6 +30,12 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
           if (response.username === '' || !(RoleHelper.isAdmin(response, groupId) ||
                 RoleHelper.canEdit(response, groupId))) {
                 redirectTo('/group/' + groupId + '/games/' + gameId, deferred, response);
+          }
+        }
+        else if ($route.current.originalPath === '/group/:groupId/players/:playerId/edit') {
+          if (response.username === '' || !(RoleHelper.isAdmin(response, groupId) ||
+                RoleHelper.canEditPlayer(response, groupId, playerId))) {
+                redirectTo('/group/' + groupId + '/players/', deferred, response);
           }
         }
         else if ($route.current.originalPath === '/group/:groupId/settings') {
