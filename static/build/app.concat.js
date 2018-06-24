@@ -139,9 +139,6 @@ function googleAnalytics($rootScope, $location, $window) {
 
 angular.module('saturdayBall').run(['$rootScope', 'Session', '$templateCache', function ($rootScope, Session, $templateCache) {
     $rootScope.session = Session;
-    $rootScope.$on('$viewContentLoaded', function() {
-          $templateCache.removeAll(); 
-       });
 }]);
 ;'use strict';
 
@@ -2041,11 +2038,11 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
     }
 
     function playerDisplay(id) {
-      let player = _.filter($scope.players, function(player){
+      var filtered_player = _.filter($scope.players, function(player) {
         return player.id === id;
       })
-      if (player.length) {
-        return player[0].first_name + ' ' + player[0].last_name
+      if (filtered_player.length) {
+        return filtered_player[0].first_name + ' ' + filtered_player[0].last_name
       }
       else {
         return "No Player Selected"
