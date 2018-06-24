@@ -94,7 +94,6 @@ class MemberInviteViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         member_invite = MemberInvite.objects.get(code=request.data['code'])
-        import pdb;pdb.set_trace()
         if member_invite.active:
             user = User.objects.get(email=member_invite.email)
             if member_invite.player:
