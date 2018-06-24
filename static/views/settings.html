@@ -79,7 +79,7 @@
             <div class="table-responsive">
               <table class="table table-striped">
                 <tr>
-                  <th>First Name</th>
+                  <th>Name</th>
                   <th>Username</th>
                   <th>Email</th>
                   <th>Permission</th>
@@ -88,7 +88,7 @@
                   <th></th>
                 </tr>
                 <tr ng-repeat="member in members">
-                  <td>{{ member.user.first_name }}</td>
+                  <td>{{ member.user.first_name }} + ' ' + {{ member.user.last_name }}</td>
                   <td>{{ member.user.username }}</td>
                   <td>{{ member.user.email }}</td>
                   <td ng-hide="editingMembers[member.id]">{{ member.permission | uppercase}}</td>
