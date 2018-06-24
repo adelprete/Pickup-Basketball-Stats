@@ -72,6 +72,7 @@
              <li><strong>Edit</strong> - User will be able to create players, games and do stats.</li>
              <li><strong>Admin</strong> - User can make changes to anything. They can do stats, invite members and change group settings.</li>
             </ul>
+            <p>Link a member to a Player in your group and they will be able to edit that Player's profile.  Admins can edit all Player profiles.</p>
           </div>
           <div style="margin-top:25px;" name="members">
             <button type="button" class="btn btn-primary" ng-click="open()" style="margin-bottom: 10px">+ Invite Members</button>
@@ -95,7 +96,14 @@
                     <select class="form-control" ng-options="o.code as o.name for o in inviteOptions.PERMISSIONS" ng-model="member.permission" required>
                     </select>
                   </td>
-                  <td ng-hide="editingMembers[member.id]">{{ playerDisplay(member.player) }}</td>
+                  <td ng-hide="editingMembers[member.id]">
+                    <span ng-if="member.permission === 'admin'">
+                      All Player Profiles
+                    </span>
+                    <span ng-if="member.permission !== 'admin'">
+                      {{ playerDisplay(member.player) }}
+                    </span>
+                    </td>
                   <td ng-show="editingMembers[member.id]" style="width: 210px;">
                     <select class="form-control" ng-options="o.id as (o.first_name+' '+o.last_name) for o in players" ng-model="member.player" required>
                     </select>
