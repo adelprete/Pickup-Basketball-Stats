@@ -19,7 +19,7 @@ from base.serializers import (
     MemberInviteSerializer,
     ContactSerializer
 )
-from basketball.models import Season, Game
+from basketball.models import Season, Game, Player
 from basketball.serializers import SeasonSerializer
 import json
 
@@ -94,14 +94,22 @@ class MemberInviteViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         member_invite = MemberInvite.objects.get(code=request.data['code'])
+        import pdb;pdb.set_trace()
         if member_invite.active:
             user = User.objects.get(email=member_invite.email)
-            MemberPermission.objects.create(group=member_invite.group, user=user, permission=member_invite.permission)
+            if member_invite.player:
+                player = Player.objects.get(id=member_invite.player)
+            else:
+                player = None
+            MemberPermission.objects.create(
+                group=member_invite.group,
+                user=user,
+                permission=member_invite.permission,
+                player=player)
             serializer = MemberInviteSerializer(member_invite, data={'active': False}, partial=True)
             serializer.is_valid()
             member_invite = serializer.save()
             return Response(serializer.data)
-            #response = super(MemberInviteViewSet, self).update(request, *args, **kwargs)
         return Response(member_invite)
 
 

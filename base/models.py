@@ -75,6 +75,7 @@ class MemberInvite(models.Model):
     group = models.ForeignKey('base.Group')
     email = models.EmailField()
     permission = models.CharField(max_length=30, choices=PERMISSION_TYPES, null=True)
+    player = models.PositiveIntegerField(blank=True, null=True)
     code = models.UUIDField(default=uuid.uuid4, editable=False)
     active = models.BooleanField(default=True)
     creation_date = models.DateField(auto_now_add=True, null=True)
