@@ -2035,7 +2035,6 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
           $scope.inviteMessage = response.data.message;
         })
       }
-      console.log("ok clicked");
     }
 
     function playerDisplay(id) {
@@ -2046,8 +2045,8 @@ function GroupSettingsController($scope, $routeParams, GroupService, Session,
         return player[0].first_name + ' ' + player[0].last_name
       }
       else {
-        return "None"
-      }
+        return "No Player Selected"
+      } 
     }
 };
 ;'use strict';
