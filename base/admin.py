@@ -10,6 +10,9 @@ class GroupAdmin(admin.ModelAdmin):
 class MemberPermissionAdmin(admin.ModelAdmin):
     pass
 
+class MemberProfileAdmin(admin.ModelAdmin):
+    pass
+
 class MemberInviteAdmin(admin.ModelAdmin):
     list_display = ['code', 'email', 'group', 'active', 'permission']
 
@@ -17,3 +20,4 @@ admin.site.register(Contact, ContactAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(MemberPermission, MemberPermissionAdmin)
 admin.site.register(MemberInvite, MemberInviteAdmin)
+admin.site.register(MemberProfile, MemberProfileAdmin)
