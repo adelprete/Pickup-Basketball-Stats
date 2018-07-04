@@ -75,9 +75,13 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
       })
 
       var all_players = $scope.game.team1.concat($scope.game.team2);
-      $scope.playOptions.PLAYERS = _.map(all_players, function(obj) {
-        return {code: obj.id, name: obj.first_name + " " + obj.last_name}
-      });
+      angular.forEach(all_players, function(value, key) {
+        if (value.id !== 5 && value.id !== 6){
+          this.push({'code':value.id, 'name': value.first_name + ' ' + value.last_name});
+        }
+      }, $scope.playOptions.PLAYERS);
+      $scope.playOptions.PLAYERS.splice(0, 0, {'code': 5, 'name': "Team1"})
+      $scope.playOptions.PLAYERS.splice($scope.game.team1.length, 0, {'code': 6, 'name': "Team2"})
 
       $scope.$on('youtube.player.ready', function($event, player) {
         $scope.player = player;

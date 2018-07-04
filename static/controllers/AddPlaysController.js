@@ -32,10 +32,16 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     function init() {
       GameService.getGame($routeParams['gameid']).then(function (response){
         $scope.game = response;
+        //Combine all players into an array.  Team1 is first then Team2.
+        //Add Team1 and Team2 players later
         var player_objs = $scope.game.team1.concat($scope.game.team2);
         angular.forEach(player_objs, function(value, key) {
-          this.push({'code':value.id, 'name': value.first_name + ' ' + value.last_name});
+          if (value.id !== 5 && value.id !== 6){
+            this.push({'code':value.id, 'name': value.first_name + ' ' + value.last_name});
+          }
         }, $scope.playOptions.PLAYERS);
+        $scope.playOptions.PLAYERS.splice(0, 0, {'code': 5, 'name': "Team1"})
+        $scope.playOptions.PLAYERS.splice($scope.game.team1.length, 0, {'code': 6, 'name': "Team2"})
 
         $scope.loading = false;
         getPlays();
