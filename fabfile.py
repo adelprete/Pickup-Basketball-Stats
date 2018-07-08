@@ -24,7 +24,7 @@ def refreshdb():
     """Copy the db tables from live to dev"""
     run('pg_dump -c central > /tmp/dump_db.sql')
     get('/tmp/dump_db.sql', '/tmp/dump_db.sql')
-    local('psql central < /tmp/dump_db.sql')
+    local('psql -d central -U anthony central < /tmp/dump_db.sql')
     print('Cleaning up...')
     local('rm /tmp/dump_db.sql')
     run('rm /tmp/dump_db.sql')

@@ -1,5 +1,6 @@
 private.py
 .idea
+.vagrant
 node_modules
 *.pyc
 media/player_images/**

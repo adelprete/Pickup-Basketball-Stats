@@ -30,6 +30,7 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     init();
 
     function init() {
+      $scope.playOptions.PLAYERS = [];
       GameService.getGame($routeParams['gameid']).then(function (response){
         $scope.game = response;
         //Combine all players into an array.  Team1 is first then Team2.
