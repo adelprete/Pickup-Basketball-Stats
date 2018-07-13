@@ -163,15 +163,21 @@ function AddPlaysController($scope, $routeParams, GameService, Session, playOpti
     // YouTube player logic.  Should move to a directive.
     $scope.specifiedTime = null;
     $scope.player = null;
+    $scope.playModal = {
+      'grabTime': grabTime
+    }
 
     $scope.$on('youtube.player.ready', function($event, player) {
       $scope.player = player;
     })
 
-    $scope.grabTime = function(offset) {
+    function grabTime(offset) {
       var formattedTime, seconds
       if (offset) {
         seconds = $scope.player.getCurrentTime() - offset
+        if (seconds < 0) {
+          seconds = 0;
+        }
       }
       else{
         seconds = $scope.player.getCurrentTime()

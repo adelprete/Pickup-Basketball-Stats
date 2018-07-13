@@ -37,6 +37,9 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
   $scope.editplay = {};
   $scope.editplaymessage = "";
   $scope.fillEditForm = fillEditForm;
+  $scope.playModal = {
+    'grabTime': grabTime
+  }
   $scope.updatePlay = updatePlay;
   /* end of update play variables */
 
@@ -187,6 +190,34 @@ function GameController($scope, $routeParams, GameService, Session, RoleHelper,
           return play.id === playid;
         });
       });
+  }
+
+  function grabTime(offset) {
+    var formattedTime, seconds
+    if (offset) {
+      seconds = $scope.player.getCurrentTime() - offset
+      if (seconds < 0) {
+        seconds = 0;
+      }
+    }
+    else{
+      seconds = $scope.player.getCurrentTime()
+    }
+
+    var hours = '' + Math.floor(seconds / 3600)
+    if (hours.length < 2){
+      hours = '0' + hours;
+    }
+    var minutes = '' + Math.floor(seconds / 60) % 60
+    if (minutes.length < 2){
+      minutes = '0' + minutes;
+    }
+    seconds = '' + Math.floor(seconds % 60)
+    if (seconds.length < 2){
+      seconds = '0' + seconds;
+    }
+    formattedTime = hours + ':' + minutes + ":" + seconds
+    $scope.editplay.time = formattedTime;
   }
   /* end of update play logic */
 };
