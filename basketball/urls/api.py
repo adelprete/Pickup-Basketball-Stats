@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from basketball.views.game import (
     PlaysViewSet, GameViewSet,DailyStatlineViewSet, PlayerViewSet,
     SeasonStatlineViewSet, calculate_statlines, game_box_score,
-    game_adv_box_score, export_plays, StatlineViewSet
+    game_adv_box_score, export_plays, StatlineViewSet, AwardViewSet
     )
 from rest_framework import renderers, routers
 
@@ -42,8 +42,13 @@ player_list = PlayerViewSet.as_view({
     'get': 'list'
 })
 
+award_list = AwardViewSet.as_view({
+    'get': 'list'
+})
+
 
 router = routers.SimpleRouter()
+router.register(r'awards', AwardViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'contacts', ContactViewSet)
 router.register(r'daily-statlines', DailyStatlineViewSet)

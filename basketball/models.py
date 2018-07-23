@@ -978,3 +978,23 @@ class Cell(models.Model):
     row = models.PositiveIntegerField(null=True)
     column = models.PositiveIntegerField(null=True)
     value = models.CharField(max_length=150, null=True)
+
+
+class AwardCategory(models.Model):
+    name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.name
+
+
+class Award(models.Model):
+    category = models.ForeignKey('basketball.AwardCategory')
+    player = models.ForeignKey('basketball.Player')
+    date = models.DateField(help_text="Date player received award")
+    description = models.CharField(max_length=150)
+
+    def __str__(self):
+        return "%s - %s" % (self.player, self.category)
+
+    class Meta:
+        ordering = ('-date',)

@@ -14,6 +14,7 @@ function PlayerController($scope, $routeParams, PlayerService, StatlineService,
     $scope.adv_totals_overall = {};
     $scope.averages_statlines = {};
     $scope.averages_overall = {};
+    $scope.awards = {};
     $scope.game_types = [];
     $scope.getSeasonGames = getSeasonGames;
     $scope.group_id = $routeParams.groupId;
@@ -92,6 +93,17 @@ function PlayerController($scope, $routeParams, PlayerService, StatlineService,
       PlayerService.getPlayerAdvPer100($routeParams.playerId).then(function(response){
         $scope.adv_per100_statlines = response.per100;
         $scope.adv_per100_overall = response.overall;
+      }, function(response){
+        console.log("Error: ", response);
+      })
+
+      PlayerService.getAwards({'player': $routeParams.playerId}).then(function(response){
+        $scope.awards = response;
+        $scope.award_categories = $scope.awards.reduce(function(categories, award) {
+          (categories[award.category.name] = categories[award.category.name] || []).push(award.description);
+          return categories;
+        }, {});
+        console.log("Awards ", $scope.award_categories)
       }, function(response){
         console.log("Error: ", response);
       })

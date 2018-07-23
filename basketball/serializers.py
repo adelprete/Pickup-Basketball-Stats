@@ -3,7 +3,7 @@ from django.conf import settings
 from drf_extra_fields.fields import Base64ImageField
 from basketball.models import (
     PlayByPlay, Game, Player, Season, StatLine, DailyStatline, SeasonStatline,
-    PRIMARY_PLAY
+    PRIMARY_PLAY, Award
 )
 
 
@@ -137,5 +137,11 @@ class DailyStatlineSerializer(serializers.ModelSerializer):
 class SeasonStatlineSerializer(serializers.ModelSerializer):
     class Meta:
         model = SeasonStatline
+        depth = 1
+        fields = '__all__'
+
+class AwardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Award
         depth = 1
         fields = '__all__'

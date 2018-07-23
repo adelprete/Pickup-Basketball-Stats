@@ -48,6 +48,12 @@ class SeasonAdmin(admin.ModelAdmin):
 class TableMatrixAdmin(admin.ModelAdmin):
     list_display = ('type', 'points_to_win', 'season', 'game_type', 'out_of_date')
 
+class AwardCategoryAdmin(admin.ModelAdmin):
+    pass
+
+class AwardAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(bmodels.Player, PlayerAdmin)
 admin.site.register(bmodels.Game, GameAdmin)
 admin.site.register(bmodels.StatLine, StatLineAdmin)
@@ -58,3 +64,5 @@ admin.site.register(bmodels.SeasonPer100Statline, SeasonPer100StatlineAdmin)
 admin.site.register(bmodels.PlayByPlay, PlayByPlayAdmin)
 admin.site.register(bmodels.Season, SeasonAdmin)
 admin.site.register(bmodels.TableMatrix, TableMatrixAdmin)
+admin.site.register(bmodels.AwardCategory, AwardCategoryAdmin)
+admin.site.register(bmodels.Award, AwardAdmin)

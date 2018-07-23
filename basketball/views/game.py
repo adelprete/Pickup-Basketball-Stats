@@ -344,7 +344,7 @@ from django.core.paginator import Paginator
 from basketball.serializers import (
     PlayCreateUpdateSerializer, PlayRetrieveListSerializer,
     DailyStatlineSerializer, GameSerializer, GameSnippetSerializer, PlayerSerializer,
-    SeasonStatlineSerializer, PlayerCreateUpdateSerializer
+    SeasonStatlineSerializer, PlayerCreateUpdateSerializer, AwardSerializer
 )
 from basketball import filters
 from rest_framework import viewsets
@@ -469,6 +469,12 @@ class PlayerViewSet(viewsets.ModelViewSet):
             serializer = PlayerSerializer(players, many=True)
             return Response(serializer.data)
         return super().list(request)
+
+class AwardViewSet(viewsets.ModelViewSet):
+    queryset = bmodels.Award.objects.all()
+    serializer_class = AwardSerializer
+    filter_backend = (drf_filters.DjangoFilterBackend,)
+    filter_fields = ('category', 'player')
 
 
 class StatlineViewSet(viewsets.ModelViewSet):

@@ -14,8 +14,8 @@ function PlayerService($q, $http) {
     getPlayerTotals: getPlayerTotals,
     getPlayerAdvTotals: getPlayerAdvTotals,
     getPlayerPer100: getPlayerPer100,
-    getPlayerAdvPer100: getPlayerAdvPer100
-
+    getPlayerAdvPer100: getPlayerAdvPer100,
+    getAwards: getAwards
   };
   return service;
 
@@ -114,6 +114,16 @@ function PlayerService($q, $http) {
   function getPlayerAdvPer100(playerId) {
     var deferred = $q.defer();
     $http.get('/api/players/' + playerId + '/overall_adv_per100').then(function(response){
+      deferred.resolve(response.data);
+    }, function(response) {
+      deferred.reject(response);
+    });
+    return deferred.promise;
+  };
+
+  function getAwards(params) {
+    var deferred = $q.defer();
+    $http.get('/api/awards/', {'params': params}).then(function(response){
       deferred.resolve(response.data);
     }, function(response) {
       deferred.reject(response);
