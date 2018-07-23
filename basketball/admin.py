@@ -52,7 +52,7 @@ class AwardCategoryAdmin(admin.ModelAdmin):
     pass
 
 class AwardAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('category', 'player')
 
 admin.site.register(bmodels.Player, PlayerAdmin)
 admin.site.register(bmodels.Game, GameAdmin)

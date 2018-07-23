@@ -994,7 +994,7 @@ class Award(models.Model):
     description = models.CharField(max_length=150)
 
     def __str__(self):
-        return "%s - %s" % (self.player, self.category)
+        return "%s - %s - %s - %s" % (self.player, self.category, self.description, self.date)
 
     class Meta:
         ordering = ('-date',)
