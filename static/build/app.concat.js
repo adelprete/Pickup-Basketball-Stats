@@ -1663,7 +1663,7 @@ function CreateGroupController($scope, $location, GroupService, Session, setting
       GroupService.createGroup($scope.settings).then(function(response) {
         $scope.message = "Saved Successfully";
         window.location.replace('/group/' + response.id);
-      }, function(response) {
+      }, function(response) { 
         if (response.status == 406) {
           $scope.message = "Invalid Beta Code";
         }

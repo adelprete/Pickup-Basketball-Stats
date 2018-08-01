@@ -53,8 +53,8 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         betacode = request.data.pop('betacode', None)
-        if betacode != settings.BETACODE:
-            return Response("Invalid Beta Code", 406)
+        #if betacode != settings.BETACODE:
+        #    return Response("Invalid Beta Code", 406)
         request.data['admin'] = [request.user.id]
         response = super().create(request)
         group = Group.objects.get(id=response.data['id'])
