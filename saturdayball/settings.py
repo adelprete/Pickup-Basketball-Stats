@@ -95,6 +95,21 @@ MESSAGE_TAGS = {
 
 WSGI_APPLICATION = 'saturdayball.wsgi.application'
 
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+    },
+    'loggers': {
+        'django.security.DisallowedHost': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+    },
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 

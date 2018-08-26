@@ -21,7 +21,7 @@ Good Guys
 	</tr>
 	<tr ng-repeat="line in box_scores.team1_statlines.statlines">
 		<td>
-      <a href="group/{{ groupId }}/player/{{ line.player.id }}">
+      <a href="group/{{ groupId }}/players/{{ line.player.id }}">
         {{ line.player.first_name }} {{ line.player.last_name[0] }}.
       </a>
     </td>
@@ -99,7 +99,7 @@ Bad Guys
 	</tr>
 	<tr ng-repeat="line in box_scores.team2_statlines.statlines">
 		<td>
-      <a href="group/{{ groupId }}/player/{{ line.player.id }}">
+      <a href="group/{{ groupId }}/players/{{ line.player.id }}">
         {{ line.player.first_name }} {{ line.player.last_name[0] }}.
       </a>
     </td>
