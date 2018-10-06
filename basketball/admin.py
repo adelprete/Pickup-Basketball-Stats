@@ -10,7 +10,7 @@ class PlayerAdmin(admin.ModelAdmin):
 
 
 class GameAdmin(admin.ModelAdmin):
-    exclude = ("winning_players",)
+    exclude = ("winning_players", "group")
     form = bforms.GameForm
     def save_model(self, request, obj, form, change):
         obj.save()
