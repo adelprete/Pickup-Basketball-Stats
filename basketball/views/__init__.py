@@ -119,18 +119,18 @@ def records_home(request, group_id, template="records/home.html"):
     """
     group = Group.objects.get(id=group_id)
 
-    points_to_win = 11
+    points_to_win = group.points_to_win
     season = None
     if 'submit' in request.GET:
         form = bforms.RecordForm(request.GET, group=group)
         if form.is_valid():
-            points_to_win = form.data.get('points_to_win', 11)
+            points_to_win = form.data.get('points_to_win', group.points_to_win)
             try:
                 season = bmodels.Season.objects.get(id=form.data.get('season', None))
             except:
                 season = None
     else:
-        form = bforms.RecordForm(group=group, initial={'points_to_win':'11','season':''})
+        form = bforms.RecordForm(group=group, initial={'points_to_win':group.points_to_win,'season':''})
 
     context = {
         'group': group,

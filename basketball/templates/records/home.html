@@ -50,7 +50,7 @@
 				{% if points_to_win != 'other' %}
 					Data pulled from games played to {{ points_to_win }}
 				{% else %}
-					Data pulled from games that were inappropriately scored
+					Data pulled from games that went to an 'other' score.
 				{% endif %}
 				{% if season %}
 					during the {{ season }} season
@@ -64,7 +64,7 @@
 				{% if points_to_win != 'other' %}
 					Data pulled from games played to {{ points_to_win }}
 				{% else %}
-					Data pulled from games that were inappropriately scored
+					Data pulled from games that went to an 'other' score.
 				{% endif %}
 				{% if season %}
 					during the {{ season }} season
@@ -78,7 +78,7 @@
 				{% if points_to_win != 'other' %}
 					Data pulled from games played to {{ points_to_win }}
 				{% else %}
-					Data pulled from games that were inappropriately scored
+					Data pulled from games that went to an 'other' score.
 				{% endif %}
 			</div>
 			{% season_records_table points_to_win group.id %}
@@ -89,7 +89,7 @@
 				{% if points_to_win != 'other' %}
 					Data pulled from games played to {{ points_to_win }}
 				{% else %}
-					Data pulled from games that were inappropriately scored
+					Data pulled from games that went to an 'other' score.
 				{% endif %}
 			</div>
 			{% season_per100_records_table points_to_win group.id%}
