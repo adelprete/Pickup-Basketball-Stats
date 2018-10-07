@@ -100,7 +100,7 @@
     <uib-tab index="6" heading="Game Log" style="font-weight: bold;">
       <div ng-include="'static/partials/player/gameLog.html'"></div>
     </uib-tab>
-    <uib-tab index="7" heading="Awards" style="font-weight: bold;">
+    <uib-tab ng-if="group_id == 1" index="7" heading="Awards" style="font-weight: bold;">
       <div ng-include="'static/partials/player/awards.html'"></div>
     </uib-tab>
   </uib-tabset>
