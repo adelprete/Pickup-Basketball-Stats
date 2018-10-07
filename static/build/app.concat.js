@@ -2560,7 +2560,7 @@ function PlayerHighlightsController($scope, $routeParams, PlayService, GameServi
       }
       PlayService.getPlays(query).then(function(response){
         $scope.topPlays = response;
-        if ($scope.topPlays) {
+        if ($scope.topPlays && $scope.topPlays.length != 0) {
           $scope.initYoutubePlayer($scope.topPlays[0].game, $scope.topPlays[0].time, 'paused')
         }
       }, function(response){
