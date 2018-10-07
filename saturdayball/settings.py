@@ -95,7 +95,7 @@ MESSAGE_TAGS = {
 
 WSGI_APPLICATION = 'saturdayball.wsgi.application'
 
-
+"""
 LOGGING = {
     'version': 1,
     'handlers': {
@@ -110,7 +110,7 @@ LOGGING = {
         },
     },
 }
-
+"""
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
