@@ -64,10 +64,11 @@ class GameForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         group_id = kwargs.pop('group_id', None)
         super(GameForm, self).__init__(*args, **kwargs)
-        if self.instance:
-            group = Group.objects.get(id=self.instance.group_id)
-        else:
+        if group_id:
             group = Group.objects.get(id=group_id)
+        else:
+            # Do this step for the admin
+            group = Group.objects.get(id=self.instance.group_id)
         if self.instance.id:
             self.fields['team1'].queryset = bmodels.Player.player_objs.filter((Q(is_active=True) | Q(id__in=self.instance.team1.values_list('id',flat=True))) & Q(group__id=group.id))
             self.fields['team2'].queryset = bmodels.Player.player_objs.filter((Q(is_active=True) | Q(id__in=self.instance.team2.values_list('id',flat=True))) & Q(group__id=group.id))
