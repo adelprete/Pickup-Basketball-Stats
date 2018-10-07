@@ -24,7 +24,7 @@ class PlayerCreateUpdateSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """Convert image_src to path only when in production."""
         ret = super().to_representation(instance)
-        if not settings.DEBUG:
+        if not settings.DEBUG and ret['image_src']:
             ret['image_src'] = ret['image_src'].split('.com')[1]
         return ret
 
