@@ -35,6 +35,14 @@
              Required!
           </div>
         </div>
+        <div class="form-group col-md-2">
+          <label>Game Type</label>
+          <select required class="form-control" ng-options="o.code as o.name for o in filterOptions.game_types" name='game_type' ng-model="filterForm.game_type">
+          <select>
+          <div ng-show="filterForm.game_type.$invalid && filterForm.game_type.$touched">
+             Required!
+          </div>
+        </div>
       </div>
     </form>
   </div>

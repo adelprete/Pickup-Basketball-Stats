@@ -3,10 +3,10 @@
 angular.module('saturdayBall').controller('LeaderboardController', LeaderboardController);
 
 LeaderboardController.$inject = ['$scope', '$routeParams', 'GroupService', 'PlayerService',
-    'StatlineService', 'Session', 'Per100Service', 'statDescriptions'];
+    'StatlineService', 'Session', 'Per100Service', 'statDescriptions', 'settingOptions'];
 
 function LeaderboardController($scope, $routeParams, GroupService, PlayerService,
-  StatlineService, Session, Per100Service, statDescriptions) {
+  StatlineService, Session, Per100Service, statDescriptions, settingOptions) {
 
   $scope.groupId = $routeParams.groupId;
   $scope.filterForm = {};
@@ -34,14 +34,17 @@ function LeaderboardController($scope, $routeParams, GroupService, PlayerService
       $scope.group = response;
       $scope.filterForm.possessions_min = $scope.group.possessions_min;
       $scope.filterForm.fga_min = $scope.group.fga_min;
+      $scope.filterForm.game_type = $scope.group.game_type
     }, function(response) {
       console.log('Failed: ', response);
     });
+    
+    $scope.filterOptions.game_types = settingOptions.GAME_TYPES;
   }
 
   function generateTotalStatlines() {
 
-    var query = "?game_type=5v5&group_id=" + $routeParams.groupId;
+    var query = "?game_type="+$scope.filterForm.game_type+"&group_id=" + $routeParams.groupId;
     query += $scope.filterForm.season === 0 ? "" : '&season=' + $scope.filterForm.season;
     StatlineService.getSeasonStatlines(query).then(function(response) {
       var grouped_lines = _.chain(response)

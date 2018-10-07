@@ -16,6 +16,8 @@ class DailyStatlineFilter(StatlineFilter):
         fields = ['date']
 
 class SeasonStatlineFilter(drf_filters.FilterSet):
+    game_type = django_filters.CharFilter()
+    
     class Meta:
         model = bmodels.SeasonStatline
         fields = ['season']
