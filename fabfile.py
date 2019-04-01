@@ -1,4 +1,5 @@
-from fabric.api import run, local, env, cd
+import time
+from fabric.api import task, run, local, env, cd, parallel, execute
 from fabric.operations import get
 from fabvenv import virtualenv
 from saturdayball.private import SERVER_PASSWORD
@@ -20,11 +21,23 @@ def deploy():
 def restart():
     run('supervisorctl restart saturdayballsite')
 
+@task
+def local_deploy():
+    local('docker-compose stop')
+    local('docker-compose up')
+
+@task
+def refresh():
+    local('docker exec -it pickup-basketball-stats_db_1 psql -U postgres -d postgres -f /tmp/dump_db.sql')
+
+def grunt_watch():
+    local('grunt watch')
+
 def refreshdb():
     """Copy the db tables from live to dev"""
     run('pg_dump -c central > /tmp/dump_db.sql')
     get('/tmp/dump_db.sql', '/tmp/dump_db.sql')
     local('psql -d central -U anthony central < /tmp/dump_db.sql')
     print('Cleaning up...')
-    local('rm /tmp/dump_db.sql')
+    #local('rm /tmp/dump_db.sql')
     run('rm /tmp/dump_db.sql')

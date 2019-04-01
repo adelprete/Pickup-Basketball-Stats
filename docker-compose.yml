@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  db:
+    build: docker/db/
+    restart: always
+  web:
+    build: .
+    command: bash -c "service nginx reload && service nginx restart && python3 /app/manage.py migrate && python3 /app/manage.py runserver 0:9003"
+    volumes:
+      - .:/app
+    ports:
+      - "8005:8005"
+    depends_on:
+      - db
