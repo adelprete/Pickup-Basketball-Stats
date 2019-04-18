@@ -9,6 +9,7 @@ env.password = SERVER_PASSWORD
 env.activate = 'source /home/live/bballenv/bin/activate'
 env.hosts = ['50.116.20.10']
 
+@task
 def deploy():
     """Pull our code down to the live server and restart"""
     with cd('/home/live/Pickup-Basketball-Stats'):
