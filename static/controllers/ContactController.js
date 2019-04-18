@@ -9,7 +9,7 @@ ContactController.$inject = ['$scope', '$route', '$anchorScroll', 'ContactServic
 function ContactController($scope, $route, $anchorScroll, ContactService){
 
   $scope.contactModel = {};
-  $scope.submit = submit;
+  $scope.submit = submit; 
 
   ////////////////////
 

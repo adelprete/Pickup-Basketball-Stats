@@ -37,7 +37,7 @@ pep8==1.6.2
 pexpect==3.3
 pickleshare==0.5
 Pillow==2.9.0
-psycopg2==2.6.1
+psycopg2==2.8.2
 pyasn1==0.3.7
 pycparser==2.18
 PyNaCl==1.2.0
