@@ -13,7 +13,7 @@ COPY . /app
 RUN pip install -r requirements.txt
 
 # Migrate
-#RUN python3 /app/manage.py migrate
+RUN python3 /app/manage.py migrate
 
 # Copy dummy database
 #COPY dump_db.sql /tmp/dump_db.sql

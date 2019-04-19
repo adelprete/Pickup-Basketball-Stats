@@ -29,7 +29,7 @@ def local_deploy():
 
 @task
 def refresh():
-    local('docker exec -it pickup-basketball-stats_db_1 psql -U postgres -d postgres -f /tmp/dump_db.sql')
+    local('docker exec -it pickupbasketballstats_db_1 psql -U postgres -d postgres -f /tmp/dump_db.sql')
 
 def grunt_watch():
     local('grunt watch')

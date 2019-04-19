@@ -517,7 +517,7 @@ class SeasonStatlineViewSet(viewsets.ModelViewSet):
         }
         if self.request.GET.get('player_id'):
             query['player__id'] = self.request.GET['player_id']
-        return bmodels.SeasonStatline.objects.filter(**query)
+        return bmodels.SeasonStatline.objects.select_related('player').filter(**query)
 
 @api_view(['GET'])
 def calculate_statlines(request, pk):
@@ -531,7 +531,7 @@ def calculate_statlines(request, pk):
 
 class PlaysViewSet(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication, BasicAuthentication)
-    queryset = bmodels.PlayByPlay.objects.all()
+    queryset = bmodels.PlayByPlay.objects.all().prefetch_related('top_play_players')
     serializer_class = PlayCreateUpdateSerializer
     filter_fields = ('top_play_players', 'top_play_rank')
 

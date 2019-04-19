@@ -142,6 +142,8 @@ def player_adv_totals(context, player_id):
 
         return context
 
+import time
+import threading
 def calculate_player_possessions_dictionaries(context, headers, player_id=None, sort_column=""):
 
     seasons = bmodels.Season.objects.all()
@@ -157,21 +159,32 @@ def calculate_player_possessions_dictionaries(context, headers, player_id=None, 
         statlines_used = []
 
         # Get possession data from each season
+        start = time.time()
         for season in seasons:
 
             if player.get_possessions_count(game_type=game_type[0], season_id=season.id) >= 100:
                 season_data = {'title': season.title}
+                start_1 = time.time()
                 season_data.update(player.get_per_100_possessions_data(stats_list, game_type[0], season_id=season.id))
-
+                end_1 = time.time()
+                if game_type[1] == '5on5': 
+                    print(f"Part 1 per_100 time - {end_1-start_1} - game_type: {game_type[1]}")
                 # Lastly, count how many games the player played
+                start_2 = time.time()
                 statlines = player.statline_set.filter(game__exhibition=False, game__published=True, game__game_type=game_type[0], game__date__range=(season.start_date, season.end_date))
                 statlines_used = statlines_used + list(statlines.values_list('id',flat=True))
 
                 season_data['gp'] = statlines.count()
 
                 possessions_tables[game_type[1]].append(season_data)
-
+                end_2 = time.time()
+                if game_type[1] == '5on5': 
+                    print(f"Part 1 after per_100 time - {end_2-start_2} - game_type: {game_type[1]}")
+        end = time.time()
+        if game_type[1] == '5on5': 
+            print(f"Part 1 - {end-start} - game_type: {game_type[1]}")
         # Get possession data from each statline not within a season
+        start = time.time()
         sls_out_of_season = player.statline_set.filter(game__exhibition=False, game__published=True, game__game_type=game_type[0]).exclude(id__in=statlines_used)
         if sls_out_of_season:
             if player.get_possessions_count(game_type=game_type[0], out_of_season=True) >= 100:
@@ -185,6 +198,8 @@ def calculate_player_possessions_dictionaries(context, headers, player_id=None, 
 
         overall_footer[game_type[1]] = player.get_per_100_possessions_data(stats_list, game_type[0])
         overall_footer[game_type[1]]['gp'] = ''
+        end = time.time()
+        print(f"Part 2 - {end-start}")
 
     return possessions_tables, overall_footer
 
@@ -230,7 +245,7 @@ def player_game_log(statlines, bgcolor="white", game_type='5v5'):
 @register.inclusion_tag('players/5on5_possessions.html', takes_context=True)
 def player_five_on_five_pos(context, player_pk=None):
 
-    player = bmodels.Player.objects.get(pk=player_pk)
+    player = bmodels.Player.objects.get(pk=player_pk).prefetch_related('statline_set')
     stats_list = ['points', 'total_rebounds', 'stls', 'asts', 'to', 'fgm_percent']
     data_dict = player.get_per_100_possessions_data(stats_list, '5v5')
 

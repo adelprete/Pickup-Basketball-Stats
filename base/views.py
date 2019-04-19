@@ -159,7 +159,7 @@ def group_seasons(request, pk):
     seasons = Season.objects.all().order_by('start_date');
     group_season_ids = []
     for season in seasons:
-        if Game.objects.filter(group__id=pk, date__gte=season.start_date, date__lte=season.end_date).count():
+        if Game.objects.select_related('group').filter(group__id=pk, date__gte=season.start_date, date__lte=season.end_date).count():
             group_season_ids.append(season.id);
 
     queryset = Season.objects.filter(id__in=group_season_ids)

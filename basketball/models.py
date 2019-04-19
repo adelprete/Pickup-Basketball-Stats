@@ -1,5 +1,6 @@
 import _thread
 import os
+import time, random
 from django.db import models
 from django.http import HttpResponseRedirect
 from django.db.models import F, Sum, Q, Avg, signals
@@ -195,11 +196,12 @@ class Player(models.Model):
         :param published: boolean
         :return: Integer representing the number of possessions
         """
+
         season=None
         if season_id:
             season = Season.objects.get(id=season_id)
 
-        statlines = self.statline_set.filter(game__published=published)
+        statlines = self.statline_set.select_related('game').filter(game__published=published)
         if game_type:
             statlines = statlines.filter(game__game_type=game_type)
 
@@ -219,7 +221,6 @@ class Player(models.Model):
             statlines = statlines.filter(game__points_to_win=points_to_win)
 
         pos_count = statlines.aggregate(Sum('off_pos'))
-
         return pos_count['off_pos__sum'] or 0
 
     def get_shot_count(self, shot_type="fga", game_type=None, season=None, date=None, points_to_win=None, published=True):
@@ -275,7 +276,7 @@ class Player(models.Model):
                 'ast_fga',
                 'ast_fgm',
         ]
-        statlines = self.statline_set.filter(game__exhibition=False,game__game_type=game_type, game__published=True)
+        statlines = self.statline_set.select_related('game').filter(game__exhibition=False,game__game_type=game_type, game__published=True)
         if season:
             statlines = statlines.filter(game__date__range=(season.start_date, season.end_date))
         if out_of_season:
@@ -283,7 +284,12 @@ class Player(models.Model):
                 statlines = statlines.exclude(game__date__range=(season.start_date, season.end_date))
         if points_to_win:
             statlines = statlines.filter(game__points_to_win=points_to_win)
-
+        
+        start = time.time()
+        timer_id = random.randint(1,1001)
+        #if game_type == '5v5':
+        #    print(f"per_100 models.py - {timer_id}")
+        
         for stat in stats_list:
             percentage = 0.0
             """Statistics from the list are calculated the same way."""
@@ -373,13 +379,18 @@ class Player(models.Model):
 
             #True Passing % = (Assisted Points / Assisted Shots) x 100
             elif stat == 'tp_percent':
+                start_2 = time.time()
                 result = statlines.aggregate(Sum('ast_points'), Sum('asts'), Sum('pot_ast'))
                 if result['ast_points__sum']:
                     percentage = result['ast_points__sum'] / (result['asts__sum'] + result['pot_ast__sum']) * 100
+                end_2 = time.time()
+                if game_type == '5v5':
+                    print(f"per_100 model.py - tp_percent - {timer_id} - {end_2-start_2}")
 
             #Offensive Rating = (Total Team Points / Offensive Possessions) x 100
             #Defensive Rating = (Total Team Points / Defensive Possessions) x 100
             elif stat == 'off_rating' or stat == 'def_rating' or stat == 'plus_minus_rating':
+                start_1 = time.time()
                 result = statlines.aggregate(Sum('off_pos'), Sum('def_pos'), Sum('off_team_pts'),Sum('def_team_pts'))
 
                 if stat == 'off_rating' and result['off_pos__sum']:
@@ -390,8 +401,15 @@ class Player(models.Model):
                     off_percentage = result['off_team_pts__sum'] / result['off_pos__sum'] * 100
                     def_percentage = result['def_team_pts__sum'] / result['def_pos__sum'] * 100
                     percentage = off_percentage - def_percentage
+                end_1 = time.time()
+                if game_type == '5v5':
+                    print(f"per_100 model.py- possesion aggregate - {timer_id} - {end_1-start_1}")
 
             data_dict[stat] = round(percentage, 1)
+        end = time.time()
+        if game_type == '5v5':
+            season = season if season else ''
+            print(f"per_100 model.py - {timer_id} - {end-start} - game_type: {game_type} - season: {season}")
         return data_dict
 
     def get_averages(self, stats_list, game_type=None, season=None, date=None, out_of_season=False, points_to_win=None, published=True):
@@ -415,7 +433,7 @@ class Player(models.Model):
         :param points_to_win: string
         :return: returns a dictionary of stats and their averages or totals
         """
-        qs = self.statline_set.filter(game__published=published)
+        qs = self.statline_set.select_related('game').filter(game__published=published)
 
         if game_type:
             qs = qs.filter(game__game_type=game_type)
@@ -832,6 +850,43 @@ class BaseStatline(models.Model):
 
     class Meta():
         abstract=True
+        """
+        index_together = [
+            ('dreb', 'off_pos'),
+            ('oreb', 'off_pos'),
+            ('total_rebounds', 'off_pos'),
+            ('asts', 'off_pos'),
+            ('pot_ast', 'off_pos'),
+            ('stls', 'off_pos'),
+            ('to', 'off_pos'),
+            ('points', 'off_pos'),
+            ('blk', 'off_pos'),
+            ('ast_fga', 'off_pos'),
+            ('ast_fgm', 'off_pos'),
+            ('fgm', 'fga'),
+            ('ast_fga', 'fga'),
+            ('ast_fgm', 'ast_fga'),
+            ('unast_fga', 'fga', 'pga'),
+            ('unast_fgm', 'unast_fga', 'pgm', 'pga'),
+            ('pga', 'fga'),
+            ('pgm', 'pga'),
+            ('threepm', 'threepa', 'off_pos'),
+            ('dreb', 'dreb_opp'),
+            ('oreb', 'oreb_opp'),
+            ('total_rebounds', 'dreb_opp', 'oreb_opp'),
+            ('points', 'fga'),
+            ('ast_points', 'asts', 'pot_ast'),
+            ('off_pos', 'def_pos', 'off_team_pts', 'def_team_pts'),
+        ]
+        """
+
+"""
+class PlayerStatsCache(models.Model):
+    
+    A player's stats cache for their profile
+    
+    overall = models.JSONField('basketball.Game')
+"""
 
 class StatLine(BaseStatline):
     """
@@ -941,6 +996,11 @@ class PlayByPlay(models.Model):
         super(PlayByPlay, self).save(*args, **kwargs)
         self.game.outdated = True
         self.game.save()
+    
+    #class Meta:
+    #    index_together = [
+    #        ("top_play_rank", "top_play_players"),
+    #    ]
 
 
 class Season(models.Model):
