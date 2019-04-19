@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='game',
             name='group',
-            field=models.ForeignKey(to='base.Group', blank=True, null=True),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='base.Group', blank=True, null=True),
         ),
         migrations.AddField(
             model_name='player',
             name='group',
-            field=models.ForeignKey(to='base.Group', blank=True, null=True),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='base.Group', blank=True, null=True),
         ),
     ]

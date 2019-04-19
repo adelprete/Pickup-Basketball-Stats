@@ -14,12 +14,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='seasonper100statline',
             name='player',
-            field=models.ForeignKey(null=True, to='basketball.Player'),
+            field=models.ForeignKey(on_delete=models.CASCADE, null=True, to='basketball.Player'),
         ),
         migrations.AlterField(
             model_name='seasonper100statline',
             name='season',
-            field=models.ForeignKey(null=True, to='basketball.Season'),
+            field=models.ForeignKey(on_delete=models.CASCADE, null=True, to='basketball.Season'),
         ),
         migrations.AlterField(
             model_name='tablematrix',

@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('fga_min', models.PositiveIntegerField(default=15)),
                 ('putback_window', models.PositiveIntegerField(default=6)),
                 ('fastbreak_window', models.PositiveIntegerField(default=10)),
-                ('group', models.OneToOneField(to='base.Group')),
+                ('group', models.OneToOneField(on_delete=models.CASCADE, to='base.Group')),
             ],
         ),
     ]

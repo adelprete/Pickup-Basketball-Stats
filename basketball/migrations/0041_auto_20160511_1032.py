@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('second_chance_points', models.PositiveIntegerField(default=0)),
                 ('game_type', models.CharField(choices=[('5v5', '5on5'), ('4v4', '4on4'), ('3v3', '3on3'), ('2v2', '2on2'), ('1v1', '1on1')], max_length=30)),
                 ('record_type', models.CharField(choices=[('game', 'Game'), ('day', 'day'), ('season', 'Season')], max_length=30)),
-                ('player', models.ForeignKey(to='basketball.Player')),
+                ('player', models.ForeignKey(on_delete=models.CASCADE, to='basketball.Player')),
             ],
             options={
                 'abstract': False,

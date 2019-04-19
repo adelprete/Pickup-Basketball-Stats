@@ -118,7 +118,7 @@ class ContactViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request):
-        if not request.user.is_anonymous():
+        if not request.user.is_anonymous:
             request.data['user'] = request.user.id
         response = super().create(request)
         send_mail(
@@ -132,7 +132,7 @@ class ContactViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def current_user(request):
     user = request.user
-    if not request.user.is_anonymous():
+    if not request.user.is_anonymous:
         group_permissions = request.user.group_permissions.all().values_list('group__id', 'group__name', 'permission', 'player')
     else:
         group_permissions = []

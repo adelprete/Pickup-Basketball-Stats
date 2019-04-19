@@ -27,7 +27,7 @@ class Group(models.Model):
         return "%s" % (self.name)
 
     def checkUserPermission(self, user, permission):
-        if user.is_anonymous():
+        if user.is_anonymous:
             return False
 
         for group_permission in user.group_permissions.all():
@@ -45,10 +45,10 @@ class Group(models.Model):
 
 
 class MemberPermission(models.Model):
-    group = models.ForeignKey(Group, blank=True, null=True)
-    user = models.ForeignKey('auth.User', related_name='group_permissions')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='group_permissions')
     permission = models.CharField(max_length=30, choices=PERMISSION_TYPES, null=True)
-    player = models.ForeignKey('basketball.Player', blank=True, null=True)
+    player = models.ForeignKey('basketball.Player', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return "%s - %s" % (self.group.name, self.user.username)
@@ -59,7 +59,7 @@ class MemberPermission(models.Model):
 
 class MemberProfile(models.Model):
     """Member profile is used to store some more information about the users"""
-    user = models.OneToOneField('auth.User',editable=False)
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE, editable=False)
     zip = models.CharField(max_length=5,null=True)
 
     def __str__(self):
@@ -72,7 +72,7 @@ class MemberProfile(models.Model):
     #    super(MemberProfile,self).save(*args,**kwargs)
 
 class MemberInvite(models.Model):
-    group = models.ForeignKey('base.Group')
+    group = models.ForeignKey('base.Group', on_delete=models.CASCADE)
     email = models.EmailField()
     permission = models.CharField(max_length=30, choices=PERMISSION_TYPES, null=True)
     player = models.PositiveIntegerField(blank=True, null=True)
@@ -85,7 +85,7 @@ class MemberInvite(models.Model):
 
 class Contact(models.Model):
     creation_date = models.DateField(auto_now_add=True, null=True, blank=True)
-    user = models.ForeignKey('auth.User', null=True, blank=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
     email = models.EmailField()
     subject = models.CharField(max_length=120)
     message = models.TextField()

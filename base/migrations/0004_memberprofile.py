@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('zip', models.CharField(max_length=5, null=True)),
-                ('user', models.OneToOneField(editable=False, to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(on_delete=models.CASCADE, editable=False, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

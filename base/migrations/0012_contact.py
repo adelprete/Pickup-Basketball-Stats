@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=254)),
                 ('subject', models.CharField(max_length=120)),
                 ('message', models.TextField()),
-                ('user', models.ForeignKey(null=True, blank=True, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(null=True, on_delete=models.CASCADE, blank=True, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

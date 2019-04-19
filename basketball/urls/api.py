@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.urls import re_path
 from base.views import (
     CreateUserView, GroupViewSet, current_user, verify_group_admin,
     group_seasons, MemberPermissionViewSet, MemberInviteViewSet,
@@ -60,24 +61,24 @@ router.register(r'season-statlines', SeasonStatlineViewSet, 'SeasonStatline')
 
 urlpatterns = [
 	#API
-    url(r'^user/current/', current_user),
-    url(r'^user/create/', CreateUserView.as_view()),
-    url(r'^players/(?P<player_id>[0-9]+)/overall_averages$',  pviews.player_overall_averages),
-    url(r'^players/(?P<player_id>[0-9]+)/overall_totals$',  pviews.player_overall_totals),
-    url(r'^players/(?P<player_id>[0-9]+)/overall_adv_totals$',  pviews.player_overall_adv_totals),
-    url(r'^players/(?P<player_id>[0-9]+)/overall_per100$',  pviews.player_overall_per100),
-    url(r'^players/(?P<player_id>[0-9]+)/overall_adv_per100$',  pviews.player_overall_adv_per100),
-	url(r'^plays/$',  plays_list),
-    url(r'^plays/(?P<pk>[0-9]+)/$',  plays_details),
-    url(r'^games/groupid/(?P<group_id>[0-9]+)/$',  game_list),
-    url(r'^games/(?P<pk>[0-9]+)/$',  game_details),
-    url(r'^games/(?P<pk>[0-9]+)/export/$', export_plays),
-    url(r'^games/(?P<pk>[0-9]+)/box-score/$',  game_box_score),
-    url(r'^games/(?P<pk>[0-9]+)/adv-box-score/$',  game_adv_box_score),
-    url(r'^games/(?P<pk>[0-9]+)/calculate-statlines/$',  calculate_statlines),
-    url(r'^group/(?P<pk>[0-9]+)/verify-admin/$',  verify_group_admin),
-    url(r'^group/(?P<pk>[0-9]+)/seasons/$',  group_seasons),
-    url(r'^group/(?P<group_id>[0-9]+)/players/$',  group_seasons),
+    re_path(r'^user/current/', current_user),
+    re_path(r'^user/create/', CreateUserView.as_view()),
+    re_path(r'^players/(?P<player_id>[0-9]+)/overall_averages$',  pviews.player_overall_averages),
+    re_path(r'^players/(?P<player_id>[0-9]+)/overall_totals$',  pviews.player_overall_totals),
+    re_path(r'^players/(?P<player_id>[0-9]+)/overall_adv_totals$',  pviews.player_overall_adv_totals),
+    re_path(r'^players/(?P<player_id>[0-9]+)/overall_per100$',  pviews.player_overall_per100),
+    re_path(r'^players/(?P<player_id>[0-9]+)/overall_adv_per100$',  pviews.player_overall_adv_per100),
+	re_path(r'^plays/$',  plays_list),
+    re_path(r'^plays/(?P<pk>[0-9]+)/$',  plays_details),
+    re_path(r'^games/groupid/(?P<group_id>[0-9]+)/$',  game_list),
+    re_path(r'^games/(?P<pk>[0-9]+)/$',  game_details),
+    re_path(r'^games/(?P<pk>[0-9]+)/export/$', export_plays),
+    re_path(r'^games/(?P<pk>[0-9]+)/box-score/$',  game_box_score),
+    re_path(r'^games/(?P<pk>[0-9]+)/adv-box-score/$',  game_adv_box_score),
+    re_path(r'^games/(?P<pk>[0-9]+)/calculate-statlines/$',  calculate_statlines),
+    re_path(r'^group/(?P<pk>[0-9]+)/verify-admin/$',  verify_group_admin),
+    re_path(r'^group/(?P<pk>[0-9]+)/seasons/$',  group_seasons),
+    re_path(r'^group/(?P<group_id>[0-9]+)/players/$',  group_seasons),
 
 
 ]

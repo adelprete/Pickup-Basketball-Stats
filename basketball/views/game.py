@@ -3,7 +3,7 @@ import json
 import operator, datetime
 from collections import OrderedDict
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect

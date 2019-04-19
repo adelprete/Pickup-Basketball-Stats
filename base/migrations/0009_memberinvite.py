@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
                 ('email', models.EmailField(max_length=254)),
                 ('code', models.UUIDField(editable=False, default=uuid.uuid4)),
-                ('group', models.ForeignKey(to='base.Group')),
+                ('group', models.ForeignKey(on_delete=models.CASCADE, to='base.Group')),
             ],
         ),
     ]

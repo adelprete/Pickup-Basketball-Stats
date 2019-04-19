@@ -23,11 +23,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='playbyplay',
             name='assist_player',
-            field=models.ForeignKey(blank=True, to='basketball.Player', null=True, related_name='+'),
+            field=models.ForeignKey(on_delete=models.CASCADE, blank=True, to='basketball.Player', null=True, related_name='+'),
         ),
         migrations.AlterField(
             model_name='playbyplay',
             name='secondary_player',
-            field=models.ForeignKey(blank=True, to='basketball.Player', null=True, related_name='secondary_plays'),
+            field=models.ForeignKey(on_delete=models.CASCADE, blank=True, to='basketball.Player', null=True, related_name='secondary_plays'),
         ),
     ]

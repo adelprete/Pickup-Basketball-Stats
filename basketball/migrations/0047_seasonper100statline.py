@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('unast_fga_pct', models.DecimalField(decimal_places=1, max_digits=4)),
                 ('pgm_pct', models.DecimalField(decimal_places=1, max_digits=4)),
                 ('pga_pct', models.DecimalField(decimal_places=1, max_digits=4)),
-                ('season', models.ForeignKey(to='basketball.Season')),
+                ('season', models.ForeignKey(on_delete=models.CASCADE, to='basketball.Season')),
             ],
         ),
     ]

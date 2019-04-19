@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tablematrix',
             name='season',
-            field=models.ForeignKey(null=True, to='basketball.Season', blank=True),
+            field=models.ForeignKey(on_delete=models.CASCADE, null=True, to='basketball.Season', blank=True),
         ),
         migrations.AddField(
             model_name='tablematrix',

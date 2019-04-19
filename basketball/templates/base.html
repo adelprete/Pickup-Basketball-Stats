@@ -166,7 +166,7 @@
   								{% for season in seasons %}
   								<option
   									value="{{ season.id }}"
-  									{% if season = default_season %}selected="selected"{% endif %}
+  									{% if season == default_season %}selected="selected"{% endif %}
   									>
   									{{ season.title }}
   								</option>

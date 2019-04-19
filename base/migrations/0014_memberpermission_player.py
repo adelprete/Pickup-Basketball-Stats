@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='memberpermission',
             name='player',
-            field=models.ForeignKey(blank=True, null=True, to='basketball.Player'),
+            field=models.ForeignKey(on_delete=models.CASCADE, blank=True, null=True, to='basketball.Player'),
         ),
     ]

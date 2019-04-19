@@ -9,7 +9,7 @@ from django.views.generic.edit import FormView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from base.models import Group
 from basketball import models as bmodels
 from basketball.models import ALL_PLAY_TYPES, TOP_PLAY_RANKS
@@ -176,4 +176,4 @@ def ajax_standings(request):
 
     player_standings = sorted(player_tuples, key=lambda player: player[1], reverse=True)
 
-    return render_to_response('players/standings.html', {'standings': player_standings})
+    return render('players/standings.html', {'standings': player_standings})

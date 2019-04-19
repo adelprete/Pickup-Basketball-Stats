@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tablematrix',
             name='group',
-            field=models.ForeignKey(null=True, to='base.Group'),
+            field=models.ForeignKey(on_delete=models.CASCADE, null=True, to='base.Group'),
         ),
     ]

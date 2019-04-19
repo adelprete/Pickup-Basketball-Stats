@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='game',
             name='top_player',
-            field=models.ForeignKey(related_name='top_player_set', blank=True, null=True, to='basketball.Player'),
+            field=models.ForeignKey(on_delete=models.CASCADE, related_name='top_player_set', blank=True, null=True, to='basketball.Player'),
         ),
     ]

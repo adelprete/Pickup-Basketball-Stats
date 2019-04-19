@@ -30,6 +30,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cell',
             name='matrix',
-            field=models.ForeignKey(to='basketball.TableMatrix'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='basketball.TableMatrix'),
         ),
     ]

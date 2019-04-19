@@ -3,7 +3,7 @@ import os
 from django.db import models
 from django.http import HttpResponseRedirect
 from django.db.models import F, Sum, Q, Avg, signals
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.exceptions import FieldError
 from saturdayball import settings
 
@@ -125,7 +125,7 @@ def get_upload_path(instance, filename):
       "player_images/%d/" % instance.id, filename)
 
 class Player(models.Model):
-    group = models.ForeignKey('base.Group', blank=True, null=True)
+    group = models.ForeignKey('base.Group', on_delete=models.CASCADE, blank=True, null=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30, blank=True)
     height = models.CharField(max_length=30, blank=True)
@@ -464,7 +464,7 @@ class Player(models.Model):
 
 
 class Game(models.Model):
-    group = models.ForeignKey('base.Group', blank=True, null=True)
+    group = models.ForeignKey('base.Group', on_delete=models.CASCADE, blank=True, null=True)
     date = models.DateField(null=True)
     outdated = models.BooleanField(default=True)
     title = models.CharField(max_length=30)
@@ -478,7 +478,7 @@ class Game(models.Model):
     youtube_id = models.CharField("Youtube Video ID", max_length=2000, blank=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, null=True)
     score_type = models.CharField("Shot Values",max_length=30, choices=SCORE_TYPES, null=True)
-    top_player = models.ForeignKey('basketball.Player', related_name='top_player_set', null=True, blank=True)
+    top_player = models.ForeignKey('basketball.Player', related_name='top_player_set', on_delete=models.CASCADE, null=True, blank=True)
     published = models.BooleanField("Publish Game?", default=False)
     #advanced
     putback_window = models.PositiveIntegerField(default=6, blank=True, null=True)
@@ -793,7 +793,7 @@ class Game(models.Model):
         ordering = ['-date', 'title']
 
 class BaseStatline(models.Model):
-    player = models.ForeignKey('basketball.Player')
+    player = models.ForeignKey('basketball.Player', on_delete=models.CASCADE)
     fgm = models.PositiveIntegerField(default=0)
     fga = models.PositiveIntegerField(default=0)
     threepm = models.PositiveIntegerField(default=0)
@@ -837,7 +837,7 @@ class StatLine(BaseStatline):
     """
     A player's statline for a game.
     """
-    game = models.ForeignKey('basketball.Game')
+    game = models.ForeignKey('basketball.Game', on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s - %s - %s' % (self.player.first_name, self.game.title, self.game.date.isoformat())
@@ -858,7 +858,7 @@ class SeasonStatline(BaseStatline):
     """
     A player's statline for a Season.
     """
-    season = models.ForeignKey('basketball.Season')
+    season = models.ForeignKey('basketball.Season', on_delete=models.CASCADE)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES)
     gp = models.PositiveIntegerField("Games Played", default=0)
     points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='11')
@@ -870,8 +870,8 @@ class SeasonPer100Statline(models.Model):
     """
     A player's per 100 statline for a season.
     """
-    player = models.ForeignKey('basketball.Player',null=True)
-    season = models.ForeignKey('basketball.Season', null=True)
+    player = models.ForeignKey('basketball.Player', on_delete=models.CASCADE, null=True)
+    season = models.ForeignKey('basketball.Season', on_delete=models.CASCADE, null=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES)
     gp = models.PositiveIntegerField("Games Played", default=0)
     points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='11')
@@ -922,14 +922,14 @@ class PlayByPlay(models.Model):
     """
     Represents a single play within a game.
     """
-    game = models.ForeignKey('basketball.Game')
+    game = models.ForeignKey('basketball.Game', on_delete=models.CASCADE)
     time = models.DurationField()
     primary_play = models.CharField(max_length=30, choices=PRIMARY_PLAY)
-    primary_player = models.ForeignKey('basketball.Player', related_name='primary_plays')
+    primary_player = models.ForeignKey('basketball.Player', on_delete=models.CASCADE, related_name='primary_plays')
     secondary_play = models.CharField(max_length=30, choices=SECONDARY_PLAY, blank=True)
-    secondary_player = models.ForeignKey('basketball.Player', related_name='secondary_plays', blank=True, null=True)
+    secondary_player = models.ForeignKey('basketball.Player', related_name='secondary_plays', on_delete=models.CASCADE, blank=True, null=True)
     assist = models.CharField(max_length=30, choices=ASSIST_PLAY, blank=True)
-    assist_player = models.ForeignKey('basketball.Player', related_name='+', blank=True, null=True)
+    assist_player = models.ForeignKey('basketball.Player', related_name='+', on_delete=models.CASCADE, blank=True, null=True)
     top_play_rank = models.CharField(help_text="Refers to weekly rank", max_length=30, choices=RANKS, blank=True)
     top_play_players = models.ManyToManyField('basketball.Player', blank=True)
     description = models.TextField(blank=True, null=True)
@@ -962,19 +962,19 @@ class TableMatrix(models.Model):
     """
     Used as a way for us to save tables that may take a long time to calculate.
     """
-    group = models.ForeignKey('base.Group', null=True)
+    group = models.ForeignKey('base.Group', on_delete=models.CASCADE, null=True)
     type = models.CharField(max_length=30,default='',choices=(('game_records','Game Records'),
                                                               ('day_records','Day Records'),
                                                               ('season_records', 'Season Records'),
                                                               ('season_per100_records', 'Season Per100 Records')))
     points_to_win = models.CharField(max_length=30, choices=(('11', '11'), ('30', '30'), ('other', 'Other')), default='')
-    season = models.ForeignKey('basketball.Season',blank=True,null=True)
+    season = models.ForeignKey('basketball.Season', on_delete=models.CASCADE, blank=True, null=True)
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, default='')
     out_of_date = models.BooleanField(default=True)
 
 
 class Cell(models.Model):
-    matrix = models.ForeignKey('basketball.TableMatrix')
+    matrix = models.ForeignKey('basketball.TableMatrix', on_delete=models.CASCADE)
     row = models.PositiveIntegerField(null=True)
     column = models.PositiveIntegerField(null=True)
     value = models.CharField(max_length=150, null=True)
@@ -988,8 +988,8 @@ class AwardCategory(models.Model):
 
 
 class Award(models.Model):
-    category = models.ForeignKey('basketball.AwardCategory')
-    player = models.ForeignKey('basketball.Player')
+    category = models.ForeignKey('basketball.AwardCategory', on_delete=models.CASCADE)
+    player = models.ForeignKey('basketball.Player', on_delete=models.CASCADE)
     date = models.DateField(help_text="Date player received award")
     description = models.CharField(max_length=150)
 

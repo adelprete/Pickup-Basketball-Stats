@@ -3,7 +3,7 @@ from collections import OrderedDict
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from base.models import Group
 from basketball import models as bmodels
@@ -105,7 +105,7 @@ def ajax_game_log(request, group_id):
 	else:
 		statlines = []
 
-	return render_to_response('players/game_log.html', {'statlines': statlines})
+	return render('players/game_log.html', {'statlines': statlines})
 
 ###################
 ###### API ########

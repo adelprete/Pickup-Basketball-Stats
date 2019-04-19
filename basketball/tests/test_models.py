@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.test import TestCase
 from django.test.client import Client
-from django.core.urlresolvers import reverse 
+from django.urls import reverse 
 from basketball.tests.test_base import BaseTestCase
 from basketball import models as bmodels
 
