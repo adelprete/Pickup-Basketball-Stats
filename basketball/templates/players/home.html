@@ -41,7 +41,7 @@
 				{% if player.image_src %}
 					<img src="{{ player.image_src.url }}" class="img-responsive img-circle custom-responsive-img">
 				{% else %}
-					<img src="{% thumbnail object.image|default:'signup_male.png' 200x200 %}" class="img-responsive img-circle">
+					<img src="/media/signup_male.png" class="img-responsive img-circle custom-responsive-img">
 				{% endif %}
 				{{player}}</a>
 			</div>

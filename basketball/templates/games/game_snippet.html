@@ -22,7 +22,7 @@
 					{% if game.top_player.image_src %}
 						<img src="{{ game.top_player.image_src.url }}" class="img-responsive img-rounded" style="margin: 0px auto;height: 45px; width: 45px;">
 					{% else %}
-						<img src="{% thumbnail object.image|default:'signup_male.png' 45x45 crop %}" class="img-responsive img-rounded" style="margin:0px auto;">
+						<img src="/media/signup_male.png" class="img-responsive img-rounded" style="margin:0px auto; height: 45px; width: 45px;">
 					{% endif %}
 					<center>{% if game.top_player %}{{ game.top_player.first_name|truncatechars:8 }}{% else %}unknown{% endif %}</center>
 				</td>

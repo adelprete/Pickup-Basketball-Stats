@@ -28,12 +28,12 @@ def players_home(request, group_id, template="players/home.html"):
 
 	if season:
 		players = bmodels.Player.player_objs.filter(group=group, statline__game__date__range=(season.start_date, season.end_date)).distinct()
-	elif group.getSeasons():
+	elif (not season and 'submit' in request.GET) or not group.getSeasons():
+		players = bmodels.Player.player_objs.filter(group=group).order_by('first_name')
+	else:
 		season = group.getSeasons()[0]
 		players = bmodels.Player.player_objs.filter(group=group, statline__game__date__range=(season.start_date, season.end_date)).distinct()
-	else:
-		players = bmodels.Player.player_objs.filter(group=group).order_by('first_name')
-
+		
 	context = {
 		'group': group,
 		'players': players,
