@@ -1,4 +1,5 @@
 import datetime
+import copy
 from django.db.models import Q, Sum
 from basketball import models as bmodels
 from collections import OrderedDict
@@ -263,13 +264,10 @@ def update_season_per100_statlines(game):
     except:
         pass
     else:
-
-        stats = bmodels.SeasonPer100Statline._meta.get_all_field_names()
+        stats = [field.name for field in bmodels.SeasonPer100Statline._meta.get_fields()]
         stats.remove('id')
         stats.remove('season')
-        stats.remove('season_id')
         stats.remove('player')
-        stats.remove('player_id')
         stats.remove('game_type')
         stats.remove('points_to_win')
 

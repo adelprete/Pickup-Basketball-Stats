@@ -6,6 +6,7 @@ from django.db.models import F, Sum, Q, Avg, signals
 from django.urls import reverse
 from django.core.exceptions import FieldError
 from saturdayball import settings
+from basketball import helpers
 
 PRIMARY_PLAY = [
     ('fgm', 'FGM'),
@@ -511,9 +512,9 @@ class Game(models.Model):
         self.team2_score = team2_statlines.aggregate(Sum('points'))['points__sum']
 
         if self.team1_score > self.team2_score:
-            self.winning_players = self.team1.all()
+            self.winning_players.set(self.team1.all())
         elif self.team1_score < self.team2_score:
-            self.winning_players = self.team2.all()
+            self.winning_players.set(self.team2.all())
 
         self.top_player = self.get_top_player()
         self.save()
@@ -730,7 +731,6 @@ class Game(models.Model):
 
         :return: Nothing
         """
-        from basketball import helpers
         # Check if date changed, if it did we need to update the DailyStatlines for that day after we save.
         old_date = None
         if self.id:
