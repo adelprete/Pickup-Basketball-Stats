@@ -296,14 +296,14 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
             redirectTo('/accounts/login/?next=' + $location.path(), deferred, response);
           }
         }
-        else if ($route.current.originalPath === '/register/') {
-          if (response.username !== '') {
-            redirectTo('/logout/', deferred, response);
-          }
-        }
         deferred.resolve(response);
       });
     } else {
+      if ($route.current.originalPath === '/register/') {
+        if (Session.currentUser().username !== '') {
+          redirectTo('/logout/', deferred, Session);
+        }
+      }
       deferred.resolve(Session);
     }
   }
