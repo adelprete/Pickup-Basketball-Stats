@@ -6,7 +6,6 @@ from django.db.models import F, Sum, Q, Avg, signals
 from django.urls import reverse
 from django.core.exceptions import FieldError
 from saturdayball import settings
-from basketball import helpers
 
 PRIMARY_PLAY = [
     ('fgm', 'FGM'),
@@ -731,6 +730,7 @@ class Game(models.Model):
 
         :return: Nothing
         """
+        from basketball import helpers
         # Check if date changed, if it did we need to update the DailyStatlines for that day after we save.
         old_date = None
         if self.id:
