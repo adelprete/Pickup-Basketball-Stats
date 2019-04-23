@@ -79,6 +79,11 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
       .when("/accept-invite/:inviteCode/", {
         resolve: routeResolver,
       })
+      .when("/invite-error/", {
+        templateUrl: "static/views/invite-error.html",
+        //controller: "UserNotFoundController",
+        resolve: routeResolver,
+      })
       .otherwise({
         resolve: {
           factory: checkRouting

@@ -24,7 +24,9 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
           }
           GroupService.updateMemberInvite(data).then(function(response) {
             redirectTo('/group/' + response.group + '/', deferred, response)
-          }, function(response) {})
+          }, function(response) {
+            redirectTo('/invite-error/')
+          })
         }
         else if ($route.current.originalPath === '/group/:groupId/games/:gameid/add-plays/') {
           if (response.username === '' || !(RoleHelper.isAdmin(response, groupId) ||
@@ -46,6 +48,11 @@ function routeResolver(Session, $route, $q, $location, GroupService, RoleHelper)
         else if ($route.current.originalPath === '/group/create/') {
           if (response.username === '') {
             redirectTo('/accounts/login/?next=' + $location.path(), deferred, response);
+          }
+        }
+        else if ($route.current.originalPath === '/register/') {
+          if (response.username !== '') {
+            redirectTo('/logout/', deferred, response);
           }
         }
         deferred.resolve(response);
