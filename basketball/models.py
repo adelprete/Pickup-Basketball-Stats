@@ -455,7 +455,7 @@ class Player(models.Model):
             self.image_src = None
             super(Player, self).save(*args, **kwargs)
             self.image_src = saved_image
-            kwargs.pop('force_insert')
+            kwargs.pop('force_insert', None)
 
         super(Player, self).save(*args, **kwargs)
 
