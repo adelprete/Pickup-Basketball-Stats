@@ -5,10 +5,10 @@ from base.views import (
     group_seasons, MemberPermissionViewSet, MemberInviteViewSet,
     ContactViewSet
 )
-from basketball.views import game as gviews, player as pviews
+from basketball.views import game as gviews, player as pviews, team as tviews
 from django.contrib.auth.decorators import login_required
 from basketball.views.game import (
-    PlaysViewSet, GameViewSet,DailyStatlineViewSet, PlayerViewSet,
+    PlaysViewSet, GameViewSet, DailyStatlineViewSet, PlayerViewSet,
     SeasonStatlineViewSet, calculate_statlines, game_box_score,
     game_adv_box_score, export_plays, StatlineViewSet, AwardViewSet
     )
@@ -34,6 +34,16 @@ game_list = GameViewSet.as_view({
     'get': 'list'
 })
 
+"""
+team_details = tviews.TeamViewSet.as_view({
+    'get': 'retrieve',
+})
+
+team_list = tviews.TeamViewSet.as_view({
+    'get': 'list'
+})
+"""
+
 player_details = PlayerViewSet.as_view({
     'get': 'retrieve',
     'post': 'update'
@@ -56,6 +66,7 @@ router.register(r'daily-statlines', DailyStatlineViewSet)
 router.register(r'member-permissions', MemberPermissionViewSet)
 router.register(r'member-invite', MemberInviteViewSet)
 router.register(r'players', PlayerViewSet)
+router.register(r'teams', tviews.TeamViewSet)
 router.register(r'statlines', StatlineViewSet)
 router.register(r'season-statlines', SeasonStatlineViewSet, 'SeasonStatline')
 
@@ -68,6 +79,8 @@ urlpatterns = [
     re_path(r'^players/(?P<player_id>[0-9]+)/overall_adv_totals$',  pviews.player_overall_adv_totals),
     re_path(r'^players/(?P<player_id>[0-9]+)/overall_per100$',  pviews.player_overall_per100),
     re_path(r'^players/(?P<player_id>[0-9]+)/overall_adv_per100$',  pviews.player_overall_adv_per100),
+    #re_path(r'^teams/groupid/(?P<group_id>[0-9]+)/$',  team_list),
+    #re_path(r'^teams/(?P<pk>[0-9]+)/$',  team_details),
 	re_path(r'^plays/$',  plays_list),
     re_path(r'^plays/(?P<pk>[0-9]+)/$',  plays_details),
     re_path(r'^games/groupid/(?P<group_id>[0-9]+)/$',  game_list),

@@ -76,6 +76,9 @@
   			<li ng-class="{active: $route.current.activetab == 'players'}">
           <a target="_self" ng-href="/group/{{$route.current.params.groupId}}/players/">Players</a>
         </li>
+        <li ng-class="{active: $route.current.activetab == 'teams'}">
+          <a ng-href="/group/{{$route.current.params.groupId}}/teams/">Teams</a>
+        </li>
   			<li ng-class="{active: $route.current.activetab == 'games'}">
           <a ng-href="/group/{{$route.current.params.groupId}}/games/">Games</a>
         </li>

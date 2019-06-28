@@ -185,4 +185,4 @@ class SeasonForm(forms.ModelForm):
 
     class Meta:
         model = bmodels.Season
-        fields = ['start_date','end_date','title']
+        fields = ['group','start_date','end_date','title']

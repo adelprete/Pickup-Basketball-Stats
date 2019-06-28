@@ -2,8 +2,8 @@ from rest_framework import serializers
 from django.conf import settings
 from drf_extra_fields.fields import Base64ImageField
 from basketball.models import (
-    PlayByPlay, Game, Player, Season, StatLine, DailyStatline, SeasonStatline,
-    PRIMARY_PLAY, Award
+    Award, DailyStatline, Game, PlayByPlay, Player, PRIMARY_PLAY, Season,
+    SeasonStatline, StatLine, Team
 )
 
 
@@ -97,6 +97,16 @@ class GameSerializer(serializers.ModelSerializer):
         'team2', 'team1_score', 'team2_score', 'winning_players', 'youtube_id',
         'game_type', 'score_type', 'top_player', 'published', 'putback_window',
         'fastbreak_window', 'statline_set']
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    #team1 = PlayerSerializer(many=True, read_only=True)
+    #team2 = PlayerSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Team
+        depth = 1
+        fields = ['id', 'group', 'name', 'image_src', 'is_active', 'players']
 
 
 class TopStatlineSerializer(serializers.ModelSerializer):

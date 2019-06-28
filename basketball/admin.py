@@ -7,7 +7,9 @@ from django.db import models
 
 class PlayerAdmin(admin.ModelAdmin):
     pass
-
+    
+class TeamAdmin(admin.ModelAdmin):
+    pass
 
 class GameAdmin(admin.ModelAdmin):
     exclude = ("winning_players", "group")
@@ -55,6 +57,7 @@ class AwardAdmin(admin.ModelAdmin):
     list_filter = ('category', 'player')
 
 admin.site.register(bmodels.Player, PlayerAdmin)
+admin.site.register(bmodels.Team, TeamAdmin)
 admin.site.register(bmodels.Game, GameAdmin)
 admin.site.register(bmodels.StatLine, StatLineAdmin)
 admin.site.register(bmodels.DailyStatline, DailyStatlineAdmin)

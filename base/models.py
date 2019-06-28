@@ -13,6 +13,7 @@ class Group(models.Model):
     name = models.CharField(max_length=60, blank=False)
     admin = models.ManyToManyField('auth.User', related_name='admin_groups', blank=True, null=True)
     members = models.ManyToManyField('auth.User', related_name='member_groups', blank=True, null=True)
+    league = models.BooleanField(default=False, help_text="Is this group a league? This cannot be changed afterwards.")
 
     # default game settings
     game_type = models.CharField(max_length=30, choices=GAME_TYPES, null=True)

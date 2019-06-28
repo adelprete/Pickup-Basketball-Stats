@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='player',
             name='image_src',
-            field=models.ImageField(upload_to=basketball.models.get_upload_path, blank=True, null=True),
+            field=models.ImageField(upload_to=basketball.models.get_player_upload_path, blank=True, null=True),
         ),
     ]

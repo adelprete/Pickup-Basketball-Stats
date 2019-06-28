@@ -6,7 +6,7 @@ services:
     restart: always
   web:
     build: .
-    command: bash -c "service nginx reload && service nginx restart && python3 /app/manage.py migrate && python3 /app/manage.py runserver 0:9003"
+    command: bash -c "service nginx reload && service nginx restart && python3 /app/manage.py makemigrations && python3 /app/manage.py migrate && python3 /app/manage.py runserver 0:9003"
     volumes:
       - .:/app
     ports:

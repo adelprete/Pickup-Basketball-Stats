@@ -1,0 +1,39 @@
+<div class="container" style="margin-bottom:100px;margin-top:80px;">
+  <div class="page-header">
+    <h3 class="accent">
+      Teams
+    </h3>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <a ng-if="RoleHelper.isAdmin(user, groupId)"
+          ng-href="/group/{{ groupId }}/teams/new-team/"
+          target="_self"
+          class="col-md-1 col-xs-12 btn btn-primary"
+          style="margin: 10px 5px;">
+          New Team
+      </a>
+
+    <div class="row">
+      <div ng-if="!loadingPage && teams.length == 0" class="col-md-12" style="font-size: 18px; margin-top:15px;">
+        No Games Created Yet.
+      </div>
+    </div>
+
+    <div ng-if="!loadingPage && teams.length">
+      <div ng-repeat="team in teams" class="col-xs-4 col-sm-2" style="margin-top:15px;text-align:center;">
+        <a href="/group/{{ groupId }}/teams/{{ team.id }}">
+          <img ng-if="team.image_src" src="{{ team.image_src.url }}" class="img-responsive img-circle custom-responsive-img">
+          <img ng-if="!team.image_src" src="/media/basketball_team.jpg" class="img-responsive img-circle custom-responsive-img">
+          {{ team.name }}
+        </a>
+      </div>
+    </div>
+
+    <div ng-if="loadingPage" class="col-md-12" style="min-height: 1000px">
+      <img ng-src="/media/basketball.gif" style="height: 20px; width:20px; position: absolute; left: -10px; top: 6px;" />
+      <span style="font-size: 24px;">loading...</span>
+    </div>
+  </div>
+</div>

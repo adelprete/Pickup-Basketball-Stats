@@ -120,9 +120,32 @@ class RealPlayerManager(models.Manager):
 class AllPlayerManager(models.Manager):
     use_for_related_field = True
 
-def get_upload_path(instance, filename):
+def get_player_upload_path(instance, filename):
     return os.path.join(
       "player_images/%d/" % instance.id, filename)
+
+def get_team_upload_path(instance, filename):
+    return os.path.join(
+      "team_images/%d/" % instance.id, filename)
+
+class Team(models.Model):
+    group = models.ForeignKey('base.Group', on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
+    image_src = models.ImageField(upload_to=get_team_upload_path, blank=True, null=True)
+    is_active = models.BooleanField(help_text="Hides teams from ")
+    players = models.ManyToManyField('basketball.Player')
+    
+    def __str__(self):
+        return f"{self.name} - {self.group}"
+
+
+class Standing(models.Model):
+    group = models.ForeignKey('base.Group', on_delete=models.CASCADE)
+    season = models.ForeignKey('basketball.Season', on_delete=models.CASCADE)
+    team = models.ForeignKey('basketball.Team', on_delete=models.CASCADE)
+    wins = models.PositiveIntegerField(default=0)
+    losses = models.PositiveIntegerField(default=0)
+
 
 class Player(models.Model):
     group = models.ForeignKey('base.Group', on_delete=models.CASCADE, blank=True, null=True)
@@ -130,7 +153,7 @@ class Player(models.Model):
     last_name = models.CharField(max_length=30, blank=True)
     height = models.CharField(max_length=30, blank=True)
     weight = models.CharField(max_length=30, blank=True)
-    image_src = models.ImageField(upload_to=get_upload_path, blank=True, null=True)
+    image_src = models.ImageField(upload_to=get_player_upload_path, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     position = models.CharField(max_length=30, blank=True)
     is_active = models.BooleanField(help_text="Determine if a player should be selectable when creating games", blank=True, default=True)
@@ -470,8 +493,6 @@ class Game(models.Model):
     title = models.CharField(max_length=30)
     exhibition = models.BooleanField("Exhibition Game?", default=False, help_text="Stats for Exhibition games are NOT counted.")
     points_to_win = models.CharField(max_length=30, choices=(('11','11'), ('30','30'), ('other','Other')), default='11')
-    team1 = models.ManyToManyField('basketball.Player', related_name='team1_set')
-    team2 = models.ManyToManyField('basketball.Player', related_name='team2_set')
     team1_score = models.PositiveIntegerField(default=0, help_text="Leave 0 if entering plays")
     team2_score = models.PositiveIntegerField(default=0, help_text="Leave 0 if entering plays")
     winning_players = models.ManyToManyField('basketball.Player', related_name='winning_players_set', blank=True)
@@ -483,6 +504,17 @@ class Game(models.Model):
     #advanced
     putback_window = models.PositiveIntegerField(default=6, blank=True, null=True)
     fastbreak_window = models.PositiveIntegerField(default=10, blank=True, null=True)
+    #pickup fields
+    team1 = models.ManyToManyField('basketball.Player', related_name='team1_set', blank=True)
+    team2 = models.ManyToManyField('basketball.Player', related_name='team2_set', blank=True)
+    #league fields
+    home_team = models.ForeignKey('basketball.Team', on_delete=models.CASCADE, related_name='home_team_set', blank=True, null=True)
+    away_team = models.ForeignKey('basketball.Team', on_delete=models.CASCADE, related_name='away_team_set', blank=True, null=True)
+    home_team_starters = models.ManyToManyField('basketball.Player', related_name='home_starter_set', blank=True)
+    away_team_starters = models.ManyToManyField('basketball.Player', related_name='away_starter_set', blank=True)
+    winning_team = models.ForeignKey('basketball.Team', on_delete=models.CASCADE, related_name='games_won_set', blank=True, null=True)
+    losing_team = models.ForeignKey('basketball.Team', on_delete=models.CASCADE, related_name='games_lost_set', blank=True, null=True)
+    season = models.ForeignKey('basketball.Season', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return "%s: %s" % (self.date.isoformat(), self.title)
@@ -794,6 +826,7 @@ class Game(models.Model):
 
 class BaseStatline(models.Model):
     player = models.ForeignKey('basketball.Player', on_delete=models.CASCADE)
+    team = models.ForeignKey('basketball.Team', on_delete=models.CASCADE, blank=True, null=True)
     fgm = models.PositiveIntegerField(default=0)
     fga = models.PositiveIntegerField(default=0)
     threepm = models.PositiveIntegerField(default=0)
@@ -947,6 +980,7 @@ class Season(models.Model):
     """
     Our season objects for organizing stats within periods of time.
     """
+    group = models.ForeignKey('base.Group', on_delete=models.CASCADE, blank=True, null=True)
     title = models.CharField(max_length=30)
     start_date = models.DateField()
     end_date = models.DateField()

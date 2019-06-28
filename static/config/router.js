@@ -58,6 +58,12 @@ angular.module('saturdayBall').config(['$locationProvider', '$routeProvider', fu
         resolve: routeResolver,
         activetab: 'leaderboard'
       })
+      .when("/group/:groupId/teams/", {
+        templateUrl: "static/views/teams.html",
+        controller: 'TeamsController',
+        resolve: routeResolver,
+        activetab: 'teams'
+      })
       .when("/group/:groupId/players/create", {
         templateUrl: 'static/views/playerform.html',
         controller: 'PlayerFormController',
