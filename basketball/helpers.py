@@ -70,7 +70,7 @@ def create_plays(pk, f):
                 play_dict['description'] = line[12].strip()
 
         play = bmodels.PlayByPlay.objects.create(game=game, **play_dict)
-        play.top_play_players = top_play_players
+        play.top_play_players.set(top_play_players)
         play.save()
 
 
