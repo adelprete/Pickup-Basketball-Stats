@@ -372,8 +372,8 @@ def game_box_score(request, pk):
                 team_totals.update(x)
         team_totals.update(statlines.aggregate(Sum('points'), Sum('total_rebounds')))
         data[key] = {
-            'statlines': StatlineSerializer(statlines.exclude(player__first_name__contains='Team'), many=True).data,
-            'team': StatlineSerializer(statlines.get(player__first_name__contains='Team')).data,
+            'statlines': StatlineSerializer(statlines.exclude(player__first_name__contains='Team', group=game.group), many=True).data,
+            'team': StatlineSerializer(statlines.get(player__first_name__contains='Team', group=game.group)).data,
             'team_totals': team_totals
         }
 
@@ -397,8 +397,8 @@ def game_adv_box_score(request, pk):
             team_totals.update(x)
 
         data[key] = {
-            'statlines': StatlineSerializer(statlines.exclude(player__first_name__contains='Team'), many=True).data,
-            'team': StatlineSerializer(statlines.get(player__first_name__contains='Team')).data,
+            'statlines': StatlineSerializer(statlines.exclude(player__first_name__contains='Team', group=game.group), many=True).data,
+            'team': StatlineSerializer(statlines.get(player__first_name__contains='Team', group=game.group)).data,
             'team_totals': team_totals,
         }
 
