@@ -32,7 +32,10 @@ def create_plays(pk, f):
                 break
 
         # primary player
-        play_dict['primary_player'] = bmodels.Player.objects.get(first_name=line[2].strip(),last_name=line[3].strip(), group=game.group)
+        if line[2].strip() in ['Team1', 'Team2']:
+            play_dict['primary_player'] = bmodels.Player.objects.get(first_name=line[2].strip(),last_name=line[3].strip())
+        else:
+            play_dict['primary_player'] = bmodels.Player.objects.get(first_name=line[2].strip(),last_name=line[3].strip(), group=game.group)
 
         # secondary play
         if len(line) > 4 and len(line[4].strip()) > 0:
@@ -42,7 +45,10 @@ def create_plays(pk, f):
                     break
 
             # seconday player
-            play_dict['secondary_player'] = bmodels.Player.objects.get(first_name=line[5].strip(),last_name=line[6].strip(), group=game.group)
+            if line[5].strip() in ['Team1','Team2']:
+                play_dict['secondary_player'] = bmodels.Player.objects.get(first_name=line[5].strip(),last_name=line[6].strip())
+            else:
+                play_dict['secondary_player'] = bmodels.Player.objects.get(first_name=line[5].strip(),last_name=line[6].strip(), group=game.group)
 
         # assist play
         if len(line) > 7 and len(line[7].strip()) > 0:
@@ -52,7 +58,10 @@ def create_plays(pk, f):
                     break
 
             # assist player
-            play_dict['assist_player'] = bmodels.Player.objects.get(first_name=line[8].strip(),last_name=line[9].strip(), group=game.group)
+            if line[8].strip() in ['Team1', 'Team2']:
+                play_dict['assist_player'] = bmodels.Player.objects.get(first_name=line[8].strip(),last_name=line[9].strip())
+            else:
+                play_dict['assist_player'] = bmodels.Player.objects.get(first_name=line[8].strip(),last_name=line[9].strip(), group=game.group)
 
         # Top play rank
         if len(line) > 10:
