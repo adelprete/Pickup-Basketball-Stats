@@ -32,7 +32,7 @@ def create_plays(pk, f):
                 break
 
         # primary player
-        play_dict['primary_player'] = bmodels.Player.objects.get(first_name=line[2].strip(),last_name=line[3].strip())
+        play_dict['primary_player'] = bmodels.Player.objects.get(first_name=line[2].strip(),last_name=line[3].strip(), group=game.group)
 
         # secondary play
         if len(line) > 4 and len(line[4].strip()) > 0:
@@ -42,7 +42,7 @@ def create_plays(pk, f):
                     break
 
             # seconday player
-            play_dict['secondary_player'] = bmodels.Player.objects.get(first_name=line[5].strip(),last_name=line[6].strip())
+            play_dict['secondary_player'] = bmodels.Player.objects.get(first_name=line[5].strip(),last_name=line[6].strip(), group=game.group)
 
         # assist play
         if len(line) > 7 and len(line[7].strip()) > 0:
@@ -52,7 +52,7 @@ def create_plays(pk, f):
                     break
 
             # assist player
-            play_dict['assist_player'] = bmodels.Player.objects.get(first_name=line[8].strip(),last_name=line[9].strip())
+            play_dict['assist_player'] = bmodels.Player.objects.get(first_name=line[8].strip(),last_name=line[9].strip(), group=game.group)
 
         # Top play rank
         if len(line) > 10:
@@ -64,7 +64,7 @@ def create_plays(pk, f):
                 # players involved(added after mode is saved cause of M2M)
                 top_players_list = [player.strip()
                                     for player in line[11].strip().split('.')]
-                top_play_players = bmodels.Player.objects.filter(first_name__in=top_players_list)
+                top_play_players = bmodels.Player.objects.filter(first_name__in=top_players_list, group=game.group)
 
                 # description
                 play_dict['description'] = line[12].strip()
